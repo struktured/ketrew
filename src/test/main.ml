@@ -8,28 +8,32 @@ end
 
 module Test_command_line = struct
 
-  let work ?(regions=[]) ?(num=0) ~normal ?(tumor="NO-TUMOR") ()  = 
-    fmt "reg: [%s] num: %d norm: %S tum: %S"
-      (String.concat ~sep:", " regions) num normal tumor
 
   let test_1 () =
     let open Ketrew_command_line in
     let open Result in
     let cli =
+      let big_flag_string_list =
+        flag (option_with ~default:[] (list string)) ~name:"--option-list-string"
+          ~aliases:["-O"; "--ols"]
+          ~doc_value:"<OLS>" ~doc:"Some optional list string"
+      in
       group "toplevel" ~short_doc:"Top-level command" 
         ~doc:"corresponds to $0" [
         command "digit" ~aliases:["one"; "two"] ~doc:"Digital stuff" (
-          flag (option_with ~default:[] (list string)) ~name:"--option-list-string"
-            ~aliases:["-O"; "--ols"]
-            ~doc_value:"<OLS>" ~doc:"Some optional list string"
-            @@ fun string_list ->
+          big_flag_string_list  @@ fun string_list ->
           flag (option int) ~name:"--num" @@ fun num ->
+          (* two_args @@ fun (arg1, arg2) -> *)
           argument string ~name:"ARG1" @@ fun arg1 ->
           argument (option string) ~name:"ARG2" @@ fun arg2 ->
           render (fun () ->
               `Result (string_list, num, arg1, arg2)
             )
-        )
+        );
+        command "other" ~doc:"Other stuff" (
+          big_flag_string_list  @@ fun string_list ->
+          render (fun () ->
+              `Result (string_list, None, "Bouh", None)));
       ]
     in
     let test_parse l expect =
