@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="api/style.css" type="text/css">
+  <meta charset="utf-8">
+</head>
+  <body>
+<h1 id="KetrewKeepTrackofExperimentalWorkflows">Ketrew: Keep Track of Experimental Workflows</h1>
+<p>This is <strong>Work in Progress</strong>, not ready for use.</p>
+<h2 id="BuildInstall">Build &amp; Install</h2>
+<p>Ketrew depends on
+<code>nonstd</code>, <code>pvem</code>, <code>docout</code>,  <code>sosa</code>,  <code>pvem_lwt_unix</code>
+and uses the <code>ocp-build</code> build system:</p>
+<pre><code>./please.sh build</code></pre>
+<p>You should not install <code>ketrew</code> yet, but you can always call at your own risk:</p>
+<pre><code>ocp-build install</code></pre>
+<h2 id="Tests">Tests</h2>
+<p>Run the tests like this:</p>
+<pre><code>ketrew_test_ssh=&lt;Host&gt; _obuild/ketrew-test/ketrew-test.asm [-no-color]</code></pre>
+<p>where <code>&lt;Host&gt;</code> is often an entry in your <code>.ssh/config</code> file.</p>
+<p>The test will indeed look for the environment variable <code>ketrew_test_ssh</code>; if
+not defined it will use <code>&quot;localhost&quot;</code>. But for the test to succeed it should be
+an SSH host for which the user running the test does not need password.
+The test will run some commands on that host and create files and directories
+in its <code>/tmp</code> directory.</p>
+<h2 id="Documentation">Documentation</h2>
+<p>The documentation depends on <a href='https://github.com/ocaml/omd'>omd</a>, and
+Graphviz&#39;s <code>dot</code>:</p>
+<pre><code>please.sh doc
+
+
+</code></pre>
+<h2 id="CodeDocumentation">Code Documentation</h2>
+<ul>
+ <li><a href='api/index.html'>ocaml-doc for the API</a></li>
+</ul>
+
+<p><a href="modules.svg">
+<object type="image/svg+xml" data="modules.svg"
+style="transform-origin: 0% 100% 0;
+       transform: translateY(-100%) rotate(90deg);"
+  >Your browser does not support SVG</object>
+</a></p>
+</body><html>

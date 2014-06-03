@@ -1,0 +1,112 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Index of module types" rel=Appendix href="index_module_types.html">
+<link title="Ketrew" rel="Chapter" href="Ketrew.html">
+<link title="Ketrew_artifact" rel="Chapter" href="Ketrew_artifact.html">
+<link title="Ketrew_database" rel="Chapter" href="Ketrew_database.html">
+<link title="Ketrew_host" rel="Chapter" href="Ketrew_host.html">
+<link title="Ketrew_long_running" rel="Chapter" href="Ketrew_long_running.html">
+<link title="Ketrew_monitored_script" rel="Chapter" href="Ketrew_monitored_script.html">
+<link title="Ketrew_nohup_setsid" rel="Chapter" href="Ketrew_nohup_setsid.html">
+<link title="Ketrew_path" rel="Chapter" href="Ketrew_path.html">
+<link title="Ketrew_pervasives" rel="Chapter" href="Ketrew_pervasives.html">
+<link title="Ketrew_state" rel="Chapter" href="Ketrew_state.html">
+<link title="Ketrew_target" rel="Chapter" href="Ketrew_target.html">
+<link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html"><title>Ketrew API : Ketrew_artifact</title>
+</head>
+<body>
+<code class="code"><br>
+<span class="keyword">open</span>&nbsp;<span class="constructor">Ketrew_pervasives</span><br>
+<br>
+<span class="keyword">module</span>&nbsp;<span class="constructor">Path</span>&nbsp;=&nbsp;<span class="constructor">Ketrew_path</span><br>
+<br>
+<span class="keyword">module</span>&nbsp;<span class="constructor">Host</span>&nbsp;=&nbsp;<span class="constructor">Ketrew_host</span><br>
+<br>
+<span class="keyword">module</span>&nbsp;<span class="constructor">Volume</span>&nbsp;=&nbsp;<span class="keyword">struct</span><br>
+<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;structure&nbsp;=&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">File</span>&nbsp;<span class="keyword">of</span>&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Directory</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;*&nbsp;structure&nbsp;list<br>
+<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;host:&nbsp;<span class="constructor">Host</span>.t;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;root:&nbsp;<span class="constructor">Path</span>.absolute_directory;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;structure:&nbsp;structure;<br>
+&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;create&nbsp;~host&nbsp;~root&nbsp;structure&nbsp;=&nbsp;{host;&nbsp;root;&nbsp;structure}<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file&nbsp;s&nbsp;=&nbsp;<span class="constructor">File</span>&nbsp;s<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dir&nbsp;name&nbsp;contents&nbsp;=&nbsp;<span class="constructor">Directory</span>&nbsp;(name,&nbsp;contents)<br>
+<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;all_structure_paths&nbsp;s&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;s&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">File</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[<span class="constructor">Path</span>.relative_file_exn&nbsp;s&nbsp;|&gt;&nbsp;<span class="constructor">Path</span>.any_kind&nbsp;]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Directory</span>&nbsp;(name,&nbsp;children)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;children_paths&nbsp;=&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.concat_map&nbsp;~f:all_structure_paths&nbsp;children&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;this_one&nbsp;=&nbsp;<span class="constructor">Path</span>.relative_directory_exn&nbsp;name&nbsp;|&gt;&nbsp;<span class="constructor">Path</span>.any_kind&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this_one&nbsp;::&nbsp;<span class="constructor">List</span>.map&nbsp;~f:(<span class="constructor">Path</span>.concat&nbsp;this_one)&nbsp;children_paths<br>
+<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;all_paths&nbsp;t&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.map&nbsp;~f:(<span class="constructor">Path</span>.concat&nbsp;t.root)&nbsp;(all_structure_paths&nbsp;t.structure)<br>
+<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;exists&nbsp;t&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;paths&nbsp;=&nbsp;all_paths&nbsp;t&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Host</span>.do_files_exist&nbsp;t.host&nbsp;paths<br>
+<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;to_string&nbsp;{host;&nbsp;root;&nbsp;structure}&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;fmt&nbsp;<span class="string">"Vol(%s:%s)"</span>&nbsp;(<span class="constructor">Host</span>.to_string&nbsp;host)&nbsp;(<span class="constructor">Path</span>.to_string&nbsp;root)<br>
+<span class="keyword">end</span><br>
+<br>
+<span class="keyword">module</span>&nbsp;<span class="constructor">Type</span>&nbsp;=&nbsp;<span class="keyword">struct</span><br>
+<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;value_type&nbsp;=&nbsp;[<span class="keywordsign">`</span><span class="constructor">Unit</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">String</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Number</span>]<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;value_type_to_string&nbsp;=&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Unit</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"Unit"</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">String</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"String"</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Number</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"Number"</span><br>
+<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;[<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;|&nbsp;`Fresh_file&nbsp;*)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Value</span>&nbsp;<span class="keyword">of</span>&nbsp;value_type<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Volume</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Volume</span>.t<br>
+&nbsp;&nbsp;]<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;value&nbsp;vt&nbsp;:&nbsp;t&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">Value</span>&nbsp;vt<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;string_value&nbsp;:&nbsp;t&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">Value</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">String</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;volume&nbsp;v&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">Volume</span>&nbsp;v<br>
+<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;to_string&nbsp;=&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Value</span>&nbsp;v&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fmt&nbsp;<span class="string">"Value&nbsp;%s"</span>&nbsp;(value_type_to_string&nbsp;v)<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Volume</span>&nbsp;v&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fmt&nbsp;<span class="string">"Volume&nbsp;%s"</span>&nbsp;(<span class="constructor">Volume</span>.to_string&nbsp;v)<br>
+<br>
+<span class="keyword">end</span><br>
+<br>
+<span class="keyword">type</span>&nbsp;value&nbsp;=&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Unit</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">String</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Number</span>&nbsp;<span class="keyword">of</span>&nbsp;float&nbsp;]<br>
+<br>
+<span class="keyword">let</span>&nbsp;unit&nbsp;:&nbsp;value&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">Unit</span><br>
+<br>
+<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;[<br>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;|&nbsp;`Tree&nbsp;of&nbsp;File_tree.t&nbsp;*)</span><br>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;|&nbsp;`File&nbsp;of&nbsp;File_tree.file&nbsp;*)</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Value</span>&nbsp;<span class="keyword">of</span>&nbsp;value<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Volume</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Volume</span>.t<br>
+]<br>
+<br>
+<br>
+<span class="comment">(*&nbsp;TODO&nbsp;those&nbsp;two&nbsp;functions&nbsp;should&nbsp;be&nbsp;more&nbsp;type-safe&nbsp;*)</span><br>
+<span class="keyword">let</span>&nbsp;is_ready&nbsp;specification&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;specification&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Value</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;<span class="keyword">false</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Volume</span>&nbsp;v&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Volume</span>.exists&nbsp;v<br>
+<br>
+<span class="keyword">let</span>&nbsp;of_type:&nbsp;<span class="constructor">Type</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t&nbsp;=&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Value</span>&nbsp;v&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;invalid_argument_exn&nbsp;~where:<span class="string">"Artifact"</span>&nbsp;<span class="string">"specification_to_value"</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Volume</span>&nbsp;v&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Volume</span>&nbsp;v<br>
+<br>
+<br>
+<br>
+</code></body></html>
