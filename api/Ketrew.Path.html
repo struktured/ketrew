@@ -32,57 +32,109 @@
 <pre><span class="keyword">module</span> Path: <code class="type">Ketrew_path</code></pre><hr width="100%">
 
 <pre><span id="TYPErelative"><span class="keyword">type</span> <code class="type"></code>relative</span> </pre>
+<div class="info ">
+Abstract phantom type.<br>
+</div>
 
 
 <pre><span id="TYPEabsolute"><span class="keyword">type</span> <code class="type"></code>absolute</span> </pre>
+<div class="info ">
+Abstract phantom type.<br>
+</div>
 
 
 <pre><span id="TYPEfile"><span class="keyword">type</span> <code class="type"></code>file</span> </pre>
+<div class="info ">
+Abstract phantom type.<br>
+</div>
 
 
 <pre><span id="TYPEdirectory"><span class="keyword">type</span> <code class="type"></code>directory</span> </pre>
+<div class="info ">
+Abstract phantom type.<br>
+</div>
 
 
-<pre><code><span id="TYPEt"><span class="keyword">type</span> <code class="type">< kind : 'file_kind; relativity : 'relativity ></code> t</span> = {</code></pre><table class="typetable">
-<tr>
-<td align="left" valign="top" >
-<code>&nbsp;&nbsp;</code></td>
-<td align="left" valign="top" >
-<code><span id="TYPEELTt.kind">kind</span>&nbsp;: <code class="type">[ `Directory | `File ]</code>;</code></td>
-
-</tr>
-<tr>
-<td align="left" valign="top" >
-<code>&nbsp;&nbsp;</code></td>
-<td align="left" valign="top" >
-<code><span id="TYPEELTt.path">path</span>&nbsp;: <code class="type">string</code>;</code></td>
-
-</tr></table>
-}
-
+<pre><span id="TYPEt"><span class="keyword">type</span> <code class="type">< kind : 'file_kind; relativity : 'relativity ></code> t</span> </pre>
+<div class="info ">
+General type of file-paths, <code class="code">kind</code> may be <code class="code">file</code> or <code class="code">directory</code>,
+   <code class="code">relativity</code> may be <code class="code">relative</code> or <code class="code">absolute</code>.<br>
+</div>
 
 
 <pre><span id="TYPEabsolute_directory"><span class="keyword">type</span> <code class="type"></code>absolute_directory</span> = <code class="type">< kind : <a href="Ketrew_path.html#TYPEdirectory">directory</a>; relativity : <a href="Ketrew_path.html#TYPEabsolute">absolute</a> ><br>       <a href="Ketrew_path.html#TYPEt">t</a></code> </pre>
+<div class="info ">
+Readable alias.<br>
+</div>
 
 
 <pre><span id="TYPEabsolute_file"><span class="keyword">type</span> <code class="type"></code>absolute_file</span> = <code class="type">< kind : <a href="Ketrew_path.html#TYPEfile">file</a>; relativity : <a href="Ketrew_path.html#TYPEabsolute">absolute</a> > <a href="Ketrew_path.html#TYPEt">t</a></code> </pre>
+<div class="info ">
+Readable alias.<br>
+</div>
 
 
 <pre><span id="TYPErelative_directory"><span class="keyword">type</span> <code class="type"></code>relative_directory</span> = <code class="type">< kind : <a href="Ketrew_path.html#TYPEdirectory">directory</a>; relativity : <a href="Ketrew_path.html#TYPErelative">relative</a> ><br>       <a href="Ketrew_path.html#TYPEt">t</a></code> </pre>
+<div class="info ">
+Readable alias.<br>
+</div>
 
 
 <pre><span id="TYPErelative_file"><span class="keyword">type</span> <code class="type"></code>relative_file</span> = <code class="type">< kind : <a href="Ketrew_path.html#TYPEfile">file</a>; relativity : <a href="Ketrew_path.html#TYPErelative">relative</a> > <a href="Ketrew_path.html#TYPEt">t</a></code> </pre>
+<div class="info ">
+Readable alias.<br>
+</div>
 
 
-<pre><span id="VALfile"><span class="keyword">val</span> <a href="code_VALKetrew_path.file.html">file</a></span> : <code class="type">string -> < kind : <a href="Ketrew_path.html#TYPEfile">file</a>; relativity : 'a > <a href="Ketrew_path.html#TYPEt">t</a></code></pre>
-<pre><span id="VALdirectory"><span class="keyword">val</span> <a href="code_VALKetrew_path.directory.html">directory</a></span> : <code class="type">string -> < kind : <a href="Ketrew_path.html#TYPEdirectory">directory</a>; relativity : 'a > <a href="Ketrew_path.html#TYPEt">t</a></code></pre>
-<pre><span id="VALroot"><span class="keyword">val</span> <a href="code_VALKetrew_path.root.html">root</a></span> : <code class="type">< kind : <a href="Ketrew_path.html#TYPEdirectory">directory</a>; relativity : <a href="Ketrew_path.html#TYPEabsolute">absolute</a> ><br>       <a href="Ketrew_path.html#TYPEt">t</a></code></pre>
-<pre><span id="VALabsolute_file_exn"><span class="keyword">val</span> <a href="code_VALKetrew_path.absolute_file_exn.html">absolute_file_exn</a></span> : <code class="type">string -><br>       < kind : <a href="Ketrew_path.html#TYPEfile">file</a>; relativity : <a href="Ketrew_path.html#TYPEabsolute">absolute</a> > <a href="Ketrew_path.html#TYPEt">t</a></code></pre>
-<pre><span id="VALabsolute_directory_exn"><span class="keyword">val</span> <a href="code_VALKetrew_path.absolute_directory_exn.html">absolute_directory_exn</a></span> : <code class="type">string -><br>       < kind : <a href="Ketrew_path.html#TYPEdirectory">directory</a>; relativity : <a href="Ketrew_path.html#TYPEabsolute">absolute</a> ><br>       <a href="Ketrew_path.html#TYPEt">t</a></code></pre>
-<pre><span id="VALrelative_directory_exn"><span class="keyword">val</span> <a href="code_VALKetrew_path.relative_directory_exn.html">relative_directory_exn</a></span> : <code class="type">string -><br>       < kind : <a href="Ketrew_path.html#TYPEdirectory">directory</a>; relativity : <a href="Ketrew_path.html#TYPErelative">relative</a> ><br>       <a href="Ketrew_path.html#TYPEt">t</a></code></pre>
-<pre><span id="VALrelative_file_exn"><span class="keyword">val</span> <a href="code_VALKetrew_path.relative_file_exn.html">relative_file_exn</a></span> : <code class="type">string -><br>       < kind : <a href="Ketrew_path.html#TYPEfile">file</a>; relativity : <a href="Ketrew_path.html#TYPErelative">relative</a> > <a href="Ketrew_path.html#TYPEt">t</a></code></pre>
-<pre><span id="VALconcat"><span class="keyword">val</span> <a href="code_VALKetrew_path.concat.html">concat</a></span> : <code class="type">< kind : <a href="Ketrew_path.html#TYPEdirectory">directory</a>; relativity : 'a > <a href="Ketrew_path.html#TYPEt">t</a> -><br>       < kind : 'b; relativity : <a href="Ketrew_path.html#TYPErelative">relative</a> > <a href="Ketrew_path.html#TYPEt">t</a> -><br>       < kind : 'b; relativity : 'a > <a href="Ketrew_path.html#TYPEt">t</a></code></pre>
-<pre><span id="VALto_string"><span class="keyword">val</span> <a href="code_VALKetrew_path.to_string.html">to_string</a></span> : <code class="type">< kind : 'a; relativity : 'b > <a href="Ketrew_path.html#TYPEt">t</a> -> string</code></pre>
-<pre><span id="VALto_string_quoted"><span class="keyword">val</span> <a href="code_VALKetrew_path.to_string_quoted.html">to_string_quoted</a></span> : <code class="type">< kind : 'a; relativity : 'b > <a href="Ketrew_path.html#TYPEt">t</a> -> string</code></pre>
-<pre><span id="VALany_kind"><span class="keyword">val</span> <a href="code_VALKetrew_path.any_kind.html">any_kind</a></span> : <code class="type">< kind : 'b; relativity : 'a > <a href="Ketrew_path.html#TYPEt">t</a> -><br>       < kind : 'c; relativity : 'a > <a href="Ketrew_path.html#TYPEt">t</a></code></pre>
-<pre><span id="VALexists_shell_condition"><span class="keyword">val</span> <a href="code_VALKetrew_path.exists_shell_condition.html">exists_shell_condition</a></span> : <code class="type">< kind : 'a; relativity : 'b > <a href="Ketrew_path.html#TYPEt">t</a> -> string</code></pre></body></html>
+<pre><span id="VALfile"><span class="keyword">val</span> <a href="code_VALKetrew_path.file.html">file</a></span> : <code class="type">string -> < kind : <a href="Ketrew_path.html#TYPEfile">file</a>; relativity : 'any > <a href="Ketrew_path.html#TYPEt">t</a></code></pre><div class="info ">
+Create a path to a file.<br>
+</div>
+
+<pre><span id="VALdirectory"><span class="keyword">val</span> <a href="code_VALKetrew_path.directory.html">directory</a></span> : <code class="type">string -> < kind : <a href="Ketrew_path.html#TYPEdirectory">directory</a>; relativity : 'any > <a href="Ketrew_path.html#TYPEt">t</a></code></pre><div class="info ">
+Create a path to a directory.<br>
+</div>
+
+<pre><span id="VALroot"><span class="keyword">val</span> <a href="code_VALKetrew_path.root.html">root</a></span> : <code class="type">< kind : <a href="Ketrew_path.html#TYPEdirectory">directory</a>; relativity : <a href="Ketrew_path.html#TYPEabsolute">absolute</a> ><br>       <a href="Ketrew_path.html#TYPEt">t</a></code></pre><div class="info ">
+The root directory (i.e. <code class="code"><span class="string">"/"</span></code> on Unix).<br>
+</div>
+
+<pre><span id="VALabsolute_file_exn"><span class="keyword">val</span> <a href="code_VALKetrew_path.absolute_file_exn.html">absolute_file_exn</a></span> : <code class="type">string -><br>       < kind : <a href="Ketrew_path.html#TYPEfile">file</a>; relativity : <a href="Ketrew_path.html#TYPEabsolute">absolute</a> > <a href="Ketrew_path.html#TYPEt">t</a></code></pre><div class="info ">
+Create an absolute path to a file, raises <code class="code"><span class="constructor">Invalid_argument</span> _</code> if the path
+    is not absolute.<br>
+</div>
+
+<pre><span id="VALabsolute_directory_exn"><span class="keyword">val</span> <a href="code_VALKetrew_path.absolute_directory_exn.html">absolute_directory_exn</a></span> : <code class="type">string -><br>       < kind : <a href="Ketrew_path.html#TYPEdirectory">directory</a>; relativity : <a href="Ketrew_path.html#TYPEabsolute">absolute</a> ><br>       <a href="Ketrew_path.html#TYPEt">t</a></code></pre><div class="info ">
+Create an absolute path to a directory, raises <code class="code"><span class="constructor">Invalid_argument</span> _</code> if the
+    path is not absolute.<br>
+</div>
+
+<pre><span id="VALrelative_directory_exn"><span class="keyword">val</span> <a href="code_VALKetrew_path.relative_directory_exn.html">relative_directory_exn</a></span> : <code class="type">string -><br>       < kind : <a href="Ketrew_path.html#TYPEdirectory">directory</a>; relativity : <a href="Ketrew_path.html#TYPErelative">relative</a> ><br>       <a href="Ketrew_path.html#TYPEt">t</a></code></pre><div class="info ">
+Create a relative  path to a directory, raises <code class="code"><span class="constructor">Invalid_argument</span> _</code> if the
+    path is not relative.<br>
+</div>
+
+<pre><span id="VALrelative_file_exn"><span class="keyword">val</span> <a href="code_VALKetrew_path.relative_file_exn.html">relative_file_exn</a></span> : <code class="type">string -><br>       < kind : <a href="Ketrew_path.html#TYPEfile">file</a>; relativity : <a href="Ketrew_path.html#TYPErelative">relative</a> > <a href="Ketrew_path.html#TYPEt">t</a></code></pre><div class="info ">
+Create a relative to a file, raises <code class="code"><span class="constructor">Invalid_argument</span> _</code> if the path
+    is not relative.<br>
+</div>
+
+<pre><span id="VALconcat"><span class="keyword">val</span> <a href="code_VALKetrew_path.concat.html">concat</a></span> : <code class="type">< kind : <a href="Ketrew_path.html#TYPEdirectory">directory</a>; relativity : 'a > <a href="Ketrew_path.html#TYPEt">t</a> -><br>       < kind : 'b; relativity : <a href="Ketrew_path.html#TYPErelative">relative</a> > <a href="Ketrew_path.html#TYPEt">t</a> -><br>       < kind : 'b; relativity : 'a > <a href="Ketrew_path.html#TYPEt">t</a></code></pre><div class="info ">
+Safely concatenate two paths (calls <code class="code"><span class="constructor">Filename</span>.concat</code>).<br>
+</div>
+
+<pre><span id="VALto_string"><span class="keyword">val</span> <a href="code_VALKetrew_path.to_string.html">to_string</a></span> : <code class="type">< kind : 'a; relativity : 'b > <a href="Ketrew_path.html#TYPEt">t</a> -> string</code></pre><div class="info ">
+Convert the path to a “Unix” path.<br>
+</div>
+
+<pre><span id="VALto_string_quoted"><span class="keyword">val</span> <a href="code_VALKetrew_path.to_string_quoted.html">to_string_quoted</a></span> : <code class="type">< kind : 'a; relativity : 'b > <a href="Ketrew_path.html#TYPEt">t</a> -> string</code></pre><div class="info ">
+Convert the path to a “Unix” path quoted for a shell command (c.f. <code class="code"><span class="constructor">Filename</span>.quoted</code>).<br>
+</div>
+
+<pre><span id="VALany_kind"><span class="keyword">val</span> <a href="code_VALKetrew_path.any_kind.html">any_kind</a></span> : <code class="type">< kind : 'some_kind; relativity : 'relativity > <a href="Ketrew_path.html#TYPEt">t</a> -><br>       < kind : 'any_kind; relativity : 'relativity > <a href="Ketrew_path.html#TYPEt">t</a></code></pre><div class="info ">
+Coerce a path to any kind of path (file or directory).<br>
+</div>
+
+<pre><span id="VALexists_shell_condition"><span class="keyword">val</span> <a href="code_VALKetrew_path.exists_shell_condition.html">exists_shell_condition</a></span> : <code class="type">< kind : 'any_kind; relativity : 'any_relativity > <a href="Ketrew_path.html#TYPEt">t</a> -> string</code></pre><div class="info ">
+Create a <code class="code"><span class="string">"/bin/sh"</span></code> command that checks if the file or directory exists.<br>
+</div>
+</body></html>

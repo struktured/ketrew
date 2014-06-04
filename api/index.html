@@ -31,33 +31,49 @@
 </ul>
 <br/><br>
 <table class="indextable">
-<tr><td class="module"><a href="Ketrew.html">Ketrew</a></td><td></td></tr>
-<tr><td class="module"><a href="Ketrew_artifact.html">Ketrew_artifact</a></td><td></td></tr>
-<tr><td class="module"><a href="Ketrew_database.html">Ketrew_database</a></td><td></td></tr>
+<tr><td class="module"><a href="Ketrew.html">Ketrew</a></td><td><div class="info">
+Top-level module exporting the API (pack).
+</div>
+</td></tr>
+<tr><td class="module"><a href="Ketrew_artifact.html">Ketrew_artifact</a></td><td><div class="info">
+Artifacts are input values or files, or results of computations.
+</div>
+</td></tr>
+<tr><td class="module"><a href="Ketrew_database.html">Ketrew_database</a></td><td><div class="info">
+A key-value database API with basic transactions.
+</div>
+</td></tr>
 <tr><td class="module"><a href="Ketrew_host.html">Ketrew_host</a></td><td><div class="info">
-Generate a proper SSH command for the given host.
+Definition of a host; a place to run commands or handle files.
 </div>
 </td></tr>
-<tr><td class="module"><a href="Ketrew_long_running.html">Ketrew_long_running</a></td><td></td></tr>
+<tr><td class="module"><a href="Ketrew_long_running.html">Ketrew_long_running</a></td><td><div class="info">
+Definition of the interface required from “long-running task” plugins.
+</div>
+</td></tr>
 <tr><td class="module"><a href="Ketrew_monitored_script.html">Ketrew_monitored_script</a></td><td><div class="info">
-The goal of this module is the create shell scripts from a high-level
-      representation; the scripts are “monitored” in the sense that code is
-      added to log every returned value or failure in a parsable <code class="code">log</code> file.
+Generate Shell scripts that “monitor” commands.
 </div>
 </td></tr>
-<tr><td class="module"><a href="Ketrew_nohup_setsid.html">Ketrew_nohup_setsid</a></td><td></td></tr>
-<tr><td class="module"><a href="Ketrew_path.html">Ketrew_path</a></td><td></td></tr>
+<tr><td class="module"><a href="Ketrew_nohup_setsid.html">Ketrew_nohup_setsid</a></td><td><div class="info">
+Implementation of the <code class="code"><span class="constructor">LONG_RUNNING</span></code> API with <code class="code">nohup setsid</code> unix
+    processes.
+</div>
+</td></tr>
+<tr><td class="module"><a href="Ketrew_path.html">Ketrew_path</a></td><td><div class="info">
+File-path handling with precise phantom-types
+</div>
+</td></tr>
 <tr><td class="module"><a href="Ketrew_pervasives.html">Ketrew_pervasives</a></td><td><div class="info">
-Provide pseudo-unique identifiers.
+<code class="code"><span class="constructor">Pervasives</span></code> module for the library.
 </div>
 </td></tr>
 <tr><td class="module"><a href="Ketrew_state.html">Ketrew_state</a></td><td><div class="info">
-The “application” state
+The “application” state; the Engine.
 </div>
 </td></tr>
 <tr><td class="module"><a href="Ketrew_target.html">Ketrew_target</a></td><td><div class="info">
-Create a new  target but activated from a created one; 
-    raises <code class="code"><span class="constructor">Invalid_argument</span> _</code> if current status is not <code class="code"><span class="keywordsign">`</span><span class="constructor">Created</span> _</code>.
+Definition of the basic building bloc of a workflow.
 </div>
 </td></tr>
 <tr><td class="module"><a href="Ketrew_unix_process.html">Ketrew_unix_process</a></td><td><div class="info">

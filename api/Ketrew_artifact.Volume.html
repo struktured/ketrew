@@ -29,56 +29,61 @@
 </div>
 <h1>Module <a href="type_Ketrew_artifact.Volume.html">Ketrew_artifact.Volume</a> (<a href="code_Ketrew_artifact.Volume.html">.ml</a>)</h1>
 
-<pre><span class="keyword">module</span> Volume: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_artifact.Volume.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><hr width="100%">
+<pre><span class="keyword">module</span> Volume: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_artifact.Volume.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info module top">
+Module defining “Volumes” which are definitions of a given file structure
+    on a given <a href="Ketrew_host.html#TYPEt"><code class="code"><span class="constructor">Ketrew_host</span>.t</code></a>.<br>
+</div>
+<hr width="100%">
 
-<pre><code><span id="TYPEstructure"><span class="keyword">type</span> <code class="type"></code>structure</span> = </code></pre><table class="typetable">
-<tr>
-<td align="left" valign="top" >
-<code><span class="keyword">|</span></code></td>
-<td align="left" valign="top" >
-<code><span id="TYPEELTstructure.File"><span class="constructor">File</span></span> <span class="keyword">of</span> <code class="type">string</code></code></td>
-
-</tr>
-<tr>
-<td align="left" valign="top" >
-<code><span class="keyword">|</span></code></td>
-<td align="left" valign="top" >
-<code><span id="TYPEELTstructure.Directory"><span class="constructor">Directory</span></span> <span class="keyword">of</span> <code class="type">string * <a href="Ketrew_artifact.Volume.html#TYPEstructure">structure</a> list</code></code></td>
-
-</tr></table>
-
-
-
-<pre><code><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = {</code></pre><table class="typetable">
-<tr>
-<td align="left" valign="top" >
-<code>&nbsp;&nbsp;</code></td>
-<td align="left" valign="top" >
-<code><span id="TYPEELTt.host">host</span>&nbsp;: <code class="type"><a href="Ketrew_host.html#TYPEt">Ketrew_host.t</a></code>;</code></td>
-
-</tr>
-<tr>
-<td align="left" valign="top" >
-<code>&nbsp;&nbsp;</code></td>
-<td align="left" valign="top" >
-<code><span id="TYPEELTt.root">root</span>&nbsp;: <code class="type"><a href="Ketrew_path.html#TYPEabsolute_directory">Ketrew_path.absolute_directory</a></code>;</code></td>
-
-</tr>
-<tr>
-<td align="left" valign="top" >
-<code>&nbsp;&nbsp;</code></td>
-<td align="left" valign="top" >
-<code><span id="TYPEELTt.structure">structure</span>&nbsp;: <code class="type"><a href="Ketrew_artifact.Volume.html#TYPEstructure">structure</a></code>;</code></td>
-
-</tr></table>
-}
+<pre><span id="TYPEstructure"><span class="keyword">type</span> <code class="type"></code>structure</span> </pre>
+<div class="info ">
+The structure of a volume defines the hierarchy of files relative to
+        a <code class="code">root</code> path, one constructs structures with <a href="Ketrew_artifact.Volume.html#VALfile"><code class="code"><span class="constructor">Ketrew_artifact</span>.<span class="constructor">Volume</span>.file</code></a> and <a href="Ketrew_artifact.Volume.html#VALdir"><code class="code"><span class="constructor">Ketrew_artifact</span>.<span class="constructor">Volume</span>.dir</code></a>:
+        <pre class="codepre"><code class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;src_dir_structure&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dir&nbsp;<span class="string">"src"</span>&nbsp;[<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dir&nbsp;<span class="string">"lib"</span>&nbsp;[<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;file&nbsp;<span class="string">"ketrew.ml"</span>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;file&nbsp;<span class="string">"ketrew_artifact.ml"</span>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;file&nbsp;<span class="string">"ketrew_artifact.mli"</span>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;...&nbsp;*)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;];<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dir&nbsp;<span class="string">"test"</span>&nbsp;[<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;file&nbsp;<span class="string">"main.ml"</span>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;];<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code></pre><br>
+</div>
 
 
+<pre><span id="VALfile"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.Volume.file.html">file</a></span> : <code class="type">string -> <a href="Ketrew_artifact.Volume.html#TYPEstructure">structure</a></code></pre><div class="info ">
+Define a “file” structure.<br>
+</div>
 
-<pre><span id="VALcreate"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.Volume.create.html">create</a></span> : <code class="type">host:<a href="Ketrew_host.html#TYPEt">Ketrew_host.t</a> -><br>       root:<a href="Ketrew_path.html#TYPEabsolute_directory">Ketrew_path.absolute_directory</a> -><br>       <a href="Ketrew_artifact.Volume.html#TYPEstructure">structure</a> -> <a href="Ketrew_artifact.Volume.html#TYPEt">t</a></code></pre>
-<pre><span id="VALfile"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.Volume.file.html">file</a></span> : <code class="type">string -> <a href="Ketrew_artifact.Volume.html#TYPEstructure">structure</a></code></pre>
-<pre><span id="VALdir"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.Volume.dir.html">dir</a></span> : <code class="type">string -><br>       <a href="Ketrew_artifact.Volume.html#TYPEstructure">structure</a> list -> <a href="Ketrew_artifact.Volume.html#TYPEstructure">structure</a></code></pre>
-<pre><span id="VALall_structure_paths"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.Volume.all_structure_paths.html">all_structure_paths</a></span> : <code class="type"><a href="Ketrew_artifact.Volume.html#TYPEstructure">structure</a> -> <a href="Ketrew_path.html#TYPErelative_directory">Ketrew_path.relative_directory</a> list</code></pre>
-<pre><span id="VALall_paths"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.Volume.all_paths.html">all_paths</a></span> : <code class="type"><a href="Ketrew_artifact.Volume.html#TYPEt">t</a> -> <a href="Ketrew_path.html#TYPEabsolute_directory">Ketrew_path.absolute_directory</a> list</code></pre>
-<pre><span id="VALexists"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.Volume.exists.html">exists</a></span> : <code class="type"><a href="Ketrew_artifact.Volume.html#TYPEt">t</a> -><br>       (bool, [> `Host of [> `Execution of string * string * string * string ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre>
-<pre><span id="VALto_string"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.Volume.to_string.html">to_string</a></span> : <code class="type"><a href="Ketrew_artifact.Volume.html#TYPEt">t</a> -> string</code></pre></body></html>
+<pre><span id="VALdir"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.Volume.dir.html">dir</a></span> : <code class="type">string -><br>       <a href="Ketrew_artifact.Volume.html#TYPEstructure">structure</a> list -> <a href="Ketrew_artifact.Volume.html#TYPEstructure">structure</a></code></pre><div class="info ">
+Define a “directory” structure.<br>
+</div>
+
+<pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> </pre>
+<div class="info ">
+The container of volumes.<br>
+</div>
+
+
+<pre><span id="VALcreate"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.Volume.create.html">create</a></span> : <code class="type">host:<a href="Ketrew_host.html#TYPEt">Ketrew_host.t</a> -><br>       root:<a href="Ketrew_path.html#TYPEabsolute_directory">Ketrew_path.absolute_directory</a> -><br>       <a href="Ketrew_artifact.Volume.html#TYPEstructure">structure</a> -> <a href="Ketrew_artifact.Volume.html#TYPEt">t</a></code></pre><div class="info ">
+Create a volume. Example <pre class="codepre"><code class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;sources&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Volume</span>.create&nbsp;~host:deployment_server&nbsp;~root:git_repository<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;src_dir_structure&nbsp;</code></pre><br>
+</div>
+
+<pre><span id="VALall_paths"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.Volume.all_paths.html">all_paths</a></span> : <code class="type"><a href="Ketrew_artifact.Volume.html#TYPEt">t</a> -><br>       < kind : 'a; relativity : <a href="Ketrew_path.html#TYPEabsolute">Ketrew_path.absolute</a> > <a href="Ketrew_path.html#TYPEt">Ketrew_path.t</a> list</code></pre><div class="info ">
+Get all the paths of the given Volume (files and directories).<br>
+</div>
+
+<pre><span id="VALexists"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.Volume.exists.html">exists</a></span> : <code class="type"><a href="Ketrew_artifact.Volume.html#TYPEt">t</a> -><br>       (bool, [> `Host of [> `Execution of string * string * string * string ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+Check whether the whole structure of the Volume exists on the host.<br>
+</div>
+
+<pre><span id="VALto_string_hum"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.Volume.to_string_hum.html">to_string_hum</a></span> : <code class="type"><a href="Ketrew_artifact.Volume.html#TYPEt">t</a> -> string</code></pre><div class="info ">
+Get a Human-readable string.<br>
+</div>
+</body></html>

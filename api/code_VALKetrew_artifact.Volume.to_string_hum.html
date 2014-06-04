@@ -17,9 +17,8 @@
 <link title="Ketrew_pervasives" rel="Chapter" href="Ketrew_pervasives.html">
 <link title="Ketrew_state" rel="Chapter" href="Ketrew_state.html">
 <link title="Ketrew_target" rel="Chapter" href="Ketrew_target.html">
-<link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html"><title>Ketrew API : Ketrew_artifact.Type.to_string</title>
+<link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html"><title>Ketrew API : Ketrew_artifact.Volume.to_string_hum</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;to_string&nbsp;=&nbsp;<span class="keyword">function</span><br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Value</span>&nbsp;v&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fmt&nbsp;<span class="string">"Value&nbsp;%s"</span>&nbsp;(value_type_to_string&nbsp;v)<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Volume</span>&nbsp;v&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fmt&nbsp;<span class="string">"Volume&nbsp;%s"</span>&nbsp;(<span class="constructor">Volume</span>.to_string_hum&nbsp;v)</code></body></html>
+<code class="code"><span class="keyword">let</span>&nbsp;to_string_hum&nbsp;{host;&nbsp;root;&nbsp;structure}&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;fmt&nbsp;<span class="string">"Vol(%s:%s)"</span>&nbsp;(<span class="constructor">Host</span>.to_string&nbsp;host)&nbsp;(<span class="constructor">Path</span>.to_string&nbsp;root)</code></body></html>

@@ -27,13 +27,34 @@
 &nbsp;</div>
 <h1>Module <a href="type_Ketrew_target.Command.html">Ketrew_target.Command</a> (<a href="code_Ketrew_target.Command.html">.ml</a>)</h1>
 
-<pre><span class="keyword">module</span> Command: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_target.Command.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><hr width="100%">
+<pre><span class="keyword">module</span> Command: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_target.Command.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info module top">
+Definition of command-lines to run on a given <a href="Ketrew_host.html#TYPEt"><code class="code"><span class="constructor">Ketrew_host</span>.t</code></a>.<br>
+</div>
+<hr width="100%">
 
 <pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> </pre>
+<div class="info ">
+The type of commands.<br>
+</div>
 
 
-<pre><span id="VALshell"><span class="keyword">val</span> <a href="code_VALKetrew_target.Command.shell.html">shell</a></span> : <code class="type">?host:<a href="Ketrew_host.html#TYPEt">Ketrew_host.t</a> -> string -> <a href="Ketrew_target.Command.html#TYPEt">t</a></code></pre>
-<pre><span id="VALget_host"><span class="keyword">val</span> <a href="code_VALKetrew_target.Command.get_host.html">get_host</a></span> : <code class="type"><a href="Ketrew_target.Command.html#TYPEt">t</a> -> <a href="Ketrew_host.html#TYPEt">Ketrew_host.t</a></code></pre>
-<pre><span id="VALto_string_hum"><span class="keyword">val</span> <a href="code_VALKetrew_target.Command.to_string_hum.html">to_string_hum</a></span> : <code class="type"><a href="Ketrew_target.Command.html#TYPEt">t</a> -> string</code></pre>
-<pre><span id="VALget_output"><span class="keyword">val</span> <a href="code_VALKetrew_target.Command.get_output.html">get_output</a></span> : <code class="type"><a href="Ketrew_target.Command.html#TYPEt">t</a> -><br>       (string * string,<br>        [> `Host of [> `Execution of string * string * string * string ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre>
-<pre><span id="VALrun"><span class="keyword">val</span> <a href="code_VALKetrew_target.Command.run.html">run</a></span> : <code class="type"><a href="Ketrew_target.Command.html#TYPEt">t</a> -><br>       (unit, [> `Host of [> `Execution of string * string * string * string ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre></body></html>
+<pre><span id="VALshell"><span class="keyword">val</span> <a href="code_VALKetrew_target.Command.shell.html">shell</a></span> : <code class="type">?host:<a href="Ketrew_host.html#TYPEt">Ketrew_host.t</a> -> string -> <a href="Ketrew_target.Command.html#TYPEt">t</a></code></pre><div class="info ">
+Create a “shell” command for a given <code class="code"><span class="constructor">Host</span>.t</code>.<br>
+</div>
+
+<pre><span id="VALget_host"><span class="keyword">val</span> <a href="code_VALKetrew_target.Command.get_host.html">get_host</a></span> : <code class="type"><a href="Ketrew_target.Command.html#TYPEt">t</a> -> <a href="Ketrew_host.html#TYPEt">Ketrew_host.t</a></code></pre><div class="info ">
+Get the host.<br>
+</div>
+
+<pre><span id="VALto_string_hum"><span class="keyword">val</span> <a href="code_VALKetrew_target.Command.to_string_hum.html">to_string_hum</a></span> : <code class="type"><a href="Ketrew_target.Command.html#TYPEt">t</a> -> string</code></pre><div class="info ">
+Get a Human-readable string.<br>
+</div>
+
+<pre><span id="VALget_output"><span class="keyword">val</span> <a href="code_VALKetrew_target.Command.get_output.html">get_output</a></span> : <code class="type"><a href="Ketrew_target.Command.html#TYPEt">t</a> -><br>       (string * string,<br>        [> `Host of [> `Execution of string * string * string * string ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+Run the command and get its <code class="code">(stdout, stderr)</code> pair.<br>
+</div>
+
+<pre><span id="VALrun"><span class="keyword">val</span> <a href="code_VALKetrew_target.Command.run.html">run</a></span> : <code class="type"><a href="Ketrew_target.Command.html#TYPEt">t</a> -><br>       (unit, [> `Host of [> `Execution of string * string * string * string ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+Run the command and ignore its <code class="code">(stdout, stderr)</code> pair.<br>
+</div>
+</body></html>

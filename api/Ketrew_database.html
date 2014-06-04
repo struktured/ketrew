@@ -31,40 +31,51 @@
 </div>
 <h1>Module <a href="type_Ketrew_database.html">Ketrew_database</a> (<a href="code_Ketrew_database.html">.ml</a>)</h1>
 
-<pre><span class="keyword">module</span> Ketrew_database: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_database.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><hr width="100%">
+<pre><span class="keyword">module</span> Ketrew_database: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_database.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info module top">
+A key-value database API with basic transactions.<br>
+</div>
+<hr width="100%">
 
-<pre><code><span id="TYPEaction"><span class="keyword">type</span> <code class="type"></code>action</span> = </code></pre><table class="typetable">
-<tr>
-<td align="left" valign="top" >
-<code><span class="keyword">|</span></code></td>
-<td align="left" valign="top" >
-<code><span id="TYPEELTaction.Set"><span class="constructor">Set</span></span> <span class="keyword">of</span> <code class="type">string * string</code></code></td>
-
-</tr>
-<tr>
-<td align="left" valign="top" >
-<code><span class="keyword">|</span></code></td>
-<td align="left" valign="top" >
-<code><span id="TYPEELTaction.Sequence"><span class="constructor">Sequence</span></span> <span class="keyword">of</span> <code class="type"><a href="Ketrew_database.html#TYPEaction">action</a> list</code></code></td>
-
-</tr>
-<tr>
-<td align="left" valign="top" >
-<code><span class="keyword">|</span></code></td>
-<td align="left" valign="top" >
-<code><span id="TYPEELTaction.Check"><span class="constructor">Check</span></span> <span class="keyword">of</span> <code class="type">string * string option</code></code></td>
-
-</tr></table>
+<pre><span id="TYPEaction"><span class="keyword">type</span> <code class="type"></code>action</span> </pre>
+<div class="info ">
+An action is a transaction that (attempts) to modify the database.<br>
+</div>
 
 
+<pre><span id="VALset"><span class="keyword">val</span> <a href="code_VALKetrew_database.set.html">set</a></span> : <code class="type">key:string -> string -> <a href="Ketrew_database.html#TYPEaction">action</a></code></pre><div class="info ">
+Create a “set” action: <code class="code">set ~key v</code> will add or set the value <code class="code">v</code> for the
+    key <code class="code">key</code>.<br>
+</div>
 
-<pre><span id="VALset"><span class="keyword">val</span> <a href="code_VALKetrew_database.set.html">set</a></span> : <code class="type">key:string -> string -> <a href="Ketrew_database.html#TYPEaction">action</a></code></pre>
-<pre><span id="VALseq"><span class="keyword">val</span> <a href="code_VALKetrew_database.seq.html">seq</a></span> : <code class="type"><a href="Ketrew_database.html#TYPEaction">action</a> list -> <a href="Ketrew_database.html#TYPEaction">action</a></code></pre>
-<pre><span id="VALcontains"><span class="keyword">val</span> <a href="code_VALKetrew_database.contains.html">contains</a></span> : <code class="type">key:string -> string -> <a href="Ketrew_database.html#TYPEaction">action</a></code></pre>
-<pre><span id="VALis_not_set"><span class="keyword">val</span> <a href="code_VALKetrew_database.is_not_set.html">is_not_set</a></span> : <code class="type">string -> <a href="Ketrew_database.html#TYPEaction">action</a></code></pre>
+<pre><span id="VALseq"><span class="keyword">val</span> <a href="code_VALKetrew_database.seq.html">seq</a></span> : <code class="type"><a href="Ketrew_database.html#TYPEaction">action</a> list -> <a href="Ketrew_database.html#TYPEaction">action</a></code></pre><div class="info ">
+Put a sequence of actions into a transaction.<br>
+</div>
+
+<pre><span id="VALcontains"><span class="keyword">val</span> <a href="code_VALKetrew_database.contains.html">contains</a></span> : <code class="type">key:string -> string -> <a href="Ketrew_database.html#TYPEaction">action</a></code></pre><div class="info ">
+An action that checks that the <code class="code">key</code> is set in the DB and has the given
+    value.<br>
+</div>
+
+<pre><span id="VALis_not_set"><span class="keyword">val</span> <a href="code_VALKetrew_database.is_not_set.html">is_not_set</a></span> : <code class="type">string -> <a href="Ketrew_database.html#TYPEaction">action</a></code></pre><div class="info ">
+An action that checks that the <code class="code">key</code> is not set in the DB.<br>
+</div>
+
 <pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> </pre>
+<div class="info ">
+The handle to the database.<br>
+</div>
 
 
-<pre><span id="VALload"><span class="keyword">val</span> <a href="code_VALKetrew_database.load.html">load</a></span> : <code class="type">string -><br>       (<a href="Ketrew_database.html#TYPEt">t</a>,<br>        [> `Database of [> `Load ] * string<br>         | `IO of<br>             [> `Read_file_exn of string * exn | `Write_file_exn of string * exn ]<br>         | `System of [> `File_info of string ] * [> `Exn of exn ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre>
-<pre><span id="VALget"><span class="keyword">val</span> <a href="code_VALKetrew_database.get.html">get</a></span> : <code class="type"><a href="Ketrew_database.html#TYPEt">t</a> -><br>       key:string -> (string option, 'a) Ketrew_pervasives.Deferred_result.t</code></pre>
-<pre><span id="VALact"><span class="keyword">val</span> <a href="code_VALKetrew_database.act.html">act</a></span> : <code class="type"><a href="Ketrew_database.html#TYPEt">t</a> -><br>       action:<a href="Ketrew_database.html#TYPEaction">action</a> -><br>       ([> `Done | `Not_done ], [> `IO of [> `Write_file_exn of string * exn ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre></body></html>
+<pre><span id="VALload"><span class="keyword">val</span> <a href="code_VALKetrew_database.load.html">load</a></span> : <code class="type">string -><br>       (<a href="Ketrew_database.html#TYPEt">t</a>,<br>        [> `Database of [> `Load ] * string<br>         | `IO of<br>             [> `Read_file_exn of string * exn | `Write_file_exn of string * exn ]<br>         | `System of [> `File_info of string ] * [> `Exn of exn ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+Load a handle from the given database parameters.<br>
+</div>
+
+<pre><span id="VALget"><span class="keyword">val</span> <a href="code_VALKetrew_database.get.html">get</a></span> : <code class="type"><a href="Ketrew_database.html#TYPEt">t</a> -><br>       key:string -> (string option, 'a) Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+Get a value in the DB.<br>
+</div>
+
+<pre><span id="VALact"><span class="keyword">val</span> <a href="code_VALKetrew_database.act.html">act</a></span> : <code class="type"><a href="Ketrew_database.html#TYPEt">t</a> -><br>       action:<a href="Ketrew_database.html#TYPEaction">action</a> -><br>       ([> `Done | `Not_done ], [> `IO of [> `Write_file_exn of string * exn ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+Process a transaction, which can be <code class="code"><span class="keywordsign">`</span><span class="constructor">Done</span></code> is successful or <code class="code"><span class="keywordsign">`</span><span class="constructor">Not_done</span></code>
+    if one of the checks in the <code class="code">action</code> failed.<br>
+</div>
+</body></html>

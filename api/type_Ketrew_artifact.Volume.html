@@ -21,30 +21,23 @@
 </head>
 <body>
 <code class="code"><span class="keyword">sig</span><br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;structure&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">File</span>&nbsp;<span class="keyword">of</span>&nbsp;string<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Directory</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;*&nbsp;<span class="constructor">Ketrew_artifact</span>.<span class="constructor">Volume</span>.structure&nbsp;list<br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;{<br>
-&nbsp;&nbsp;&nbsp;&nbsp;host&nbsp;:&nbsp;<span class="constructor">Ketrew_host</span>.t;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;root&nbsp;:&nbsp;<span class="constructor">Ketrew_path</span>.absolute_directory;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;structure&nbsp;:&nbsp;<span class="constructor">Ketrew_artifact</span>.<span class="constructor">Volume</span>.structure;<br>
-&nbsp;&nbsp;}<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;create&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;host:<span class="constructor">Ketrew_host</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;root:<span class="constructor">Ketrew_path</span>.absolute_directory&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_artifact</span>.<span class="constructor">Volume</span>.structure&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_artifact</span>.<span class="constructor">Volume</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;structure<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;file&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_artifact</span>.<span class="constructor">Volume</span>.structure<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;dir&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_artifact</span>.<span class="constructor">Volume</span>.structure&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_artifact</span>.<span class="constructor">Volume</span>.structure<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;all_structure_paths&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_artifact</span>.<span class="constructor">Volume</span>.structure&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_path</span>.relative_directory&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;create&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;host:<span class="constructor">Ketrew_host</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;root:<span class="constructor">Ketrew_path</span>.absolute_directory&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_artifact</span>.<span class="constructor">Volume</span>.structure&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_artifact</span>.<span class="constructor">Volume</span>.t<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;all_paths&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_artifact</span>.<span class="constructor">Volume</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_path</span>.absolute_directory&nbsp;list<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_artifact</span>.<span class="constructor">Volume</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;&nbsp;kind&nbsp;:&nbsp;<span class="keywordsign">'</span>a;&nbsp;relativity&nbsp;:&nbsp;<span class="constructor">Ketrew_path</span>.absolute&nbsp;&gt;&nbsp;<span class="constructor">Ketrew_path</span>.t&nbsp;list<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;exists&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_artifact</span>.<span class="constructor">Volume</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;(bool,<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Host</span>&nbsp;<span class="keyword">of</span>&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Execution</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;*&nbsp;string&nbsp;*&nbsp;string&nbsp;*&nbsp;string&nbsp;]&nbsp;])<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_pervasives</span>.<span class="constructor">Deferred_result</span>.t<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;to_string&nbsp;:&nbsp;<span class="constructor">Ketrew_artifact</span>.<span class="constructor">Volume</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;to_string_hum&nbsp;:&nbsp;<span class="constructor">Ketrew_artifact</span>.<span class="constructor">Volume</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
 <span class="keyword">end</span></code></body></html>

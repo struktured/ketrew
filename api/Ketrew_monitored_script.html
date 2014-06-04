@@ -32,9 +32,7 @@
 <h1>Module <a href="type_Ketrew_monitored_script.html">Ketrew_monitored_script</a> (<a href="code_Ketrew_monitored_script.html">.ml</a>)</h1>
 
 <pre><span class="keyword">module</span> Ketrew_monitored_script: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_monitored_script.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info module top">
-The goal of this module is the create shell scripts from a high-level
-      representation; the scripts are “monitored” in the sense that code is
-      added to log every returned value or failure in a parsable <code class="code">log</code> file.<br>
+Generate Shell scripts that “monitor” commands.<br>
 </div>
 <hr width="100%">
 <br>
@@ -43,17 +41,31 @@ The goal of this module is the create shell scripts from a high-level
       added to log every returned value or failure in a parsable <code class="code">log</code> file.<br>
 
 <pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> </pre>
+<div class="info ">
+The definition of a monitored script.<br>
+</div>
 
 
-<pre><span id="VALcreate"><span class="keyword">val</span> <a href="code_VALKetrew_monitored_script.create.html">create</a></span> : <code class="type">playground:<a href="Ketrew_path.html#TYPEabsolute_directory">Ketrew_path.absolute_directory</a> -><br>       string list -> <a href="Ketrew_monitored_script.html#TYPEt">t</a></code></pre>
-<pre><span id="VALlog_file"><span class="keyword">val</span> <a href="code_VALKetrew_monitored_script.log_file.html">log_file</a></span> : <code class="type"><a href="Ketrew_monitored_script.html#TYPEt">t</a> -> <a href="Ketrew_path.html#TYPEabsolute_file">Ketrew_path.absolute_file</a></code></pre>
-<pre><span id="VALpid_file"><span class="keyword">val</span> <a href="code_VALKetrew_monitored_script.pid_file.html">pid_file</a></span> : <code class="type"><a href="Ketrew_monitored_script.html#TYPEt">t</a> -> <a href="Ketrew_path.html#TYPEabsolute_file">Ketrew_path.absolute_file</a></code></pre>
+<pre><span id="VALcreate"><span class="keyword">val</span> <a href="code_VALKetrew_monitored_script.create.html">create</a></span> : <code class="type">playground:<a href="Ketrew_path.html#TYPEabsolute_directory">Ketrew_path.absolute_directory</a> -><br>       string list -> <a href="Ketrew_monitored_script.html#TYPEt">t</a></code></pre><div class="info ">
+Create a new script, which will run the list of commands, and store state
+    values in the <code class="code">playground</code> directory.<br>
+</div>
+
+<pre><span id="VALlog_file"><span class="keyword">val</span> <a href="code_VALKetrew_monitored_script.log_file.html">log_file</a></span> : <code class="type"><a href="Ketrew_monitored_script.html#TYPEt">t</a> -> <a href="Ketrew_path.html#TYPEabsolute_file">Ketrew_path.absolute_file</a></code></pre><div class="info ">
+Path to the log file of the script.<br>
+</div>
+
+<pre><span id="VALpid_file"><span class="keyword">val</span> <a href="code_VALKetrew_monitored_script.pid_file.html">pid_file</a></span> : <code class="type"><a href="Ketrew_monitored_script.html#TYPEt">t</a> -> <a href="Ketrew_path.html#TYPEabsolute_file">Ketrew_path.absolute_file</a></code></pre><div class="info ">
+Path to the “PID” file: where the script stores the PID of the process
+    running the script, <code class="code">- pid</code> will be the process id of the process group
+    created by `setsid` (useful for killing the whole process tree).<br>
+</div>
+
 <pre><span id="VALto_string"><span class="keyword">val</span> <a href="code_VALKetrew_monitored_script.to_string.html">to_string</a></span> : <code class="type"><a href="Ketrew_monitored_script.html#TYPEt">t</a> -> string</code></pre><div class="info ">
 Render the <code class="code">monitored_script</code> to a shell-script string.<br>
 </div>
 
 <pre><span id="VALparse_log"><span class="keyword">val</span> <a href="code_VALKetrew_monitored_script.parse_log.html">parse_log</a></span> : <code class="type">string -><br>       [ `After of string * string * string<br>       | `Before of string * string * string<br>       | `Error of string list<br>       | `Failure of string * string * string<br>       | `Start of string<br>       | `Success of string ] list</code></pre><div class="info ">
-Parse the log file of a <code class="code">monitored_script</code> (the return type should change
-    soon …).<br>
+Parse the log file of a <code class="code">monitored_script</code>.<br>
 </div>
 </body></html>

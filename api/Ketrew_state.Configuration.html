@@ -27,9 +27,21 @@
 &nbsp;</div>
 <h1>Module <a href="type_Ketrew_state.Configuration.html">Ketrew_state.Configuration</a> (<a href="code_Ketrew_state.Configuration.html">.ml</a>)</h1>
 
-<pre><span class="keyword">module</span> Configuration: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_state.Configuration.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><hr width="100%">
+<pre><span class="keyword">module</span> Configuration: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_state.Configuration.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info module top">
+Definition of the configuration (input to state creation; contents of the
+    future config-file).<br>
+</div>
+<hr width="100%">
 
 <pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> </pre>
+<div class="info ">
+The contents of the configuration.<br>
+</div>
 
 
-<pre><span id="VALcreate"><span class="keyword">val</span> <a href="code_VALKetrew_state.Configuration.create.html">create</a></span> : <code class="type">?persistent_state_key:string -><br>       database_parameters:string -> unit -> <a href="Ketrew_state.Configuration.html#TYPEt">t</a></code></pre></body></html>
+<pre><span id="VALcreate"><span class="keyword">val</span> <a href="code_VALKetrew_state.Configuration.create.html">create</a></span> : <code class="type">?persistent_state_key:string -><br>       database_parameters:string -> unit -> <a href="Ketrew_state.Configuration.html#TYPEt">t</a></code></pre><div class="info ">
+Create a configuration, <code class="code">persistent_state_key</code> is the “key” of the
+        state storage in the database, <code class="code">database_parameters</code> are used to call
+        <a href="Ketrew_database.html#VALload"><code class="code"><span class="constructor">Ketrew_database</span>.load</code></a>.<br>
+</div>
+</body></html>

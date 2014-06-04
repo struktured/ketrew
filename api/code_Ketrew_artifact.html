@@ -42,23 +42,25 @@
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file&nbsp;s&nbsp;=&nbsp;<span class="constructor">File</span>&nbsp;s<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dir&nbsp;name&nbsp;contents&nbsp;=&nbsp;<span class="constructor">Directory</span>&nbsp;(name,&nbsp;contents)<br>
 <br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;all_structure_paths&nbsp;s&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;all_structure_paths&nbsp;:&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;any.&nbsp;structure&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;&lt;kind:&nbsp;any;&nbsp;relativity:&nbsp;<span class="constructor">Path</span>.relative&nbsp;&gt;&nbsp;<span class="constructor">Path</span>.t&nbsp;list&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">fun</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;s&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">File</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[<span class="constructor">Path</span>.relative_file_exn&nbsp;s&nbsp;|&gt;&nbsp;<span class="constructor">Path</span>.any_kind&nbsp;]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Directory</span>&nbsp;(name,&nbsp;children)&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;children_paths&nbsp;=&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.concat_map&nbsp;~f:all_structure_paths&nbsp;children&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;this_one&nbsp;=&nbsp;<span class="constructor">Path</span>.relative_directory_exn&nbsp;name&nbsp;|&gt;&nbsp;<span class="constructor">Path</span>.any_kind&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this_one&nbsp;::&nbsp;<span class="constructor">List</span>.map&nbsp;~f:(<span class="constructor">Path</span>.concat&nbsp;this_one)&nbsp;children_paths<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;this_one&nbsp;=&nbsp;<span class="constructor">Path</span>.relative_directory_exn&nbsp;name&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(this_one&nbsp;|&gt;&nbsp;<span class="constructor">Path</span>.any_kind)&nbsp;::&nbsp;<span class="constructor">List</span>.map&nbsp;~f:(<span class="constructor">Path</span>.concat&nbsp;this_one)&nbsp;children_paths<br>
 <br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;all_paths&nbsp;t&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;all_paths&nbsp;t:&nbsp;&lt;kind:&nbsp;<span class="keywordsign">'</span>any;&nbsp;relativity:&nbsp;<span class="constructor">Path</span>.absolute&gt;&nbsp;<span class="constructor">Path</span>.t&nbsp;list&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.map&nbsp;~f:(<span class="constructor">Path</span>.concat&nbsp;t.root)&nbsp;(all_structure_paths&nbsp;t.structure)<br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;exists&nbsp;t&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;paths&nbsp;=&nbsp;all_paths&nbsp;t&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Host</span>.do_files_exist&nbsp;t.host&nbsp;paths<br>
 <br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;to_string&nbsp;{host;&nbsp;root;&nbsp;structure}&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;to_string_hum&nbsp;{host;&nbsp;root;&nbsp;structure}&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;fmt&nbsp;<span class="string">"Vol(%s:%s)"</span>&nbsp;(<span class="constructor">Host</span>.to_string&nbsp;host)&nbsp;(<span class="constructor">Path</span>.to_string&nbsp;root)<br>
 <span class="keyword">end</span><br>
 <br>
@@ -79,9 +81,9 @@
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;string_value&nbsp;:&nbsp;t&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">Value</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">String</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;volume&nbsp;v&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">Volume</span>&nbsp;v<br>
 <br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;to_string&nbsp;=&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;to_string_hum&nbsp;=&nbsp;<span class="keyword">function</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Value</span>&nbsp;v&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fmt&nbsp;<span class="string">"Value&nbsp;%s"</span>&nbsp;(value_type_to_string&nbsp;v)<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Volume</span>&nbsp;v&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fmt&nbsp;<span class="string">"Volume&nbsp;%s"</span>&nbsp;(<span class="constructor">Volume</span>.to_string&nbsp;v)<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Volume</span>&nbsp;v&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fmt&nbsp;<span class="string">"Volume&nbsp;%s"</span>&nbsp;(<span class="constructor">Volume</span>.to_string_hum&nbsp;v)<br>
 <br>
 <span class="keyword">end</span><br>
 <br>

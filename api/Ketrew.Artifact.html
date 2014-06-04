@@ -32,15 +32,39 @@
 <h1>Module <a href="type_Ketrew.Artifact.html">Ketrew.Artifact</a> (<a href="code_Ketrew.Artifact.html">.ml</a>)</h1>
 
 <pre><span class="keyword">module</span> Artifact: <code class="type">Ketrew_artifact</code></pre><hr width="100%">
+<br>
+Artifacts are input values or files, or results of computations.<br>
 
-<pre><span class="keyword">module</span> <a href="Ketrew_artifact.Volume.html">Volume</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_artifact.Volume.html">..</a> <code class="code"><span class="keyword">end</span></code></pre>
-<pre><span class="keyword">module</span> <a href="Ketrew_artifact.Type.html">Type</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_artifact.Type.html">..</a> <code class="code"><span class="keyword">end</span></code></pre>
+<pre><span class="keyword">module</span> <a href="Ketrew_artifact.Volume.html">Volume</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_artifact.Volume.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info">
+Module defining “Volumes” which are definitions of a given file structure
+    on a given <a href="Ketrew_host.html#TYPEt"><code class="code"><span class="constructor">Ketrew_host</span>.t</code></a>.
+</div>
+
+<pre><span class="keyword">module</span> <a href="Ketrew_artifact.Type.html">Type</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_artifact.Type.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info">
+Module defining an artifact's “type”;  its “specification”.
+</div>
+
 <pre><span id="TYPEvalue"><span class="keyword">type</span> <code class="type"></code>value</span> = <code class="type">[ `Number of float | `String of string | `Unit ]</code> </pre>
+<div class="info ">
+Literal values.<br>
+</div>
 
 
-<pre><span id="VALunit"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.unit.html">unit</a></span> : <code class="type"><a href="Ketrew_artifact.html#TYPEvalue">value</a></code></pre>
+<pre><span id="VALunit"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.unit.html">unit</a></span> : <code class="type"><a href="Ketrew_artifact.html#TYPEvalue">value</a></code></pre><div class="info ">
+Alias for <code class="code"><span class="keywordsign">`</span><span class="constructor">Unit</span></code>.<br>
+</div>
+
 <pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = <code class="type">[ `Value of <a href="Ketrew_artifact.html#TYPEvalue">value</a> | `Volume of <a href="Ketrew_artifact.Volume.html#TYPEt">Volume.t</a> ]</code> </pre>
 
 
-<pre><span id="VALis_ready"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.is_ready.html">is_ready</a></span> : <code class="type">[< `Value of 'a | `Volume of <a href="Ketrew_artifact.Volume.html#TYPEt">Volume.t</a> ] -><br>       (bool, [> `Host of [> `Execution of string * string * string * string ] ])<br>       Ketrew_pervasives.t</code></pre>
-<pre><span id="VALof_type"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.of_type.html">of_type</a></span> : <code class="type"><a href="Ketrew_artifact.Type.html#TYPEt">Type.t</a> -> <a href="Ketrew_artifact.html#TYPEt">t</a></code></pre></body></html>
+<pre><span id="VALis_ready"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.is_ready.html">is_ready</a></span> : <code class="type"><a href="Ketrew_artifact.Type.html#TYPEt">Type.t</a> -><br>       (bool, [> `Host of [> `Execution of string * string * string * string ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+Check whether an aritfact is ready, given its type.
+A “value” artifact is <i>never </i> ready, a “volume” one is checked with <a href="Ketrew_artifact.Volume.html#VALexists"><code class="code"><span class="constructor">Ketrew_artifact</span>.<span class="constructor">Volume</span>.exists</code></a>.
+This is meant to change.<br>
+</div>
+
+<pre><span id="VALof_type"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.of_type.html">of_type</a></span> : <code class="type"><a href="Ketrew_artifact.Type.html#TYPEt">Type.t</a> -> <a href="Ketrew_artifact.html#TYPEt">t</a></code></pre><div class="info ">
+Get the value given it's type, fails with <code class="code"><span class="constructor">Invalid_argument</span> _</code> on “value”
+    artifacts. This is <i>also </i> meant to change.<br>
+</div>
+</body></html>

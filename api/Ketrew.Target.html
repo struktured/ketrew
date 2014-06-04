@@ -33,11 +33,28 @@
 
 <pre><span class="keyword">module</span> Target: <code class="type">Ketrew_target</code></pre><hr width="100%">
 
-<pre><span class="keyword">module</span> <a href="Ketrew_target.Command.html">Command</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_target.Command.html">..</a> <code class="code"><span class="keyword">end</span></code></pre>
+<pre><span class="keyword">module</span> <a href="Ketrew_target.Command.html">Command</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_target.Command.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info">
+Definition of command-lines to run on a given <a href="Ketrew_host.html#TYPEt"><code class="code"><span class="constructor">Ketrew_host</span>.t</code></a>.
+</div>
+
 <pre><span id="TYPEbuild_process"><span class="keyword">type</span> <code class="type"></code>build_process</span> = <code class="type">[ `Artifact of <a href="Ketrew_artifact.html#TYPEt">Ketrew_artifact.t</a><br>       | `Direct_command of <a href="Ketrew_target.Command.html#TYPEt">Command.t</a><br>       | `Get_output of <a href="Ketrew_target.Command.html#TYPEt">Command.t</a><br>       | `Long_running of string * string ]</code> </pre>
+<div class="info ">
+Specification of how to build a target. <ul>
+<li> <code class="code"><span class="keywordsign">`</span><span class="constructor">Artifact</span> a</code>: literal, already-built, artifact, </li>
+<li><code class="code"><span class="keywordsign">`</span><span class="constructor">Direct_command</span> c</code>: a <code class="code"><span class="constructor">Command</span>.t</code> to run (should produce a <code class="code"><span class="constructor">Volume</span>.t</code>), </li>
+<li><code class="code"><span class="keywordsign">`</span><span class="constructor">Get_output</span> c</code>: a <code class="code"><span class="constructor">Command</span>.t</code> to run and get its <code class="code">stdout</code> (should
+       produce a value), </li>
+<li><code class="code"><span class="keywordsign">`</span><span class="constructor">Long_running</span> (plugin_name, initial_run_parameters)</code>:
+    Use a long-running plugin. </li>
+</ul>
+<br>
+</div>
 
 
-<pre><span id="VALnop"><span class="keyword">val</span> <a href="code_VALKetrew_target.nop.html">nop</a></span> : <code class="type"><a href="Ketrew_target.html#TYPEbuild_process">build_process</a></code></pre>
+<pre><span id="VALnop"><span class="keyword">val</span> <a href="code_VALKetrew_target.nop.html">nop</a></span> : <code class="type"><a href="Ketrew_target.html#TYPEbuild_process">build_process</a></code></pre><div class="info ">
+A build process that does nothing.<br>
+</div>
+
 <pre><span id="TYPEsubmitted_state"><span class="keyword">type</span> <code class="type"></code>submitted_state</span> = <code class="type">[ `Created of <a href="Ketrew_pervasives.Time.html#TYPEt">Ketrew_pervasives.Time.t</a> ]</code> </pre>
 
 
@@ -77,12 +94,31 @@
 
 
 <pre><span id="TYPEfinished_state"><span class="keyword">type</span> <code class="type"></code>finished_state</span> = <code class="type">[ `Dead of<br>           <a href="Ketrew_pervasives.Time.html#TYPEt">Ketrew_pervasives.Time.t</a> *<br>           [ `Activated of<br>               <a href="Ketrew_pervasives.Time.html#TYPEt">Ketrew_pervasives.Time.t</a> * <a href="Ketrew_target.html#TYPEsubmitted_state">submitted_state</a> *<br>               [ `Dependency | `User ]<br>           | `Running of<br>               <a href="Ketrew_target.html#TYPErun_bookkeeping">run_bookkeeping</a> * <a href="Ketrew_target.html#TYPEactivated_state">activated_state</a> ] *<br>           <a href="Ketrew_target.html#TYPEdeath_reason">death_reason</a><br>       | `Successful of<br>           <a href="Ketrew_pervasives.Time.html#TYPEt">Ketrew_pervasives.Time.t</a> *<br>           [ `Activated of<br>               <a href="Ketrew_pervasives.Time.html#TYPEt">Ketrew_pervasives.Time.t</a> * <a href="Ketrew_target.html#TYPEsubmitted_state">submitted_state</a> *<br>               [ `Dependency | `User ]<br>           | `Running of<br>               <a href="Ketrew_target.html#TYPErun_bookkeeping">run_bookkeeping</a> * <a href="Ketrew_target.html#TYPEactivated_state">activated_state</a> ] *<br>           <a href="Ketrew_artifact.html#TYPEt">Ketrew_artifact.t</a> ]</code> </pre>
+<div class="info ">
+The potential cases of a “finished” target (defined as <pre class="codepre"><code class="code"><span class="keyword">type</span>&nbsp;finished_state&nbsp;=&nbsp;[<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Dead</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Time</span>.t&nbsp;*&nbsp;[&nbsp;activated_state&nbsp;<span class="keywordsign">|</span>&nbsp;running_state&nbsp;]&nbsp;*&nbsp;death_reason<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Successful</span>&nbsp;<span class="keyword">of</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Time</span>.t&nbsp;*&nbsp;[&nbsp;activated_state&nbsp;<span class="keywordsign">|</span>&nbsp;running_state&nbsp;]&nbsp;*&nbsp;<span class="constructor">Ketrew_artifact</span>.t&nbsp;]&nbsp;</code></pre>).
+    ]} — ocamldoc wrong display).<br>
+</div>
 
 
 <pre><span id="TYPEworkflow_state"><span class="keyword">type</span> <code class="type"></code>workflow_state</span> = <code class="type">[ `Activated of<br>           <a href="Ketrew_pervasives.Time.html#TYPEt">Ketrew_pervasives.Time.t</a> * <a href="Ketrew_target.html#TYPEsubmitted_state">submitted_state</a> *<br>           [ `Dependency | `User ]<br>       | `Created of <a href="Ketrew_pervasives.Time.html#TYPEt">Ketrew_pervasives.Time.t</a><br>       | `Dead of<br>           <a href="Ketrew_pervasives.Time.html#TYPEt">Ketrew_pervasives.Time.t</a> *<br>           [ `Activated of<br>               <a href="Ketrew_pervasives.Time.html#TYPEt">Ketrew_pervasives.Time.t</a> * <a href="Ketrew_target.html#TYPEsubmitted_state">submitted_state</a> *<br>               [ `Dependency | `User ]<br>           | `Running of<br>               <a href="Ketrew_target.html#TYPErun_bookkeeping">run_bookkeeping</a> * <a href="Ketrew_target.html#TYPEactivated_state">activated_state</a> ] *<br>           <a href="Ketrew_target.html#TYPEdeath_reason">death_reason</a><br>       | `Running of <a href="Ketrew_target.html#TYPErun_bookkeeping">run_bookkeeping</a> * <a href="Ketrew_target.html#TYPEactivated_state">activated_state</a><br>       | `Successful of<br>           <a href="Ketrew_pervasives.Time.html#TYPEt">Ketrew_pervasives.Time.t</a> *<br>           [ `Activated of<br>               <a href="Ketrew_pervasives.Time.html#TYPEt">Ketrew_pervasives.Time.t</a> * <a href="Ketrew_target.html#TYPEsubmitted_state">submitted_state</a> *<br>               [ `Dependency | `User ]<br>           | `Running of<br>               <a href="Ketrew_target.html#TYPErun_bookkeeping">run_bookkeeping</a> * <a href="Ketrew_target.html#TYPEactivated_state">activated_state</a> ] *<br>           <a href="Ketrew_artifact.html#TYPEt">Ketrew_artifact.t</a> ]</code> </pre>
+<div class="info ">
+The all the potential cases of the state of a target (defined as <pre class="codepre"><code class="code"><span class="keyword">type</span>&nbsp;workflow_state&nbsp;=&nbsp;[<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;submitted_state<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;activated_state<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;running_state<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;finished_state<br>
+]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;</code></pre> — ocamldoc wrong display).<br>
+</div>
 
 
 <pre><span id="TYPEid"><span class="keyword">type</span> <code class="type"></code>id</span> = <code class="type"><a href="Ketrew_pervasives.Unique_id.html#TYPEt">Ketrew_pervasives.Unique_id.t</a></code> </pre>
+<div class="info ">
+The identifiers of targets.<br>
+</div>
 
 
 <pre><code><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = {</code></pre><table class="typetable">
@@ -144,21 +180,62 @@
 </tr></table>
 }
 
-
-
-<pre><span id="VALcreate"><span class="keyword">val</span> <a href="code_VALKetrew_target.create.html">create</a></span> : <code class="type">?name:string -><br>       ?persistance:[ `Input_data | `Recomputable of float | `Result ] -><br>       ?metadata:<a href="Ketrew_artifact.html#TYPEvalue">Ketrew_artifact.value</a> -><br>       ?dependencies:<a href="Ketrew_target.html#TYPEid">id</a> list -><br>       ?make:<a href="Ketrew_target.html#TYPEbuild_process">build_process</a> -><br>       <a href="Ketrew_artifact.Type.html#TYPEt">Ketrew_artifact.Type.t</a> -> <a href="Ketrew_target.html#TYPEt">t</a></code></pre>
-<pre><span id="VALactivate_exn"><span class="keyword">val</span> <a href="code_VALKetrew_target.activate_exn.html">activate_exn</a></span> : <code class="type"><a href="Ketrew_target.html#TYPEt">t</a> -> by:[ `Dependency | `User ] -> <a href="Ketrew_target.html#TYPEt">t</a></code></pre><div class="info ">
-Create a new  target but activated from a created one; 
-    raises <code class="code"><span class="constructor">Invalid_argument</span> _</code> if current status is not <code class="code"><span class="keywordsign">`</span><span class="constructor">Created</span> _</code>.<br>
+<div class="info ">
+The fat record holding targets.<br>
 </div>
 
-<pre><span id="VALmake_succeed_exn"><span class="keyword">val</span> <a href="code_VALKetrew_target.make_succeed_exn.html">make_succeed_exn</a></span> : <code class="type"><a href="Ketrew_target.html#TYPEt">t</a> -> <a href="Ketrew_artifact.html#TYPEt">Ketrew_artifact.t</a> -> <a href="Ketrew_target.html#TYPEt">t</a></code></pre>
-<pre><span id="VALkill_exn"><span class="keyword">val</span> <a href="code_VALKetrew_target.kill_exn.html">kill_exn</a></span> : <code class="type">?msg:string -> <a href="Ketrew_target.html#TYPEt">t</a> -> <a href="Ketrew_target.html#TYPEt">t</a></code></pre>
-<pre><span id="VALmake_fail_exn"><span class="keyword">val</span> <a href="code_VALKetrew_target.make_fail_exn.html">make_fail_exn</a></span> : <code class="type">?msg:string -> <a href="Ketrew_target.html#TYPEt">t</a> -> <a href="Ketrew_target.html#TYPEt">t</a></code></pre>
-<pre><span id="VALset_running_exn"><span class="keyword">val</span> <a href="code_VALKetrew_target.set_running_exn.html">set_running_exn</a></span> : <code class="type"><a href="Ketrew_target.html#TYPEt">t</a> -><br>       plugin_name:string -> run_parameters:string -> <a href="Ketrew_target.html#TYPEt">t</a></code></pre>
-<pre><span id="VALupdate_running_exn"><span class="keyword">val</span> <a href="code_VALKetrew_target.update_running_exn.html">update_running_exn</a></span> : <code class="type"><a href="Ketrew_target.html#TYPEt">t</a> -> run_parameters:string -> <a href="Ketrew_target.html#TYPEt">t</a></code></pre>
-<pre><span id="VALactive"><span class="keyword">val</span> <a href="code_VALKetrew_target.active.html">active</a></span> : <code class="type">?name:string -><br>       ?persistance:[ `Input_data | `Recomputable of float | `Result ] -><br>       ?metadata:<a href="Ketrew_artifact.html#TYPEvalue">Ketrew_artifact.value</a> -><br>       ?dependencies:<a href="Ketrew_target.html#TYPEid">id</a> list -><br>       ?make:<a href="Ketrew_target.html#TYPEbuild_process">build_process</a> -><br>       <a href="Ketrew_artifact.Type.html#TYPEt">Ketrew_artifact.Type.t</a> -> <a href="Ketrew_target.html#TYPEt">t</a></code></pre>
-<pre><span id="VALid"><span class="keyword">val</span> <a href="code_VALKetrew_target.id.html">id</a></span> : <code class="type"><a href="Ketrew_target.html#TYPEt">t</a> -> <a href="Ketrew_pervasives.Unique_id.html#TYPEt">Ketrew_pervasives.Unique_id.t</a></code></pre>
-<pre><span id="VALserialize"><span class="keyword">val</span> <a href="code_VALKetrew_target.serialize.html">serialize</a></span> : <code class="type">'a -> string</code></pre>
-<pre><span id="VALdeserialize"><span class="keyword">val</span> <a href="code_VALKetrew_target.deserialize.html">deserialize</a></span> : <code class="type">string -><br>       (<a href="Ketrew_target.html#TYPEt">t</a>, [> `Target of [> `Deserilization of string ] ])<br>       Ketrew_pervasives.Result.t</code></pre>
-<pre><span id="VALlog"><span class="keyword">val</span> <a href="code_VALKetrew_target.log.html">log</a></span> : <code class="type"><a href="Ketrew_target.html#TYPEt">t</a> -> Ketrew_pervasives.Log.t</code></pre></body></html>
+
+<pre><span id="VALcreate"><span class="keyword">val</span> <a href="code_VALKetrew_target.create.html">create</a></span> : <code class="type">?name:string -><br>       ?persistance:[ `Input_data | `Recomputable of float | `Result ] -><br>       ?metadata:<a href="Ketrew_artifact.html#TYPEvalue">Ketrew_artifact.value</a> -><br>       ?dependencies:<a href="Ketrew_target.html#TYPEid">id</a> list -><br>       ?make:<a href="Ketrew_target.html#TYPEbuild_process">build_process</a> -><br>       <a href="Ketrew_artifact.Type.html#TYPEt">Ketrew_artifact.Type.t</a> -> <a href="Ketrew_target.html#TYPEt">t</a></code></pre><div class="info ">
+Create a target value (not stored in the DB yet).<br>
+</div>
+
+<pre><span id="VALactivate_exn"><span class="keyword">val</span> <a href="code_VALKetrew_target.activate_exn.html">activate_exn</a></span> : <code class="type"><a href="Ketrew_target.html#TYPEt">t</a> -> by:[ `Dependency | `User ] -> <a href="Ketrew_target.html#TYPEt">t</a></code></pre><div class="info ">
+Get an activated target out of a “submitted” one, 
+    raises <code class="code"><span class="constructor">Invalid_argument</span> _</code> if the target is in a wrong state.<br>
+</div>
+
+<pre><span id="VALmake_succeed_exn"><span class="keyword">val</span> <a href="code_VALKetrew_target.make_succeed_exn.html">make_succeed_exn</a></span> : <code class="type"><a href="Ketrew_target.html#TYPEt">t</a> -> <a href="Ketrew_artifact.html#TYPEt">Ketrew_artifact.t</a> -> <a href="Ketrew_target.html#TYPEt">t</a></code></pre><div class="info ">
+Get a successfully finished target out of an activated  or running one, 
+    raises <code class="code"><span class="constructor">Invalid_argument</span> _</code> if the target is in a wrong state.<br>
+</div>
+
+<pre><span id="VALkill_exn"><span class="keyword">val</span> <a href="code_VALKetrew_target.kill_exn.html">kill_exn</a></span> : <code class="type">?msg:string -> <a href="Ketrew_target.html#TYPEt">t</a> -> <a href="Ketrew_target.html#TYPEt">t</a></code></pre><div class="info ">
+Get dead target out of an activated  or running one, 
+    raises <code class="code"><span class="constructor">Invalid_argument</span> _</code> if the target is in a wrong state.<br>
+</div>
+
+<pre><span id="VALmake_fail_exn"><span class="keyword">val</span> <a href="code_VALKetrew_target.make_fail_exn.html">make_fail_exn</a></span> : <code class="type">?msg:string -> <a href="Ketrew_target.html#TYPEt">t</a> -> <a href="Ketrew_target.html#TYPEt">t</a></code></pre><div class="info ">
+Get dead target out of an activated  or running one, 
+    raises <code class="code"><span class="constructor">Invalid_argument</span> _</code> if the target is in a wrong state.<br>
+</div>
+
+<pre><span id="VALset_running_exn"><span class="keyword">val</span> <a href="code_VALKetrew_target.set_running_exn.html">set_running_exn</a></span> : <code class="type"><a href="Ketrew_target.html#TYPEt">t</a> -><br>       plugin_name:string -> run_parameters:string -> <a href="Ketrew_target.html#TYPEt">t</a></code></pre><div class="info ">
+Get a running target out of an activated “long-running-plugin” one,
+    raises <code class="code"><span class="constructor">Invalid_argument</span> _</code> if the target is in a wrong state.<br>
+</div>
+
+<pre><span id="VALupdate_running_exn"><span class="keyword">val</span> <a href="code_VALKetrew_target.update_running_exn.html">update_running_exn</a></span> : <code class="type"><a href="Ketrew_target.html#TYPEt">t</a> -> run_parameters:string -> <a href="Ketrew_target.html#TYPEt">t</a></code></pre><div class="info ">
+Get a new target updated with new run paramters (from a plugin), 
+    raises <code class="code"><span class="constructor">Invalid_argument</span> _</code> if the target is in a wrong state.<br>
+</div>
+
+<pre><span id="VALactive"><span class="keyword">val</span> <a href="code_VALKetrew_target.active.html">active</a></span> : <code class="type">?name:string -><br>       ?persistance:[ `Input_data | `Recomputable of float | `Result ] -><br>       ?metadata:<a href="Ketrew_artifact.html#TYPEvalue">Ketrew_artifact.value</a> -><br>       ?dependencies:<a href="Ketrew_target.html#TYPEid">id</a> list -><br>       ?make:<a href="Ketrew_target.html#TYPEbuild_process">build_process</a> -><br>       <a href="Ketrew_artifact.Type.html#TYPEt">Ketrew_artifact.Type.t</a> -> <a href="Ketrew_target.html#TYPEt">t</a></code></pre><div class="info ">
+Like <a href="Ketrew_target.html#VALcreate"><code class="code"><span class="constructor">Ketrew_target</span>.create</code></a> but set as already activated.<br>
+</div>
+
+<pre><span id="VALid"><span class="keyword">val</span> <a href="code_VALKetrew_target.id.html">id</a></span> : <code class="type"><a href="Ketrew_target.html#TYPEt">t</a> -> <a href="Ketrew_pervasives.Unique_id.html#TYPEt">Ketrew_pervasives.Unique_id.t</a></code></pre><div class="info ">
+Get a target's id.<br>
+</div>
+
+<pre><span id="VALserialize"><span class="keyword">val</span> <a href="code_VALKetrew_target.serialize.html">serialize</a></span> : <code class="type"><a href="Ketrew_target.html#TYPEt">t</a> -> string</code></pre><div class="info ">
+Serialize a target (for the database).<br>
+</div>
+
+<pre><span id="VALdeserialize"><span class="keyword">val</span> <a href="code_VALKetrew_target.deserialize.html">deserialize</a></span> : <code class="type">string -><br>       (<a href="Ketrew_target.html#TYPEt">t</a>, [> `Target of [> `Deserilization of string ] ])<br>       Ketrew_pervasives.Result.t</code></pre><div class="info ">
+Deserilize a target from a string.<br>
+</div>
+
+<pre><span id="VALlog"><span class="keyword">val</span> <a href="code_VALKetrew_target.log.html">log</a></span> : <code class="type"><a href="Ketrew_target.html#TYPEt">t</a> -> Ketrew_pervasives.Log.t</code></pre><div class="info ">
+Get a <code class="code"><span class="constructor">Log</span>.t</code> “document” to display the target.<br>
+</div>
+</body></html>

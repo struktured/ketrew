@@ -29,16 +29,36 @@
 &nbsp;</div>
 <h1>Module <a href="type_Ketrew_artifact.Type.html">Ketrew_artifact.Type</a> (<a href="code_Ketrew_artifact.Type.html">.ml</a>)</h1>
 
-<pre><span class="keyword">module</span> Type: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_artifact.Type.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><hr width="100%">
+<pre><span class="keyword">module</span> Type: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_artifact.Type.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info module top">
+Module defining an artifact's “type”;  its “specification”.<br>
+</div>
+<hr width="100%">
 
 <pre><span id="TYPEvalue_type"><span class="keyword">type</span> <code class="type"></code>value_type</span> = <code class="type">[ `Number | `String | `Unit ]</code> </pre>
+<div class="info ">
+The specification of a value's type.<br>
+</div>
 
 
-<pre><span id="VALvalue_type_to_string"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.Type.value_type_to_string.html">value_type_to_string</a></span> : <code class="type">[< `Number | `String | `Unit ] -> string</code></pre>
 <pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = <code class="type">[ `Value of <a href="Ketrew_artifact.Type.html#TYPEvalue_type">value_type</a><br>       | `Volume of <a href="Ketrew_artifact.Volume.html#TYPEt">Ketrew_artifact.Volume.t</a> ]</code> </pre>
+<div class="info ">
+The specification of an artifact.<br>
+</div>
 
 
-<pre><span id="VALvalue"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.Type.value.html">value</a></span> : <code class="type"><a href="Ketrew_artifact.Type.html#TYPEvalue_type">value_type</a> -> <a href="Ketrew_artifact.Type.html#TYPEt">t</a></code></pre>
-<pre><span id="VALstring_value"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.Type.string_value.html">string_value</a></span> : <code class="type"><a href="Ketrew_artifact.Type.html#TYPEt">t</a></code></pre>
-<pre><span id="VALvolume"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.Type.volume.html">volume</a></span> : <code class="type">'a -> [> `Volume of 'a ]</code></pre>
-<pre><span id="VALto_string"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.Type.to_string.html">to_string</a></span> : <code class="type">[< `Value of [< `Number | `String | `Unit ]<br>        | `Volume of <a href="Ketrew_artifact.Volume.html#TYPEt">Ketrew_artifact.Volume.t</a> ] -><br>       string</code></pre></body></html>
+<pre><span id="VALvalue"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.Type.value.html">value</a></span> : <code class="type"><a href="Ketrew_artifact.Type.html#TYPEvalue_type">value_type</a> -> <a href="Ketrew_artifact.Type.html#TYPEt">t</a></code></pre><div class="info ">
+Construct a “value-type” artifact type.<br>
+</div>
+
+<pre><span id="VALstring_value"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.Type.string_value.html">string_value</a></span> : <code class="type"><a href="Ketrew_artifact.Type.html#TYPEt">t</a></code></pre><div class="info ">
+Shortcut for <code class="code"><span class="keywordsign">`</span><span class="constructor">Value</span> <span class="keywordsign">`</span><span class="constructor">String</span></code>.<br>
+</div>
+
+<pre><span id="VALvolume"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.Type.volume.html">volume</a></span> : <code class="type"><a href="Ketrew_artifact.Volume.html#TYPEt">Ketrew_artifact.Volume.t</a> -> <a href="Ketrew_artifact.Type.html#TYPEt">t</a></code></pre><div class="info ">
+Construct a “volume-specification” artifact type.<br>
+</div>
+
+<pre><span id="VALto_string_hum"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.Type.to_string_hum.html">to_string_hum</a></span> : <code class="type"><a href="Ketrew_artifact.Type.html#TYPEt">t</a> -> string</code></pre><div class="info ">
+Get a Human-readable string.<br>
+</div>
+</body></html>

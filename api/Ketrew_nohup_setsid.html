@@ -31,8 +31,16 @@
 </div>
 <h1>Module <a href="type_Ketrew_nohup_setsid.html">Ketrew_nohup_setsid</a> (<a href="code_Ketrew_nohup_setsid.html">.ml</a>)</h1>
 
-<pre><span class="keyword">module</span> Ketrew_nohup_setsid: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_nohup_setsid.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><hr width="100%">
+<pre><span class="keyword">module</span> Ketrew_nohup_setsid: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_nohup_setsid.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info module top">
+Implementation of the <code class="code"><span class="constructor">LONG_RUNNING</span></code> API with <code class="code">nohup setsid</code> unix
+    processes.<br>
+</div>
+<hr width="100%">
 
 <pre><span class="keyword">include</span> <a href="Ketrew_long_running.LONG_RUNNING.html">Ketrew_long_running.LONG_RUNNING</a></pre>
 
-<pre><span id="VALcreate"><span class="keyword">val</span> <a href="code_VALKetrew_nohup_setsid.create.html">create</a></span> : <code class="type">?host:<a href="Ketrew_host.html#TYPEt">Ketrew_host.t</a> -> string list -> [> `Long_running of string * string ]</code></pre></body></html>
+<pre><span id="VALcreate"><span class="keyword">val</span> <a href="code_VALKetrew_nohup_setsid.create.html">create</a></span> : <code class="type">?host:<a href="Ketrew_host.html#TYPEt">Ketrew_host.t</a> -> string list -> [> `Long_running of string * string ]</code></pre><div class="info ">
+Create a “long-running” <a href="Ketrew_target.html#TYPEbuild_process"><code class="code"><span class="constructor">Ketrew_target</span>.build_process</code></a> (run parameters
+    already serialized).<br>
+</div>
+</body></html>

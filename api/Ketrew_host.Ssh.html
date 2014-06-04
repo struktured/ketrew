@@ -27,9 +27,24 @@
 &nbsp;</div>
 <h1>Module <a href="type_Ketrew_host.Ssh.html">Ketrew_host.Ssh</a> (<a href="code_Ketrew_host.Ssh.html">.ml</a>)</h1>
 
-<pre><span class="keyword">module</span> Ssh: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_host.Ssh.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><hr width="100%">
+<pre><span class="keyword">module</span> Ssh: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_host.Ssh.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info module top">
+Definitions specific to “SSH” hosts (see <a href="Ketrew_host.html#TYPEconnection"><code class="code"><span class="constructor">Ketrew_host</span>.connection</code></a>).<br>
+</div>
+<hr width="100%">
 
-<pre><span id="VALconfigure_ssh_batch_option"><span class="keyword">val</span> <a href="code_VALKetrew_host.Ssh.configure_ssh_batch_option.html">configure_ssh_batch_option</a></span> : <code class="type">[ `Custom of string | `Dropbear | `Openssh ] -> unit</code></pre>
+<pre><span id="VALconfigure_ssh_batch_option"><span class="keyword">val</span> <a href="code_VALKetrew_host.Ssh.configure_ssh_batch_option.html">configure_ssh_batch_option</a></span> : <code class="type">[ `Custom of string | `Dropbear | `Openssh ] -> unit</code></pre><div class="info ">
+Configure global “Batch option”,
+      (call <code class="code">ssh</code> without password/question):
+      <ul>
+<li>for OpenSSH, it is <code class="code"><span class="string">"-oBatchMode=yes"</span></code>,</li>
+<li>for DropBear, it <code class="code"><span class="string">"-s"</span></code>.  </li>
+</ul>
+<br>
+</div>
+
 <pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> </pre>
+<div class="info ">
+Container of SSH connection parameters.<br>
+</div>
 
 </body></html>
