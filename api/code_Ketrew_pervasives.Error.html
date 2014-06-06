@@ -8,6 +8,7 @@
 <link title="Index of module types" rel=Appendix href="index_module_types.html">
 <link title="Ketrew" rel="Chapter" href="Ketrew.html">
 <link title="Ketrew_artifact" rel="Chapter" href="Ketrew_artifact.html">
+<link title="Ketrew_command_line" rel="Chapter" href="Ketrew_command_line.html">
 <link title="Ketrew_database" rel="Chapter" href="Ketrew_database.html">
 <link title="Ketrew_host" rel="Chapter" href="Ketrew_host.html">
 <link title="Ketrew_long_running" rel="Chapter" href="Ketrew_long_running.html">
@@ -23,6 +24,9 @@
 <code class="code"><span class="keyword">struct</span><br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;to_string&nbsp;=&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Wrong_command_line</span>&nbsp;sl&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;fmt&nbsp;<span class="string">"Wrong&nbsp;command&nbsp;line:&nbsp;%s"</span>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">String</span>.concat&nbsp;~sep:<span class="string">",&nbsp;"</span>&nbsp;(<span class="constructor">List</span>.map&nbsp;sl&nbsp;(fmt&nbsp;<span class="string">"%S"</span>)))<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">IO</span>&nbsp;_&nbsp;<span class="keyword">as</span>&nbsp;io&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">IO</span>.error_to_string&nbsp;io<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">System</span>&nbsp;_&nbsp;<span class="keyword">as</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">System</span>.error_to_string&nbsp;s<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Database</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Load</span>,&nbsp;path)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fmt&nbsp;<span class="string">"DB-load:&nbsp;%S"</span>&nbsp;path<br>

@@ -9,6 +9,7 @@
 <link title="Index of module types" rel=Appendix href="index_module_types.html">
 <link title="Ketrew" rel="Chapter" href="Ketrew.html">
 <link title="Ketrew_artifact" rel="Chapter" href="Ketrew_artifact.html">
+<link title="Ketrew_command_line" rel="Chapter" href="Ketrew_command_line.html">
 <link title="Ketrew_database" rel="Chapter" href="Ketrew_database.html">
 <link title="Ketrew_host" rel="Chapter" href="Ketrew_host.html">
 <link title="Ketrew_long_running" rel="Chapter" href="Ketrew_long_running.html">
@@ -385,6 +386,12 @@ The root directory (i.e.
 <tr><td><a href="Ketrew_target.Command.html#VALrun">run</a> [<a href="Ketrew_target.Command.html">Ketrew_target.Command</a>]</td>
 <td><div class="info">
 Run the command and ignore its <code class="code">(stdout, stderr)</code> pair.
+</div>
+</td></tr>
+<tr><td><a href="Ketrew_command_line.html#VALrun_main">run_main</a> [<a href="Ketrew_command_line.html">Ketrew_command_line</a>]</td>
+<td><div class="info">
+The “main” function, it will <code class="code">exit n</code> with <code class="code">n = 0</code> if succeed or <code class="code">n &gt; 0</code> if
+    fails.
 </div>
 </td></tr>
 <tr><td><a href="Ketrew_host.html#VALrun_shell_command">run_shell_command</a> [<a href="Ketrew_host.html">Ketrew_host</a>]</td>

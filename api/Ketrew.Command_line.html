@@ -1,0 +1,45 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Ketrew.State.html">
+<link rel="Up" href="Ketrew.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Index of module types" rel=Appendix href="index_module_types.html">
+<link title="Ketrew" rel="Chapter" href="Ketrew.html">
+<link title="Ketrew_artifact" rel="Chapter" href="Ketrew_artifact.html">
+<link title="Ketrew_command_line" rel="Chapter" href="Ketrew_command_line.html">
+<link title="Ketrew_database" rel="Chapter" href="Ketrew_database.html">
+<link title="Ketrew_host" rel="Chapter" href="Ketrew_host.html">
+<link title="Ketrew_long_running" rel="Chapter" href="Ketrew_long_running.html">
+<link title="Ketrew_monitored_script" rel="Chapter" href="Ketrew_monitored_script.html">
+<link title="Ketrew_nohup_setsid" rel="Chapter" href="Ketrew_nohup_setsid.html">
+<link title="Ketrew_path" rel="Chapter" href="Ketrew_path.html">
+<link title="Ketrew_pervasives" rel="Chapter" href="Ketrew_pervasives.html">
+<link title="Ketrew_state" rel="Chapter" href="Ketrew_state.html">
+<link title="Ketrew_target" rel="Chapter" href="Ketrew_target.html">
+<link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html"><title>Ketrew API : Ketrew.Command_line</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Ketrew.State.html" title="Ketrew.State">Previous</a>
+&nbsp;<a class="up" href="Ketrew.html" title="Ketrew">Up</a>
+&nbsp;</div>
+<h1>Module <a href="type_Ketrew.Command_line.html">Ketrew.Command_line</a> (<a href="code_Ketrew.Command_line.html">.ml</a>)</h1>
+
+<pre><span class="keyword">module</span> Command_line: <code class="type">Ketrew_command_line</code></pre><hr width="100%">
+
+<pre><span id="TYPEuser_todo"><span class="keyword">type</span> <code class="type"></code>user_todo</span> = <code class="type">[ `Fail of Ketrew_pervasives.Log.t<br>       | `Make of <a href="Ketrew_target.html#TYPEt">Ketrew_target.t</a> * <a href="Ketrew_target.html#TYPEt">Ketrew_target.t</a> list ]</code> </pre>
+<div class="info ">
+User-provided commands.<br>
+</div>
+
+
+<pre><span id="VALrun_main"><span class="keyword">val</span> <a href="code_VALKetrew_command_line.run_main.html">run_main</a></span> : <code class="type">?plugins:(string * (module Ketrew_long_running.LONG_RUNNING)) list -><br>       ?argv:string array -><br>       configuration:<a href="Ketrew_state.Configuration.html#TYPEt">Ketrew_state.Configuration.t</a> -><br>       <a href="Ketrew_command_line.html#TYPEuser_todo">user_todo</a> list Cmdliner.Term.t -> [ `Never_returns ]</code></pre><div class="info ">
+The “main” function, it will <code class="code">exit n</code> with <code class="code">n = 0</code> if succeed or <code class="code">n &gt; 0</code> if
+    fails.<br>
+</div>
+</body></html>
