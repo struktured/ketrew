@@ -40,10 +40,13 @@
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;create&nbsp;()&nbsp;=&nbsp;{current_targets&nbsp;=&nbsp;[];}<br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;serialize&nbsp;t&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_gen_base_v0_j</span>.string_of_persistent_state&nbsp;t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_gen_versioned_j</span>.string_of_persistent_state&nbsp;(<span class="keywordsign">`</span><span class="constructor">V0</span>&nbsp;t)<br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;deserialize&nbsp;s&nbsp;=&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;return&nbsp;(<span class="constructor">Ketrew_gen_base_v0_j</span>.persistent_state_of_string&nbsp;s)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;return&nbsp;(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Ketrew_gen_versioned_j</span>.persistent_state_of_string&nbsp;s&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">V0</span>&nbsp;v0&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;v0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fail&nbsp;(<span class="keywordsign">`</span><span class="constructor">Persistent_state</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Deserilization</span>&nbsp;(<span class="constructor">Printexc</span>.to_string&nbsp;e)))<br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;add&nbsp;t&nbsp;target&nbsp;=&nbsp;{&nbsp;current_targets&nbsp;=&nbsp;<span class="constructor">Target</span>.id&nbsp;target&nbsp;::&nbsp;t.current_targets&nbsp;}<br>

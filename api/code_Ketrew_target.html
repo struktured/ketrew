@@ -148,11 +148,14 @@
 <span class="keyword">let</span>&nbsp;id&nbsp;t&nbsp;:&nbsp;<span class="constructor">Unique_id</span>.t&nbsp;=&nbsp;t.id<br>
 <br>
 <span class="keyword">let</span>&nbsp;serialize&nbsp;t&nbsp;=<br>
-&nbsp;&nbsp;<span class="constructor">Ketrew_gen_target_v0_j</span>.string_of_t&nbsp;t<br>
+&nbsp;&nbsp;<span class="constructor">Ketrew_gen_versioned_j</span>.string_of_target&nbsp;(<span class="keywordsign">`</span><span class="constructor">V0</span>&nbsp;t)<br>
 <br>
 <span class="keyword">let</span>&nbsp;deserialize&nbsp;s&nbsp;:&nbsp;(t,&nbsp;_)&nbsp;<span class="constructor">Result</span>.t&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">open</span>&nbsp;<span class="constructor">Result</span>&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;return&nbsp;(<span class="constructor">Ketrew_gen_target_v0_j</span>.t_of_string&nbsp;s)<br>
+&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;return&nbsp;(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Ketrew_gen_versioned_j</span>.target_of_string&nbsp;s&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">V0</span>&nbsp;v0&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;v0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;)<br>
 &nbsp;&nbsp;<span class="keyword">with</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fail&nbsp;(<span class="keywordsign">`</span><span class="constructor">Target</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Deserilization</span>&nbsp;(<span class="constructor">Printexc</span>.to_string&nbsp;e)))<br>
 <br>
 <span class="keyword">let</span>&nbsp;log&nbsp;t&nbsp;=&nbsp;<span class="constructor">Log</span>.(brakets&nbsp;(sf&nbsp;<span class="string">"Target:&nbsp;%s&nbsp;(%s)"</span>&nbsp;t.name&nbsp;t.id))<br>
