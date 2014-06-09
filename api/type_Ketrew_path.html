@@ -26,7 +26,8 @@
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;absolute<br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;file<br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;directory<br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;t&nbsp;<span class="keyword">constraint</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;=&nbsp;&lt;&nbsp;kind&nbsp;:&nbsp;<span class="keywordsign">'</span>file_kind;&nbsp;relativity&nbsp;:&nbsp;<span class="keywordsign">'</span>relativity&nbsp;&gt;<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;t&nbsp;=&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.path<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">constraint</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;=&nbsp;&lt;&nbsp;kind&nbsp;:&nbsp;<span class="keywordsign">'</span>file_kind;&nbsp;relativity&nbsp;:&nbsp;<span class="keywordsign">'</span>relativity&nbsp;&gt;<br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;absolute_directory&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&nbsp;kind&nbsp;:&nbsp;<span class="constructor">Ketrew_path</span>.directory;&nbsp;relativity&nbsp;:&nbsp;<span class="constructor">Ketrew_path</span>.absolute&nbsp;&gt;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_path</span>.t<br>

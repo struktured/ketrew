@@ -33,15 +33,17 @@
 <span class="keyword">module</span>&nbsp;<span class="constructor">Nohup_setsid</span>&nbsp;=&nbsp;<span class="constructor">Ketrew_nohup_setsid</span><br>
 <br>
 <span class="keyword">module</span>&nbsp;<span class="constructor">Persistent_state</span>&nbsp;=&nbsp;<span class="keyword">struct</span><br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;{<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.persistent_state&nbsp;=&nbsp;{<br>
 &nbsp;&nbsp;&nbsp;&nbsp;current_targets:&nbsp;<span class="constructor">Target</span>.id&nbsp;list;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;keep&nbsp;db&nbsp;id&nbsp;of&nbsp;a&nbsp;list&nbsp;of&nbsp;all&nbsp;"archived"&nbsp;targets&nbsp;*)</span><br>
 &nbsp;&nbsp;}<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;create&nbsp;()&nbsp;=&nbsp;{current_targets&nbsp;=&nbsp;[];}<br>
 <br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;serialize&nbsp;t&nbsp;=&nbsp;<span class="constructor">Marshal</span>.to_string&nbsp;t&nbsp;[]<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;unserialize&nbsp;s&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;return&nbsp;(<span class="constructor">Marshal</span>.from_string&nbsp;s&nbsp;0&nbsp;:&nbsp;t)<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;serialize&nbsp;t&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_gen_base_v0_j</span>.string_of_persistent_state&nbsp;t<br>
+<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;deserialize&nbsp;s&nbsp;=&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;return&nbsp;(<span class="constructor">Ketrew_gen_base_v0_j</span>.persistent_state_of_string&nbsp;s)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fail&nbsp;(<span class="keywordsign">`</span><span class="constructor">Persistent_state</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Deserilization</span>&nbsp;(<span class="constructor">Printexc</span>.to_string&nbsp;e)))<br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;add&nbsp;t&nbsp;target&nbsp;=&nbsp;{&nbsp;current_targets&nbsp;=&nbsp;<span class="constructor">Target</span>.id&nbsp;target&nbsp;::&nbsp;t.current_targets&nbsp;}<br>
@@ -92,7 +94,7 @@
 &nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="constructor">Database</span>.get&nbsp;db&nbsp;~key:t.configuration.<span class="constructor">Configuration</span>.persistent_state_key<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">function</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;persistent_serialized&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Persistent_state</span>.unserialize&nbsp;persistent_serialized<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Persistent_state</span>.deserialize&nbsp;persistent_serialized<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;e&nbsp;=&nbsp;<span class="constructor">Persistent_state</span>.create&nbsp;()&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;e<br>

@@ -28,8 +28,10 @@
 <span class="keyword">type</span>&nbsp;file<br>
 <span class="keyword">type</span>&nbsp;directory<br>
 <span class="keyword">type</span>&nbsp;<span class="keywordsign">'</span>c&nbsp;t&nbsp;=<br>
-&nbsp;&nbsp;{kind:&nbsp;[<span class="keywordsign">`</span><span class="constructor">File</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Directory</span>];&nbsp;path:&nbsp;string}<br>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;{kind:&nbsp;[`File&nbsp;|&nbsp;`Directory];&nbsp;path:&nbsp;string}&nbsp;*)</span><br>
+&nbsp;&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.path<br>
 &nbsp;&nbsp;<span class="keyword">constraint</span>&nbsp;<span class="keywordsign">'</span>c&nbsp;=&nbsp;&lt;relativity:&nbsp;<span class="keywordsign">'</span>relativity;&nbsp;kind:&nbsp;<span class="keywordsign">'</span>file_kind&gt;<br>
+<span class="keyword">open</span>&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span><br>
 <span class="keyword">type</span>&nbsp;absolute_directory&nbsp;=&nbsp;&lt;relativity&nbsp;:&nbsp;absolute;&nbsp;kind:&nbsp;directory&gt;&nbsp;t<br>
 <span class="keyword">type</span>&nbsp;absolute_file&nbsp;=&nbsp;&lt;relativity&nbsp;:&nbsp;absolute;&nbsp;kind:&nbsp;file&gt;&nbsp;t<br>
 <span class="keyword">type</span>&nbsp;relative_directory&nbsp;=&nbsp;&lt;relativity&nbsp;:&nbsp;relative;&nbsp;kind:&nbsp;directory&gt;&nbsp;t<br>

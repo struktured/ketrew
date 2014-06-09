@@ -9,11 +9,11 @@
 <h1 id="KetrewKeepTrackofExperimentalWorkflows">Ketrew: Keep Track of Experimental Workflows</h1>
 <p>This is <strong>Work in Progress</strong>, not ready for use.</p>
 <h2 id="BuildInstall">Build &amp; Install</h2>
-<p>Ketrew depends on
-<code>cmdliner</code>, <code>nonstd</code>, <code>pvem</code>, <code>docout</code>,  <code>sosa</code>,  <code>pvem_lwt_unix</code>
-and uses the <code>ocp-build</code> build system:</p>
+<p>Ketrew uses the <code>ocp-build</code> build system and depends on
+<code>cmdliner</code>, <code>nonstd</code>, <code>pvem</code>, <code>docout</code>,  <code>sosa</code>,  <code>pvem_lwt_unix</code>, <code>cmdliner</code>,
+and <code>atdgen</code>.</p>
 <pre><code>./please.sh build</code></pre>
-<p>You should not install <code>ketrew</code> yet, but you can always call at your own risk:</p>
+<p>You should <em>not</em> install <code>ketrew</code> yet, but you can always call at your own risk:</p>
 <pre><code>ocp-build install</code></pre>
 <h2 id="Tests">Tests</h2>
 <p>Run the tests like this:</p>
@@ -24,6 +24,15 @@ not defined it will use <code>&quot;localhost&quot;</code>. But for the test to 
 an SSH host for which the user running the test does not need password.
 The test will run some commands on that host and create files and directories
 in its <code>/tmp</code> directory.</p>
+<p>There is also a “command line” test, see:</p>
+<pre><code>_obuild/ketrew-cli-test/ketrew-cli-test.asm --help</code></pre>
+<p>for now, <code>cli.ml</code> has only one workflow (using the library, no EDSL), that can
+be added/activated with:</p>
+<pre><code>_obuild/ketrew-cli-test/ketrew-cli-test.asm call website</code></pre>
+<p>and then run with:</p>
+<pre><code>_obuild/ketrew-cli-test/ketrew-cli-test.asm run fix</code></pre>
+<p>It should build the documentation and commit it in the <code>gh-pages</code> branch (or
+fail, for example, if the Git tree is not clean).</p>
 <h2 id="Documentation">Documentation</h2>
 <p>The documentation depends on <a href='https://github.com/ocaml/omd'>omd</a>, and
 Graphviz&#39;s <code>dot</code>:</p>

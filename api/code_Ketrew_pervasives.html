@@ -59,7 +59,8 @@
 &nbsp;&nbsp;raise&nbsp;(<span class="constructor">Invalid_argument</span>&nbsp;(fmt&nbsp;<span class="string">"[%S]:&nbsp;%s"</span>&nbsp;where&nbsp;what))<br>
 <br>
 <span class="keyword">module</span>&nbsp;<span class="constructor">Time</span>&nbsp;=&nbsp;<span class="keyword">struct</span><br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;float<br>
+&nbsp;&nbsp;<span class="keyword">include</span>&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span><br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;time<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;now&nbsp;()&nbsp;:&nbsp;t&nbsp;=&nbsp;<span class="constructor">Unix</span>.gettimeofday&nbsp;()<br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;to_filename&nbsp;f&nbsp;=<br>
@@ -79,7 +80,8 @@
 <span class="keyword">module</span>&nbsp;<span class="constructor">Unique_id</span>&nbsp;=&nbsp;<span class="keyword">struct</span><br>
 &nbsp;&nbsp;</code><table><tr><td>&nbsp;&nbsp;</td><td><span class="comment">(** Provide pseudo-unique identifiers. *)</span></td></tr></table><code class="code"><br>
 <br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">include</span>&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span><br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;unique_id<br>
 &nbsp;&nbsp;</code><table><tr><td>&nbsp;&nbsp;</td><td><span class="comment">(** <code class="code">string</code> seems to be the best-suited primitive *)</span></td></tr></table><code class="code"><br>
 <br>
 &nbsp;&nbsp;</code><table><tr><td>&nbsp;&nbsp;</td><td><span class="comment">(** Create a fresh filename-compliant identifier. *)</span></td></tr></table><code class="code"><br>

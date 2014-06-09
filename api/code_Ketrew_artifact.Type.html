@@ -23,17 +23,13 @@
 <body>
 <code class="code"><span class="keyword">struct</span><br>
 <br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;value_type&nbsp;=&nbsp;[<span class="keywordsign">`</span><span class="constructor">Unit</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">String</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Number</span>]<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;value_type&nbsp;=&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.value_type<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;value_type_to_string&nbsp;=&nbsp;<span class="keyword">function</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Unit</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"Unit"</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">String</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"String"</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Number</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"Number"</span><br>
 <br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;[<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;|&nbsp;`Fresh_file&nbsp;*)</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Value</span>&nbsp;<span class="keyword">of</span>&nbsp;value_type<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Volume</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Volume</span>.t<br>
-&nbsp;&nbsp;]<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.artifact_type<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;value&nbsp;vt&nbsp;:&nbsp;t&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">Value</span>&nbsp;vt<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;string_value&nbsp;:&nbsp;t&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">Value</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">String</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;volume&nbsp;v&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">Volume</span>&nbsp;v<br>

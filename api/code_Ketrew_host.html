@@ -39,7 +39,7 @@
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;()&nbsp;=&nbsp;configure_ssh_batch_option&nbsp;<span class="keywordsign">`</span><span class="constructor">Openssh</span><br>
 <br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;{<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.ssh_host&nbsp;=&nbsp;{<br>
 &nbsp;&nbsp;&nbsp;&nbsp;address:&nbsp;string;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;port:&nbsp;int&nbsp;option;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;user:&nbsp;string&nbsp;option;<br>
@@ -81,11 +81,9 @@
 &nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;[dest]<br>
 <br>
 <span class="keyword">end</span><br>
-<span class="keyword">type</span>&nbsp;connection&nbsp;=&nbsp;[<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Localhost</span><br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ssh</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ssh</span>.t<br>
-]<br>
-<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;{<br>
+<span class="keyword">type</span>&nbsp;connection&nbsp;=&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.connection&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.host&nbsp;=&nbsp;{<br>
 &nbsp;&nbsp;name:&nbsp;string;<br>
 &nbsp;&nbsp;connection:&nbsp;connection;<br>
 &nbsp;&nbsp;playground:&nbsp;<span class="constructor">Path</span>.absolute_directory&nbsp;option;<br>
