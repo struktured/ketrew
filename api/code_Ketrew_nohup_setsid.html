@@ -27,16 +27,14 @@
 <br>
 <span class="keyword">module</span>&nbsp;<span class="constructor">Host</span>&nbsp;=&nbsp;<span class="constructor">Ketrew_host</span><br>
 <br>
-<span class="keyword">type</span>&nbsp;runnning&nbsp;=&nbsp;{<br>
+<span class="keyword">type</span>&nbsp;running&nbsp;=&nbsp;<span class="constructor">Ketrew_gen_nohup_setsid_v0_t</span>.running&nbsp;=&nbsp;{<br>
 &nbsp;&nbsp;pid:&nbsp;int&nbsp;option;<br>
 &nbsp;&nbsp;playground:&nbsp;<span class="constructor">Path</span>.absolute_directory;<br>
 &nbsp;&nbsp;script:&nbsp;<span class="constructor">Ketrew_monitored_script</span>.t;<br>
 &nbsp;&nbsp;host:&nbsp;<span class="constructor">Host</span>.t;<br>
 }<br>
-<span class="keyword">type</span>&nbsp;run_parameters&nbsp;=&nbsp;[<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Created</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Host</span>.t&nbsp;*&nbsp;string&nbsp;list<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Running</span>&nbsp;<span class="keyword">of</span>&nbsp;runnning<br>
-]<br>
+<span class="keyword">type</span>&nbsp;run_parameters&nbsp;=&nbsp;<span class="constructor">Ketrew_gen_nohup_setsid_v0_t</span>.run_parameters<br>
+<br>
 <span class="keyword">let</span>&nbsp;running&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">function</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Running</span>&nbsp;r&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;r&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;invalid_argument_exn&nbsp;~where:<span class="string">"Nohup_setsid"</span>&nbsp;<span class="string">"running"</span><br>
@@ -44,8 +42,12 @@
 &nbsp;&nbsp;<span class="keyword">function</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Created</span>&nbsp;c&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;c<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;invalid_argument_exn&nbsp;~where:<span class="string">"Nohup_setsid"</span>&nbsp;<span class="string">"created"</span><br>
 <br>
-<span class="keyword">let</span>&nbsp;serialize&nbsp;t&nbsp;=&nbsp;<span class="constructor">Marshal</span>.to_string&nbsp;t&nbsp;[]<br>
-<span class="keyword">let</span>&nbsp;deserialize_exn&nbsp;s&nbsp;=&nbsp;(<span class="constructor">Marshal</span>.from_string&nbsp;s&nbsp;0&nbsp;:&nbsp;run_parameters)<br>
+<span class="keyword">let</span>&nbsp;serialize&nbsp;t&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">Ketrew_gen_versioned_j</span>.string_of_nohup_setsid_run_parameters&nbsp;(<span class="keywordsign">`</span><span class="constructor">V0</span>&nbsp;t)<br>
+<span class="keyword">let</span>&nbsp;deserialize_exn&nbsp;s&nbsp;=&nbsp;<br>
+&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Ketrew_gen_versioned_j</span>.nohup_setsid_run_parameters_of_string&nbsp;s&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">V0</span>&nbsp;v0&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;v0<br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
 <br>
 <span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;<span class="string">"nohup-setsid"</span><br>
 <span class="keyword">let</span>&nbsp;create&nbsp;?(host=<span class="constructor">Host</span>.localhost)&nbsp;cmds&nbsp;=<br>

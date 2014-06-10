@@ -22,7 +22,11 @@
 </head>
 <body>
 <code class="code"><span class="keyword">sig</span><br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.monitored_script&nbsp;=&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;playground&nbsp;:&nbsp;<span class="constructor">Ketrew_path</span>.absolute_directory;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;program&nbsp;:&nbsp;string&nbsp;list;<br>
+&nbsp;&nbsp;}<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;create&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;playground:<span class="constructor">Ketrew_path</span>.absolute_directory&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_monitored_script</span>.t<br>
