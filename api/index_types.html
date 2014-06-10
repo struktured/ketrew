@@ -5,12 +5,15 @@
 <link rel="Start" href="index.html">
 <link title="Index of types" rel=Appendix href="index_types.html">
 <link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of class methods" rel=Appendix href="index_methods.html">
+<link title="Index of class types" rel=Appendix href="index_class_types.html">
 <link title="Index of modules" rel=Appendix href="index_modules.html">
 <link title="Index of module types" rel=Appendix href="index_module_types.html">
 <link title="Ketrew" rel="Chapter" href="Ketrew.html">
 <link title="Ketrew_artifact" rel="Chapter" href="Ketrew_artifact.html">
 <link title="Ketrew_command_line" rel="Chapter" href="Ketrew_command_line.html">
 <link title="Ketrew_database" rel="Chapter" href="Ketrew_database.html">
+<link title="Ketrew_edsl" rel="Chapter" href="Ketrew_edsl.html">
 <link title="Ketrew_host" rel="Chapter" href="Ketrew_host.html">
 <link title="Ketrew_long_running" rel="Chapter" href="Ketrew_long_running.html">
 <link title="Ketrew_monitored_script" rel="Chapter" href="Ketrew_monitored_script.html">
@@ -81,6 +84,12 @@ The potential cases of a “finished” target (defined as <pre class="codepre">
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Dead</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Time</span>.t&nbsp;*&nbsp;[&nbsp;activated_state&nbsp;<span class="keywordsign">|</span>&nbsp;running_state&nbsp;]&nbsp;*&nbsp;death_reason<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Successful</span>&nbsp;<span class="keyword">of</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Time</span>.t&nbsp;*&nbsp;[&nbsp;activated_state&nbsp;<span class="keywordsign">|</span>&nbsp;running_state&nbsp;]&nbsp;*&nbsp;<span class="constructor">Ketrew_artifact</span>.t&nbsp;]&nbsp;</code></pre>).
+</div>
+</td></tr>
+<tr><td align="left"><br>H</td></tr>
+<tr><td><a href="Ketrew_edsl.html#TYPEhost">host</a> [<a href="Ketrew_edsl.html">Ketrew_edsl</a>]</td>
+<td><div class="info">
+Alias for the host type.
 </div>
 </td></tr>
 <tr><td align="left"><br>I</td></tr>
@@ -222,6 +231,11 @@ The specification of a value's type.
 </div>
 </td></tr>
 <tr><td align="left"><br>W</td></tr>
+<tr><td><a href="Ketrew_edsl.html#TYPEworkflow">workflow</a> [<a href="Ketrew_edsl.html">Ketrew_edsl</a>]</td>
+<td><div class="info">
+Workflows wrap collections of targets.
+</div>
+</td></tr>
 <tr><td><a href="Ketrew_target.html#TYPEworkflow_state">workflow_state</a> [<a href="Ketrew_target.html">Ketrew_target</a>]</td>
 <td><div class="info">
 The all the potential cases of the state of a target (defined as <pre class="codepre"><code class="code"><span class="keyword">type</span>&nbsp;workflow_state&nbsp;=&nbsp;[<br>

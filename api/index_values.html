@@ -5,12 +5,15 @@
 <link rel="Start" href="index.html">
 <link title="Index of types" rel=Appendix href="index_types.html">
 <link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of class methods" rel=Appendix href="index_methods.html">
+<link title="Index of class types" rel=Appendix href="index_class_types.html">
 <link title="Index of modules" rel=Appendix href="index_modules.html">
 <link title="Index of module types" rel=Appendix href="index_module_types.html">
 <link title="Ketrew" rel="Chapter" href="Ketrew.html">
 <link title="Ketrew_artifact" rel="Chapter" href="Ketrew_artifact.html">
 <link title="Ketrew_command_line" rel="Chapter" href="Ketrew_command_line.html">
 <link title="Ketrew_database" rel="Chapter" href="Ketrew_database.html">
+<link title="Ketrew_edsl" rel="Chapter" href="Ketrew_edsl.html">
 <link title="Ketrew_host" rel="Chapter" href="Ketrew_host.html">
 <link title="Ketrew_long_running" rel="Chapter" href="Ketrew_long_running.html">
 <link title="Ketrew_monitored_script" rel="Chapter" href="Ketrew_monitored_script.html">
@@ -51,9 +54,19 @@ Get an activated target out of a “submitted” one,
     raises <code class="code"><span class="constructor">Invalid_argument</span> _</code> if the target is in a wrong state.
 </div>
 </td></tr>
+<tr><td><a href="Ketrew_edsl.html#VALactive">active</a> [<a href="Ketrew_edsl.html">Ketrew_edsl</a>]</td>
+<td><div class="info">
+Create a new target but with <code class="code">~active:<span class="keyword">true</span></code>.
+</div>
+</td></tr>
 <tr><td><a href="Ketrew_target.html#VALactive">active</a> [<a href="Ketrew_target.html">Ketrew_target</a>]</td>
 <td><div class="info">
 Like <a href="Ketrew_target.html#VALcreate"><code class="code"><span class="constructor">Ketrew_target</span>.create</code></a> but set as already activated.
+</div>
+</td></tr>
+<tr><td><a href="Ketrew_edsl.html#VALadd_target">add_target</a> [<a href="Ketrew_edsl.html">Ketrew_edsl</a>]</td>
+<td><div class="info">
+Add a target to a workflow, imperative style.
 </div>
 </td></tr>
 <tr><td><a href="Ketrew_state.html#VALadd_target">add_target</a> [<a href="Ketrew_state.html">Ketrew_state</a>]</td>
@@ -163,6 +176,11 @@ Deserialize the run parameters from a string; the engine guaranties
 Define a “directory” structure.
 </div>
 </td></tr>
+<tr><td><a href="Ketrew_edsl.html#VALdirect_shell_command">direct_shell_command</a> [<a href="Ketrew_edsl.html">Ketrew_edsl</a>]</td>
+<td><div class="info">
+Create a shell command process (not “long-running”).
+</div>
+</td></tr>
 <tr><td><a href="Ketrew_path.html#VALdirectory">directory</a> [<a href="Ketrew_path.html">Ketrew_path</a>]</td>
 <td><div class="info">
 Create a path to a directory.
@@ -203,6 +221,11 @@ Create a <code class="code"><span class="string">"/bin/sh"</span></code> command
 <tr><td align="left"><br>F</td></tr>
 <tr><td><a href="Ketrew_pervasives.html#VALfailwithf">failwithf</a> [<a href="Ketrew_pervasives.html">Ketrew_pervasives</a>]</td>
 <td></td></tr>
+<tr><td><a href="Ketrew_edsl.html#VALfile">file</a> [<a href="Ketrew_edsl.html">Ketrew_edsl</a>]</td>
+<td><div class="info">
+Create a volume containing one file.
+</div>
+</td></tr>
 <tr><td><a href="Ketrew_artifact.Volume.html#VALfile">file</a> [<a href="Ketrew_artifact.Volume.html">Ketrew_artifact.Volume</a>]</td>
 <td><div class="info">
 Define a “file” structure.
@@ -261,6 +284,12 @@ Get the state description of a given target (by “id”).
 <td></td></tr>
 <tr><td><a href="Ketrew_pervasives.html#VALglobal_with_color">global_with_color</a> [<a href="Ketrew_pervasives.html">Ketrew_pervasives</a>]</td>
 <td></td></tr>
+<tr><td align="left"><br>H</td></tr>
+<tr><td><a href="Ketrew_edsl.html#VALhost_cmdliner_term">host_cmdliner_term</a> [<a href="Ketrew_edsl.html">Ketrew_edsl</a>]</td>
+<td><div class="info">
+Cmdliner term which creates a host argument.
+</div>
+</td></tr>
 <tr><td align="left"><br>I</td></tr>
 <tr><td><a href="Ketrew_target.html#VALid">id</a> [<a href="Ketrew_target.html">Ketrew_target</a>]</td>
 <td><div class="info">
@@ -313,6 +342,11 @@ Path to the log file of the script.
 </div>
 </td></tr>
 <tr><td align="left"><br>M</td></tr>
+<tr><td><a href="Ketrew_edsl.html#VALmake">make</a> [<a href="Ketrew_edsl.html">Ketrew_edsl</a>]</td>
+<td><div class="info">
+Convert a workflow into a command expected by <a href="Ketrew_command_line.html"><code class="code"><span class="constructor">Ketrew_command_line</span></code></a>
+</div>
+</td></tr>
 <tr><td><a href="Ketrew_target.html#VALmake_fail_exn">make_fail_exn</a> [<a href="Ketrew_target.html">Ketrew_target</a>]</td>
 <td><div class="info">
 Get dead target out of an activated  or running one, 
@@ -325,10 +359,20 @@ Get a successfully finished target out of an activated  or running one,
     raises <code class="code"><span class="constructor">Invalid_argument</span> _</code> if the target is in a wrong state.
 </div>
 </td></tr>
+<tr><td><a href="Ketrew_edsl.html#VALmake_workflow">make_workflow</a> [<a href="Ketrew_edsl.html">Ketrew_edsl</a>]</td>
+<td><div class="info">
+Call <a href="Ketrew_edsl.html#VALworkflow"><code class="code"><span class="constructor">Ketrew_edsl</span>.workflow</code></a> and then <a href="Ketrew_edsl.html#VALmake"><code class="code"><span class="constructor">Ketrew_edsl</span>.make</code></a> at once.
+</div>
+</td></tr>
 <tr><td align="left"><br>N</td></tr>
 <tr><td><a href="Ketrew_long_running.LONG_RUNNING.html#VALname">name</a> [<a href="Ketrew_long_running.LONG_RUNNING.html">Ketrew_long_running.LONG_RUNNING</a>]</td>
 <td><div class="info">
 The (unique) name of the plugin.
+</div>
+</td></tr>
+<tr><td><a href="Ketrew_edsl.html#VALnohup_setsid">nohup_setsid</a> [<a href="Ketrew_edsl.html">Ketrew_edsl</a>]</td>
+<td><div class="info">
+Create a nohup_setsid build process.
 </div>
 </td></tr>
 <tr><td><a href="Ketrew_target.html#VALnop">nop</a> [<a href="Ketrew_target.html">Ketrew_target</a>]</td>
@@ -339,12 +383,29 @@ A build process that does nothing.
 <tr><td><a href="Ketrew_pervasives.Time.html#VALnow">now</a> [<a href="Ketrew_pervasives.Time.html">Ketrew_pervasives.Time</a>]</td>
 <td></td></tr>
 <tr><td align="left"><br>O</td></tr>
+<tr><td><a href="Ketrew_host.html#VALof_string">of_string</a> [<a href="Ketrew_host.html">Ketrew_host</a>]</td>
+<td><div class="info">
+Parse an <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC-3986</a>-compliant
+  string into a host, see <a href="Ketrew_host.html#VALof_uri"><code class="code"><span class="constructor">Ketrew_host</span>.of_uri</code></a>.
+</div>
+</td></tr>
 <tr><td><a href="Ketrew_artifact.html#VALof_type">of_type</a> [<a href="Ketrew_artifact.html">Ketrew_artifact</a>]</td>
 <td><div class="info">
 Get the value given it's type, if possible.
 </div>
 </td></tr>
+<tr><td><a href="Ketrew_host.html#VALof_uri">of_uri</a> [<a href="Ketrew_host.html">Ketrew_host</a>]</td>
+<td><div class="info">
+Get a <code class="code"><span class="constructor">Host</span>.t</code> from an URI (library <a href="https://github.com/mirage/ocaml-uri">ocaml-uri</a>);
+  the “path” part of the URI is the playground.
+</div>
+</td></tr>
 <tr><td align="left"><br>P</td></tr>
+<tr><td><a href="Ketrew_edsl.html#VALparse_host">parse_host</a> [<a href="Ketrew_edsl.html">Ketrew_edsl</a>]</td>
+<td><div class="info">
+See <a href="Ketrew_host.html#VALof_string"><code class="code"><span class="constructor">Ketrew_host</span>.of_string</code></a>.
+</div>
+</td></tr>
 <tr><td><a href="Ketrew_monitored_script.html#VALparse_log">parse_log</a> [<a href="Ketrew_monitored_script.html">Ketrew_monitored_script</a>]</td>
 <td><div class="info">
 Parse the log file of a <code class="code">monitored_script</code>.
@@ -461,6 +522,11 @@ Do like <a href="Ketrew_unix_process.html#VALexec"><code class="code"><span clas
 </div>
 </td></tr>
 <tr><td align="left"><br>T</td></tr>
+<tr><td><a href="Ketrew_edsl.html#VALtarget">target</a> [<a href="Ketrew_edsl.html">Ketrew_edsl</a>]</td>
+<td><div class="info">
+Create a new target.
+</div>
+</td></tr>
 <tr><td><a href="Ketrew_pervasives.Time.html#VALto_filename">to_filename</a> [<a href="Ketrew_pervasives.Time.html">Ketrew_pervasives.Time</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ketrew_unix_process.Exit_code.html#VALto_string">to_string</a> [<a href="Ketrew_unix_process.Exit_code.html">Ketrew_unix_process.Exit_code</a>]</td>
@@ -470,11 +536,6 @@ Do like <a href="Ketrew_unix_process.html#VALexec"><code class="code"><span clas
 <tr><td><a href="Ketrew_monitored_script.html#VALto_string">to_string</a> [<a href="Ketrew_monitored_script.html">Ketrew_monitored_script</a>]</td>
 <td><div class="info">
 Render the <code class="code">monitored_script</code> to a shell-script string.
-</div>
-</td></tr>
-<tr><td><a href="Ketrew_host.html#VALto_string">to_string</a> [<a href="Ketrew_host.html">Ketrew_host</a>]</td>
-<td><div class="info">
-Get a display-friendly string for the host (“name”, or hostname).
 </div>
 </td></tr>
 <tr><td><a href="Ketrew_path.html#VALto_string">to_string</a> [<a href="Ketrew_path.html">Ketrew_path</a>]</td>
@@ -497,12 +558,22 @@ Get a Human-readable string.
 Get a Human-readable string.
 </div>
 </td></tr>
+<tr><td><a href="Ketrew_host.html#VALto_string_hum">to_string_hum</a> [<a href="Ketrew_host.html">Ketrew_host</a>]</td>
+<td><div class="info">
+Get a display-friendly string for the host (“name”, or hostname).
+</div>
+</td></tr>
 <tr><td><a href="Ketrew_path.html#VALto_string_quoted">to_string_quoted</a> [<a href="Ketrew_path.html">Ketrew_path</a>]</td>
 <td><div class="info">
 Convert the path to a “Unix” path quoted for a shell command (c.f.
 </div>
 </td></tr>
 <tr><td align="left"><br>U</td></tr>
+<tr><td><a href="Ketrew_edsl.html#VALunit">unit</a> [<a href="Ketrew_edsl.html">Ketrew_edsl</a>]</td>
+<td><div class="info">
+The artifact that is “never ready” (i.e.
+</div>
+</td></tr>
 <tr><td><a href="Ketrew_artifact.html#VALunit">unit</a> [<a href="Ketrew_artifact.html">Ketrew_artifact</a>]</td>
 <td><div class="info">
 Alias for <code class="code"><span class="keywordsign">`</span><span class="constructor">Unit</span></code>.
@@ -534,6 +605,11 @@ Construct a “volume-specification” artifact type.
 <tr><td><a href="Ketrew_state.html#VALwhat_happened_to_string">what_happened_to_string</a> [<a href="Ketrew_state.html">Ketrew_state</a>]</td>
 <td><div class="info">
 Transform an item of the result of <a href="Ketrew_state.html#VALstep"><code class="code"><span class="constructor">Ketrew_state</span>.step</code></a> to a human-readable string.
+</div>
+</td></tr>
+<tr><td><a href="Ketrew_edsl.html#VALworkflow">workflow</a> [<a href="Ketrew_edsl.html">Ketrew_edsl</a>]</td>
+<td><div class="info">
+Create a workflow with a list of targets.
 </div>
 </td></tr>
 </table>
