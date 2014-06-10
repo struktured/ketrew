@@ -58,8 +58,12 @@ Alias for the host type.<br>
 See <a href="Ketrew_host.html#VALof_string"><code class="code"><span class="constructor">Ketrew_host</span>.of_string</code></a>.<br>
 </div>
 
-<pre><span id="VALhost_cmdliner_term"><span class="keyword">val</span> <a href="code_VALKetrew_edsl.host_cmdliner_term.html">host_cmdliner_term</a></span> : <code class="type">?doc:string -> [ `Required of int ] -> <a href="Ketrew_host.html#TYPEt">Ketrew_host.t</a> Cmdliner.Term.t</code></pre><div class="info ">
-Cmdliner term which creates a host argument.<br>
+<pre><span id="VALhost_cmdliner_term"><span class="keyword">val</span> <a href="code_VALKetrew_edsl.host_cmdliner_term.html">host_cmdliner_term</a></span> : <code class="type">?doc:string -><br>       [ `Flag of string list | `Required of int ] -> <a href="Ketrew_host.html#TYPEt">Ketrew_host.t</a> Cmdliner.Term.t</code></pre><div class="info ">
+Cmdliner term which creates a host argument or flag.
+    <code class="code"><span class="keywordsign">`</span><span class="constructor">Required</span> n</code> will be an anonymous argument at position <code class="code">n</code>; 
+    <code class="code"><span class="keywordsign">`</span><span class="constructor">Flag</span> [<span class="string">"option-name"</span>; <span class="string">"O"</span>]</code> will create an optional
+    flag <code class="code"><span class="string">"--option-name"</span></code> (aliased to <code class="code"><span class="string">"-O"</span></code>) whose default value is
+    the host <code class="code"><span class="string">"/tmp/"</span></code> (i.e. Localhost with <code class="code"><span class="string">"/tmp"</span></code> as “playground”).<br>
 </div>
 <br>
 <h3 id="3_Artifacts">Artifacts</h3><br>

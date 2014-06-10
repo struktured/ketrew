@@ -28,7 +28,9 @@
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;host&nbsp;=&nbsp;<span class="constructor">Ketrew_host</span>.t<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;parse_host&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_edsl</span>.host<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;host_cmdliner_term&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;?doc:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Required</span>&nbsp;<span class="keyword">of</span>&nbsp;int&nbsp;]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_host</span>.t&nbsp;<span class="constructor">Cmdliner</span>.<span class="constructor">Term</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?doc:string&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Flag</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;list&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Required</span>&nbsp;<span class="keyword">of</span>&nbsp;int&nbsp;]&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_host</span>.t&nbsp;<span class="constructor">Cmdliner</span>.<span class="constructor">Term</span>.t<br>
 &nbsp;&nbsp;<span class="keyword">class</span>&nbsp;<span class="keyword">type</span>&nbsp;user_artifact&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">object</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;artifact_type&nbsp;:&nbsp;<span class="constructor">Ketrew_artifact</span>.<span class="constructor">Type</span>.t<br>
