@@ -15,6 +15,7 @@
 <link title="Ketrew_edsl" rel="Chapter" href="Ketrew_edsl.html">
 <link title="Ketrew_host" rel="Chapter" href="Ketrew_host.html">
 <link title="Ketrew_long_running" rel="Chapter" href="Ketrew_long_running.html">
+<link title="Ketrew_lsf" rel="Chapter" href="Ketrew_lsf.html">
 <link title="Ketrew_monitored_script" rel="Chapter" href="Ketrew_monitored_script.html">
 <link title="Ketrew_nohup_setsid" rel="Chapter" href="Ketrew_nohup_setsid.html">
 <link title="Ketrew_path" rel="Chapter" href="Ketrew_path.html">
@@ -110,8 +111,10 @@
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Database_unavailable</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fmt&nbsp;<span class="string">"DB&nbsp;%s"</span>&nbsp;s<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Not_implemented</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fmt&nbsp;<span class="string">"Not-impl&nbsp;%S"</span>&nbsp;s<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Missing_data</span>&nbsp;p&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fmt&nbsp;<span class="string">"missing&nbsp;data&nbsp;at&nbsp;id:&nbsp;%s"</span>&nbsp;p<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Failed_to_kill</span>&nbsp;msg&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fmt&nbsp;<span class="string">"Failed&nbsp;to&nbsp;kill&nbsp;target:&nbsp;%S"</span>&nbsp;msg<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Long_running_failed_to_start</span>&nbsp;(id,&nbsp;msg)&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;fmt&nbsp;<span class="string">"Long&nbsp;running&nbsp;%s&nbsp;failed&nbsp;to&nbsp;start:&nbsp;%s"</span>&nbsp;id&nbsp;msg<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Failure</span>&nbsp;msg&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fmt&nbsp;<span class="string">"Failure:&nbsp;%S"</span>&nbsp;msg<br>
 <br>
 <span class="keyword">end</span><br>
 </code></body></html>
