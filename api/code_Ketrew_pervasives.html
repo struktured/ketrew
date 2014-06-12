@@ -34,13 +34,24 @@
 <span class="keyword">module</span>&nbsp;<span class="constructor">String</span>&nbsp;=&nbsp;<span class="keyword">struct</span><br>
 &nbsp;&nbsp;<span class="keyword">include</span>&nbsp;<span class="constructor">Sosa</span>.<span class="constructor">Native_string</span><br>
 <span class="keyword">end</span><br>
-<span class="keyword">let</span>&nbsp;printf&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">No</span><br>
-<span class="keyword">let</span>&nbsp;sprintf&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">No</span><br>
-<span class="keyword">let</span>&nbsp;fmt&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf<br>
 <br>
+<span class="keyword">let</span>&nbsp;printf&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">No</span><br>
+</code><table><tr><td></td><td><span class="comment">(** We disable <code class="code">printf</code>. *)</span></td></tr></table><code class="code"><br>
+<br>
+<span class="keyword">let</span>&nbsp;sprintf&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">No</span><br>
+</code><table><tr><td></td><td><span class="comment">(** We disable <code class="code">sprintf</code>, renamed as: *)</span></td></tr></table><code class="code"><br>
+<br>
+<span class="keyword">let</span>&nbsp;fmt&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf<br>
+</code><table><tr><td></td><td><span class="comment">(** The only function dealing with “formats.” *)</span></td></tr></table><code class="code"><br>
 <br>
 <span class="keyword">let</span>&nbsp;global_debug_level&nbsp;=&nbsp;ref&nbsp;2<br>
+</code><table><tr><td></td><td><span class="comment">(** Global reference. *)</span></td></tr></table><code class="code"><br>
+<br>
 <span class="keyword">let</span>&nbsp;global_with_color&nbsp;=&nbsp;ref&nbsp;<span class="keyword">true</span><br>
+</code><table><tr><td></td><td><span class="comment">(** Global reference. *)</span></td></tr></table><code class="code"><br>
+<br>
+</code><table><tr><td></td><td><span class="comment">(** Application of the functor <code class="code"><span class="constructor">Docout</span>.<span class="constructor">Make_logger</span></code> to write to <code class="code">stderr</code>
+    without buffering. *)</span></td></tr></table><code class="code"><br>
 <span class="keyword">module</span>&nbsp;<span class="constructor">Log</span>&nbsp;=&nbsp;<br>
 &nbsp;&nbsp;<span class="constructor">Docout</span>.<span class="constructor">Make_logger</span>&nbsp;(<span class="keyword">struct</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;(<span class="keywordsign">'</span>a,&nbsp;<span class="keywordsign">'</span>b)&nbsp;result&nbsp;=&nbsp;<span class="keywordsign">'</span>a<br>
@@ -53,18 +64,16 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;<span class="string">"ketrew"</span><br>
 &nbsp;&nbsp;<span class="keyword">end</span>)<br>
 <br>
-<span class="keyword">let</span>&nbsp;failwithf&nbsp;fmt&nbsp;=<br>
-&nbsp;&nbsp;ksprintf&nbsp;(<span class="keyword">fun</span>&nbsp;str&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Failing:&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;str&nbsp;@&nbsp;error);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;str<br>
-&nbsp;&nbsp;&nbsp;&nbsp;)&nbsp;fmt<br>
-<br>
+</code><table><tr><td></td><td><span class="comment">(** Function that have a documented, easy to check contract, can raise
+    <code class="code"><span class="constructor">Invalid_argument</span> _</code> (their name should end in <code class="code">_exn</code>). *)</span></td></tr></table><code class="code"><br>
 <span class="keyword">let</span>&nbsp;invalid_argument_exn&nbsp;?(where=<span class="string">"pervasives"</span>)&nbsp;what&nbsp;=<br>
 &nbsp;&nbsp;raise&nbsp;(<span class="constructor">Invalid_argument</span>&nbsp;(fmt&nbsp;<span class="string">"[%S]:&nbsp;%s"</span>&nbsp;where&nbsp;what))<br>
 <br>
+</code><table><tr><td></td><td><span class="comment">(** Handle timestamps. *)</span></td></tr></table><code class="code"><br>
 <span class="keyword">module</span>&nbsp;<span class="constructor">Time</span>&nbsp;=&nbsp;<span class="keyword">struct</span><br>
 &nbsp;&nbsp;<span class="keyword">include</span>&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span><br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;time<br>
+<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;now&nbsp;()&nbsp;:&nbsp;t&nbsp;=&nbsp;<span class="constructor">Unix</span>.gettimeofday&nbsp;()<br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;to_filename&nbsp;f&nbsp;=<br>
@@ -81,8 +90,8 @@
 <span class="keyword">end</span><br>
 <br>
 <br>
+</code><table><tr><td></td><td><span class="comment">(** Provide pseudo-unique identifiers. *)</span></td></tr></table><code class="code"><br>
 <span class="keyword">module</span>&nbsp;<span class="constructor">Unique_id</span>&nbsp;=&nbsp;<span class="keyword">struct</span><br>
-&nbsp;&nbsp;</code><table><tr><td>&nbsp;&nbsp;</td><td><span class="comment">(** Provide pseudo-unique identifiers. *)</span></td></tr></table><code class="code"><br>
 <br>
 &nbsp;&nbsp;<span class="keyword">include</span>&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span><br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;unique_id<br>
@@ -94,6 +103,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Time</span>.(now&nbsp;()&nbsp;|&gt;&nbsp;to_filename)&nbsp;(<span class="constructor">Random</span>.int&nbsp;1_000_000_000)<br>
 <span class="keyword">end</span><br>
 <br>
+</code><table><tr><td></td><td><span class="comment">(** Deal with error values common accros the library. *)</span></td></tr></table><code class="code"><br>
 <span class="keyword">module</span>&nbsp;<span class="constructor">Error</span>&nbsp;=&nbsp;<span class="keyword">struct</span><br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;to_string&nbsp;=&nbsp;<span class="keyword">function</span><br>
@@ -103,8 +113,13 @@
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">IO</span>&nbsp;_&nbsp;<span class="keyword">as</span>&nbsp;io&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">IO</span>.error_to_string&nbsp;io<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">System</span>&nbsp;_&nbsp;<span class="keyword">as</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">System</span>.error_to_string&nbsp;s<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Database</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Load</span>,&nbsp;path)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fmt&nbsp;<span class="string">"DB-load:&nbsp;%S"</span>&nbsp;path<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Host</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Execution</span>&nbsp;(one,&nbsp;two,&nbsp;three,&nbsp;four))&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;fmt&nbsp;<span class="string">"Host-exec(%s,&nbsp;%s,&nbsp;%s,&nbsp;%s)"</span>&nbsp;one&nbsp;two&nbsp;three&nbsp;four<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Host</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Execution</span>&nbsp;exec)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;fmt&nbsp;<span class="string">"Host:%S&nbsp;exec&nbsp;error:&nbsp;%S%s"</span>&nbsp;exec<span class="keywordsign">#</span>host&nbsp;exec<span class="keywordsign">#</span>message<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">match</span>&nbsp;exec<span class="keywordsign">#</span>stdout,&nbsp;exec<span class="keywordsign">#</span>stderr&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>,&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">""</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;oo,&nbsp;oe&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fmt&nbsp;<span class="string">"&nbsp;(%S,&nbsp;%S)"</span>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Option</span>.value&nbsp;~default:<span class="string">""</span>&nbsp;oo)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Option</span>.value&nbsp;~default:<span class="string">""</span>&nbsp;oe))<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Persistent_state</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Deserilization</span>&nbsp;s)&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;fmt&nbsp;<span class="string">"Persistent_state-Deserilization:&nbsp;%S"</span>&nbsp;s<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Target</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Deserilization</span>&nbsp;s)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fmt&nbsp;<span class="string">"target-deserialization:&nbsp;%s"</span>&nbsp;s<br>

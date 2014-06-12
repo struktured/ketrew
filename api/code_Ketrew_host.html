@@ -120,8 +120,20 @@
 <br>
 <span class="keyword">let</span>&nbsp;to_string_hum&nbsp;t&nbsp;=&nbsp;t.name<br>
 <br>
-<span class="keyword">let</span>&nbsp;fail_exec&nbsp;t&nbsp;?(out=<span class="string">""</span>)&nbsp;?(err=<span class="string">""</span>)&nbsp;msg&nbsp;=<br>
-&nbsp;&nbsp;fail&nbsp;(<span class="keywordsign">`</span><span class="constructor">Host</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Execution</span>&nbsp;(to_string_hum&nbsp;t,&nbsp;out,&nbsp;err,&nbsp;msg)))<br>
+<span class="comment">(*&nbsp;Experimenting&nbsp;with&nbsp;even&nbsp;more&nbsp;structurally&nbsp;typed&nbsp;error&nbsp;values:&nbsp;*)</span><br>
+<span class="keyword">type</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;execution_error&nbsp;=&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="keyword">constraint</span>&nbsp;<br>
+&nbsp;&nbsp;<span class="keywordsign">'</span>a&nbsp;=&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Execution</span>&nbsp;<span class="keyword">of</span>&nbsp;&lt;host&nbsp;:&nbsp;string;&nbsp;stdout:&nbsp;string&nbsp;option;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stderr:&nbsp;string&nbsp;option;&nbsp;message:&nbsp;string&gt;&nbsp;]<br>
+<br>
+<span class="keyword">let</span>&nbsp;fail_exec&nbsp;t&nbsp;?out&nbsp;?err&nbsp;msg:&nbsp;<br>
+&nbsp;&nbsp;(_,&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Host</span>&nbsp;<span class="keyword">of</span>&nbsp;_&nbsp;execution_error&nbsp;])&nbsp;<span class="constructor">Deferred_result</span>.t&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;v&nbsp;=&nbsp;<span class="keyword">object</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;host&nbsp;=&nbsp;to_string_hum&nbsp;t&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;stdout&nbsp;=&nbsp;out<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;stderr&nbsp;=&nbsp;err<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;message&nbsp;&nbsp;=&nbsp;msg<br>
+&nbsp;&nbsp;<span class="keyword">end</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;fail&nbsp;(<span class="keywordsign">`</span><span class="constructor">Host</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Execution</span>&nbsp;v))<br>
 <br>
 <span class="keyword">let</span>&nbsp;get_shell_command_output&nbsp;t&nbsp;cmd&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;t.connection&nbsp;<span class="keyword">with</span><br>

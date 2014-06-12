@@ -84,7 +84,7 @@ Create a volume. Example <pre class="codepre"><code class="code">&nbsp;&nbsp;&nb
 Get all the paths of the given Volume (files and directories).<br>
 </div>
 
-<pre><span id="VALexists"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.Volume.exists.html">exists</a></span> : <code class="type"><a href="Ketrew_artifact.Volume.html#TYPEt">t</a> -><br>       (bool, [> `Host of [> `Execution of string * string * string * string ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+<pre><span id="VALexists"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.Volume.exists.html">exists</a></span> : <code class="type"><a href="Ketrew_artifact.Volume.html#TYPEt">t</a> -><br>       (bool,<br>        [> `Host of<br>             [> `Execution of<br>                  < host : string; message : string; stderr : string option;<br>                    stdout : string option > ]<br>             <a href="Ketrew_host.html#TYPEexecution_error">Ketrew_host.execution_error</a> ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
 Check whether the whole structure of the Volume exists on the host.<br>
 </div>
 

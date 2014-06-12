@@ -62,7 +62,7 @@ Alias for <code class="code"><span class="keywordsign">`</span><span class="cons
 <pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = <code class="type">[ `Value of <a href="Ketrew_artifact.html#TYPEvalue">value</a> | `Volume of <a href="Ketrew_artifact.Volume.html#TYPEt">Volume.t</a> ]</code> </pre>
 
 
-<pre><span id="VALis_ready"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.is_ready.html">is_ready</a></span> : <code class="type"><a href="Ketrew_artifact.Type.html#TYPEt">Type.t</a> -><br>       (bool, [> `Host of [> `Execution of string * string * string * string ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+<pre><span id="VALis_ready"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.is_ready.html">is_ready</a></span> : <code class="type"><a href="Ketrew_artifact.Type.html#TYPEt">Type.t</a> -><br>       (bool,<br>        [> `Host of<br>             [> `Execution of<br>                  < host : string; message : string; stderr : string option;<br>                    stdout : string option > ]<br>             <a href="Ketrew_host.html#TYPEexecution_error">Ketrew_host.execution_error</a> ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
 Check whether an aritfact is ready, given its type.
 A “value” artifact is <i>never </i> ready, a “volume” one is checked with <a href="Ketrew_artifact.Volume.html#VALexists"><code class="code"><span class="constructor">Ketrew_artifact</span>.<span class="constructor">Volume</span>.exists</code></a>.
 This is meant to change.<br>

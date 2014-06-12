@@ -55,11 +55,11 @@ Get the host.<br>
 Get a Human-readable string.<br>
 </div>
 
-<pre><span id="VALget_output"><span class="keyword">val</span> <a href="code_VALKetrew_target.Command.get_output.html">get_output</a></span> : <code class="type"><a href="Ketrew_target.Command.html#TYPEt">t</a> -><br>       (string * string,<br>        [> `Host of [> `Execution of string * string * string * string ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+<pre><span id="VALget_output"><span class="keyword">val</span> <a href="code_VALKetrew_target.Command.get_output.html">get_output</a></span> : <code class="type"><a href="Ketrew_target.Command.html#TYPEt">t</a> -><br>       (string * string,<br>        [> `Host of<br>             [> `Execution of<br>                  < host : string; message : string; stderr : string option;<br>                    stdout : string option > ]<br>             <a href="Ketrew_host.html#TYPEexecution_error">Ketrew_host.execution_error</a> ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
 Run the command and get its <code class="code">(stdout, stderr)</code> pair.<br>
 </div>
 
-<pre><span id="VALrun"><span class="keyword">val</span> <a href="code_VALKetrew_target.Command.run.html">run</a></span> : <code class="type"><a href="Ketrew_target.Command.html#TYPEt">t</a> -><br>       (unit, [> `Host of [> `Execution of string * string * string * string ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+<pre><span id="VALrun"><span class="keyword">val</span> <a href="code_VALKetrew_target.Command.run.html">run</a></span> : <code class="type"><a href="Ketrew_target.Command.html#TYPEt">t</a> -><br>       (unit,<br>        [> `Host of<br>             [> `Execution of<br>                  < host : string; message : string; stderr : string option;<br>                    stdout : string option > ]<br>             <a href="Ketrew_host.html#TYPEexecution_error">Ketrew_host.execution_error</a> ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
 Run the command and ignore its <code class="code">(stdout, stderr)</code> pair.<br>
 </div>
 </body></html>

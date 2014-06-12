@@ -117,8 +117,9 @@ Create a new script, which will run the list of commands, and store state
 </td></tr>
 <tr><td><a href="Ketrew_lsf.html#VALcreate">create</a> [<a href="Ketrew_lsf.html">Ketrew_lsf</a>]</td>
 <td><div class="info">
-Create a “long-running” <a href="Ketrew_target.html#TYPEbuild_process"><code class="code"><span class="constructor">Ketrew_target</span>.build_process</code></a> (run parameters
-    already serialized).
+Create a “long-running” <a href="Ketrew_target.html#TYPEbuild_process"><code class="code"><span class="constructor">Ketrew_target</span>.build_process</code></a> to run a list of
+    shell commands on a given LSF-enabled host (run parameters
+    already serialized):  <code class="code">?queue</code> is the name of the LSF queue requested (<code class="code"><span class="string">"-q"</span></code> option). , <code class="code">?name</code> is the job name (<code class="code"><span class="string">"-J"</span></code> option). , <code class="code">?wall_limit</code> is the job's Wall-time timeout (<code class="code"><span class="string">"-W"</span></code> option). , <code class="code">?processors</code> is the “processors” request (<code class="code"><span class="string">"-n"</span></code> option). 
 </div>
 </td></tr>
 <tr><td><a href="Ketrew_state.Configuration.html#VALcreate">create</a> [<a href="Ketrew_state.Configuration.html">Ketrew_state.Configuration</a>]</td>
@@ -226,8 +227,6 @@ Create a <code class="code"><span class="string">"/bin/sh"</span></code> command
 </div>
 </td></tr>
 <tr><td align="left"><br>F</td></tr>
-<tr><td><a href="Ketrew_pervasives.html#VALfailwithf">failwithf</a> [<a href="Ketrew_pervasives.html">Ketrew_pervasives</a>]</td>
-<td></td></tr>
 <tr><td><a href="Ketrew_edsl.html#VALfile">file</a> [<a href="Ketrew_edsl.html">Ketrew_edsl</a>]</td>
 <td><div class="info">
 Create a volume containing one file.
@@ -304,7 +303,11 @@ Get a target's id.
 </div>
 </td></tr>
 <tr><td><a href="Ketrew_pervasives.html#VALinvalid_argument_exn">invalid_argument_exn</a> [<a href="Ketrew_pervasives.html">Ketrew_pervasives</a>]</td>
-<td></td></tr>
+<td><div class="info">
+Function that have a documented, easy to check contract, can raise
+    <code class="code"><span class="constructor">Invalid_argument</span> _</code> (their name should end in <code class="code">_exn</code>).
+</div>
+</td></tr>
 <tr><td><a href="Ketrew_database.html#VALis_not_set">is_not_set</a> [<a href="Ketrew_database.html">Ketrew_database</a>]</td>
 <td><div class="info">
 An action that checks that the <code class="code">key</code> is not set in the DB.

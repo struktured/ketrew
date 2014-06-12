@@ -41,11 +41,35 @@ Implementation of the <code class="code"><span class="constructor">LONG_RUNNING<
     scheduler.<br>
 </div>
 <hr width="100%">
+<br>
+“Long-running” plugin based on the
+    <a href="http://en.wikipedia.org/wiki/Platform_LSF">LSF</a> batch scheduler.
+<p>
+
+    Shell commands are put in a <a href="Ketrew_monitored_script.html#TYPEt"><code class="code"><span class="constructor">Ketrew_monitored_script</span>.t</code></a>, and
+    started with <code class="code"><span class="string">"bsub [OPTIONS] &lt; &lt;script&gt;"</span></code> (we gather the job-id while
+    submitting).
+<p>
+
+    The <code class="code">update</code> function uses the log-file of the monitored-script, and the
+    command <code class="code"><span class="string">"bjobs [OPTIONS] &lt;job-ID&gt;"</span></code>.
+<p>
+
+    The <code class="code">kill</code> function kills the job with <code class="code"><span class="string">"bkill &lt;job-ID&gt;"</span></code>.<br>
 
 <pre><span class="keyword">include</span> <a href="Ketrew_long_running.LONG_RUNNING.html">Ketrew_long_running.LONG_RUNNING</a></pre>
+<br>
+The “standard” plugin API.<br>
 
 <pre><span id="VALcreate"><span class="keyword">val</span> <a href="code_VALKetrew_lsf.create.html">create</a></span> : <code class="type">?host:<a href="Ketrew_host.html#TYPEt">Ketrew_host.t</a> -><br>       ?queue:string -><br>       ?name:string -><br>       ?wall_limit:string -><br>       ?processors:[ `Min of int | `Min_max of int * int ] -><br>       string list -> [> `Long_running of string * string ]</code></pre><div class="info ">
-Create a “long-running” <a href="Ketrew_target.html#TYPEbuild_process"><code class="code"><span class="constructor">Ketrew_target</span>.build_process</code></a> (run parameters
-    already serialized).<br>
+Create a “long-running” <a href="Ketrew_target.html#TYPEbuild_process"><code class="code"><span class="constructor">Ketrew_target</span>.build_process</code></a> to run a list of
+    shell commands on a given LSF-enabled host (run parameters
+    already serialized): <ul>
+<li><code class="code">?queue</code> is the name of the LSF queue requested (<code class="code"><span class="string">"-q"</span></code> option). </li>
+<li><code class="code">?name</code> is the job name (<code class="code"><span class="string">"-J"</span></code> option). </li>
+<li><code class="code">?wall_limit</code> is the job's Wall-time timeout (<code class="code"><span class="string">"-W"</span></code> option). </li>
+<li><code class="code">?processors</code> is the “processors” request (<code class="code"><span class="string">"-n"</span></code> option). </li>
+</ul>
+<br>
 </div>
 </body></html>

@@ -84,20 +84,26 @@ Get a <code class="code"><span class="constructor">Host</span>.t</code> from an 
 Get a display-friendly string for the host (“name”, or hostname).<br>
 </div>
 
-<pre><span id="VALget_shell_command_output"><span class="keyword">val</span> <a href="code_VALKetrew_host.get_shell_command_output.html">get_shell_command_output</a></span> : <code class="type"><a href="Ketrew_host.html#TYPEt">t</a> -><br>       string -><br>       (string * string,<br>        [> `Host of [> `Execution of string * string * string * string ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+<pre><span id="TYPEexecution_error"><span class="keyword">type</span> <code class="type">[> `Execution of<br>          < host : string; message : string; stderr : string option;<br>            stdout : string option > ]</code> execution_error</span> = <code class="type">[> `Execution of<br>            < host : string; message : string; stderr : string option;<br>              stdout : string option > ]<br>       as 'a</code> </pre>
+<div class="info ">
+Error value for failed executions (<i>Experimental</i> structural record).<br>
+</div>
+
+
+<pre><span id="VALget_shell_command_output"><span class="keyword">val</span> <a href="code_VALKetrew_host.get_shell_command_output.html">get_shell_command_output</a></span> : <code class="type"><a href="Ketrew_host.html#TYPEt">t</a> -><br>       string -><br>       (string * string,<br>        [> `Host of<br>             [> `Execution of<br>                  < host : string; message : string; stderr : string option;<br>                    stdout : string option > ]<br>             <a href="Ketrew_host.html#TYPEexecution_error">execution_error</a> ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
 Run a shell command on the host, and return its <code class="code">(stdout, stderr)</code> pair
     (succeeds <i>iff </i> the exit status is <code class="code">0</code>).<br>
 </div>
 
-<pre><span id="VALget_shell_command_return_value"><span class="keyword">val</span> <a href="code_VALKetrew_host.get_shell_command_return_value.html">get_shell_command_return_value</a></span> : <code class="type"><a href="Ketrew_host.html#TYPEt">t</a> -><br>       string -><br>       (int, [> `Host of [> `Execution of string * string * string * string ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+<pre><span id="VALget_shell_command_return_value"><span class="keyword">val</span> <a href="code_VALKetrew_host.get_shell_command_return_value.html">get_shell_command_return_value</a></span> : <code class="type"><a href="Ketrew_host.html#TYPEt">t</a> -><br>       string -><br>       (int,<br>        [> `Host of<br>             [> `Execution of<br>                  < host : string; message : string; stderr : string option;<br>                    stdout : string option > ]<br>             <a href="Ketrew_host.html#TYPEexecution_error">execution_error</a> ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
 Run a shell command on the host, and return its exit status value.<br>
 </div>
 
-<pre><span id="VALrun_shell_command"><span class="keyword">val</span> <a href="code_VALKetrew_host.run_shell_command.html">run_shell_command</a></span> : <code class="type"><a href="Ketrew_host.html#TYPEt">t</a> -><br>       string -><br>       (unit, [> `Host of [> `Execution of string * string * string * string ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+<pre><span id="VALrun_shell_command"><span class="keyword">val</span> <a href="code_VALKetrew_host.run_shell_command.html">run_shell_command</a></span> : <code class="type"><a href="Ketrew_host.html#TYPEt">t</a> -><br>       string -><br>       (unit,<br>        [> `Host of<br>             [> `Execution of<br>                  < host : string; message : string; stderr : string option;<br>                    stdout : string option > ]<br>             <a href="Ketrew_host.html#TYPEexecution_error">execution_error</a> ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
 Run a shell command on the host (succeeds <i>iff </i> the exit status is <code class="code">0</code>).<br>
 </div>
 
-<pre><span id="VALdo_files_exist"><span class="keyword">val</span> <a href="code_VALKetrew_host.do_files_exist.html">do_files_exist</a></span> : <code class="type"><a href="Ketrew_host.html#TYPEt">t</a> -><br>       < kind : 'a; relativity : 'b > <a href="Ketrew_path.html#TYPEt">Ketrew_path.t</a> list -><br>       (bool, [> `Host of [> `Execution of string * string * string * string ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+<pre><span id="VALdo_files_exist"><span class="keyword">val</span> <a href="code_VALKetrew_host.do_files_exist.html">do_files_exist</a></span> : <code class="type"><a href="Ketrew_host.html#TYPEt">t</a> -><br>       < kind : 'a; relativity : 'b > <a href="Ketrew_path.html#TYPEt">Ketrew_path.t</a> list -><br>       (bool,<br>        [> `Host of<br>             [> `Execution of<br>                  < host : string; message : string; stderr : string option;<br>                    stdout : string option > ]<br>             <a href="Ketrew_host.html#TYPEexecution_error">execution_error</a> ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
 Check existence of a list of files/directories.<br>
 </div>
 
@@ -105,11 +111,11 @@ Check existence of a list of files/directories.<br>
 Get a new subdirectory in the host's playground<br>
 </div>
 
-<pre><span id="VALensure_directory"><span class="keyword">val</span> <a href="code_VALKetrew_host.ensure_directory.html">ensure_directory</a></span> : <code class="type"><a href="Ketrew_host.html#TYPEt">t</a> -><br>       path:< kind : <a href="Ketrew_path.html#TYPEdirectory">Ketrew_path.directory</a>; relativity : 'a > <a href="Ketrew_path.html#TYPEt">Ketrew_path.t</a> -><br>       (unit,<br>        [> `Host of [> `Execution of string * string * string * string ]<br>         | `System of<br>             [> `Make_directory of string ] *<br>             [> `Exn of exn | `Wrong_access_rights of int ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+<pre><span id="VALensure_directory"><span class="keyword">val</span> <a href="code_VALKetrew_host.ensure_directory.html">ensure_directory</a></span> : <code class="type"><a href="Ketrew_host.html#TYPEt">t</a> -><br>       path:< kind : <a href="Ketrew_path.html#TYPEdirectory">Ketrew_path.directory</a>; relativity : 'a > <a href="Ketrew_path.html#TYPEt">Ketrew_path.t</a> -><br>       (unit,<br>        [> `Host of<br>             [> `Execution of<br>                  < host : string; message : string; stderr : string option;<br>                    stdout : string option > ]<br>             <a href="Ketrew_host.html#TYPEexecution_error">execution_error</a><br>         | `System of<br>             [> `Make_directory of string ] *<br>             [> `Exn of exn | `Wrong_access_rights of int ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
 Make sure the directory <code class="code">path</code> exists on the host.<br>
 </div>
 
-<pre><span id="VALput_file"><span class="keyword">val</span> <a href="code_VALKetrew_host.put_file.html">put_file</a></span> : <code class="type"><a href="Ketrew_host.html#TYPEt">t</a> -><br>       path:< kind : <a href="Ketrew_path.html#TYPEfile">Ketrew_path.file</a>; relativity : 'a > <a href="Ketrew_path.html#TYPEt">Ketrew_path.t</a> -><br>       content:string -><br>       (unit,<br>        [> `Host of [> `Execution of string * string * string * string ]<br>         | `IO of [> `Write_file_exn of Ketrew_pervasives.IO.path * exn ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+<pre><span id="VALput_file"><span class="keyword">val</span> <a href="code_VALKetrew_host.put_file.html">put_file</a></span> : <code class="type"><a href="Ketrew_host.html#TYPEt">t</a> -><br>       path:< kind : <a href="Ketrew_path.html#TYPEfile">Ketrew_path.file</a>; relativity : 'a > <a href="Ketrew_path.html#TYPEt">Ketrew_path.t</a> -><br>       content:string -><br>       (unit,<br>        [> `Host of<br>             [> `Execution of<br>                  < host : string; message : string; stderr : string option;<br>                    stdout : string option > ]<br>             <a href="Ketrew_host.html#TYPEexecution_error">execution_error</a><br>         | `IO of [> `Write_file_exn of Ketrew_pervasives.IO.path * exn ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
 Write a file on the host at <code class="code">path</code> containing <code class="code">contents</code>.<br>
 </div>
 
