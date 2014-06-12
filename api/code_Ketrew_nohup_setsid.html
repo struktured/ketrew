@@ -54,7 +54,7 @@
 &nbsp;&nbsp;<span class="keyword">end</span><br>
 <br>
 <span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;<span class="string">"nohup-setsid"</span><br>
-<span class="keyword">let</span>&nbsp;create&nbsp;?(host=<span class="constructor">Host</span>.localhost)&nbsp;cmds&nbsp;=<br>
+<span class="keyword">let</span>&nbsp;create&nbsp;?(host=<span class="constructor">Host</span>.tmp_on_localhost)&nbsp;cmds&nbsp;=<br>
 &nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">Long_running</span>&nbsp;(name,&nbsp;<span class="keywordsign">`</span><span class="constructor">Created</span>&nbsp;(host,&nbsp;cmds)&nbsp;|&gt;&nbsp;serialize)<br>
 <br>
 <span class="keyword">let</span>&nbsp;out_file_path&nbsp;~playground&nbsp;=<br>

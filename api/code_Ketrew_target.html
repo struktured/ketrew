@@ -40,7 +40,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;host:&nbsp;<span class="constructor">Host</span>.t;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;action:&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Shell</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;];<br>
 &nbsp;&nbsp;}<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;shell&nbsp;?(host=<span class="constructor">Host</span>.localhost)&nbsp;s&nbsp;=&nbsp;{&nbsp;host;&nbsp;action&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">Shell</span>&nbsp;s}<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;shell&nbsp;?(host=<span class="constructor">Host</span>.tmp_on_localhost)&nbsp;s&nbsp;=&nbsp;{&nbsp;host;&nbsp;action&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">Shell</span>&nbsp;s}<br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;get_host&nbsp;t&nbsp;=&nbsp;t.host<br>
 <br>
@@ -63,29 +63,6 @@
 <br>
 <span class="keyword">let</span>&nbsp;nop&nbsp;:&nbsp;build_process&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">Artifact</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Value</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Unit</span>)<br>
 <br>
-<span class="comment">(*&nbsp;type&nbsp;submitted_state&nbsp;=&nbsp;[`Created&nbsp;of&nbsp;Time.t]&nbsp;*)</span><br>
-<span class="comment">(*&nbsp;type&nbsp;activated_state&nbsp;=&nbsp;*)</span><br>
-<span class="comment">(*&nbsp;&nbsp;&nbsp;[`Activated&nbsp;of&nbsp;Time.t&nbsp;*&nbsp;submitted_state&nbsp;*&nbsp;[&nbsp;`User&nbsp;|&nbsp;`Dependency&nbsp;]&nbsp;]&nbsp;*)</span><br>
-<span class="comment">(*&nbsp;type&nbsp;run_bookkeeping&nbsp;=&nbsp;*)</span>&nbsp;<br>
-<span class="comment">(*&nbsp;&nbsp;&nbsp;{&nbsp;plugin_name:&nbsp;string;&nbsp;run_parameters:&nbsp;string;&nbsp;run_history:&nbsp;string&nbsp;list}&nbsp;*)</span><br>
-<span class="comment">(*&nbsp;type&nbsp;running_state&nbsp;=&nbsp;[&nbsp;`Running&nbsp;of&nbsp;run_bookkeeping&nbsp;*&nbsp;activated_state&nbsp;]&nbsp;*)</span><br>
-<span class="comment">(*&nbsp;type&nbsp;death_reason&nbsp;=&nbsp;[`Killed&nbsp;of&nbsp;string&nbsp;|&nbsp;`Failed&nbsp;of&nbsp;string]&nbsp;*)</span><br>
-<span class="comment">(*&nbsp;type&nbsp;finished_state&nbsp;=&nbsp;[&nbsp;*)</span>&nbsp;<br>
-<span class="comment">(*&nbsp;&nbsp;&nbsp;|&nbsp;`Dead&nbsp;of&nbsp;Time.t&nbsp;*&nbsp;[activated_state&nbsp;|&nbsp;running_state]&nbsp;*&nbsp;death_reason&nbsp;*)</span><br>
-<span class="comment">(*&nbsp;&nbsp;&nbsp;|&nbsp;`Successful&nbsp;of&nbsp;Time.t&nbsp;*&nbsp;[activated_state&nbsp;|&nbsp;running_state&nbsp;]&nbsp;*&nbsp;Artifact.t&nbsp;*)</span><br>
-<span class="comment">(*&nbsp;]&nbsp;*)</span><br>
-<span class="comment">(*&nbsp;type&nbsp;workflow_state&nbsp;=&nbsp;[&nbsp;submitted_state&nbsp;|&nbsp;activated_state&nbsp;|&nbsp;running_state&nbsp;|&nbsp;finished_state]&nbsp;*)</span><br>
-<span class="comment">(*&nbsp;type&nbsp;id&nbsp;=&nbsp;Unique_id.t&nbsp;*)</span><br>
-<span class="comment">(*&nbsp;type&nbsp;t&nbsp;=&nbsp;{&nbsp;*)</span><br>
-<span class="comment">(*&nbsp;&nbsp;&nbsp;id:&nbsp;id;&nbsp;*)</span><br>
-<span class="comment">(*&nbsp;&nbsp;&nbsp;name:&nbsp;string;&nbsp;*)</span><br>
-<span class="comment">(*&nbsp;&nbsp;&nbsp;persistance:&nbsp;[&nbsp;`Input_data&nbsp;|&nbsp;`Recomputable&nbsp;of&nbsp;float&nbsp;|&nbsp;`Result&nbsp;];&nbsp;*)</span><br>
-<span class="comment">(*&nbsp;&nbsp;&nbsp;metadata:&nbsp;Artifact.value;&nbsp;*)</span><br>
-<span class="comment">(*&nbsp;&nbsp;&nbsp;dependencies:&nbsp;id&nbsp;list;&nbsp;*)</span><br>
-<span class="comment">(*&nbsp;&nbsp;&nbsp;make:&nbsp;build_process;&nbsp;*)</span><br>
-<span class="comment">(*&nbsp;&nbsp;&nbsp;result_type:&nbsp;Artifact.Type.t;&nbsp;*)</span><br>
-<span class="comment">(*&nbsp;&nbsp;&nbsp;history:&nbsp;workflow_state;&nbsp;*)</span><br>
-<span class="comment">(*&nbsp;}&nbsp;*)</span><br>
 <span class="keyword">let</span>&nbsp;create<br>
 &nbsp;&nbsp;&nbsp;&nbsp;?id&nbsp;?name&nbsp;?(persistance=<span class="keywordsign">`</span><span class="constructor">Input_data</span>)&nbsp;?(metadata=<span class="constructor">Artifact</span>.unit)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;?(dependencies=[])&nbsp;?(make=nop)<br>

@@ -25,7 +25,7 @@
 <link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html"><title>Ketrew API : Ketrew_edsl.file</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;file&nbsp;?(host=&nbsp;<span class="constructor">Host</span>.localhost)&nbsp;path&nbsp;&nbsp;=<br>
+<code class="code"><span class="keyword">let</span>&nbsp;file&nbsp;?(host=&nbsp;<span class="constructor">Host</span>.tmp_on_localhost)&nbsp;path&nbsp;&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;basename&nbsp;=&nbsp;<span class="constructor">Filename</span>.basename&nbsp;path&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">object</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;artifact_type:&nbsp;<span class="constructor">Artifact</span>.<span class="constructor">Type</span>.t&nbsp;=<br>

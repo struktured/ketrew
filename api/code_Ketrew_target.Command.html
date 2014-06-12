@@ -31,7 +31,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;host:&nbsp;<span class="constructor">Host</span>.t;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;action:&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Shell</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;];<br>
 &nbsp;&nbsp;}<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;shell&nbsp;?(host=<span class="constructor">Host</span>.localhost)&nbsp;s&nbsp;=&nbsp;{&nbsp;host;&nbsp;action&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">Shell</span>&nbsp;s}<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;shell&nbsp;?(host=<span class="constructor">Host</span>.tmp_on_localhost)&nbsp;s&nbsp;=&nbsp;{&nbsp;host;&nbsp;action&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">Shell</span>&nbsp;s}<br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;get_host&nbsp;t&nbsp;=&nbsp;t.host<br>
 <br>

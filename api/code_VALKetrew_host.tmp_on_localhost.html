@@ -22,7 +22,9 @@
 <link title="Ketrew_pervasives" rel="Chapter" href="Ketrew_pervasives.html">
 <link title="Ketrew_state" rel="Chapter" href="Ketrew_state.html">
 <link title="Ketrew_target" rel="Chapter" href="Ketrew_target.html">
-<link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html"><title>Ketrew API : Ketrew_target.Command.shell</title>
+<link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html"><title>Ketrew API : Ketrew_host.tmp_on_localhost</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;shell&nbsp;?(host=<span class="constructor">Host</span>.tmp_on_localhost)&nbsp;s&nbsp;=&nbsp;{&nbsp;host;&nbsp;action&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">Shell</span>&nbsp;s}</code></body></html>
+<code class="code"><span class="keyword">let</span>&nbsp;tmp_on_localhost&nbsp;=&nbsp;<br>
+&nbsp;&nbsp;localhost&nbsp;~playground:(<span class="constructor">Path</span>.absolute_directory_exn&nbsp;<span class="string">"/tmp"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~name:<span class="string">"file://tmp"</span>&nbsp;()</code></body></html>

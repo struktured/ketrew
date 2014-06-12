@@ -57,6 +57,54 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;u&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[fmt&nbsp;<span class="string">"%s@%s"</span>&nbsp;u&nbsp;ssh.address])<br>
 &nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;[command]<br>
 <br>
+&nbsp;&nbsp;</code><table><tr><td>&nbsp;&nbsp;</td><td><span class="comment">(** Strong version of an SSH call, trying to be like <code class="code"><span class="constructor">Unix</span>.exec</code>. 
+      It “stores” the value of <code class="code"><span class="string">"$?"</span></code> in the stderr channel
+      enclosing the error log of the actual command between (hopefully) unique
+      strings.
+<p>
+
+      It calls the command (list of strings, <code class="code">argv</code>-like) with <code class="code">exec</code>
+      inside a sub-shell, and escapes all the arguments with <code class="code"><span class="constructor">Filename</span>.quote</code>.
+<p>
+
+      Then it forces the “script” to return <code class="code"><span class="string">'0'</span></code>, if the overall execution of
+      the whole SSH command does not return <code class="code"><span class="string">'0'</span></code>, we know that the problem
+      is with the SSH call, not the command.
+  *)</span></td></tr></table><code class="code"><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;generic_ssh_exec&nbsp;ssh&nbsp;command&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;unique_tag&nbsp;=&nbsp;<span class="constructor">Unique_id</span>.create&nbsp;()&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;spicied_command&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fmt&nbsp;<span class="string">"echo&nbsp;-n&nbsp;%s&nbsp;&gt;&amp;2&nbsp;;&nbsp;(exec&nbsp;%s)&nbsp;;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo&nbsp;-n&nbsp;%s$?&nbsp;&gt;&amp;2&nbsp;;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit&nbsp;0"</span>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unique_tag<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">List</span>.map&nbsp;command&nbsp;~f:(<span class="constructor">Filename</span>.quote)&nbsp;|&gt;&nbsp;<span class="constructor">String</span>.concat&nbsp;~sep:<span class="string">"&nbsp;"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unique_tag<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ssh_exec&nbsp;=&nbsp;do_ssh&nbsp;ssh&nbsp;spicied_command&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;parse_error_log&nbsp;out&nbsp;err&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;fail_parsing&nbsp;msg&nbsp;=&nbsp;fail&nbsp;(<span class="keywordsign">`</span><span class="constructor">Ssh_failure</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Wrong_log</span>&nbsp;msg,&nbsp;err))&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pieces&nbsp;=&nbsp;<span class="constructor">String</span>.split&nbsp;~on:(<span class="keywordsign">`</span><span class="constructor">String</span>&nbsp;unique_tag)&nbsp;err&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;pieces&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">""</span>&nbsp;::&nbsp;actual_stderr&nbsp;::&nbsp;return_value&nbsp;::&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Int</span>.of_string&nbsp;(<span class="constructor">String</span>.strip&nbsp;return_value)&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;r&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;(out,&nbsp;actual_stderr,&nbsp;r)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fail_parsing&nbsp;<span class="string">"Return&nbsp;value&nbsp;not&nbsp;an&nbsp;integer"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;somehting_else&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fail_parsing&nbsp;<span class="string">"Cannot&nbsp;parse&nbsp;error&nbsp;log"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="constructor">Ketrew_unix_process</span>.exec&nbsp;ssh_exec<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&lt;&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ok</span>&nbsp;(out,&nbsp;err,&nbsp;<span class="keywordsign">`</span><span class="constructor">Exited</span>&nbsp;0)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;parse_error_log&nbsp;out&nbsp;err<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ok</span>&nbsp;(out,&nbsp;err,&nbsp;other)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fail&nbsp;(<span class="keywordsign">`</span><span class="constructor">Ssh_failure</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Wrong_status</span>&nbsp;other,&nbsp;err))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Process</span>&nbsp;_&nbsp;<span class="keyword">as</span>&nbsp;process_error)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;msg&nbsp;=&nbsp;<span class="constructor">Ketrew_unix_process</span>.error_to_string&nbsp;process_error&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Ssh-cmd&nbsp;"</span>&nbsp;%&nbsp;<span class="constructor">OCaml</span>.list&nbsp;(sf&nbsp;<span class="string">"%S"</span>)&nbsp;ssh_exec&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;failed:&nbsp;"</span>&nbsp;%s&nbsp;msg&nbsp;@&nbsp;verbose);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fail&nbsp;(<span class="keywordsign">`</span><span class="constructor">Exec_failure</span>&nbsp;msg)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+<br>
 &nbsp;&nbsp;</code><table><tr><td>&nbsp;&nbsp;</td><td><span class="comment">(** Generate an SCP command for the given host with the destination
       directory or file path. *)</span></td></tr></table><code class="code"><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;scp_push&nbsp;ssh&nbsp;~src&nbsp;~dest&nbsp;=<br>

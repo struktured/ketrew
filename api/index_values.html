@@ -95,7 +95,7 @@ Safely concatenate two paths (calls <code class="code"><span class="constructor"
 <td><div class="info">
 Configure global “Batch option”,
       (call <code class="code">ssh</code> without password/question):
-       for OpenSSH, it is <code class="code"><span class="string">"-oBatchMode=yes"</span></code>,, for DropBear, it <code class="code"><span class="string">"-s"</span></code>.  
+       for OpenSSH, it is <code class="code"><span class="string">"-oBatchMode=yes"</span></code>,, for DropBear, it is <code class="code"><span class="string">"-s"</span></code>.  
 </div>
 </td></tr>
 <tr><td><a href="Ketrew_database.html#VALcontains">contains</a> [<a href="Ketrew_database.html">Ketrew_database</a>]</td>
@@ -148,12 +148,6 @@ Create a target value (not stored in the DB yet).
 <tr><td><a href="Ketrew_artifact.Volume.html#VALcreate">create</a> [<a href="Ketrew_artifact.Volume.html">Ketrew_artifact.Volume</a>]</td>
 <td><div class="info">
 Create a volume.
-</div>
-</td></tr>
-<tr><td><a href="Ketrew_host.html#VALcreate">create</a> [<a href="Ketrew_host.html">Ketrew_host</a>]</td>
-<td><div class="info">
-Create a <code class="code"><span class="constructor">Host</span>.t</code>, the playground is an optional directory on the host,
-    where <i>Ketrew</i> may put temporary scripts, logs, pid-files, etc.
 </div>
 </td></tr>
 <tr><td><a href="Ketrew_state.html#VALcurrent_targets">current_targets</a> [<a href="Ketrew_state.html">Ketrew_state</a>]</td>
@@ -214,6 +208,12 @@ Display-friendly version of the errors of this module.
 <td><div class="info">
 Execute a process with a given list of strings as “<code class="code">argv</code>”, if you can
     provide the <code class="code">~bin</code> argument to specify the actual file to be executed.
+</div>
+</td></tr>
+<tr><td><a href="Ketrew_host.html#VALexecute">execute</a> [<a href="Ketrew_host.html">Ketrew_host</a>]</td>
+<td><div class="info">
+Generic execution which tries to behave like <code class="code"><span class="constructor">Unix</span>.execv</code> even
+    on top of SSH.
 </div>
 </td></tr>
 <tr><td><a href="Ketrew_artifact.Volume.html#VALexists">exists</a> [<a href="Ketrew_artifact.Volume.html">Ketrew_artifact.Volume</a>]</td>
@@ -343,7 +343,7 @@ Load a handle from the given database parameters.
 </td></tr>
 <tr><td><a href="Ketrew_host.html#VALlocalhost">localhost</a> [<a href="Ketrew_host.html">Ketrew_host</a>]</td>
 <td><div class="info">
-The host <code class="code">localhost</code> is <code class="code"><span class="keywordsign">`</span><span class="constructor">Localhost</span></code> with <code class="code"><span class="string">"/tmp/"</span></code> as playground.
+The host <code class="code"><span class="string">"localhost"</span></code> (i.e.
 </div>
 </td></tr>
 <tr><td><a href="Ketrew_target.html#VALlog">log</a> [<a href="Ketrew_target.html">Ketrew_target</a>]</td>
@@ -545,6 +545,11 @@ Do like <a href="Ketrew_unix_process.html#VALexec"><code class="code"><span clas
 <tr><td><a href="Ketrew_edsl.html#VALtarget">target</a> [<a href="Ketrew_edsl.html">Ketrew_edsl</a>]</td>
 <td><div class="info">
 Create a new target.
+</div>
+</td></tr>
+<tr><td><a href="Ketrew_host.html#VALtmp_on_localhost">tmp_on_localhost</a> [<a href="Ketrew_host.html">Ketrew_host</a>]</td>
+<td><div class="info">
+The host <code class="code"><span class="string">"localhost"</span></code>, with <code class="code"><span class="string">"/tmp"</span></code> as <code class="code">playground</code>.
 </div>
 </td></tr>
 <tr><td><a href="Ketrew_pervasives.Time.html#VALto_filename">to_filename</a> [<a href="Ketrew_pervasives.Time.html">Ketrew_pervasives.Time</a>]</td>
