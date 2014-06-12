@@ -1,19 +1,42 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <link rel="stylesheet" href="api/style.css" type="text/css">
+  <link rel="stylesheet" href="http://cdn.jsdelivr.net/bootstrap/3.1.1/css/bootstrap.min.css" type="text/css">
+  <link rel="stylesheet" href="http://cdn.jsdelivr.net/bootstrap/3.1.1/css/bootstrap-theme.min.css" type="text/css">
   <meta charset="utf-8">
   <title>Ketrew 0.0.1-prealpha</title>
 </head>
-  <body>
+  <body><div class="container">
 <h1 id="KetrewKeepTrackofExperimentalWorkflows">Ketrew: Keep Track of Experimental Workflows</h1>
 <p>This is <strong>Work in Progress</strong>, not ready for use.</p>
+<p>This documentation is available at <a href='http://seb.mondet.org/ketrew/'>http://seb.mondet.org/ketrew/</a>.</p>
 <h2 id="BuildInstall">Build &amp; Install</h2>
-<p>Ketrew uses the <code>ocp-build</code> build system and depends on
-<code>cmdliner</code>, <code>nonstd</code>, <code>pvem</code>, <code>docout</code>,  <code>sosa</code>,  <code>pvem_lwt_unix</code>, <code>cmdliner</code>,
-and <code>atdgen</code>.</p>
+<h3 id="Dependencies">Dependencies</h3>
+<p>Ketrew depends on</p>
+<ul>
+ <li><code>nonstd</code>: nano-library providing a portable extract of <code>Core_kernel</code></li>
+ <li><code>pvem</code>: error monad</li>
+ <li><code>docout</code>: logging with <code>smart-print</code></li>
+ <li><code>sosa</code>:  String module/functor</li>
+ <li><code>pvem_lwt_unix</code>: <code>Lwt_unix</code> wrapped in a <code>Pvem.t</code> (error monad) with more
+precise error types.</li>
+ <li><code>uri</code>:
+parse an <a href='http://www.ietf.org/rfc/rfc3986.txt'>RFC-3986</a>-compliant URIs
+(<code>uri</code> itself depends on <code>camlp4</code>).</li>
+ <li><code>cmdliner</code>: command line parsing</li>
+ <li><code>yojson</code>: JSON parsing/printing</li>
+ <li><code>atdgen/atd</code>: definition of serialization formats (used with <code>Yojson</code>).</li>
+</ul>
+
+<p>and uses the <code>ocp-build</code> build system.</p>
+<p>The <code>please.sh</code> script can call <code>opam</code> itself:</p>
+<pre><code>./please.sh get-dependencies</code></pre>
+<h3 id="Build">Build</h3>
+<p>Then you may setup and build everything:</p>
 <pre><code>./please.sh build</code></pre>
-<p>You should <em>not</em> install <code>ketrew</code> yet, but you can always call at your own risk:</p>
+<p>(for incremental compilation while developping please use: <code>ocp-build &lt;target&gt;</code>
+directly)</p>
+<p>You should not install <code>ketrew</code> yet, but you can always call at your own risk:</p>
 <pre><code>ocp-build install</code></pre>
 <h2 id="Tests">Tests</h2>
 <p>Run the tests like this:</p>
@@ -24,36 +47,23 @@ not defined it will use <code>&quot;localhost&quot;</code>. But for the test to 
 an SSH host for which the user running the test does not need password.
 The test will run some commands on that host and create files and directories
 in its <code>/tmp</code> directory.</p>
-<p>There is also a “command line” test, see:</p>
-<pre><code>_obuild/ketrew-cli-test/ketrew-cli-test.asm --help</code></pre>
-<p>for now, <code>cli.ml</code> has only one workflow (using the library, no EDSL), that can
-be added/activated with:</p>
-<pre><code>_obuild/ketrew-cli-test/ketrew-cli-test.asm call website</code></pre>
-<p>and then run with:</p>
-<pre><code>_obuild/ketrew-cli-test/ketrew-cli-test.asm run fix</code></pre>
-<p>It should build the documentation and commit it in the <code>gh-pages</code> branch (or
-fail, for example, if the Git tree is not clean).</p>
 <h2 id="Documentation">Documentation</h2>
 <p>The documentation depends on <a href='https://github.com/ocaml/omd'>omd</a>, and
 Graphviz&#39;s <code>dot</code>:</p>
-<pre><code>please.sh doc
-
-
-</code></pre>
-<h2 id="CodeDocumentation">Code Documentation</h2>
-<ul>
- <li><a href='api/index.html'>ocaml-doc for the API</a></li>
-</ul>
-
-<p><a href="modules.svg">
-<object type="image/svg+xml" data="modules.svg"
-style="transform-origin: 0% 100% 0;
-       transform: translateY(-100%) rotate(90deg);"
-  >Your browser does not support SVG</object>
-</a></p>
+<pre><code>please.sh doc</code></pre>
+<p>and check-out <code>_doc/index.html</code>.</p>
 <h2 id="Authors">Authors</h2>
 <ul>
  <li><a href='http://seb.mondet.org'>Sebastien Mondet</a> (<code>seb@mondet.org</code>)</li>
 </ul>
 
-</body><html>
+<h2 id="CodeDocumentation">Code Documentation</h2>
+<ul>
+ <li><a href='api/index.html'>ocaml-doc for the API</a></li>
+</ul>
+
+<p><object class="img-rounded"  type="image/svg+xml" data="modules.svg"
+style="transform-origin: 0% 100% 0;
+       transform: translateY(-100%) rotate(90deg);"
+  >Your browser does not support SVG</object></p>
+</div></body><html>
