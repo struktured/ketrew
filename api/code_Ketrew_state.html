@@ -13,6 +13,7 @@
 <link title="Ketrew_command_line" rel="Chapter" href="Ketrew_command_line.html">
 <link title="Ketrew_database" rel="Chapter" href="Ketrew_database.html">
 <link title="Ketrew_edsl" rel="Chapter" href="Ketrew_edsl.html">
+<link title="Ketrew_error" rel="Chapter" href="Ketrew_error.html">
 <link title="Ketrew_host" rel="Chapter" href="Ketrew_host.html">
 <link title="Ketrew_long_running" rel="Chapter" href="Ketrew_long_running.html">
 <link title="Ketrew_lsf" rel="Chapter" href="Ketrew_lsf.html">
@@ -223,12 +224,11 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;add_or_update_target&nbsp;t&nbsp;new_target<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;[<span class="keywordsign">`</span><span class="constructor">Target_succeeded</span>&nbsp;(<span class="constructor">Target</span>.id&nbsp;target,&nbsp;<span class="keywordsign">`</span><span class="constructor">Process_success</span>)]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Host</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Execution</span>&nbsp;exec))&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Cmd&nbsp;error:&nbsp;"</span>&nbsp;%&nbsp;option&nbsp;s&nbsp;exec<span class="keywordsign">#</span>stderr&nbsp;@&nbsp;very_verbose);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Host</span>&nbsp;e)&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;add_or_update_target&nbsp;t&nbsp;<span class="constructor">Target</span>.(<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;make_fail_exn&nbsp;target&nbsp;&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~msg:(fmt&nbsp;<span class="string">"On&nbsp;%S,&nbsp;msg:&nbsp;%S"</span>&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exec<span class="keywordsign">#</span>host&nbsp;&nbsp;exec<span class="keywordsign">#</span>message))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~msg:(fmt&nbsp;<span class="string">"Host&nbsp;error:&nbsp;%s"</span>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Host</span>.<span class="constructor">Error</span>.log&nbsp;e&nbsp;|&gt;&nbsp;<span class="constructor">Log</span>.to_long_string)))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;[<span class="keywordsign">`</span><span class="constructor">Target_died</span>&nbsp;(<span class="constructor">Target</span>.id&nbsp;target,&nbsp;<span class="keywordsign">`</span><span class="constructor">Process_failure</span>)]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
@@ -262,11 +262,10 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;[<span class="keywordsign">`</span><span class="constructor">Target_died</span>&nbsp;(<span class="constructor">Target</span>.id&nbsp;target,&nbsp;<span class="keywordsign">`</span><span class="constructor">Wrong_type</span>)]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Host</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Execution</span>&nbsp;exec))&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Cmd&nbsp;error:&nbsp;"</span>&nbsp;%&nbsp;option&nbsp;s&nbsp;exec<span class="keywordsign">#</span>stderr&nbsp;@&nbsp;very_verbose);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Host</span>&nbsp;e)&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;add_or_update_target&nbsp;t&nbsp;<span class="constructor">Target</span>.(<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;make_fail_exn&nbsp;target&nbsp;&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~msg:(fmt&nbsp;<span class="string">"On&nbsp;%S,&nbsp;msg:&nbsp;%S"</span>&nbsp;exec<span class="keywordsign">#</span>host&nbsp;&nbsp;exec<span class="keywordsign">#</span>message))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~msg:(fmt&nbsp;<span class="string">"host:&nbsp;%s"</span>&nbsp;(<span class="constructor">Host</span>.<span class="constructor">Error</span>.log&nbsp;e&nbsp;|&gt;&nbsp;<span class="constructor">Log</span>.to_long_string)))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;[<span class="keywordsign">`</span><span class="constructor">Target_died</span>&nbsp;(<span class="constructor">Target</span>.id&nbsp;target,&nbsp;<span class="keywordsign">`</span><span class="constructor">Process_failure</span>)]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>

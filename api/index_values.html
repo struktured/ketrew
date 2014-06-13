@@ -14,6 +14,7 @@
 <link title="Ketrew_command_line" rel="Chapter" href="Ketrew_command_line.html">
 <link title="Ketrew_database" rel="Chapter" href="Ketrew_database.html">
 <link title="Ketrew_edsl" rel="Chapter" href="Ketrew_edsl.html">
+<link title="Ketrew_error" rel="Chapter" href="Ketrew_error.html">
 <link title="Ketrew_host" rel="Chapter" href="Ketrew_host.html">
 <link title="Ketrew_long_running" rel="Chapter" href="Ketrew_long_running.html">
 <link title="Ketrew_lsf" rel="Chapter" href="Ketrew_lsf.html">
@@ -351,6 +352,8 @@ The host <code class="code"><span class="string">"localhost"</span></code> (i.e.
 Get a <code class="code"><span class="constructor">Log</span>.t</code> “document” to display the target.
 </div>
 </td></tr>
+<tr><td><a href="Ketrew_host.Error.html#VALlog">log</a> [<a href="Ketrew_host.Error.html">Ketrew_host.Error</a>]</td>
+<td></td></tr>
 <tr><td><a href="Ketrew_monitored_script.html#VALlog_file">log_file</a> [<a href="Ketrew_monitored_script.html">Ketrew_monitored_script</a>]</td>
 <td><div class="info">
 Path to the log file of the script.
@@ -512,6 +515,11 @@ Get a running target out of an activated “long-running-plugin” one,
 Create a “shell” command for a given <code class="code"><span class="constructor">Host</span>.t</code>.
 </div>
 </td></tr>
+<tr><td><a href="Ketrew_host.html#VALshell_sh">shell_sh</a> [<a href="Ketrew_host.html">Ketrew_host</a>]</td>
+<td><div class="info">
+Call sh-style commands using the command argument (e.g.
+</div>
+</td></tr>
 <tr><td><a href="Ketrew_pervasives.html#VALsprintf">sprintf</a> [<a href="Ketrew_pervasives.html">Ketrew_pervasives</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ketrew_host.html#VALssh">ssh</a> [<a href="Ketrew_host.html">Ketrew_host</a>]</td>
@@ -554,15 +562,19 @@ The host <code class="code"><span class="string">"localhost"</span></code>, with
 </td></tr>
 <tr><td><a href="Ketrew_pervasives.Time.html#VALto_filename">to_filename</a> [<a href="Ketrew_pervasives.Time.html">Ketrew_pervasives.Time</a>]</td>
 <td></td></tr>
-<tr><td><a href="Ketrew_unix_process.Exit_code.html#VALto_string">to_string</a> [<a href="Ketrew_unix_process.Exit_code.html">Ketrew_unix_process.Exit_code</a>]</td>
+<tr><td><a href="Ketrew_unix_process.Exit_code.html#VALto_log">to_log</a> [<a href="Ketrew_unix_process.Exit_code.html">Ketrew_unix_process.Exit_code</a>]</td>
 <td></td></tr>
-<tr><td><a href="Ketrew_pervasives.Error.html#VALto_string">to_string</a> [<a href="Ketrew_pervasives.Error.html">Ketrew_pervasives.Error</a>]</td>
+<tr><td><a href="Ketrew_pervasives.Log.html#VALto_long_string">to_long_string</a> [<a href="Ketrew_pervasives.Log.html">Ketrew_pervasives.Log</a>]</td>
+<td></td></tr>
+<tr><td><a href="Ketrew_unix_process.Exit_code.html#VALto_string">to_string</a> [<a href="Ketrew_unix_process.Exit_code.html">Ketrew_unix_process.Exit_code</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ketrew_monitored_script.html#VALto_string">to_string</a> [<a href="Ketrew_monitored_script.html">Ketrew_monitored_script</a>]</td>
 <td><div class="info">
 Render the <code class="code">monitored_script</code> to a shell-script string.
 </div>
 </td></tr>
+<tr><td><a href="Ketrew_error.html#VALto_string">to_string</a> [<a href="Ketrew_error.html">Ketrew_error</a>]</td>
+<td></td></tr>
 <tr><td><a href="Ketrew_path.html#VALto_string">to_string</a> [<a href="Ketrew_path.html">Ketrew_path</a>]</td>
 <td><div class="info">
 Convert the path to a “Unix” path.

@@ -18,6 +18,7 @@
 <link title="Ketrew_command_line" rel="Chapter" href="Ketrew_command_line.html">
 <link title="Ketrew_database" rel="Chapter" href="Ketrew_database.html">
 <link title="Ketrew_edsl" rel="Chapter" href="Ketrew_edsl.html">
+<link title="Ketrew_error" rel="Chapter" href="Ketrew_error.html">
 <link title="Ketrew_host" rel="Chapter" href="Ketrew_host.html">
 <link title="Ketrew_long_running" rel="Chapter" href="Ketrew_long_running.html">
 <link title="Ketrew_lsf" rel="Chapter" href="Ketrew_lsf.html">
@@ -62,7 +63,7 @@ Alias for <code class="code"><span class="keywordsign">`</span><span class="cons
 <pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = <code class="type">[ `Value of <a href="Ketrew_artifact.html#TYPEvalue">value</a> | `Volume of <a href="Ketrew_artifact.Volume.html#TYPEt">Volume.t</a> ]</code> </pre>
 
 
-<pre><span id="VALis_ready"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.is_ready.html">is_ready</a></span> : <code class="type"><a href="Ketrew_artifact.Type.html#TYPEt">Type.t</a> -><br>       (bool,<br>        [> `Host of<br>             [> `Execution of<br>                  < host : string; message : string; stderr : string option;<br>                    stdout : string option > ]<br>             <a href="Ketrew_host.html#TYPEexecution_error">Ketrew_host.execution_error</a> ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+<pre><span id="VALis_ready"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.is_ready.html">is_ready</a></span> : <code class="type"><a href="Ketrew_artifact.Type.html#TYPEt">Type.t</a> -><br>       (bool,<br>        [> `Host of<br>             [> `Exec_failure of string<br>              | `Execution of<br>                  < host : string; message : string; stderr : string option;<br>                    stdout : string option ><br>              | `Ssh_failure of<br>                  [> `Wrong_log of string<br>                   | `Wrong_status of <a href="Ketrew_unix_process.Exit_code.html#TYPEt">Ketrew_unix_process.Exit_code.t</a> ] *<br>                  string ]<br>             <a href="Ketrew_host.Error.html#TYPEexecution">Ketrew_host.Error.execution</a> ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
 Check whether an aritfact is ready, given its type.
 A “value” artifact is <i>never </i> ready, a “volume” one is checked with <a href="Ketrew_artifact.Volume.html#VALexists"><code class="code"><span class="constructor">Ketrew_artifact</span>.<span class="constructor">Volume</span>.exists</code></a>.
 This is meant to change.<br>

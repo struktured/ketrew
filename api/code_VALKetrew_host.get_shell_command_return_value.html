@@ -13,6 +13,7 @@
 <link title="Ketrew_command_line" rel="Chapter" href="Ketrew_command_line.html">
 <link title="Ketrew_database" rel="Chapter" href="Ketrew_database.html">
 <link title="Ketrew_edsl" rel="Chapter" href="Ketrew_edsl.html">
+<link title="Ketrew_error" rel="Chapter" href="Ketrew_error.html">
 <link title="Ketrew_host" rel="Chapter" href="Ketrew_host.html">
 <link title="Ketrew_long_running" rel="Chapter" href="Ketrew_long_running.html">
 <link title="Ketrew_lsf" rel="Chapter" href="Ketrew_lsf.html">
@@ -25,27 +26,7 @@
 <link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html"><title>Ketrew API : Ketrew_host.get_shell_command_return_value</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;get_shell_command_return_value&nbsp;t&nbsp;cmd&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;t.connection&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Localhost</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="constructor">System</span>.<span class="constructor">Shell</span>.execute&nbsp;cmd<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&lt;&nbsp;<span class="keyword">function</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ok</span>&nbsp;(out,&nbsp;err,&nbsp;<span class="keywordsign">`</span><span class="constructor">Exited</span>&nbsp;n)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;n<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ok</span>&nbsp;(out,&nbsp;err,&nbsp;other)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fail_exec&nbsp;t&nbsp;~out&nbsp;~err&nbsp;(<span class="constructor">System</span>.<span class="constructor">Shell</span>.status_to_string&nbsp;other)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Shell</span>&nbsp;_&nbsp;<span class="keyword">as</span>&nbsp;e)&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fail_exec&nbsp;t&nbsp;(<span class="constructor">System</span>.error_to_string&nbsp;e)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ssh</span>&nbsp;ssh&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ssh_cmd&nbsp;=&nbsp;<span class="constructor">Ssh</span>.(do_ssh&nbsp;ssh&nbsp;cmd)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="constructor">Ketrew_unix_process</span>.exec&nbsp;ssh_cmd<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&lt;&nbsp;<span class="keyword">function</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ok</span>&nbsp;(out,&nbsp;err,&nbsp;<span class="keywordsign">`</span><span class="constructor">Exited</span>&nbsp;n)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;n<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ok</span>&nbsp;(out,&nbsp;err,&nbsp;other)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fail_exec&nbsp;t&nbsp;~out&nbsp;~err&nbsp;(<span class="constructor">System</span>.<span class="constructor">Shell</span>.status_to_string&nbsp;other)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Process</span>&nbsp;_&nbsp;<span class="keyword">as</span>&nbsp;process_error)&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;msg&nbsp;=&nbsp;<span class="constructor">Ketrew_unix_process</span>.error_to_string&nbsp;process_error&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Ssh-cmd&nbsp;"</span>&nbsp;%&nbsp;<span class="constructor">OCaml</span>.list&nbsp;(sf&nbsp;<span class="string">"%S"</span>)&nbsp;ssh_cmd&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;failed:&nbsp;"</span>&nbsp;%s&nbsp;msg&nbsp;@&nbsp;verbose);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fail_exec&nbsp;t&nbsp;msg<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span></code></body></html>
+<code class="code"><span class="keyword">let</span>&nbsp;get_shell_command_return_value&nbsp;?with_shell&nbsp;t&nbsp;cmd&nbsp;=<br>
+&nbsp;&nbsp;execute&nbsp;t&nbsp;(override_shell&nbsp;?with_shell&nbsp;t&nbsp;cmd)<br>
+&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;execution&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;return&nbsp;execution<span class="keywordsign">#</span>exited</code></body></html>

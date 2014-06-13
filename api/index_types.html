@@ -14,6 +14,7 @@
 <link title="Ketrew_command_line" rel="Chapter" href="Ketrew_command_line.html">
 <link title="Ketrew_database" rel="Chapter" href="Ketrew_database.html">
 <link title="Ketrew_edsl" rel="Chapter" href="Ketrew_edsl.html">
+<link title="Ketrew_error" rel="Chapter" href="Ketrew_error.html">
 <link title="Ketrew_host" rel="Chapter" href="Ketrew_host.html">
 <link title="Ketrew_long_running" rel="Chapter" href="Ketrew_long_running.html">
 <link title="Ketrew_lsf" rel="Chapter" href="Ketrew_lsf.html">
@@ -68,11 +69,8 @@ Abstract phantom type.
 </div>
 </td></tr>
 <tr><td align="left"><br>E</td></tr>
-<tr><td><a href="Ketrew_host.html#TYPEexecution_error">execution_error</a> [<a href="Ketrew_host.html">Ketrew_host</a>]</td>
-<td><div class="info">
-Error value for failed executions (<i>Experimental</i> structural record).
-</div>
-</td></tr>
+<tr><td><a href="Ketrew_host.Error.html#TYPEexecution">execution</a> [<a href="Ketrew_host.Error.html">Ketrew_host.Error</a>]</td>
+<td></td></tr>
 <tr><td align="left"><br>F</td></tr>
 <tr><td><a href="Ketrew_path.html#TYPEfile">file</a> [<a href="Ketrew_path.html">Ketrew_path</a>]</td>
 <td><div class="info">
@@ -104,6 +102,9 @@ Alias for the host type.
 The identifiers of targets.
 </div>
 </td></tr>
+<tr><td align="left"><br>N</td></tr>
+<tr><td><a href="Ketrew_host.Error.html#TYPEnon_zero_execution">non_zero_execution</a> [<a href="Ketrew_host.Error.html">Ketrew_host.Error</a>]</td>
+<td></td></tr>
 <tr><td align="left"><br>R</td></tr>
 <tr><td><a href="Ketrew_path.html#TYPErelative">relative</a> [<a href="Ketrew_path.html">Ketrew_path</a>]</td>
 <td><div class="info">
@@ -130,6 +131,13 @@ Hidden type kept serialized by the engine.
 <tr><td><a href="Ketrew_target.html#TYPErunning_state">running_state</a> [<a href="Ketrew_target.html">Ketrew_target</a>]</td>
 <td></td></tr>
 <tr><td align="left"><br>S</td></tr>
+<tr><td><a href="Ketrew_host.html#TYPEshell">shell</a> [<a href="Ketrew_host.html">Ketrew_host</a>]</td>
+<td><div class="info">
+A “shell” is a function that takes a command and returns, and
+     execv-style string list; the default for each host
+     is <code class="code"><span class="string">"sh"</span>; <span class="string">"-c"</span>; cmd</code>
+</div>
+</td></tr>
 <tr><td><a href="Ketrew_artifact.Volume.html#TYPEstructure">structure</a> [<a href="Ketrew_artifact.Volume.html">Ketrew_artifact.Volume</a>]</td>
 <td><div class="info">
 The structure of a volume defines the hierarchy of files relative to

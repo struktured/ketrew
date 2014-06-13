@@ -14,6 +14,7 @@
 <link title="Ketrew_command_line" rel="Chapter" href="Ketrew_command_line.html">
 <link title="Ketrew_database" rel="Chapter" href="Ketrew_database.html">
 <link title="Ketrew_edsl" rel="Chapter" href="Ketrew_edsl.html">
+<link title="Ketrew_error" rel="Chapter" href="Ketrew_error.html">
 <link title="Ketrew_host" rel="Chapter" href="Ketrew_host.html">
 <link title="Ketrew_long_running" rel="Chapter" href="Ketrew_long_running.html">
 <link title="Ketrew_lsf" rel="Chapter" href="Ketrew_lsf.html">
@@ -50,14 +51,13 @@ Definition of the configuration (input to state creation; contents of the
 <tr><td align="left"><br>E</td></tr>
 <tr><td><a href="Ketrew.EDSL.html">EDSL</a> [<a href="Ketrew.html">Ketrew</a>]</td>
 <td></td></tr>
-<tr><td><a href="Ketrew_pervasives.Error.html">Error</a> [<a href="Ketrew_pervasives.html">Ketrew_pervasives</a>]</td>
-<td><div class="info">
-Deal with error values common accros the library.
-</div>
-</td></tr>
+<tr><td><a href="Ketrew.Error.html">Error</a> [<a href="Ketrew.html">Ketrew</a>]</td>
+<td></td></tr>
+<tr><td><a href="Ketrew_host.Error.html">Error</a> [<a href="Ketrew_host.html">Ketrew_host</a>]</td>
+<td></td></tr>
 <tr><td><a href="Ketrew_unix_process.Exit_code.html">Exit_code</a> [<a href="Ketrew_unix_process.html">Ketrew_unix_process</a>]</td>
 <td><div class="info">
-High-level representation of Unix exit codes.
+Higher-level representation of Unix exit codes.
 </div>
 </td></tr>
 <tr><td align="left"><br>H</td></tr>
@@ -87,6 +87,11 @@ A key-value database API with basic transactions.
 <tr><td><a href="Ketrew_edsl.html">Ketrew_edsl</a> </td>
 <td><div class="info">
 Easy interface to the library <b>for end users</b>.
+</div>
+</td></tr>
+<tr><td><a href="Ketrew_error.html">Ketrew_error</a> </td>
+<td><div class="info">
+Deal with error values common accros the library.
 </div>
 </td></tr>
 <tr><td><a href="Ketrew_host.html">Ketrew_host</a> </td>

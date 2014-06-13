@@ -17,6 +17,7 @@
 <link title="Ketrew_command_line" rel="Chapter" href="Ketrew_command_line.html">
 <link title="Ketrew_database" rel="Chapter" href="Ketrew_database.html">
 <link title="Ketrew_edsl" rel="Chapter" href="Ketrew_edsl.html">
+<link title="Ketrew_error" rel="Chapter" href="Ketrew_error.html">
 <link title="Ketrew_host" rel="Chapter" href="Ketrew_host.html">
 <link title="Ketrew_long_running" rel="Chapter" href="Ketrew_long_running.html">
 <link title="Ketrew_lsf" rel="Chapter" href="Ketrew_lsf.html">
@@ -40,7 +41,7 @@ Manage calls to Unix processes<br>
 <hr width="100%">
 
 <pre><span class="keyword">module</span> <a href="Ketrew_unix_process.Exit_code.html">Exit_code</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_unix_process.Exit_code.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info">
-High-level representation of Unix exit codes.
+Higher-level representation of Unix exit codes.
 </div>
 
 <pre><span id="VALexec"><span class="keyword">val</span> <a href="code_VALKetrew_unix_process.exec.html">exec</a></span> : <code class="type">?bin:string -><br>       string list -><br>       (string * string * <a href="Ketrew_unix_process.Exit_code.html#TYPEt">Exit_code.t</a>,<br>        [> `Process of [> `Exec of string * string list ] * [> `Exn of exn ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">

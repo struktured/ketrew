@@ -13,6 +13,7 @@
 <link title="Ketrew_command_line" rel="Chapter" href="Ketrew_command_line.html">
 <link title="Ketrew_database" rel="Chapter" href="Ketrew_database.html">
 <link title="Ketrew_edsl" rel="Chapter" href="Ketrew_edsl.html">
+<link title="Ketrew_error" rel="Chapter" href="Ketrew_error.html">
 <link title="Ketrew_host" rel="Chapter" href="Ketrew_host.html">
 <link title="Ketrew_long_running" rel="Chapter" href="Ketrew_long_running.html">
 <link title="Ketrew_lsf" rel="Chapter" href="Ketrew_lsf.html">
@@ -33,49 +34,53 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.host<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;localhost&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?default_shell:string&nbsp;*&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?playground:<span class="constructor">Ketrew_path</span>.absolute_directory&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?name:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;tmp_on_localhost&nbsp;:&nbsp;t<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;ssh&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?default_shell:string&nbsp;*&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?playground:<span class="constructor">Ketrew_path</span>.absolute_directory&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?port:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?user:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?name:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;of_string&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;of_uri&nbsp;:&nbsp;<span class="constructor">Uri</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;of_string&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;to_string_hum&nbsp;:&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;execution_error&nbsp;=&nbsp;<span class="keywordsign">'</span>a<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">constraint</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Execution</span>&nbsp;<span class="keyword">of</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&nbsp;host&nbsp;:&nbsp;string;&nbsp;message&nbsp;:&nbsp;string;&nbsp;stderr&nbsp;:&nbsp;string&nbsp;option;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stdout&nbsp;:&nbsp;string&nbsp;option&nbsp;&gt;&nbsp;]<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;get_shell_command_output&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;(string&nbsp;*&nbsp;string,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Host</span>&nbsp;<span class="keyword">of</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Execution</span>&nbsp;<span class="keyword">of</span><br>
+&nbsp;&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">Error</span>&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">sig</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;execution&nbsp;=&nbsp;<span class="keywordsign">'</span>a<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">constraint</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Exec_failure</span>&nbsp;<span class="keyword">of</span>&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Execution</span>&nbsp;<span class="keyword">of</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&nbsp;host&nbsp;:&nbsp;string;&nbsp;message&nbsp;:&nbsp;string;&nbsp;stderr&nbsp;:&nbsp;string&nbsp;option;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stdout&nbsp;:&nbsp;string&nbsp;option&nbsp;&gt;&nbsp;]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;execution_error&nbsp;])<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_pervasives</span>.<span class="constructor">Deferred_result</span>.t<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;get_shell_command_return_value&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;(int,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Host</span>&nbsp;<span class="keyword">of</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Execution</span>&nbsp;<span class="keyword">of</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&nbsp;host&nbsp;:&nbsp;string;&nbsp;message&nbsp;:&nbsp;string;&nbsp;stderr&nbsp;:&nbsp;string&nbsp;option;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stdout&nbsp;:&nbsp;string&nbsp;option&nbsp;&gt;&nbsp;]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;execution_error&nbsp;])<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_pervasives</span>.<span class="constructor">Deferred_result</span>.t<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;run_shell_command&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;(unit,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Host</span>&nbsp;<span class="keyword">of</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Execution</span>&nbsp;<span class="keyword">of</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&nbsp;host&nbsp;:&nbsp;string;&nbsp;message&nbsp;:&nbsp;string;&nbsp;stderr&nbsp;:&nbsp;string&nbsp;option;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stdout&nbsp;:&nbsp;string&nbsp;option&nbsp;&gt;&nbsp;]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;execution_error&nbsp;])<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_pervasives</span>.<span class="constructor">Deferred_result</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stdout&nbsp;:&nbsp;string&nbsp;option&nbsp;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ssh_failure</span>&nbsp;<span class="keyword">of</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Wrong_log</span>&nbsp;<span class="keyword">of</span>&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Wrong_status</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ketrew_unix_process</span>.<span class="constructor">Exit_code</span>.t&nbsp;]&nbsp;*<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;non_zero_execution&nbsp;=&nbsp;<span class="keywordsign">'</span>a<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">constraint</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Exec_failure</span>&nbsp;<span class="keyword">of</span>&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Execution</span>&nbsp;<span class="keyword">of</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&nbsp;host&nbsp;:&nbsp;string;&nbsp;message&nbsp;:&nbsp;string;&nbsp;stderr&nbsp;:&nbsp;string&nbsp;option;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stdout&nbsp;:&nbsp;string&nbsp;option&nbsp;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Non_zero</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;*&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ssh_failure</span>&nbsp;<span class="keyword">of</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Wrong_log</span>&nbsp;<span class="keyword">of</span>&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Wrong_status</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ketrew_unix_process</span>.<span class="constructor">Exit_code</span>.t&nbsp;]&nbsp;*<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">as</span>&nbsp;<span class="keywordsign">'</span>b)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;execution<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;log&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&lt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Exec_failure</span>&nbsp;<span class="keyword">of</span>&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Execution</span>&nbsp;<span class="keyword">of</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&nbsp;host&nbsp;:&nbsp;string;&nbsp;message&nbsp;:&nbsp;string;&nbsp;stderr&nbsp;:&nbsp;string&nbsp;option;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stdout&nbsp;:&nbsp;string&nbsp;option;&nbsp;..&nbsp;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Non_zero</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;*&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ssh_failure</span>&nbsp;<span class="keyword">of</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&lt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Wrong_log</span>&nbsp;<span class="keyword">of</span>&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Wrong_status</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ketrew_unix_process</span>.<span class="constructor">Exit_code</span>.t&nbsp;]&nbsp;*<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;]&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_pervasives</span>.<span class="constructor">Log</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;execute&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span><br>
@@ -88,31 +93,94 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ssh_failure</span>&nbsp;<span class="keyword">of</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Wrong_log</span>&nbsp;<span class="keyword">of</span>&nbsp;string<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Wrong_status</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ketrew_unix_process</span>.<span class="constructor">Exit_code</span>.t&nbsp;]&nbsp;*<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;]&nbsp;])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Error</span>.execution&nbsp;])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_pervasives</span>.<span class="constructor">Deferred_result</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;shell&nbsp;=&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;shell_sh&nbsp;:&nbsp;sh:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;shell<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;get_shell_command_output&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?with_shell:shell&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;(string&nbsp;*&nbsp;string,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Host</span>&nbsp;<span class="keyword">of</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Exec_failure</span>&nbsp;<span class="keyword">of</span>&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Execution</span>&nbsp;<span class="keyword">of</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&nbsp;host&nbsp;:&nbsp;string;&nbsp;message&nbsp;:&nbsp;string;&nbsp;stderr&nbsp;:&nbsp;string&nbsp;option;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stdout&nbsp;:&nbsp;string&nbsp;option&nbsp;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Non_zero</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;*&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ssh_failure</span>&nbsp;<span class="keyword">of</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Wrong_log</span>&nbsp;<span class="keyword">of</span>&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Wrong_status</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ketrew_unix_process</span>.<span class="constructor">Exit_code</span>.t&nbsp;]&nbsp;*<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Error</span>.execution&nbsp;<span class="constructor">Error</span>.non_zero_execution&nbsp;])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_pervasives</span>.<span class="constructor">Deferred_result</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;get_shell_command_return_value&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?with_shell:shell&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;(int,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Host</span>&nbsp;<span class="keyword">of</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Exec_failure</span>&nbsp;<span class="keyword">of</span>&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Execution</span>&nbsp;<span class="keyword">of</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&nbsp;host&nbsp;:&nbsp;string;&nbsp;message&nbsp;:&nbsp;string;&nbsp;stderr&nbsp;:&nbsp;string&nbsp;option;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stdout&nbsp;:&nbsp;string&nbsp;option&nbsp;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ssh_failure</span>&nbsp;<span class="keyword">of</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Wrong_log</span>&nbsp;<span class="keyword">of</span>&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Wrong_status</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ketrew_unix_process</span>.<span class="constructor">Exit_code</span>.t&nbsp;]&nbsp;*<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Error</span>.execution&nbsp;])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_pervasives</span>.<span class="constructor">Deferred_result</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;run_shell_command&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?with_shell:shell&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;(unit,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Host</span>&nbsp;<span class="keyword">of</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Exec_failure</span>&nbsp;<span class="keyword">of</span>&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Execution</span>&nbsp;<span class="keyword">of</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&nbsp;host&nbsp;:&nbsp;string;&nbsp;message&nbsp;:&nbsp;string;&nbsp;stderr&nbsp;:&nbsp;string&nbsp;option;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stdout&nbsp;:&nbsp;string&nbsp;option&nbsp;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Non_zero</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;*&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ssh_failure</span>&nbsp;<span class="keyword">of</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Wrong_log</span>&nbsp;<span class="keyword">of</span>&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Wrong_status</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ketrew_unix_process</span>.<span class="constructor">Exit_code</span>.t&nbsp;]&nbsp;*<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Error</span>.execution&nbsp;<span class="constructor">Error</span>.non_zero_execution&nbsp;])<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_pervasives</span>.<span class="constructor">Deferred_result</span>.t<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;do_files_exist&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?with_shell:shell&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&lt;&nbsp;kind&nbsp;:&nbsp;<span class="keywordsign">'</span>a;&nbsp;relativity&nbsp;:&nbsp;<span class="keywordsign">'</span>b&nbsp;&gt;&nbsp;<span class="constructor">Ketrew_path</span>.t&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;(bool,<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Host</span>&nbsp;<span class="keyword">of</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Execution</span>&nbsp;<span class="keyword">of</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Exec_failure</span>&nbsp;<span class="keyword">of</span>&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Execution</span>&nbsp;<span class="keyword">of</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&nbsp;host&nbsp;:&nbsp;string;&nbsp;message&nbsp;:&nbsp;string;&nbsp;stderr&nbsp;:&nbsp;string&nbsp;option;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stdout&nbsp;:&nbsp;string&nbsp;option&nbsp;&gt;&nbsp;]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;execution_error&nbsp;])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stdout&nbsp;:&nbsp;string&nbsp;option&nbsp;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ssh_failure</span>&nbsp;<span class="keyword">of</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Wrong_log</span>&nbsp;<span class="keyword">of</span>&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Wrong_status</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ketrew_unix_process</span>.<span class="constructor">Exit_code</span>.t&nbsp;]&nbsp;*<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Error</span>.execution&nbsp;])<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_pervasives</span>.<span class="constructor">Deferred_result</span>.t<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;get_fresh_playground&nbsp;:&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_path</span>.absolute_directory&nbsp;option<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;ensure_directory&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?with_shell:shell&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;path:&lt;&nbsp;kind&nbsp;:&nbsp;<span class="constructor">Ketrew_path</span>.directory;&nbsp;relativity&nbsp;:&nbsp;<span class="keywordsign">'</span>a&nbsp;&gt;&nbsp;<span class="constructor">Ketrew_path</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;(unit,<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Host</span>&nbsp;<span class="keyword">of</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Execution</span>&nbsp;<span class="keyword">of</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Exec_failure</span>&nbsp;<span class="keyword">of</span>&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Execution</span>&nbsp;<span class="keyword">of</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&nbsp;host&nbsp;:&nbsp;string;&nbsp;message&nbsp;:&nbsp;string;&nbsp;stderr&nbsp;:&nbsp;string&nbsp;option;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stdout&nbsp;:&nbsp;string&nbsp;option&nbsp;&gt;&nbsp;]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;execution_error<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">System</span>&nbsp;<span class="keyword">of</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Make_directory</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;]&nbsp;*<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Exn</span>&nbsp;<span class="keyword">of</span>&nbsp;exn&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Wrong_access_rights</span>&nbsp;<span class="keyword">of</span>&nbsp;int&nbsp;]&nbsp;])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stdout&nbsp;:&nbsp;string&nbsp;option&nbsp;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Non_zero</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;*&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ssh_failure</span>&nbsp;<span class="keyword">of</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Wrong_log</span>&nbsp;<span class="keyword">of</span>&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Wrong_status</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ketrew_unix_process</span>.<span class="constructor">Exit_code</span>.t&nbsp;]&nbsp;*<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Error</span>.execution&nbsp;<span class="constructor">Error</span>.non_zero_execution&nbsp;])<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_pervasives</span>.<span class="constructor">Deferred_result</span>.t<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;put_file&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span><br>
@@ -120,10 +188,15 @@
 &nbsp;&nbsp;&nbsp;&nbsp;content:string&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;(unit,<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Host</span>&nbsp;<span class="keyword">of</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Execution</span>&nbsp;<span class="keyword">of</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Exec_failure</span>&nbsp;<span class="keyword">of</span>&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Execution</span>&nbsp;<span class="keyword">of</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&nbsp;host&nbsp;:&nbsp;string;&nbsp;message&nbsp;:&nbsp;string;&nbsp;stderr&nbsp;:&nbsp;string&nbsp;option;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stdout&nbsp;:&nbsp;string&nbsp;option&nbsp;&gt;&nbsp;]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;execution_error<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stdout&nbsp;:&nbsp;string&nbsp;option&nbsp;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ssh_failure</span>&nbsp;<span class="keyword">of</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Wrong_log</span>&nbsp;<span class="keyword">of</span>&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Wrong_status</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ketrew_unix_process</span>.<span class="constructor">Exit_code</span>.t&nbsp;]&nbsp;*<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Error</span>.execution<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">IO</span>&nbsp;<span class="keyword">of</span>&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Write_file_exn</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ketrew_pervasives</span>.<span class="constructor">IO</span>.path&nbsp;*&nbsp;exn&nbsp;]&nbsp;])<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_pervasives</span>.<span class="constructor">Deferred_result</span>.t<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;get_file&nbsp;:<br>
