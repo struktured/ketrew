@@ -26,4 +26,14 @@
 <link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html"><title>Ketrew API : Ketrew_edsl.run</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;run&nbsp;t&nbsp;=&nbsp;t<span class="keywordsign">#</span>activate;&nbsp;make_workflow&nbsp;[t]</code></body></html>
+<code class="code"><span class="keyword">let</span>&nbsp;run&nbsp;t&nbsp;=<br>
+&nbsp;&nbsp;t<span class="keywordsign">#</span>activate;<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;go_through_deps&nbsp;t&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;t<span class="keywordsign">#</span>render&nbsp;::&nbsp;<span class="constructor">List</span>.concat_map&nbsp;t<span class="keywordsign">#</span>dependencies&nbsp;~f:go_through_deps&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;targets&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;go_through_deps&nbsp;t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;|&gt;&nbsp;<span class="constructor">List</span>.dedup&nbsp;~compare:<span class="constructor">Target</span>.(<span class="keyword">fun</span>&nbsp;ta&nbsp;tb&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;compare&nbsp;ta.id&nbsp;tb.id)<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;targets&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;first&nbsp;::&nbsp;more&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[<span class="keywordsign">`</span><span class="constructor">Make</span>&nbsp;(first,&nbsp;more)]<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">assert</span>&nbsp;<span class="keyword">false</span></code></body></html>

@@ -62,11 +62,5 @@
 &nbsp;&nbsp;&nbsp;&nbsp;host:<span class="constructor">Ketrew_host</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_target</span>.build_process<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;direct_shell_command&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;?host:<span class="constructor">Ketrew_host</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_target</span>.build_process<br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;workflow<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;workflow&nbsp;:&nbsp;<span class="constructor">Ketrew_edsl</span>.user_target&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_edsl</span>.workflow<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;add_target&nbsp;:&nbsp;<span class="constructor">Ketrew_edsl</span>.workflow&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_edsl</span>.user_target&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;make&nbsp;:&nbsp;<span class="constructor">Ketrew_edsl</span>.workflow&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_command_line</span>.user_todo&nbsp;list<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;make_workflow&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_edsl</span>.user_target&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_command_line</span>.user_todo&nbsp;list<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;run&nbsp;:&nbsp;<span class="constructor">Ketrew_edsl</span>.user_target&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_command_line</span>.user_todo&nbsp;list<br>
 <span class="keyword">end</span></code></body></html>

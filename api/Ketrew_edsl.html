@@ -112,28 +112,6 @@ Create a shell command process (not “long-running”).<br>
 <br>
 <h3 id="3_Workflows">Workflows</h3><br>
 
-<pre><span id="TYPEworkflow"><span class="keyword">type</span> <code class="type"></code>workflow</span> </pre>
-<div class="info ">
-Workflows wrap collections of targets.<br>
-</div>
-
-
-<pre><span id="VALworkflow"><span class="keyword">val</span> <a href="code_VALKetrew_edsl.workflow.html">workflow</a></span> : <code class="type"><a href="Ketrew_edsl.user_target-c.html">user_target</a> list -> <a href="Ketrew_edsl.html#TYPEworkflow">workflow</a></code></pre><div class="info ">
-Create a workflow with a list of targets.<br>
-</div>
-
-<pre><span id="VALadd_target"><span class="keyword">val</span> <a href="code_VALKetrew_edsl.add_target.html">add_target</a></span> : <code class="type"><a href="Ketrew_edsl.html#TYPEworkflow">workflow</a> -> <a href="Ketrew_edsl.user_target-c.html">user_target</a> -> unit</code></pre><div class="info ">
-Add a target to a workflow, imperative style.<br>
-</div>
-
-<pre><span id="VALmake"><span class="keyword">val</span> <a href="code_VALKetrew_edsl.make.html">make</a></span> : <code class="type"><a href="Ketrew_edsl.html#TYPEworkflow">workflow</a> -> <a href="Ketrew_command_line.html#TYPEuser_todo">Ketrew_command_line.user_todo</a> list</code></pre><div class="info ">
-Convert a workflow into a command expected by <a href="Ketrew_command_line.html"><code class="code"><span class="constructor">Ketrew_command_line</span></code></a><br>
-</div>
-
-<pre><span id="VALmake_workflow"><span class="keyword">val</span> <a href="code_VALKetrew_edsl.make_workflow.html">make_workflow</a></span> : <code class="type"><a href="Ketrew_edsl.user_target-c.html">user_target</a> list -> <a href="Ketrew_command_line.html#TYPEuser_todo">Ketrew_command_line.user_todo</a> list</code></pre><div class="info ">
-Call <a href="Ketrew_edsl.html#VALworkflow"><code class="code"><span class="constructor">Ketrew_edsl</span>.workflow</code></a> and then <a href="Ketrew_edsl.html#VALmake"><code class="code"><span class="constructor">Ketrew_edsl</span>.make</code></a> at once.<br>
-</div>
-
 <pre><span id="VALrun"><span class="keyword">val</span> <a href="code_VALKetrew_edsl.run.html">run</a></span> : <code class="type"><a href="Ketrew_edsl.user_target-c.html">user_target</a> -> <a href="Ketrew_command_line.html#TYPEuser_todo">Ketrew_command_line.user_todo</a> list</code></pre><div class="info ">
 Activate <code class="code">user_target</code> and “make” the workflow.<br>
 </div>
