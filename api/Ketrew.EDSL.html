@@ -104,10 +104,19 @@ Create a nohup_setsid build process.<br>
 <pre><span id="VALdirect_shell_command"><span class="keyword">val</span> <a href="code_VALKetrew_edsl.direct_shell_command.html">direct_shell_command</a></span> : <code class="type">?host:<a href="Ketrew_host.html#TYPEt">Ketrew_host.t</a> -> string -> <a href="Ketrew_target.html#TYPEbuild_process">Ketrew_target.build_process</a></code></pre><div class="info ">
 Create a shell command process (not “long-running”).<br>
 </div>
+
+<pre><span id="VALlsf"><span class="keyword">val</span> <a href="code_VALKetrew_edsl.lsf.html">lsf</a></span> : <code class="type">?host:<a href="Ketrew_host.html#TYPEt">Ketrew_host.t</a> -><br>       ?queue:string -><br>       ?name:string -><br>       ?wall_limit:string -><br>       ?processors:[ `Min of int | `Min_max of int * int ] -><br>       string list -> <a href="Ketrew_target.html#TYPEbuild_process">Ketrew_target.build_process</a></code></pre><div class="info ">
+Create an “LSF” build process.<br>
+</div>
 <br>
 <h3 id="3_Workflows">Workflows</h3><br>
 
 <pre><span id="VALrun"><span class="keyword">val</span> <a href="code_VALKetrew_edsl.run.html">run</a></span> : <code class="type"><a href="Ketrew_edsl.user_target-c.html">user_target</a> -> <a href="Ketrew_command_line.html#TYPEuser_todo">Ketrew_command_line.user_todo</a> list</code></pre><div class="info ">
 Activate <code class="code">user_target</code> and “make” the workflow.<br>
+</div>
+
+<pre><span id="VALketrew_fail"><span class="keyword">val</span> <a href="code_VALKetrew_edsl.ketrew_fail.html">ketrew_fail</a></span> : <code class="type">('a, unit, string, <a href="Ketrew_command_line.html#TYPEuser_todo">Ketrew_command_line.user_todo</a> list) Pervasives.format4 -><br>       'a</code></pre><div class="info ">
+Printf-like function to return ask Ketrew to fail (complementary of
+    <a href="Ketrew_edsl.html#VALrun"><code class="code"><span class="constructor">Ketrew_edsl</span>.run</code></a>).<br>
 </div>
 </body></html>

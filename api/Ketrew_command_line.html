@@ -48,7 +48,7 @@ User-provided commands.<br>
 </div>
 
 
-<pre><span id="VALrun_main"><span class="keyword">val</span> <a href="code_VALKetrew_command_line.run_main.html">run_main</a></span> : <code class="type">?plugins:(string * (module Ketrew_long_running.LONG_RUNNING)) list -><br>       ?argv:string array -><br>       configuration:<a href="Ketrew_state.Configuration.html#TYPEt">Ketrew_state.Configuration.t</a> -><br>       <a href="Ketrew_command_line.html#TYPEuser_todo">user_todo</a> list Cmdliner.Term.t -> [ `Never_returns ]</code></pre><div class="info ">
+<pre><span id="VALrun_main"><span class="keyword">val</span> <a href="code_VALKetrew_command_line.run_main.html">run_main</a></span> : <code class="type">?plugins:(string * (module Ketrew_long_running.LONG_RUNNING)) list -><br>       ?argv:string array -><br>       configuration:<a href="Ketrew_state.Configuration.html#TYPEt">Ketrew_state.Configuration.t</a> -><br>       ?additional_term:<a href="Ketrew_command_line.html#TYPEuser_todo">user_todo</a> list Cmdliner.Term.t -><br>       unit -> [ `Never_returns ]</code></pre><div class="info ">
 The “main” function, it will <code class="code">exit n</code> with <code class="code">n = 0</code> if succeed or <code class="code">n &gt; 0</code> if
     fails.<br>
 </div>

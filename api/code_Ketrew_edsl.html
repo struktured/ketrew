@@ -125,6 +125,10 @@
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;first&nbsp;::&nbsp;more&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[<span class="keywordsign">`</span><span class="constructor">Make</span>&nbsp;(first,&nbsp;more)]<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">assert</span>&nbsp;<span class="keyword">false</span>&nbsp;<span class="comment">(*&nbsp;there&nbsp;is&nbsp;at&nbsp;least&nbsp;the&nbsp;argument&nbsp;one&nbsp;*)</span><br>
 <br>
+<span class="keyword">let</span>&nbsp;ketrew_fail&nbsp;fmt&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">Printf</span>.ksprintf&nbsp;(<span class="keyword">fun</span>&nbsp;str&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[<span class="keywordsign">`</span><span class="constructor">Fail</span>&nbsp;<span class="constructor">Log</span>.(s&nbsp;str)])&nbsp;fmt<br>
+<br>
+<br>
 <br>
 <span class="keyword">let</span>&nbsp;parse_host:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Host</span>.t&nbsp;=&nbsp;<span class="constructor">Host</span>.of_string<br>
 <br>
@@ -146,4 +150,6 @@
 <br>
 <span class="keyword">let</span>&nbsp;direct_shell_command&nbsp;?host&nbsp;cmd&nbsp;=<br>
 &nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">Direct_command</span>&nbsp;<span class="constructor">Target</span>.<span class="constructor">Command</span>.(shell&nbsp;?host&nbsp;cmd)<br>
+<br>
+<span class="keyword">let</span>&nbsp;lsf&nbsp;=&nbsp;<span class="constructor">Ketrew_lsf</span>.create<br>
 </code></body></html>

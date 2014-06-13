@@ -62,5 +62,15 @@
 &nbsp;&nbsp;&nbsp;&nbsp;host:<span class="constructor">Ketrew_host</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_target</span>.build_process<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;direct_shell_command&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;?host:<span class="constructor">Ketrew_host</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_target</span>.build_process<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;lsf&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?host:<span class="constructor">Ketrew_host</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?queue:string&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?name:string&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?wall_limit:string&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?processors:[&nbsp;<span class="keywordsign">`</span><span class="constructor">Min</span>&nbsp;<span class="keyword">of</span>&nbsp;int&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Min_max</span>&nbsp;<span class="keyword">of</span>&nbsp;int&nbsp;*&nbsp;int&nbsp;]&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_target</span>.build_process<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;run&nbsp;:&nbsp;<span class="constructor">Ketrew_edsl</span>.user_target&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_command_line</span>.user_todo&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;ketrew_fail&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keywordsign">'</span>a,&nbsp;unit,&nbsp;string,&nbsp;<span class="constructor">Ketrew_command_line</span>.user_todo&nbsp;list)&nbsp;<span class="constructor">Pervasives</span>.format4&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">'</span>a<br>
 <span class="keyword">end</span></code></body></html>
