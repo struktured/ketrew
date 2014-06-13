@@ -46,6 +46,12 @@ Definition of a host; a place to run commands or handle files.<br>
 Definitions specific to “SSH” hosts (see <code class="code">connection</code>).
 </div>
 
+<pre><span id="TYPEdefault_shell"><span class="keyword">type</span> <code class="type"></code>default_shell</span> </pre>
+<div class="info ">
+Specification of the default shell of a Host.<br>
+</div>
+
+
 <pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = <code class="type">Ketrew_gen_base_v0_t.host</code> </pre>
 <div class="info ">
 Host container.
@@ -58,7 +64,14 @@ Host container.
 </div>
 
 
-<pre><span id="VALlocalhost"><span class="keyword">val</span> <a href="code_VALKetrew_host.localhost.html">localhost</a></span> : <code class="type">?default_shell:string * string -><br>       ?playground:<a href="Ketrew_path.html#TYPEabsolute_directory">Ketrew_path.absolute_directory</a> -><br>       ?name:string -> unit -> <a href="Ketrew_host.html#TYPEt">t</a></code></pre><div class="info ">
+<pre><span id="VALdefault_shell"><span class="keyword">val</span> <a href="code_VALKetrew_host.default_shell.html">default_shell</a></span> : <code class="type">?binary:string -><br>       ?options:string list -><br>       ?command_option:string -> string -> Ketrew_gen_base_v0_t.default_shell</code></pre><div class="info ">
+Use
+  <code class="code">default_shell ~binary:<span class="string">"/bin/sh"</span> ~options:[<span class="string">"-l"</span>; <span class="string">"--something"</span>; <span class="string">"blah"</span> ]
+      ~command_option:<span class="string">"-c"</span> <span class="string">"sh"</span></code>
+  to define a default-shell calling <code class="code"><span class="string">"sh -l --something blah -c &lt;command&gt;"</span></code>.<br>
+</div>
+
+<pre><span id="VALlocalhost"><span class="keyword">val</span> <a href="code_VALKetrew_host.localhost.html">localhost</a></span> : <code class="type">?default_shell:<a href="Ketrew_host.html#TYPEdefault_shell">default_shell</a> -><br>       ?playground:<a href="Ketrew_path.html#TYPEabsolute_directory">Ketrew_path.absolute_directory</a> -><br>       ?name:string -> unit -> <a href="Ketrew_host.html#TYPEt">t</a></code></pre><div class="info ">
 The host <code class="code"><span class="string">"localhost"</span></code> (i.e. not over SSH).<br>
 </div>
 
@@ -66,13 +79,19 @@ The host <code class="code"><span class="string">"localhost"</span></code> (i.e.
 The host <code class="code"><span class="string">"localhost"</span></code>, with <code class="code"><span class="string">"/tmp"</span></code> as <code class="code">playground</code>.<br>
 </div>
 
-<pre><span id="VALssh"><span class="keyword">val</span> <a href="code_VALKetrew_host.ssh.html">ssh</a></span> : <code class="type">?default_shell:string * string -><br>       ?playground:<a href="Ketrew_path.html#TYPEabsolute_directory">Ketrew_path.absolute_directory</a> -><br>       ?port:int -> ?user:string -> ?name:string -> string -> <a href="Ketrew_host.html#TYPEt">t</a></code></pre><div class="info ">
+<pre><span id="VALssh"><span class="keyword">val</span> <a href="code_VALKetrew_host.ssh.html">ssh</a></span> : <code class="type">?default_shell:<a href="Ketrew_host.html#TYPEdefault_shell">default_shell</a> -><br>       ?playground:<a href="Ketrew_path.html#TYPEabsolute_directory">Ketrew_path.absolute_directory</a> -><br>       ?port:int -> ?user:string -> ?name:string -> string -> <a href="Ketrew_host.html#TYPEt">t</a></code></pre><div class="info ">
 Create an SSH host.<br>
 </div>
 
 <pre><span id="VALof_uri"><span class="keyword">val</span> <a href="code_VALKetrew_host.of_uri.html">of_uri</a></span> : <code class="type">Uri.t -> <a href="Ketrew_host.html#TYPEt">t</a></code></pre><div class="info ">
 Get a <code class="code"><span class="constructor">Host</span>.t</code> from an URI (library <a href="https://github.com/mirage/ocaml-uri">ocaml-uri</a>);
-  the “path” part of the URI is the playground.<br>
+    the “path” part of the URI is the playground.
+    If present a <code class="code"><span class="string">"shell"</span></code> argument defines the <code class="code">default_shell</code>.
+    example
+    <code class="code">of_string <span class="string">"//user@SomeHost:42/tmp/pg?shell=bash,-l,--init-file,bouh,-c"</span></code>
+    will be <code class="code">ssh ~default_shell:(default_shell  <span class="string">"bash"</span>
+    ~command_name ~options:[<span class="string">"-l"</span>; <span class="string">"--init-file"</span>; <span class="string">"bouh"</span>] ~command_option:<span class="string">"-c"</span>)
+     ~port:42 ~user:<span class="string">"user"</span> <span class="string">"SomeHost"</span></code><br>
 </div>
 
 <pre><span id="VALof_string"><span class="keyword">val</span> <a href="code_VALKetrew_host.of_string.html">of_string</a></span> : <code class="type">string -> <a href="Ketrew_host.html#TYPEt">t</a></code></pre><div class="info ">

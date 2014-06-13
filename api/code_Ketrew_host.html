@@ -136,13 +136,21 @@
 <span class="keyword">end</span><br>
 <span class="keyword">type</span>&nbsp;connection&nbsp;=&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.connection&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+<span class="keyword">type</span>&nbsp;default_shell&nbsp;=&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.default_shell<br>
+<br>
 <span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.host&nbsp;=&nbsp;{<br>
 &nbsp;&nbsp;name:&nbsp;string;<br>
 &nbsp;&nbsp;connection:&nbsp;connection;<br>
 &nbsp;&nbsp;playground:&nbsp;<span class="constructor">Path</span>.absolute_directory&nbsp;option;<br>
-&nbsp;&nbsp;default_shell:&nbsp;string&nbsp;*&nbsp;string;<br>
+&nbsp;&nbsp;default_shell:&nbsp;default_shell<br>
 }<br>
-<span class="keyword">let</span>&nbsp;create&nbsp;~connection&nbsp;?(default_shell=(<span class="string">"sh"</span>,&nbsp;<span class="string">"-c"</span>))&nbsp;?playground&nbsp;name&nbsp;=<br>
+<br>
+<span class="keyword">let</span>&nbsp;default_shell&nbsp;?binary&nbsp;?(options=[])&nbsp;?(command_option=<span class="string">"-c"</span>)&nbsp;command_name&nbsp;=<br>
+&nbsp;&nbsp;{<span class="constructor">Ketrew_gen_base_v0_t</span>.&nbsp;binary;&nbsp;command_name;&nbsp;options;&nbsp;command_option}<br>
+<br>
+<span class="keyword">let</span>&nbsp;shell_sh_minus_c&nbsp;=&nbsp;default_shell&nbsp;<span class="string">"sh"</span><br>
+<br>
+<span class="keyword">let</span>&nbsp;create&nbsp;~connection&nbsp;?(default_shell=shell_sh_minus_c)&nbsp;?playground&nbsp;name&nbsp;=<br>
 &nbsp;&nbsp;{name;&nbsp;connection;&nbsp;playground;&nbsp;default_shell}<br>
 <br>
 <span class="keyword">let</span>&nbsp;localhost&nbsp;?default_shell&nbsp;?playground&nbsp;?(name=<span class="string">"localhost"</span>)&nbsp;()&nbsp;=&nbsp;<br>
@@ -166,7 +174,20 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">""</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;p&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Some</span>&nbsp;(<span class="constructor">Path</span>.absolute_directory_exn&nbsp;p)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;create&nbsp;?playground&nbsp;~connection&nbsp;(<span class="constructor">Uri</span>.to_string&nbsp;uri)<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;default_shell&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Uri</span>.get_query_param&nbsp;uri&nbsp;<span class="string">"shell"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;|&gt;&nbsp;<span class="constructor">Option</span>.bind&nbsp;~f:(<span class="keyword">fun</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">String</span>.split&nbsp;~on:(<span class="keywordsign">`</span><span class="constructor">Character</span>&nbsp;<span class="string">','</span>)&nbsp;s&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;one&nbsp;::&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Some</span>&nbsp;(default_shell&nbsp;one)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;one&nbsp;::&nbsp;two&nbsp;::&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Some</span>&nbsp;(default_shell&nbsp;~command_option:two&nbsp;one)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;one&nbsp;::&nbsp;more&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;command_option&nbsp;=&nbsp;<span class="constructor">List</span>.last&nbsp;more&nbsp;|&gt;&nbsp;<span class="constructor">Option</span>.value_exn&nbsp;~msg:<span class="string">"bug"</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;options&nbsp;=&nbsp;<span class="constructor">List</span>.split_n&nbsp;more&nbsp;(<span class="constructor">List</span>.length&nbsp;more&nbsp;-&nbsp;1)&nbsp;|&gt;&nbsp;fst&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Some</span>&nbsp;(default_shell&nbsp;~command_option&nbsp;one&nbsp;~options)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;create&nbsp;?playground&nbsp;~connection&nbsp;?default_shell&nbsp;(<span class="constructor">Uri</span>.to_string&nbsp;uri)<br>
 <br>
 <span class="keyword">let</span>&nbsp;of_string&nbsp;s&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Uri</span>.of_string&nbsp;s&nbsp;<span class="keyword">in</span><br>
@@ -219,6 +240,8 @@
 &nbsp;&nbsp;fail_host&nbsp;(<span class="keywordsign">`</span><span class="constructor">Execution</span>&nbsp;v)<br>
 <br>
 <span class="keyword">let</span>&nbsp;execute&nbsp;t&nbsp;argl&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Host.execute&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;(to_string_hum&nbsp;t)&nbsp;%&nbsp;<span class="constructor">OCaml</span>.list&nbsp;s&nbsp;argl<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;very_verbose);<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ret&nbsp;out&nbsp;err&nbsp;exited&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;kv&nbsp;k&nbsp;v&nbsp;=&nbsp;<span class="constructor">Log</span>.(brakets&nbsp;(s&nbsp;k&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;→&nbsp;"</span>&nbsp;%&nbsp;v)&nbsp;|&gt;&nbsp;indent)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Host:&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;(to_string_hum&nbsp;t)<br>
@@ -254,12 +277,14 @@
 <br>
 <span class="keyword">let</span>&nbsp;shell_sh&nbsp;~sh&nbsp;cmd&nbsp;=&nbsp;[sh;&nbsp;<span class="string">"-c"</span>;&nbsp;cmd]<br>
 <br>
-<span class="keyword">let</span>&nbsp;default_shell&nbsp;t&nbsp;cmd&nbsp;=&nbsp;<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;sh,&nbsp;minus_c&nbsp;=&nbsp;t.default_shell&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;[sh;&nbsp;minus_c;&nbsp;cmd]<br>
+<span class="keyword">let</span>&nbsp;shell_of_default_shell&nbsp;t&nbsp;cmd&nbsp;=&nbsp;<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">open</span>&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;t.default_shell.command_name&nbsp;::&nbsp;<br>
+&nbsp;&nbsp;t.default_shell.options<br>
+&nbsp;&nbsp;@&nbsp;[t.default_shell.command_option;&nbsp;cmd]<br>
 <br>
 <span class="keyword">let</span>&nbsp;override_shell&nbsp;?with_shell&nbsp;t&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;shell&nbsp;=&nbsp;<span class="constructor">Option</span>.value&nbsp;~default:(default_shell&nbsp;t)&nbsp;with_shell&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;shell&nbsp;=&nbsp;<span class="constructor">Option</span>.value&nbsp;~default:(shell_of_default_shell&nbsp;t)&nbsp;with_shell&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;shell<br>
 <br>
 <span class="keyword">let</span>&nbsp;get_shell_command_output&nbsp;?with_shell&nbsp;t&nbsp;cmd&nbsp;=<br>
@@ -296,21 +321,6 @@
 <span class="keyword">let</span>&nbsp;ensure_directory&nbsp;?with_shell&nbsp;t&nbsp;~path&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;cmd&nbsp;=&nbsp;fmt&nbsp;<span class="string">"mkdir&nbsp;-p&nbsp;%s"</span>&nbsp;<span class="constructor">Path</span>.(to_string_quoted&nbsp;path)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;run_shell_command&nbsp;?with_shell&nbsp;t&nbsp;cmd<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*<br>
-&nbsp;&nbsp;match&nbsp;t.connection&nbsp;with<br>
-&nbsp;&nbsp;|&nbsp;`Localhost&nbsp;-&gt;&nbsp;System.ensure_directory_path&nbsp;Path.(to_string&nbsp;path)<br>
-&nbsp;&nbsp;|&nbsp;`Ssh&nbsp;ssh&nbsp;-&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;ssh_cmd&nbsp;=&nbsp;Ssh.(do_ssh&nbsp;ssh&nbsp;cmd)&nbsp;in<br>
-&nbsp;&nbsp;&nbsp;&nbsp;begin&nbsp;Ketrew_unix_process.succeed&nbsp;ssh_cmd<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&lt;&nbsp;function<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;`Ok&nbsp;(out,&nbsp;err)&nbsp;-&gt;&nbsp;return&nbsp;()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;`Error&nbsp;(`Process&nbsp;_&nbsp;as&nbsp;process_error)&nbsp;-&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;msg&nbsp;=&nbsp;Ketrew_unix_process.error_to_string&nbsp;process_error&nbsp;in<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Log.(s&nbsp;"Ssh-cmd&nbsp;"&nbsp;%&nbsp;OCaml.list&nbsp;(sf&nbsp;"%S")&nbsp;ssh_cmd&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;s&nbsp;"&nbsp;failed:&nbsp;"&nbsp;%s&nbsp;msg&nbsp;@&nbsp;verbose);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fail_exec&nbsp;t&nbsp;msg<br>
-&nbsp;&nbsp;&nbsp;&nbsp;end<br>
-*)</span><br>
 <br>
 <span class="keyword">let</span>&nbsp;put_file&nbsp;t&nbsp;~path&nbsp;~content&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;t.connection&nbsp;<span class="keyword">with</span><br>

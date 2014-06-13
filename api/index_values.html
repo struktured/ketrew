@@ -162,6 +162,14 @@ Get the list of targets currently handled.
 The “long-running” plugins loaded by default.
 </div>
 </td></tr>
+<tr><td><a href="Ketrew_host.html#VALdefault_shell">default_shell</a> [<a href="Ketrew_host.html">Ketrew_host</a>]</td>
+<td><div class="info">
+Use
+  <code class="code">default_shell ~binary:<span class="string">"/bin/sh"</span> ~options:[<span class="string">"-l"</span>; <span class="string">"--something"</span>; <span class="string">"blah"</span> ]
+      ~command_option:<span class="string">"-c"</span> <span class="string">"sh"</span></code>
+  to define a default-shell calling <code class="code"><span class="string">"sh -l --something blah -c &lt;command&gt;"</span></code>.
+</div>
+</td></tr>
 <tr><td><a href="Ketrew_target.html#VALdeserialize">deserialize</a> [<a href="Ketrew_target.html">Ketrew_target</a>]</td>
 <td><div class="info">
 Deserilize a target from a string.
@@ -420,7 +428,7 @@ Get the value given it's type, if possible.
 <tr><td><a href="Ketrew_host.html#VALof_uri">of_uri</a> [<a href="Ketrew_host.html">Ketrew_host</a>]</td>
 <td><div class="info">
 Get a <code class="code"><span class="constructor">Host</span>.t</code> from an URI (library <a href="https://github.com/mirage/ocaml-uri">ocaml-uri</a>);
-  the “path” part of the URI is the playground.
+    the “path” part of the URI is the playground.
 </div>
 </td></tr>
 <tr><td align="left"><br>P</td></tr>
@@ -464,6 +472,11 @@ Create a relative to a file, raises <code class="code"><span class="constructor"
 <tr><td><a href="Ketrew_path.html#VALroot">root</a> [<a href="Ketrew_path.html">Ketrew_path</a>]</td>
 <td><div class="info">
 The root directory (i.e.
+</div>
+</td></tr>
+<tr><td><a href="Ketrew_edsl.html#VALrun">run</a> [<a href="Ketrew_edsl.html">Ketrew_edsl</a>]</td>
+<td><div class="info">
+Activate <code class="code">user_target</code> and “make” the workflow.
 </div>
 </td></tr>
 <tr><td><a href="Ketrew_target.Command.html#VALrun">run</a> [<a href="Ketrew_target.Command.html">Ketrew_target.Command</a>]</td>

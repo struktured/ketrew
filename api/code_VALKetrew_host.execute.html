@@ -27,6 +27,8 @@
 </head>
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;execute&nbsp;t&nbsp;argl&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Host.execute&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;(to_string_hum&nbsp;t)&nbsp;%&nbsp;<span class="constructor">OCaml</span>.list&nbsp;s&nbsp;argl<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;very_verbose);<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ret&nbsp;out&nbsp;err&nbsp;exited&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;kv&nbsp;k&nbsp;v&nbsp;=&nbsp;<span class="constructor">Log</span>.(brakets&nbsp;(s&nbsp;k&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;→&nbsp;"</span>&nbsp;%&nbsp;v)&nbsp;|&gt;&nbsp;indent)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Host:&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;(to_string_hum&nbsp;t)<br>

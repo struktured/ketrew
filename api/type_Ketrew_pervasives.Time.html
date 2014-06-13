@@ -42,13 +42,20 @@
 &nbsp;&nbsp;&nbsp;&nbsp;kind&nbsp;:&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Directory</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">File</span>&nbsp;];<br>
 &nbsp;&nbsp;&nbsp;&nbsp;path&nbsp;:&nbsp;string;<br>
 &nbsp;&nbsp;}<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;default_shell&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.default_shell&nbsp;=&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;binary&nbsp;:&nbsp;string&nbsp;option;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;command_name&nbsp;:&nbsp;string;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;options&nbsp;:&nbsp;string&nbsp;list;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;command_option&nbsp;:&nbsp;string;<br>
+&nbsp;&nbsp;}<br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;connection&nbsp;=&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Localhost</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ssh</span>&nbsp;<span class="keyword">of</span>&nbsp;ssh_host&nbsp;]<br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;host&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.host&nbsp;=&nbsp;{<br>
 &nbsp;&nbsp;&nbsp;&nbsp;name&nbsp;:&nbsp;string;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;connection&nbsp;:&nbsp;connection;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;playground&nbsp;:&nbsp;path&nbsp;option;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;default_shell&nbsp;:&nbsp;string&nbsp;*&nbsp;string;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;default_shell&nbsp;:&nbsp;default_shell;<br>
 &nbsp;&nbsp;}<br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;volume&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.volume&nbsp;=&nbsp;{<br>

@@ -36,4 +36,17 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">""</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;p&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Some</span>&nbsp;(<span class="constructor">Path</span>.absolute_directory_exn&nbsp;p)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;create&nbsp;?playground&nbsp;~connection&nbsp;(<span class="constructor">Uri</span>.to_string&nbsp;uri)</code></body></html>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;default_shell&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Uri</span>.get_query_param&nbsp;uri&nbsp;<span class="string">"shell"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;|&gt;&nbsp;<span class="constructor">Option</span>.bind&nbsp;~f:(<span class="keyword">fun</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">String</span>.split&nbsp;~on:(<span class="keywordsign">`</span><span class="constructor">Character</span>&nbsp;<span class="string">','</span>)&nbsp;s&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;one&nbsp;::&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Some</span>&nbsp;(default_shell&nbsp;one)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;one&nbsp;::&nbsp;two&nbsp;::&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Some</span>&nbsp;(default_shell&nbsp;~command_option:two&nbsp;one)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;one&nbsp;::&nbsp;more&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;command_option&nbsp;=&nbsp;<span class="constructor">List</span>.last&nbsp;more&nbsp;|&gt;&nbsp;<span class="constructor">Option</span>.value_exn&nbsp;~msg:<span class="string">"bug"</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;options&nbsp;=&nbsp;<span class="constructor">List</span>.split_n&nbsp;more&nbsp;(<span class="constructor">List</span>.length&nbsp;more&nbsp;-&nbsp;1)&nbsp;|&gt;&nbsp;fst&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Some</span>&nbsp;(default_shell&nbsp;~command_option&nbsp;one&nbsp;~options)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;create&nbsp;?playground&nbsp;~connection&nbsp;?default_shell&nbsp;(<span class="constructor">Uri</span>.to_string&nbsp;uri)</code></body></html>
