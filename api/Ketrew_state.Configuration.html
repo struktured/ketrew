@@ -7,13 +7,19 @@
 <link rel="Up" href="Ketrew_state.html">
 <link title="Index of types" rel=Appendix href="index_types.html">
 <link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of class methods" rel=Appendix href="index_methods.html">
+<link title="Index of class types" rel=Appendix href="index_class_types.html">
 <link title="Index of modules" rel=Appendix href="index_modules.html">
 <link title="Index of module types" rel=Appendix href="index_module_types.html">
 <link title="Ketrew" rel="Chapter" href="Ketrew.html">
 <link title="Ketrew_artifact" rel="Chapter" href="Ketrew_artifact.html">
+<link title="Ketrew_command_line" rel="Chapter" href="Ketrew_command_line.html">
 <link title="Ketrew_database" rel="Chapter" href="Ketrew_database.html">
+<link title="Ketrew_edsl" rel="Chapter" href="Ketrew_edsl.html">
+<link title="Ketrew_error" rel="Chapter" href="Ketrew_error.html">
 <link title="Ketrew_host" rel="Chapter" href="Ketrew_host.html">
 <link title="Ketrew_long_running" rel="Chapter" href="Ketrew_long_running.html">
+<link title="Ketrew_lsf" rel="Chapter" href="Ketrew_lsf.html">
 <link title="Ketrew_monitored_script" rel="Chapter" href="Ketrew_monitored_script.html">
 <link title="Ketrew_nohup_setsid" rel="Chapter" href="Ketrew_nohup_setsid.html">
 <link title="Ketrew_path" rel="Chapter" href="Ketrew_path.html">
@@ -25,11 +31,23 @@
 <body>
 <div class="navbar">&nbsp;<a class="up" href="Ketrew_state.html" title="Ketrew_state">Up</a>
 &nbsp;</div>
-<h1>Module <a href="type_Ketrew_state.Configuration.html">Ketrew_state.Configuration</a></h1>
+<h1>Module <a href="type_Ketrew_state.Configuration.html">Ketrew_state.Configuration</a> (<a href="code_Ketrew_state.Configuration.html">.ml</a>)</h1>
 
-<pre><span class="keyword">module</span> Configuration: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_state.Configuration.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><hr width="100%">
+<pre><span class="keyword">module</span> Configuration: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_state.Configuration.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info module top">
+Definition of the configuration (input to state creation; contents of the
+    future config-file).<br>
+</div>
+<hr width="100%">
 
 <pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> </pre>
+<div class="info ">
+The contents of the configuration.<br>
+</div>
 
 
-<pre><span id="VALcreate"><span class="keyword">val</span> create</span> : <code class="type">?persistent_state_key:string -><br>       database_parameters:string -> unit -> <a href="Ketrew_state.Configuration.html#TYPEt">t</a></code></pre></body></html>
+<pre><span id="VALcreate"><span class="keyword">val</span> <a href="code_VALKetrew_state.Configuration.create.html">create</a></span> : <code class="type">?persistent_state_key:string -><br>       database_parameters:string -> unit -> <a href="Ketrew_state.Configuration.html#TYPEt">t</a></code></pre><div class="info ">
+Create a configuration, <code class="code">persistent_state_key</code> is the “key” of the
+        state storage in the database, <code class="code">database_parameters</code> are used to call
+        <a href="Ketrew_database.html#VALload"><code class="code"><span class="constructor">Ketrew_database</span>.load</code></a>.<br>
+</div>
+</body></html>

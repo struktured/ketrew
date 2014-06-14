@@ -4,18 +4,24 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
 <link rel="Start" href="index.html">
-<link rel="previous" href="Ketrew_database.html">
+<link rel="previous" href="Ketrew_error.html">
 <link rel="next" href="Ketrew_long_running.html">
 <link rel="Up" href="index.html">
 <link title="Index of types" rel=Appendix href="index_types.html">
 <link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of class methods" rel=Appendix href="index_methods.html">
+<link title="Index of class types" rel=Appendix href="index_class_types.html">
 <link title="Index of modules" rel=Appendix href="index_modules.html">
 <link title="Index of module types" rel=Appendix href="index_module_types.html">
 <link title="Ketrew" rel="Chapter" href="Ketrew.html">
 <link title="Ketrew_artifact" rel="Chapter" href="Ketrew_artifact.html">
+<link title="Ketrew_command_line" rel="Chapter" href="Ketrew_command_line.html">
 <link title="Ketrew_database" rel="Chapter" href="Ketrew_database.html">
+<link title="Ketrew_edsl" rel="Chapter" href="Ketrew_edsl.html">
+<link title="Ketrew_error" rel="Chapter" href="Ketrew_error.html">
 <link title="Ketrew_host" rel="Chapter" href="Ketrew_host.html">
 <link title="Ketrew_long_running" rel="Chapter" href="Ketrew_long_running.html">
+<link title="Ketrew_lsf" rel="Chapter" href="Ketrew_lsf.html">
 <link title="Ketrew_monitored_script" rel="Chapter" href="Ketrew_monitored_script.html">
 <link title="Ketrew_nohup_setsid" rel="Chapter" href="Ketrew_nohup_setsid.html">
 <link title="Ketrew_path" rel="Chapter" href="Ketrew_path.html">
@@ -25,31 +31,133 @@
 <link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html"><title>Ketrew API : Ketrew_host</title>
 </head>
 <body>
-<div class="navbar"><a class="pre" href="Ketrew_database.html" title="Ketrew_database">Previous</a>
+<div class="navbar"><a class="pre" href="Ketrew_error.html" title="Ketrew_error">Previous</a>
 &nbsp;<a class="up" href="index.html" title="Index">Up</a>
 &nbsp;<a class="post" href="Ketrew_long_running.html" title="Ketrew_long_running">Next</a>
 </div>
-<h1>Module <a href="type_Ketrew_host.html">Ketrew_host</a></h1>
+<h1>Module <a href="type_Ketrew_host.html">Ketrew_host</a> (<a href="code_Ketrew_host.html">.ml</a>)</h1>
 
-<pre><span class="keyword">module</span> Ketrew_host: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_host.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><hr width="100%">
+<pre><span class="keyword">module</span> Ketrew_host: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_host.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info module top">
+Definition of a host; a place to run commands or handle files.<br>
+</div>
+<hr width="100%">
 
-<pre><span class="keyword">module</span> <a href="Ketrew_host.Ssh.html">Ssh</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_host.Ssh.html">..</a> <code class="code"><span class="keyword">end</span></code></pre>
-<pre><span id="TYPEconnection"><span class="keyword">type</span> <code class="type"></code>connection</span> = <code class="type">[ `Localhost | `Ssh of <a href="Ketrew_host.Ssh.html#TYPEt">Ssh.t</a> ]</code> </pre>
+<pre><span class="keyword">module</span> <a href="Ketrew_host.Ssh.html">Ssh</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_host.Ssh.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info">
+Definitions specific to “SSH” hosts (see <code class="code">connection</code>).
+</div>
+
+<pre><span id="TYPEdefault_shell"><span class="keyword">type</span> <code class="type"></code>default_shell</span> </pre>
+<div class="info ">
+Specification of the default shell of a Host.<br>
+</div>
 
 
-<pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> </pre>
+<pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = <code class="type">Ketrew_gen_base_v0_t.host</code> </pre>
+<div class="info ">
+Host container.
+<p>
+
+  A host is the current machine, or an SSH-accessed distant host.
+  It may have a plaground: a directory where Ketrew can create runtime-files.
+  It keeps track of a default-shell to use (the “default” <code class="code">default_shell</code>, is
+  <code class="code">(<span class="string">"sh"</span>, <span class="string">"-c"</span>)</code>).<br>
+</div>
 
 
-<pre><span id="VALcreate"><span class="keyword">val</span> create</span> : <code class="type">?connection:<a href="Ketrew_host.html#TYPEconnection">connection</a> -><br>       ?playground:<a href="Ketrew_path.html#TYPEabsolute_directory">Ketrew_path.absolute_directory</a> -> string -> <a href="Ketrew_host.html#TYPEt">t</a></code></pre>
-<pre><span id="VALlocalhost"><span class="keyword">val</span> localhost</span> : <code class="type"><a href="Ketrew_host.html#TYPEt">t</a></code></pre>
-<pre><span id="VALssh"><span class="keyword">val</span> ssh</span> : <code class="type">?playground:<a href="Ketrew_path.html#TYPEabsolute_directory">Ketrew_path.absolute_directory</a> -><br>       ?port:int -> ?user:string -> ?name:string -> string -> <a href="Ketrew_host.html#TYPEt">t</a></code></pre>
-<pre><span id="VALto_string"><span class="keyword">val</span> to_string</span> : <code class="type"><a href="Ketrew_host.html#TYPEt">t</a> -> string</code></pre>
-<pre><span id="VALfail_exec"><span class="keyword">val</span> fail_exec</span> : <code class="type"><a href="Ketrew_host.html#TYPEt">t</a> -><br>       ?out:string -><br>       ?err:string -><br>       'a -><br>       ('b, [> `Host of [> `Execution of string * string * string * 'a ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre>
-<pre><span id="VALget_shell_command_output"><span class="keyword">val</span> get_shell_command_output</span> : <code class="type"><a href="Ketrew_host.html#TYPEt">t</a> -><br>       string -><br>       (string * string,<br>        [> `Host of [> `Execution of string * string * string * string ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre>
-<pre><span id="VALget_shell_command_return_value"><span class="keyword">val</span> get_shell_command_return_value</span> : <code class="type"><a href="Ketrew_host.html#TYPEt">t</a> -><br>       string -><br>       (int, [> `Host of [> `Execution of string * string * string * string ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre>
-<pre><span id="VALrun_shell_command"><span class="keyword">val</span> run_shell_command</span> : <code class="type"><a href="Ketrew_host.html#TYPEt">t</a> -><br>       string -><br>       (unit, [> `Host of [> `Execution of string * string * string * string ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre>
-<pre><span id="VALdo_files_exist"><span class="keyword">val</span> do_files_exist</span> : <code class="type"><a href="Ketrew_host.html#TYPEt">t</a> -><br>       < kind : 'a; relativity : 'b > <a href="Ketrew_path.html#TYPEt">Ketrew_path.t</a> list -><br>       (bool, [> `Host of [> `Execution of string * string * string * string ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre>
-<pre><span id="VALget_fresh_playground"><span class="keyword">val</span> get_fresh_playground</span> : <code class="type"><a href="Ketrew_host.html#TYPEt">t</a> -> <a href="Ketrew_path.html#TYPEabsolute_directory">Ketrew_path.absolute_directory</a> option</code></pre>
-<pre><span id="VALensure_directory"><span class="keyword">val</span> ensure_directory</span> : <code class="type"><a href="Ketrew_host.html#TYPEt">t</a> -><br>       path:< kind : <a href="Ketrew_path.html#TYPEdirectory">Ketrew_path.directory</a>; relativity : 'a > <a href="Ketrew_path.html#TYPEt">Ketrew_path.t</a> -><br>       (unit,<br>        [> `Host of [> `Execution of string * string * string * string ]<br>         | `System of<br>             [> `Make_directory of string ] *<br>             [> `Exn of exn | `Wrong_access_rights of int ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre>
-<pre><span id="VALput_file"><span class="keyword">val</span> put_file</span> : <code class="type"><a href="Ketrew_host.html#TYPEt">t</a> -><br>       path:< kind : 'a; relativity : 'b > <a href="Ketrew_path.html#TYPEt">Ketrew_path.t</a> -><br>       content:string -><br>       (unit,<br>        [> `Host of [> `Execution of string * string * string * string ]<br>         | `IO of [> `Write_file_exn of Ketrew_pervasives.IO.path * exn ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre>
-<pre><span id="VALget_file"><span class="keyword">val</span> get_file</span> : <code class="type"><a href="Ketrew_host.html#TYPEt">t</a> -><br>       path:< kind : 'a; relativity : 'b > <a href="Ketrew_path.html#TYPEt">Ketrew_path.t</a> -><br>       (string,<br>        [> `Cannot_read_file of string * string<br>         | `IO of [> `Read_file_exn of Ketrew_pervasives.IO.path * exn ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre></body></html>
+<pre><span id="VALdefault_shell"><span class="keyword">val</span> <a href="code_VALKetrew_host.default_shell.html">default_shell</a></span> : <code class="type">?binary:string -><br>       ?options:string list -><br>       ?command_option:string -> string -> Ketrew_gen_base_v0_t.default_shell</code></pre><div class="info ">
+Use
+  <code class="code">default_shell ~binary:<span class="string">"/bin/sh"</span> ~options:[<span class="string">"-l"</span>; <span class="string">"--something"</span>; <span class="string">"blah"</span> ]
+      ~command_option:<span class="string">"-c"</span> <span class="string">"sh"</span></code>
+  to define a default-shell calling <code class="code"><span class="string">"sh -l --something blah -c &lt;command&gt;"</span></code>.<br>
+</div>
+
+<pre><span id="VALlocalhost"><span class="keyword">val</span> <a href="code_VALKetrew_host.localhost.html">localhost</a></span> : <code class="type">?default_shell:<a href="Ketrew_host.html#TYPEdefault_shell">default_shell</a> -><br>       ?playground:<a href="Ketrew_path.html#TYPEabsolute_directory">Ketrew_path.absolute_directory</a> -><br>       ?name:string -> unit -> <a href="Ketrew_host.html#TYPEt">t</a></code></pre><div class="info ">
+The host <code class="code"><span class="string">"localhost"</span></code> (i.e. not over SSH).<br>
+</div>
+
+<pre><span id="VALtmp_on_localhost"><span class="keyword">val</span> <a href="code_VALKetrew_host.tmp_on_localhost.html">tmp_on_localhost</a></span> : <code class="type"><a href="Ketrew_host.html#TYPEt">t</a></code></pre><div class="info ">
+The host <code class="code"><span class="string">"localhost"</span></code>, with <code class="code"><span class="string">"/tmp"</span></code> as <code class="code">playground</code>.<br>
+</div>
+
+<pre><span id="VALssh"><span class="keyword">val</span> <a href="code_VALKetrew_host.ssh.html">ssh</a></span> : <code class="type">?default_shell:<a href="Ketrew_host.html#TYPEdefault_shell">default_shell</a> -><br>       ?playground:<a href="Ketrew_path.html#TYPEabsolute_directory">Ketrew_path.absolute_directory</a> -><br>       ?port:int -> ?user:string -> ?name:string -> string -> <a href="Ketrew_host.html#TYPEt">t</a></code></pre><div class="info ">
+Create an SSH host.<br>
+</div>
+
+<pre><span id="VALof_uri"><span class="keyword">val</span> <a href="code_VALKetrew_host.of_uri.html">of_uri</a></span> : <code class="type">Uri.t -> <a href="Ketrew_host.html#TYPEt">t</a></code></pre><div class="info ">
+Get a <code class="code"><span class="constructor">Host</span>.t</code> from an URI (library <a href="https://github.com/mirage/ocaml-uri">ocaml-uri</a>);
+    the “path” part of the URI is the playground.
+<p>
+
+    If present, a <code class="code"><span class="string">"shell"</span></code> argument defines the <code class="code">default_shell</code>.
+<p>
+
+    For example
+    <code class="code">of_string <span class="string">"//user@SomeHost:42/tmp/pg?shell=bash,-l,--init-file,bouh,-c"</span></code>
+    will be like using 
+    <pre class="codepre"><code class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ssh&nbsp;~default_shell:(default_shell&nbsp;&nbsp;<span class="string">"bash"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~command_name&nbsp;~options:[<span class="string">"-l"</span>;&nbsp;<span class="string">"--init-file"</span>;&nbsp;<span class="string">"bouh"</span>]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~command_option:<span class="string">"-c"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~port:42&nbsp;~user:<span class="string">"user"</span>&nbsp;<span class="string">"SomeHost"</span></code></pre><br>
+</div>
+
+<pre><span id="VALof_string"><span class="keyword">val</span> <a href="code_VALKetrew_host.of_string.html">of_string</a></span> : <code class="type">string -> <a href="Ketrew_host.html#TYPEt">t</a></code></pre><div class="info ">
+Parse an <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC-3986</a>-compliant
+  string into a host, see <a href="Ketrew_host.html#VALof_uri"><code class="code"><span class="constructor">Ketrew_host</span>.of_uri</code></a>.<br>
+</div>
+
+<pre><span id="VALto_string_hum"><span class="keyword">val</span> <a href="code_VALKetrew_host.to_string_hum.html">to_string_hum</a></span> : <code class="type"><a href="Ketrew_host.html#TYPEt">t</a> -> string</code></pre><div class="info ">
+Get a display-friendly string for the host (“name”, or hostname).<br>
+</div>
+
+<pre><span class="keyword">module</span> <a href="Ketrew_host.Error.html">Error</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_host.Error.html">..</a> <code class="code"><span class="keyword">end</span></code></pre>
+<pre><span id="VALexecute"><span class="keyword">val</span> <a href="code_VALKetrew_host.execute.html">execute</a></span> : <code class="type"><a href="Ketrew_host.html#TYPEt">t</a> -><br>       string list -><br>       (< exited : int; stderr : string; stdout : string >,<br>        [> `Host of<br>             [> `Exec_failure of string<br>              | `Execution of<br>                  < host : string; message : string; stderr : string option;<br>                    stdout : string option ><br>              | `Ssh_failure of<br>                  [> `Wrong_log of string<br>                   | `Wrong_status of <a href="Ketrew_unix_process.Exit_code.html#TYPEt">Ketrew_unix_process.Exit_code.t</a> ] *<br>                  string ]<br>             <a href="Ketrew_host.Error.html#TYPEexecution">Error.execution</a> ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+Generic execution which tries to behave like <code class="code"><span class="constructor">Unix</span>.execv</code> even
+    on top of SSH.<br>
+</div>
+
+<pre><span id="TYPEshell"><span class="keyword">type</span> <code class="type"></code>shell</span> = <code class="type">string -> string list</code> </pre>
+<div class="info ">
+A “shell” is a function that takes a command and returns, and
+     execv-style string list; the default for each host
+     is <code class="code"><span class="string">"sh"</span>; <span class="string">"-c"</span>; cmd</code><br>
+</div>
+
+
+<pre><span id="VALshell_sh"><span class="keyword">val</span> <a href="code_VALKetrew_host.shell_sh.html">shell_sh</a></span> : <code class="type">sh:string -> <a href="Ketrew_host.html#TYPEshell">shell</a></code></pre><div class="info ">
+Call sh-style commands using the command argument (e.g. <code class="code">shell_sh <span class="string">"/bin/sh"</span></code>
+   for a known path or command).<br>
+</div>
+
+<pre><span id="VALget_shell_command_output"><span class="keyword">val</span> <a href="code_VALKetrew_host.get_shell_command_output.html">get_shell_command_output</a></span> : <code class="type">?with_shell:<a href="Ketrew_host.html#TYPEshell">shell</a> -><br>       <a href="Ketrew_host.html#TYPEt">t</a> -><br>       string -><br>       (string * string,<br>        [> `Host of<br>             [> `Exec_failure of string<br>              | `Execution of<br>                  < host : string; message : string; stderr : string option;<br>                    stdout : string option ><br>              | `Non_zero of string * int<br>              | `Ssh_failure of<br>                  [> `Wrong_log of string<br>                   | `Wrong_status of <a href="Ketrew_unix_process.Exit_code.html#TYPEt">Ketrew_unix_process.Exit_code.t</a> ] *<br>                  string ]<br>             <a href="Ketrew_host.Error.html#TYPEexecution">Error.execution</a> <a href="Ketrew_host.Error.html#TYPEnon_zero_execution">Error.non_zero_execution</a> ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+Run a shell command on the host, and return its <code class="code">(stdout, stderr)</code> pair
+    (succeeds <i>iff </i> the exit status is <code class="code">0</code>).<br>
+</div>
+
+<pre><span id="VALget_shell_command_return_value"><span class="keyword">val</span> <a href="code_VALKetrew_host.get_shell_command_return_value.html">get_shell_command_return_value</a></span> : <code class="type">?with_shell:<a href="Ketrew_host.html#TYPEshell">shell</a> -><br>       <a href="Ketrew_host.html#TYPEt">t</a> -><br>       string -><br>       (int,<br>        [> `Host of<br>             [> `Exec_failure of string<br>              | `Execution of<br>                  < host : string; message : string; stderr : string option;<br>                    stdout : string option ><br>              | `Ssh_failure of<br>                  [> `Wrong_log of string<br>                   | `Wrong_status of <a href="Ketrew_unix_process.Exit_code.html#TYPEt">Ketrew_unix_process.Exit_code.t</a> ] *<br>                  string ]<br>             <a href="Ketrew_host.Error.html#TYPEexecution">Error.execution</a> ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+Run a shell command on the host, and return its exit status value.<br>
+</div>
+
+<pre><span id="VALrun_shell_command"><span class="keyword">val</span> <a href="code_VALKetrew_host.run_shell_command.html">run_shell_command</a></span> : <code class="type">?with_shell:<a href="Ketrew_host.html#TYPEshell">shell</a> -><br>       <a href="Ketrew_host.html#TYPEt">t</a> -><br>       string -><br>       (unit,<br>        [> `Host of<br>             [> `Exec_failure of string<br>              | `Execution of<br>                  < host : string; message : string; stderr : string option;<br>                    stdout : string option ><br>              | `Non_zero of string * int<br>              | `Ssh_failure of<br>                  [> `Wrong_log of string<br>                   | `Wrong_status of <a href="Ketrew_unix_process.Exit_code.html#TYPEt">Ketrew_unix_process.Exit_code.t</a> ] *<br>                  string ]<br>             <a href="Ketrew_host.Error.html#TYPEexecution">Error.execution</a> <a href="Ketrew_host.Error.html#TYPEnon_zero_execution">Error.non_zero_execution</a> ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+Run a shell command on the host (succeeds <i>iff </i> the exit status is <code class="code">0</code>).<br>
+</div>
+
+<pre><span id="VALdo_files_exist"><span class="keyword">val</span> <a href="code_VALKetrew_host.do_files_exist.html">do_files_exist</a></span> : <code class="type">?with_shell:<a href="Ketrew_host.html#TYPEshell">shell</a> -><br>       <a href="Ketrew_host.html#TYPEt">t</a> -><br>       < kind : 'a; relativity : 'b > <a href="Ketrew_path.html#TYPEt">Ketrew_path.t</a> list -><br>       (bool,<br>        [> `Host of<br>             [> `Exec_failure of string<br>              | `Execution of<br>                  < host : string; message : string; stderr : string option;<br>                    stdout : string option ><br>              | `Ssh_failure of<br>                  [> `Wrong_log of string<br>                   | `Wrong_status of <a href="Ketrew_unix_process.Exit_code.html#TYPEt">Ketrew_unix_process.Exit_code.t</a> ] *<br>                  string ]<br>             <a href="Ketrew_host.Error.html#TYPEexecution">Error.execution</a> ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+Check existence of a list of files/directories.<br>
+</div>
+
+<pre><span id="VALget_fresh_playground"><span class="keyword">val</span> <a href="code_VALKetrew_host.get_fresh_playground.html">get_fresh_playground</a></span> : <code class="type"><a href="Ketrew_host.html#TYPEt">t</a> -> <a href="Ketrew_path.html#TYPEabsolute_directory">Ketrew_path.absolute_directory</a> option</code></pre><div class="info ">
+Get a new subdirectory in the host's playground<br>
+</div>
+
+<pre><span id="VALensure_directory"><span class="keyword">val</span> <a href="code_VALKetrew_host.ensure_directory.html">ensure_directory</a></span> : <code class="type">?with_shell:<a href="Ketrew_host.html#TYPEshell">shell</a> -><br>       <a href="Ketrew_host.html#TYPEt">t</a> -><br>       path:< kind : <a href="Ketrew_path.html#TYPEdirectory">Ketrew_path.directory</a>; relativity : 'a > <a href="Ketrew_path.html#TYPEt">Ketrew_path.t</a> -><br>       (unit,<br>        [> `Host of<br>             [> `Exec_failure of string<br>              | `Execution of<br>                  < host : string; message : string; stderr : string option;<br>                    stdout : string option ><br>              | `Non_zero of string * int<br>              | `Ssh_failure of<br>                  [> `Wrong_log of string<br>                   | `Wrong_status of <a href="Ketrew_unix_process.Exit_code.html#TYPEt">Ketrew_unix_process.Exit_code.t</a> ] *<br>                  string ]<br>             <a href="Ketrew_host.Error.html#TYPEexecution">Error.execution</a> <a href="Ketrew_host.Error.html#TYPEnon_zero_execution">Error.non_zero_execution</a> ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+Make sure the directory <code class="code">path</code> exists on the host.<br>
+</div>
+
+<pre><span id="VALput_file"><span class="keyword">val</span> <a href="code_VALKetrew_host.put_file.html">put_file</a></span> : <code class="type"><a href="Ketrew_host.html#TYPEt">t</a> -><br>       path:< kind : <a href="Ketrew_path.html#TYPEfile">Ketrew_path.file</a>; relativity : 'a > <a href="Ketrew_path.html#TYPEt">Ketrew_path.t</a> -><br>       content:string -><br>       (unit,<br>        [> `Host of<br>             [> `Exec_failure of string<br>              | `Execution of<br>                  < host : string; message : string; stderr : string option;<br>                    stdout : string option ><br>              | `Ssh_failure of<br>                  [> `Wrong_log of string<br>                   | `Wrong_status of <a href="Ketrew_unix_process.Exit_code.html#TYPEt">Ketrew_unix_process.Exit_code.t</a> ] *<br>                  string ]<br>             <a href="Ketrew_host.Error.html#TYPEexecution">Error.execution</a><br>         | `IO of [> `Write_file_exn of Ketrew_pervasives.IO.path * exn ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+Write a file on the host at <code class="code">path</code> containing <code class="code">contents</code>.<br>
+</div>
+
+<pre><span id="VALget_file"><span class="keyword">val</span> <a href="code_VALKetrew_host.get_file.html">get_file</a></span> : <code class="type"><a href="Ketrew_host.html#TYPEt">t</a> -><br>       path:< kind : <a href="Ketrew_path.html#TYPEfile">Ketrew_path.file</a>; relativity : 'a > <a href="Ketrew_path.html#TYPEt">Ketrew_path.t</a> -><br>       (string,<br>        [> `Cannot_read_file of string * string<br>         | `IO of [> `Read_file_exn of Ketrew_pervasives.IO.path * exn ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+Read the file from the host at <code class="code">path</code>.<br>
+</div>
+</body></html>

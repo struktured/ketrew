@@ -9,13 +9,19 @@
 <link rel="Up" href="index.html">
 <link title="Index of types" rel=Appendix href="index_types.html">
 <link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of class methods" rel=Appendix href="index_methods.html">
+<link title="Index of class types" rel=Appendix href="index_class_types.html">
 <link title="Index of modules" rel=Appendix href="index_modules.html">
 <link title="Index of module types" rel=Appendix href="index_module_types.html">
 <link title="Ketrew" rel="Chapter" href="Ketrew.html">
 <link title="Ketrew_artifact" rel="Chapter" href="Ketrew_artifact.html">
+<link title="Ketrew_command_line" rel="Chapter" href="Ketrew_command_line.html">
 <link title="Ketrew_database" rel="Chapter" href="Ketrew_database.html">
+<link title="Ketrew_edsl" rel="Chapter" href="Ketrew_edsl.html">
+<link title="Ketrew_error" rel="Chapter" href="Ketrew_error.html">
 <link title="Ketrew_host" rel="Chapter" href="Ketrew_host.html">
 <link title="Ketrew_long_running" rel="Chapter" href="Ketrew_long_running.html">
+<link title="Ketrew_lsf" rel="Chapter" href="Ketrew_lsf.html">
 <link title="Ketrew_monitored_script" rel="Chapter" href="Ketrew_monitored_script.html">
 <link title="Ketrew_nohup_setsid" rel="Chapter" href="Ketrew_nohup_setsid.html">
 <link title="Ketrew_path" rel="Chapter" href="Ketrew_path.html">
@@ -32,7 +38,7 @@
 <h1>Module <a href="type_Ketrew_pervasives.html">Ketrew_pervasives</a> (<a href="code_Ketrew_pervasives.html">.ml</a>)</h1>
 
 <pre><span class="keyword">module</span> Ketrew_pervasives: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_pervasives.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info module top">
-Provide pseudo-unique identifiers.<br>
+<code class="code"><span class="constructor">Pervasives</span></code> module for the library.<br>
 </div>
 <hr width="100%">
 
@@ -44,24 +50,36 @@ Provide pseudo-unique identifiers.<br>
 <pre><span class="keyword">include</span> Pvem_lwt_unix.Deferred_result</pre>
 
 <pre><span class="keyword">module</span> <a href="Ketrew_pervasives.String.html">String</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_pervasives.String.html">..</a> <code class="code"><span class="keyword">end</span></code></pre>
-<pre><span id="VALprintf"><span class="keyword">val</span> <a href="code_VALKetrew_pervasives.printf.html">printf</a></span> : <code class="type">[> `No ]</code></pre>
-<pre><span id="VALsprintf"><span class="keyword">val</span> <a href="code_VALKetrew_pervasives.sprintf.html">sprintf</a></span> : <code class="type">[> `No ]</code></pre>
-<pre><span id="VALfmt"><span class="keyword">val</span> <a href="code_VALKetrew_pervasives.fmt.html">fmt</a></span> : <code class="type">('a, unit, string) Pervasives.format -> 'a</code></pre>
-<pre><span id="VALglobal_debug_level"><span class="keyword">val</span> <a href="code_VALKetrew_pervasives.global_debug_level.html">global_debug_level</a></span> : <code class="type">int Pervasives.ref</code></pre>
-<pre><span id="VALglobal_with_color"><span class="keyword">val</span> <a href="code_VALKetrew_pervasives.global_with_color.html">global_with_color</a></span> : <code class="type">bool Pervasives.ref</code></pre>
-<pre><span class="keyword">module</span> <a href="Ketrew_pervasives.Log.html">Log</a>: <code class="type">Docout.Make_logger</code><code class="code">(</code><code class="code"><span class="keyword">sig</span></code><div class="sig_block">
-<pre><span id="TYPEresult"><span class="keyword">type</span> <code class="type">('a, 'b)</code> result</span> = <code class="type">'a</code> </pre>
+<pre><span id="VALprintf"><span class="keyword">val</span> <a href="code_VALKetrew_pervasives.printf.html">printf</a></span> : <code class="type">[> `No ]</code></pre><br>
+We disable <code class="code">printf</code>.<br>
 
+<pre><span id="VALsprintf"><span class="keyword">val</span> <a href="code_VALKetrew_pervasives.sprintf.html">sprintf</a></span> : <code class="type">[> `No ]</code></pre><br>
+We disable <code class="code">sprintf</code>, renamed as:<br>
 
-<pre><span id="VALdebug_level"><span class="keyword">val</span> <a href="code_VALKetrew_pervasives.Log.debug_level.html">debug_level</a></span> : <code class="type">unit -> int</code></pre>
-<pre><span id="VALwith_color"><span class="keyword">val</span> <a href="code_VALKetrew_pervasives.Log.with_color.html">with_color</a></span> : <code class="type">unit -> bool</code></pre>
-<pre><span id="VALline_width"><span class="keyword">val</span> <a href="code_VALKetrew_pervasives.Log.line_width.html">line_width</a></span> : <code class="type">int</code></pre>
-<pre><span id="VALindent"><span class="keyword">val</span> <a href="code_VALKetrew_pervasives.Log.indent.html">indent</a></span> : <code class="type">int</code></pre>
-<pre><span id="VALprint_string"><span class="keyword">val</span> <a href="code_VALKetrew_pervasives.Log.print_string.html">print_string</a></span> : <code class="type">string -> unit</code></pre>
-<pre><span id="VALdo_nothing"><span class="keyword">val</span> <a href="code_VALKetrew_pervasives.Log.do_nothing.html">do_nothing</a></span> : <code class="type">unit -> unit</code></pre>
-<pre><span id="VALname"><span class="keyword">val</span> <a href="code_VALKetrew_pervasives.Log.name.html">name</a></span> : <code class="type">string</code></pre></div><code class="code"><span class="keyword">end</span></code><code class="code">)</code></pre>
-<pre><span id="VALfailwithf"><span class="keyword">val</span> <a href="code_VALKetrew_pervasives.failwithf.html">failwithf</a></span> : <code class="type">('a, unit, string, 'b) Pervasives.format4 -> 'a</code></pre>
-<pre><span id="VALinvalid_argument_exn"><span class="keyword">val</span> <a href="code_VALKetrew_pervasives.invalid_argument_exn.html">invalid_argument_exn</a></span> : <code class="type">?where:string -> string -> 'a</code></pre>
-<pre><span class="keyword">module</span> <a href="Ketrew_pervasives.Time.html">Time</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_pervasives.Time.html">..</a> <code class="code"><span class="keyword">end</span></code></pre>
-<pre><span class="keyword">module</span> <a href="Ketrew_pervasives.Unique_id.html">Unique_id</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_pervasives.Unique_id.html">..</a> <code class="code"><span class="keyword">end</span></code></pre>
-<pre><span class="keyword">module</span> <a href="Ketrew_pervasives.Error.html">Error</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_pervasives.Error.html">..</a> <code class="code"><span class="keyword">end</span></code></pre></body></html>
+<pre><span id="VALfmt"><span class="keyword">val</span> <a href="code_VALKetrew_pervasives.fmt.html">fmt</a></span> : <code class="type">('a, unit, string) Pervasives.format -> 'a</code></pre><br>
+The only function dealing with “formats.”<br>
+
+<pre><span id="VALglobal_debug_level"><span class="keyword">val</span> <a href="code_VALKetrew_pervasives.global_debug_level.html">global_debug_level</a></span> : <code class="type">int Pervasives.ref</code></pre><br>
+Global reference.<br>
+
+<pre><span id="VALglobal_with_color"><span class="keyword">val</span> <a href="code_VALKetrew_pervasives.global_with_color.html">global_with_color</a></span> : <code class="type">bool Pervasives.ref</code></pre><br>
+Global reference.<br>
+
+<pre><span class="keyword">module</span> <a href="Ketrew_pervasives.Log.html">Log</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_pervasives.Log.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info">
+Application of the functor <code class="code"><span class="constructor">Docout</span>.<span class="constructor">Make_logger</span></code> to write to <code class="code">stderr</code>
+    without buffering.
+</div>
+
+<pre><span id="VALinvalid_argument_exn"><span class="keyword">val</span> <a href="code_VALKetrew_pervasives.invalid_argument_exn.html">invalid_argument_exn</a></span> : <code class="type">?where:string -> string -> 'a</code></pre><div class="info ">
+Function that have a documented, easy to check contract, can raise
+    <code class="code"><span class="constructor">Invalid_argument</span> _</code> (their name should end in <code class="code">_exn</code>).<br>
+</div>
+
+<pre><span class="keyword">module</span> <a href="Ketrew_pervasives.Time.html">Time</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_pervasives.Time.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info">
+Handle timestamps.
+</div>
+
+<pre><span class="keyword">module</span> <a href="Ketrew_pervasives.Unique_id.html">Unique_id</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_pervasives.Unique_id.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info">
+Provide pseudo-unique identifiers.
+</div>
+</body></html>

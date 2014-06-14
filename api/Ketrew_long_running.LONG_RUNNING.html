@@ -7,13 +7,19 @@
 <link rel="Up" href="Ketrew_long_running.html">
 <link title="Index of types" rel=Appendix href="index_types.html">
 <link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of class methods" rel=Appendix href="index_methods.html">
+<link title="Index of class types" rel=Appendix href="index_class_types.html">
 <link title="Index of modules" rel=Appendix href="index_modules.html">
 <link title="Index of module types" rel=Appendix href="index_module_types.html">
 <link title="Ketrew" rel="Chapter" href="Ketrew.html">
 <link title="Ketrew_artifact" rel="Chapter" href="Ketrew_artifact.html">
+<link title="Ketrew_command_line" rel="Chapter" href="Ketrew_command_line.html">
 <link title="Ketrew_database" rel="Chapter" href="Ketrew_database.html">
+<link title="Ketrew_edsl" rel="Chapter" href="Ketrew_edsl.html">
+<link title="Ketrew_error" rel="Chapter" href="Ketrew_error.html">
 <link title="Ketrew_host" rel="Chapter" href="Ketrew_host.html">
 <link title="Ketrew_long_running" rel="Chapter" href="Ketrew_long_running.html">
+<link title="Ketrew_lsf" rel="Chapter" href="Ketrew_lsf.html">
 <link title="Ketrew_monitored_script" rel="Chapter" href="Ketrew_monitored_script.html">
 <link title="Ketrew_nohup_setsid" rel="Chapter" href="Ketrew_nohup_setsid.html">
 <link title="Ketrew_path" rel="Chapter" href="Ketrew_path.html">
@@ -27,14 +33,43 @@
 &nbsp;</div>
 <h1>Module type <a href="type_Ketrew_long_running.LONG_RUNNING.html">Ketrew_long_running.LONG_RUNNING</a></h1>
 
-<pre><span class="keyword">module type</span> LONG_RUNNING = <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_long_running.LONG_RUNNING.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><hr width="100%">
+<pre><span class="keyword">module type</span> LONG_RUNNING = <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_long_running.LONG_RUNNING.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info modtype top">
+The module type <code class="code"><span class="constructor">LONG_RUNNING</span></code> defines the interface for plugins.<br>
+</div>
+<hr width="100%">
 
 <pre><span id="TYPErun_parameters"><span class="keyword">type</span> <code class="type"></code>run_parameters</span> </pre>
+<div class="info ">
+Hidden type kept serialized by the engine.<br>
+</div>
 
 
-<pre><span id="VALname"><span class="keyword">val</span> name</span> : <code class="type">string</code></pre>
-<pre><span id="VALserialize"><span class="keyword">val</span> serialize</span> : <code class="type"><a href="Ketrew_long_running.LONG_RUNNING.html#TYPErun_parameters">run_parameters</a> -> string</code></pre>
-<pre><span id="VALdeserialize_exn"><span class="keyword">val</span> deserialize_exn</span> : <code class="type">string -> <a href="Ketrew_long_running.LONG_RUNNING.html#TYPErun_parameters">run_parameters</a></code></pre>
-<pre><span id="VALstart"><span class="keyword">val</span> start</span> : <code class="type"><a href="Ketrew_long_running.LONG_RUNNING.html#TYPErun_parameters">run_parameters</a> -><br>       (<a href="Ketrew_long_running.LONG_RUNNING.html#TYPErun_parameters">run_parameters</a>,<br>        [> `Failed_to_start of string ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre>
-<pre><span id="VALupdate"><span class="keyword">val</span> update</span> : <code class="type"><a href="Ketrew_long_running.LONG_RUNNING.html#TYPErun_parameters">run_parameters</a> -><br>       ([ `Failed of <a href="Ketrew_long_running.LONG_RUNNING.html#TYPErun_parameters">run_parameters</a> * string<br>        | `Still_running of <a href="Ketrew_long_running.LONG_RUNNING.html#TYPErun_parameters">run_parameters</a><br>        | `Succeeded of <a href="Ketrew_long_running.LONG_RUNNING.html#TYPErun_parameters">run_parameters</a> ],<br>        [> `Failed_to_update of string ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre>
-<pre><span id="VALkill"><span class="keyword">val</span> kill</span> : <code class="type"><a href="Ketrew_long_running.LONG_RUNNING.html#TYPErun_parameters">run_parameters</a> -><br>       ([ `Killed of <a href="Ketrew_long_running.LONG_RUNNING.html#TYPErun_parameters">run_parameters</a> ],<br>        [> `Failed_to_kill of string ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre></body></html>
+<pre><span id="VALname"><span class="keyword">val</span> name</span> : <code class="type">string</code></pre><div class="info ">
+The (unique) name of the plugin.<br>
+</div>
+
+<pre><span id="VALserialize"><span class="keyword">val</span> serialize</span> : <code class="type"><a href="Ketrew_long_running.LONG_RUNNING.html#TYPErun_parameters">run_parameters</a> -> string</code></pre><div class="info ">
+Serialize the run parameters for storage by the engine.<br>
+</div>
+
+<pre><span id="VALdeserialize_exn"><span class="keyword">val</span> deserialize_exn</span> : <code class="type">string -> <a href="Ketrew_long_running.LONG_RUNNING.html#TYPErun_parameters">run_parameters</a></code></pre><div class="info ">
+Deserialize the run parameters from a string; the engine guaranties
+      that <code class="code">deserialize_exn</code> will be called onthe result of <a href="Ketrew_long_running.LONG_RUNNING.html#VALserialize"><code class="code"><span class="constructor">Ketrew_long_running</span>.<span class="constructor">LONG_RUNNING</span>.serialize</code></a>;
+      and assumes that no exception will be thrown in that case.<br>
+</div>
+
+<pre><span id="VALstart"><span class="keyword">val</span> start</span> : <code class="type"><a href="Ketrew_long_running.LONG_RUNNING.html#TYPErun_parameters">run_parameters</a> -><br>       (<a href="Ketrew_long_running.LONG_RUNNING.html#TYPErun_parameters">run_parameters</a>,<br>        [> `Failed_to_start of string ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+Start the long-running computation, the returned <code class="code">run_parameters</code> will be
+      stored and used for the first call to <a href="Ketrew_long_running.LONG_RUNNING.html#VALupdate"><code class="code"><span class="constructor">Ketrew_long_running</span>.<span class="constructor">LONG_RUNNING</span>.update</code></a>.<br>
+</div>
+
+<pre><span id="VALupdate"><span class="keyword">val</span> update</span> : <code class="type"><a href="Ketrew_long_running.LONG_RUNNING.html#TYPErun_parameters">run_parameters</a> -><br>       ([ `Failed of <a href="Ketrew_long_running.LONG_RUNNING.html#TYPErun_parameters">run_parameters</a> * string<br>        | `Still_running of <a href="Ketrew_long_running.LONG_RUNNING.html#TYPErun_parameters">run_parameters</a><br>        | `Succeeded of <a href="Ketrew_long_running.LONG_RUNNING.html#TYPErun_parameters">run_parameters</a> ],<br>        [> `Failed_to_update of string ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+Check and update the status of the long-running job. Again, is
+      <code class="code"><span class="keywordsign">`</span><span class="constructor">Still_running</span> rp</code> is returned, the next call to <a href="Ketrew_long_running.LONG_RUNNING.html#VALupdate"><code class="code"><span class="constructor">Ketrew_long_running</span>.<span class="constructor">LONG_RUNNING</span>.update</code></a> (or <a href="Ketrew_long_running.LONG_RUNNING.html#VALkill"><code class="code"><span class="constructor">Ketrew_long_running</span>.<span class="constructor">LONG_RUNNING</span>.kill</code></a>)
+      will receive those parameters.<br>
+</div>
+
+<pre><span id="VALkill"><span class="keyword">val</span> kill</span> : <code class="type"><a href="Ketrew_long_running.LONG_RUNNING.html#TYPErun_parameters">run_parameters</a> -><br>       ([ `Killed of <a href="Ketrew_long_running.LONG_RUNNING.html#TYPErun_parameters">run_parameters</a> ],<br>        [> `Failed_to_kill of string ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+Kill the long-running computation.<br>
+</div>
+</body></html>

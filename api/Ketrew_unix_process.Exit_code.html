@@ -7,13 +7,19 @@
 <link rel="Up" href="Ketrew_unix_process.html">
 <link title="Index of types" rel=Appendix href="index_types.html">
 <link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of class methods" rel=Appendix href="index_methods.html">
+<link title="Index of class types" rel=Appendix href="index_class_types.html">
 <link title="Index of modules" rel=Appendix href="index_modules.html">
 <link title="Index of module types" rel=Appendix href="index_module_types.html">
 <link title="Ketrew" rel="Chapter" href="Ketrew.html">
 <link title="Ketrew_artifact" rel="Chapter" href="Ketrew_artifact.html">
+<link title="Ketrew_command_line" rel="Chapter" href="Ketrew_command_line.html">
 <link title="Ketrew_database" rel="Chapter" href="Ketrew_database.html">
+<link title="Ketrew_edsl" rel="Chapter" href="Ketrew_edsl.html">
+<link title="Ketrew_error" rel="Chapter" href="Ketrew_error.html">
 <link title="Ketrew_host" rel="Chapter" href="Ketrew_host.html">
 <link title="Ketrew_long_running" rel="Chapter" href="Ketrew_long_running.html">
+<link title="Ketrew_lsf" rel="Chapter" href="Ketrew_lsf.html">
 <link title="Ketrew_monitored_script" rel="Chapter" href="Ketrew_monitored_script.html">
 <link title="Ketrew_nohup_setsid" rel="Chapter" href="Ketrew_nohup_setsid.html">
 <link title="Ketrew_path" rel="Chapter" href="Ketrew_path.html">
@@ -25,14 +31,15 @@
 <body>
 <div class="navbar">&nbsp;<a class="up" href="Ketrew_unix_process.html" title="Ketrew_unix_process">Up</a>
 &nbsp;</div>
-<h1>Module <a href="type_Ketrew_unix_process.Exit_code.html">Ketrew_unix_process.Exit_code</a></h1>
+<h1>Module <a href="type_Ketrew_unix_process.Exit_code.html">Ketrew_unix_process.Exit_code</a> (<a href="code_Ketrew_unix_process.Exit_code.html">.ml</a>)</h1>
 
 <pre><span class="keyword">module</span> Exit_code: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_unix_process.Exit_code.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info module top">
-High-level representation of Unix exit codes.<br>
+Higher-level representation of Unix exit codes.<br>
 </div>
 <hr width="100%">
 
 <pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = <code class="type">[ `Exited of int | `Signaled of int | `Stopped of int ]</code> </pre>
 
 
-<pre><span id="VALto_string"><span class="keyword">val</span> to_string</span> : <code class="type"><a href="Ketrew_unix_process.Exit_code.html#TYPEt">t</a> -> string</code></pre></body></html>
+<pre><span id="VALto_string"><span class="keyword">val</span> <a href="code_VALKetrew_unix_process.Exit_code.to_string.html">to_string</a></span> : <code class="type"><a href="Ketrew_unix_process.Exit_code.html#TYPEt">t</a> -> string</code></pre>
+<pre><span id="VALto_log"><span class="keyword">val</span> <a href="code_VALKetrew_unix_process.Exit_code.to_log.html">to_log</a></span> : <code class="type"><a href="Ketrew_unix_process.Exit_code.html#TYPEt">t</a> -> Ketrew_pervasives.Log.t</code></pre></body></html>
