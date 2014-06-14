@@ -4,19 +4,13 @@
 <link rel="Start" href="index.html">
 <link title="Index of types" rel=Appendix href="index_types.html">
 <link title="Index of values" rel=Appendix href="index_values.html">
-<link title="Index of class methods" rel=Appendix href="index_methods.html">
-<link title="Index of class types" rel=Appendix href="index_class_types.html">
 <link title="Index of modules" rel=Appendix href="index_modules.html">
 <link title="Index of module types" rel=Appendix href="index_module_types.html">
 <link title="Ketrew" rel="Chapter" href="Ketrew.html">
 <link title="Ketrew_artifact" rel="Chapter" href="Ketrew_artifact.html">
-<link title="Ketrew_command_line" rel="Chapter" href="Ketrew_command_line.html">
 <link title="Ketrew_database" rel="Chapter" href="Ketrew_database.html">
-<link title="Ketrew_edsl" rel="Chapter" href="Ketrew_edsl.html">
-<link title="Ketrew_error" rel="Chapter" href="Ketrew_error.html">
 <link title="Ketrew_host" rel="Chapter" href="Ketrew_host.html">
 <link title="Ketrew_long_running" rel="Chapter" href="Ketrew_long_running.html">
-<link title="Ketrew_lsf" rel="Chapter" href="Ketrew_lsf.html">
 <link title="Ketrew_monitored_script" rel="Chapter" href="Ketrew_monitored_script.html">
 <link title="Ketrew_nohup_setsid" rel="Chapter" href="Ketrew_nohup_setsid.html">
 <link title="Ketrew_path" rel="Chapter" href="Ketrew_path.html">
@@ -27,64 +21,7 @@
 </head>
 <body>
 <code class="code"><span class="keyword">sig</span><br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;volume_structure&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.volume_structure&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">File</span>&nbsp;<span class="keyword">of</span>&nbsp;string<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Directory</span>&nbsp;<span class="keyword">of</span>&nbsp;(string&nbsp;*&nbsp;volume_structure&nbsp;list)<br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;ssh_host&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.ssh_host&nbsp;=&nbsp;{<br>
-&nbsp;&nbsp;&nbsp;&nbsp;address&nbsp;:&nbsp;string;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;port&nbsp;:&nbsp;int&nbsp;option;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;user&nbsp;:&nbsp;string&nbsp;option;<br>
-&nbsp;&nbsp;}<br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;path&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.path&nbsp;=&nbsp;{<br>
-&nbsp;&nbsp;&nbsp;&nbsp;kind&nbsp;:&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Directory</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">File</span>&nbsp;];<br>
-&nbsp;&nbsp;&nbsp;&nbsp;path&nbsp;:&nbsp;string;<br>
-&nbsp;&nbsp;}<br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;default_shell&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.default_shell&nbsp;=&nbsp;{<br>
-&nbsp;&nbsp;&nbsp;&nbsp;binary&nbsp;:&nbsp;string&nbsp;option;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;command_name&nbsp;:&nbsp;string;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;options&nbsp;:&nbsp;string&nbsp;list;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;command_option&nbsp;:&nbsp;string;<br>
-&nbsp;&nbsp;}<br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;connection&nbsp;=&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Localhost</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ssh</span>&nbsp;<span class="keyword">of</span>&nbsp;ssh_host&nbsp;]<br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;host&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.host&nbsp;=&nbsp;{<br>
-&nbsp;&nbsp;&nbsp;&nbsp;name&nbsp;:&nbsp;string;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;connection&nbsp;:&nbsp;connection;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;playground&nbsp;:&nbsp;path&nbsp;option;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;default_shell&nbsp;:&nbsp;default_shell;<br>
-&nbsp;&nbsp;}<br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;volume&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.volume&nbsp;=&nbsp;{<br>
-&nbsp;&nbsp;&nbsp;&nbsp;host&nbsp;:&nbsp;host;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;root&nbsp;:&nbsp;path;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;structure&nbsp;:&nbsp;volume_structure;<br>
-&nbsp;&nbsp;}<br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;value_type&nbsp;=&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Number</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">String</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Unit</span>&nbsp;]<br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;unique_id&nbsp;=&nbsp;string<br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;time&nbsp;=&nbsp;float<br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;stupid_db&nbsp;=&nbsp;(string&nbsp;*&nbsp;string)&nbsp;list<br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;persistent_state&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.persistent_state&nbsp;=&nbsp;{<br>
-&nbsp;&nbsp;&nbsp;&nbsp;current_targets&nbsp;:&nbsp;unique_id&nbsp;list;<br>
-&nbsp;&nbsp;}<br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;monitored_script&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.monitored_script&nbsp;=&nbsp;{<br>
-&nbsp;&nbsp;&nbsp;&nbsp;playground&nbsp;:&nbsp;path;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;program&nbsp;:&nbsp;string&nbsp;list;<br>
-&nbsp;&nbsp;}<br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;database&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.database&nbsp;=&nbsp;{<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">mutable</span>&nbsp;db&nbsp;:&nbsp;stupid_db;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;parameters&nbsp;:&nbsp;string;<br>
-&nbsp;&nbsp;}<br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;artifact_value&nbsp;=&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Number</span>&nbsp;<span class="keyword">of</span>&nbsp;float&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">String</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Unit</span>&nbsp;]<br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;artifact_type&nbsp;=&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Value</span>&nbsp;<span class="keyword">of</span>&nbsp;value_type&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Volume</span>&nbsp;<span class="keyword">of</span>&nbsp;volume&nbsp;]<br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;artifact&nbsp;=&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Value</span>&nbsp;<span class="keyword">of</span>&nbsp;artifact_value&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Volume</span>&nbsp;<span class="keyword">of</span>&nbsp;volume&nbsp;]<br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;time<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;float<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;now&nbsp;:&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_pervasives</span>.<span class="constructor">Time</span>.t<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;to_filename&nbsp;:&nbsp;float&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
 <span class="keyword">end</span></code></body></html>

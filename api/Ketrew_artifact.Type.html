@@ -8,19 +8,13 @@
 <link rel="Up" href="Ketrew_artifact.html">
 <link title="Index of types" rel=Appendix href="index_types.html">
 <link title="Index of values" rel=Appendix href="index_values.html">
-<link title="Index of class methods" rel=Appendix href="index_methods.html">
-<link title="Index of class types" rel=Appendix href="index_class_types.html">
 <link title="Index of modules" rel=Appendix href="index_modules.html">
 <link title="Index of module types" rel=Appendix href="index_module_types.html">
 <link title="Ketrew" rel="Chapter" href="Ketrew.html">
 <link title="Ketrew_artifact" rel="Chapter" href="Ketrew_artifact.html">
-<link title="Ketrew_command_line" rel="Chapter" href="Ketrew_command_line.html">
 <link title="Ketrew_database" rel="Chapter" href="Ketrew_database.html">
-<link title="Ketrew_edsl" rel="Chapter" href="Ketrew_edsl.html">
-<link title="Ketrew_error" rel="Chapter" href="Ketrew_error.html">
 <link title="Ketrew_host" rel="Chapter" href="Ketrew_host.html">
 <link title="Ketrew_long_running" rel="Chapter" href="Ketrew_long_running.html">
-<link title="Ketrew_lsf" rel="Chapter" href="Ketrew_lsf.html">
 <link title="Ketrew_monitored_script" rel="Chapter" href="Ketrew_monitored_script.html">
 <link title="Ketrew_nohup_setsid" rel="Chapter" href="Ketrew_nohup_setsid.html">
 <link title="Ketrew_path" rel="Chapter" href="Ketrew_path.html">
@@ -33,38 +27,18 @@
 <div class="navbar"><a class="pre" href="Ketrew_artifact.Volume.html" title="Ketrew_artifact.Volume">Previous</a>
 &nbsp;<a class="up" href="Ketrew_artifact.html" title="Ketrew_artifact">Up</a>
 &nbsp;</div>
-<h1>Module <a href="type_Ketrew_artifact.Type.html">Ketrew_artifact.Type</a> (<a href="code_Ketrew_artifact.Type.html">.ml</a>)</h1>
+<h1>Module <a href="type_Ketrew_artifact.Type.html">Ketrew_artifact.Type</a></h1>
 
-<pre><span class="keyword">module</span> Type: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_artifact.Type.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info module top">
-Module defining an artifact's “type”;  its “specification”.<br>
-</div>
-<hr width="100%">
+<pre><span class="keyword">module</span> Type: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_artifact.Type.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><hr width="100%">
 
 <pre><span id="TYPEvalue_type"><span class="keyword">type</span> <code class="type"></code>value_type</span> = <code class="type">[ `Number | `String | `Unit ]</code> </pre>
-<div class="info ">
-The specification of a value's type.<br>
-</div>
 
 
+<pre><span id="VALvalue_type_to_string"><span class="keyword">val</span> value_type_to_string</span> : <code class="type">[< `Number | `String | `Unit ] -> string</code></pre>
 <pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = <code class="type">[ `Value of <a href="Ketrew_artifact.Type.html#TYPEvalue_type">value_type</a><br>       | `Volume of <a href="Ketrew_artifact.Volume.html#TYPEt">Ketrew_artifact.Volume.t</a> ]</code> </pre>
-<div class="info ">
-The specification of an artifact.<br>
-</div>
 
 
-<pre><span id="VALvalue"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.Type.value.html">value</a></span> : <code class="type"><a href="Ketrew_artifact.Type.html#TYPEvalue_type">value_type</a> -> <a href="Ketrew_artifact.Type.html#TYPEt">t</a></code></pre><div class="info ">
-Construct a “value-type” artifact type.<br>
-</div>
-
-<pre><span id="VALstring_value"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.Type.string_value.html">string_value</a></span> : <code class="type"><a href="Ketrew_artifact.Type.html#TYPEt">t</a></code></pre><div class="info ">
-Shortcut for <code class="code"><span class="keywordsign">`</span><span class="constructor">Value</span> <span class="keywordsign">`</span><span class="constructor">String</span></code>.<br>
-</div>
-
-<pre><span id="VALvolume"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.Type.volume.html">volume</a></span> : <code class="type"><a href="Ketrew_artifact.Volume.html#TYPEt">Ketrew_artifact.Volume.t</a> -> <a href="Ketrew_artifact.Type.html#TYPEt">t</a></code></pre><div class="info ">
-Construct a “volume-specification” artifact type.<br>
-</div>
-
-<pre><span id="VALto_string_hum"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.Type.to_string_hum.html">to_string_hum</a></span> : <code class="type"><a href="Ketrew_artifact.Type.html#TYPEt">t</a> -> string</code></pre><div class="info ">
-Get a Human-readable string.<br>
-</div>
-</body></html>
+<pre><span id="VALvalue"><span class="keyword">val</span> value</span> : <code class="type"><a href="Ketrew_artifact.Type.html#TYPEvalue_type">value_type</a> -> <a href="Ketrew_artifact.Type.html#TYPEt">t</a></code></pre>
+<pre><span id="VALstring_value"><span class="keyword">val</span> string_value</span> : <code class="type"><a href="Ketrew_artifact.Type.html#TYPEt">t</a></code></pre>
+<pre><span id="VALvolume"><span class="keyword">val</span> volume</span> : <code class="type">'a -> [> `Volume of 'a ]</code></pre>
+<pre><span id="VALto_string"><span class="keyword">val</span> to_string</span> : <code class="type">[< `Value of [< `Number | `String | `Unit ]<br>        | `Volume of <a href="Ketrew_artifact.Volume.html#TYPEt">Ketrew_artifact.Volume.t</a> ] -><br>       string</code></pre></body></html>

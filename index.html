@@ -1,135 +1,44 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <link rel="stylesheet" href="http://cdn.jsdelivr.net/bootstrap/3.1.1/css/bootstrap.min.css" type="text/css">
-  <link rel="stylesheet" href="http://cdn.jsdelivr.net/bootstrap/3.1.1/css/bootstrap-theme.min.css" type="text/css">
-  <link rel="stylesheet" href="http://cdn.jsdelivr.net/highlight.js/8.0/styles/default.css">
-  <link rel="stylesheet" href="http://cdn.jsdelivr.net/highlight.js/8.0/styles/paraiso.dark.css">
-  <script src="http://cdn.jsdelivr.net/highlight.js/8.0/highlight.min.js"></script>
-  <script>hljs.initHighlightingOnLoad();</script>
+  <link rel="stylesheet" href="api/style.css" type="text/css">
   <meta charset="utf-8">
-  <title>Ketrew 0.0.1-prealpha</title>
 </head>
-  <body><div class="container">
+  <body>
 <h1 id="KetrewKeepTrackofExperimentalWorkflows">Ketrew: Keep Track of Experimental Workflows</h1>
 <p>This is <strong>Work in Progress</strong>, not ready for use.</p>
-<p>This documentation is available at <a href='http://seb.mondet.org/ketrew/'>http://seb.mondet.org/ketrew/</a>.</p>
 <h2 id="BuildInstall">Build &amp; Install</h2>
-<h3 id="Dependencies">Dependencies</h3>
-<p>Ketrew depends on</p>
-<ul>
- <li><code>nonstd</code>: nano-library providing a portable extract of <code>Core_kernel</code></li>
- <li><code>pvem</code>: error monad</li>
- <li><code>docout</code>: logging with <code>smart-print</code></li>
- <li><code>sosa</code>:  String module/functor</li>
- <li><code>pvem_lwt_unix</code>: <code>Lwt_unix</code> wrapped in a <code>Pvem.t</code> (error monad) with more
-precise error types.</li>
- <li><code>uri</code>:
-parse an <a href='http://www.ietf.org/rfc/rfc3986.txt'>RFC-3986</a>-compliant URIs
-(<code>uri</code> itself depends on <code>camlp4</code>).</li>
- <li><code>cmdliner</code>: command line parsing</li>
- <li><code>yojson</code>: JSON parsing/printing</li>
- <li><code>atdgen/atd</code>: definition of serialization formats (used with <code>Yojson</code>).</li>
-</ul>
-
-<p>and uses the <code>ocp-build</code> build system.</p>
-<p>The <code>please.sh</code> script can call <code>opam</code> itself:</p>
-<pre><code>./please.sh get-dependencies</code></pre>
-<h3 id="Build">Build</h3>
-<p>Then you may setup and build everything:</p>
+<p>Ketrew depends on
+<code>nonstd</code>, <code>pvem</code>, <code>docout</code>,  <code>sosa</code>,  <code>pvem_lwt_unix</code>
+and uses the <code>ocp-build</code> build system:</p>
 <pre><code>./please.sh build</code></pre>
-<p>(for incremental compilation while developping please use: <code>ocp-build &lt;target&gt;</code>
-directly)</p>
 <p>You should not install <code>ketrew</code> yet, but you can always call at your own risk:</p>
 <pre><code>ocp-build install</code></pre>
-<h3 id="BuildTheDocumentation">Build The Documentation</h3>
-<p>The documentation depends on <a href='https://github.com/ocaml/omd'>omd</a>, and
-Graphviz&#39;s <code>dot</code>:</p>
-<pre><code>please.sh doc</code></pre>
-<p>and check-out <code>_doc/index.html</code>.</p>
-<h2 id="Usage">Usage</h2>
-<p>A workflow script is an OCaml file (script, compiled, or even inside the
-toplevel).</p>
-<p>The minimal file running Ketrew would be:</p>
-<pre class='ocaml'><code class='ocaml'>let `Never_returns =
-  let db_file = &quot;/path/to/ketrew_database&quot; in
-  let configuration = Ketrew_state.Configuration.create db_file () in
-  Ketrew.Command_line.run_main ~configuration ()</code></pre>
-<p>this provides Ketrew&#39;s command-line interface, but without any user-defined
-commands/workflows (see <code>&lt;script.ml&gt; --help</code>).</p>
-<blockquote><p><em>Tip</em>: The build system can launch the OCaml toplevel (<code>utop</code>, or <code>ocaml</code>)
-with the library loaded, <strong>and</strong> <code>Ketrew.Command_line.run_main</code>
-can be fed a <code>~argv</code> argument. For example:</p>
-<pre class='ocaml'><code class='ocaml'>let `Never_returns =
-  let db_file = &quot;/tmp/ketrew_database_readme&quot; in
-  let configuration = Ketrew_state.Configuration.create db_file () in
-  Ketrew.Command_line.run_main ~configuration  ~argv:[|&quot;&quot;; &quot;--help&quot;|] ()</code></pre>
-<p>will display the default help message.</p>
-</blockquote>
-<p>Then, one can add create functions that create and <code>run</code> workflows:</p>
-<pre class='ocaml'><code class='ocaml'>let run_command_with_lsf cmd =
-  let open Ketrew.EDSL in
-  let host = 
-    parse_host &quot;ssh://user42@MyLSFCluster/home/user42/kplayground?shell=bash&quot; in
-  let queue = &quot;normalpeople&quot; in
-  run (
-    target &quot;run_command_with_lsf&quot;
-      ~make:(lsf ~queue ~wall_limit:&quot;1:30&quot; ~processors:(`Min_max (1,1))
-               ~host [cmd])
-  )</code></pre>
-<p>those can be added to the command-line by providing a <code>Cmdliner.Term.t</code>
-(see <a href='http://erratique.ch/software/cmdliner'>documentation</a>)
-to <code>run_main</code>.</p>
-<pre class='ocaml'><code class='ocaml'>let additional_term =
-  let open Cmdliner in
-  let all_args =
-    let doc = &quot; TODO: write some doc here &quot; in
-    Arg.(value &amp; pos_all string [] &amp; info [] ~docv:&quot;SPECIFICATION&quot; ~doc)
-  in
-  let treat_list_of_strings = function
-    | &quot;lsf&quot; :: cmd :: [] -&gt; run_command_with_lsf cmd
-    | some_other_list -&gt; 
-      Ketrew.EDSL.ketrew_fail &quot;Don&#39;t know what to do with %s&quot; 
-        (String.concat &quot;, &quot; some_other_list)
-  in
-  Term.(pure treat_list_of_strings $ all_args)
-
-let `Never_returns =
-  let db_file = &quot;/path/to/ketrew_database&quot; in
-  let configuration = Ketrew_state.Configuration.create db_file () in
-  Ketrew.Command_line.run_main ~additional_term ~configuration ()</code></pre>
-<p>then one should be able to add and activate mini-workflow with:</p>
-<pre><code>&lt;script.ml&gt; call lsf &quot;&lt;some shell command to run on the cluster&gt;&quot;</code></pre>
-<p>To display the current status:</p>
-<pre><code>&lt;script.ml&gt; info</code></pre>
-<p>To run as many steps as possible until a “fix-point” is reached:</p>
-<pre><code>&lt;script.ml&gt; run fix</code></pre>
-<p>To kill running jobs use</p>
-<pre><code>&lt;script.ml&gt; kill &lt;target-ID&gt;</code></pre>
-<p>or do an interactive murder:</p>
-<pre><code>&lt;script.ml&gt; kill --interactive</code></pre>
-<p>See the file <code>src/test/cli.ml</code> for more examples (<em>work-in-progress</em>).</p>
 <h2 id="Tests">Tests</h2>
 <p>Run the tests like this:</p>
-<pre class='bash'><code class='bash'>    ketrew_test_ssh=&lt;Host&gt; _obuild/ketrew-test/ketrew-test.asm [-no-color]</code></pre>
+<pre><code>ketrew_test_ssh=&lt;Host&gt; _obuild/ketrew-test/ketrew-test.asm [-no-color]</code></pre>
 <p>where <code>&lt;Host&gt;</code> is often an entry in your <code>.ssh/config</code> file.</p>
 <p>The test will indeed look for the environment variable <code>ketrew_test_ssh</code>; if
 not defined it will use <code>&quot;localhost&quot;</code>. But for the test to succeed it should be
 an SSH host for which the user running the test does not need password.
 The test will run some commands on that host and create files and directories
 in its <code>/tmp</code> directory.</p>
-<h2 id="Authors">Authors</h2>
-<ul>
- <li><a href='http://seb.mondet.org'>Sebastien Mondet</a> (<code>seb@mondet.org</code>)</li>
-</ul>
+<h2 id="Documentation">Documentation</h2>
+<p>The documentation depends on <a href='https://github.com/ocaml/omd'>omd</a>, and
+Graphviz&#39;s <code>dot</code>:</p>
+<pre><code>please.sh doc
 
+
+</code></pre>
 <h2 id="CodeDocumentation">Code Documentation</h2>
 <ul>
  <li><a href='api/index.html'>ocaml-doc for the API</a></li>
 </ul>
 
-<p><object class="img-rounded"  type="image/svg+xml" data="modules.svg"
+<p><a href="modules.svg">
+<object type="image/svg+xml" data="modules.svg"
 style="transform-origin: 0% 100% 0;
        transform: translateY(-100%) rotate(90deg);"
-  >Your browser does not support SVG</object></p>
-</div></body><html>
+  >Your browser does not support SVG</object>
+</a></p>
+</body><html>
