@@ -86,12 +86,18 @@ Create an SSH host.<br>
 <pre><span id="VALof_uri"><span class="keyword">val</span> <a href="code_VALKetrew_host.of_uri.html">of_uri</a></span> : <code class="type">Uri.t -> <a href="Ketrew_host.html#TYPEt">t</a></code></pre><div class="info ">
 Get a <code class="code"><span class="constructor">Host</span>.t</code> from an URI (library <a href="https://github.com/mirage/ocaml-uri">ocaml-uri</a>);
     the “path” part of the URI is the playground.
-    If present a <code class="code"><span class="string">"shell"</span></code> argument defines the <code class="code">default_shell</code>.
-    example
+<p>
+
+    If present, a <code class="code"><span class="string">"shell"</span></code> argument defines the <code class="code">default_shell</code>.
+<p>
+
+    For example
     <code class="code">of_string <span class="string">"//user@SomeHost:42/tmp/pg?shell=bash,-l,--init-file,bouh,-c"</span></code>
-    will be <code class="code">ssh ~default_shell:(default_shell  <span class="string">"bash"</span>
-    ~command_name ~options:[<span class="string">"-l"</span>; <span class="string">"--init-file"</span>; <span class="string">"bouh"</span>] ~command_option:<span class="string">"-c"</span>)
-     ~port:42 ~user:<span class="string">"user"</span> <span class="string">"SomeHost"</span></code><br>
+    will be like using 
+    <pre class="codepre"><code class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ssh&nbsp;~default_shell:(default_shell&nbsp;&nbsp;<span class="string">"bash"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~command_name&nbsp;~options:[<span class="string">"-l"</span>;&nbsp;<span class="string">"--init-file"</span>;&nbsp;<span class="string">"bouh"</span>]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~command_option:<span class="string">"-c"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~port:42&nbsp;~user:<span class="string">"user"</span>&nbsp;<span class="string">"SomeHost"</span></code></pre><br>
 </div>
 
 <pre><span id="VALof_string"><span class="keyword">val</span> <a href="code_VALKetrew_host.of_string.html">of_string</a></span> : <code class="type">string -> <a href="Ketrew_host.html#TYPEt">t</a></code></pre><div class="info ">
