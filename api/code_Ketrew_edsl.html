@@ -23,7 +23,8 @@
 <link title="Ketrew_pervasives" rel="Chapter" href="Ketrew_pervasives.html">
 <link title="Ketrew_state" rel="Chapter" href="Ketrew_state.html">
 <link title="Ketrew_target" rel="Chapter" href="Ketrew_target.html">
-<link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html"><title>Ketrew API : Ketrew_edsl</title>
+<link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html">
+<link title="Ketrew_user_command" rel="Chapter" href="Ketrew_user_command.html"><title>Ketrew API : Ketrew_edsl</title>
 </head>
 <body>
 <code class="code"><span class="keyword">open</span>&nbsp;<span class="constructor">Ketrew_pervasives</span><br>
@@ -113,7 +114,7 @@
 &nbsp;&nbsp;&nbsp;-&nbsp;make&nbsp;sure&nbsp;the&nbsp;run&nbsp;target&nbsp;is&nbsp;active,<br>
 &nbsp;&nbsp;&nbsp;-&nbsp;get&nbsp;the&nbsp;IDs&nbsp;of&nbsp;all&nbsp;the&nbsp;depdendencies,<br>
 *)</span><br>
-<span class="keyword">let</span>&nbsp;run&nbsp;t&nbsp;=<br>
+<span class="keyword">let</span>&nbsp;user_command_list&nbsp;t&nbsp;=<br>
 &nbsp;&nbsp;t<span class="keywordsign">#</span>activate;<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;go_through_deps&nbsp;t&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;t<span class="keywordsign">#</span>render&nbsp;::&nbsp;<span class="constructor">List</span>.concat_map&nbsp;t<span class="keywordsign">#</span>dependencies&nbsp;~f:go_through_deps&nbsp;<span class="keyword">in</span><br>
@@ -125,9 +126,21 @@
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;first&nbsp;::&nbsp;more&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[<span class="keywordsign">`</span><span class="constructor">Make</span>&nbsp;(first,&nbsp;more)]<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">assert</span>&nbsp;<span class="keyword">false</span>&nbsp;<span class="comment">(*&nbsp;there&nbsp;is&nbsp;at&nbsp;least&nbsp;the&nbsp;argument&nbsp;one&nbsp;*)</span><br>
 <br>
-<span class="keyword">let</span>&nbsp;ketrew_fail&nbsp;fmt&nbsp;=<br>
-&nbsp;&nbsp;<span class="constructor">Printf</span>.ksprintf&nbsp;(<span class="keyword">fun</span>&nbsp;str&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[<span class="keywordsign">`</span><span class="constructor">Fail</span>&nbsp;<span class="constructor">Log</span>.(s&nbsp;str)])&nbsp;fmt<br>
 <br>
+<span class="keyword">let</span>&nbsp;run&nbsp;?plugins&nbsp;?override_configuration&nbsp;t&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;todo_list&nbsp;=&nbsp;user_command_list&nbsp;t&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Lwt_main</span>.run&nbsp;(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_state</span>.<span class="constructor">Configuration</span>.(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get_configuration&nbsp;?override_configuration&nbsp;default_configuration_path)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;configuration&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_state</span>.create&nbsp;?plugins&nbsp;configuration<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;state&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_user_command</span>.run_list&nbsp;~state&nbsp;todo_list<br>
+&nbsp;&nbsp;)&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ok</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Run-error:&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;(<span class="constructor">Ketrew_error</span>.to_string&nbsp;e)&nbsp;@&nbsp;error);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;(<span class="constructor">Ketrew_error</span>.to_string&nbsp;e)<br>
 <br>
 <br>
 <span class="keyword">let</span>&nbsp;parse_host:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Host</span>.t&nbsp;=&nbsp;<span class="constructor">Host</span>.of_string<br>

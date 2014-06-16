@@ -23,7 +23,8 @@
 <link title="Ketrew_pervasives" rel="Chapter" href="Ketrew_pervasives.html">
 <link title="Ketrew_state" rel="Chapter" href="Ketrew_state.html">
 <link title="Ketrew_target" rel="Chapter" href="Ketrew_target.html">
-<link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html"><title>Ketrew API : Ketrew_error</title>
+<link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html">
+<link title="Ketrew_user_command" rel="Chapter" href="Ketrew_user_command.html"><title>Ketrew API : Ketrew_error</title>
 </head>
 <body>
 <code class="code"></code><table><tr><td></td><td><span class="comment">(** Deal with error values common accros the library. *)</span></td></tr></table><code class="code"><br>
@@ -36,6 +37,8 @@
 &nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">String</span>.concat&nbsp;~sep:<span class="string">",&nbsp;"</span>&nbsp;(<span class="constructor">List</span>.map&nbsp;sl&nbsp;(fmt&nbsp;<span class="string">"%S"</span>)))<br>
 <span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">IO</span>&nbsp;_&nbsp;<span class="keyword">as</span>&nbsp;io&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">IO</span>.error_to_string&nbsp;io<br>
 <span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">System</span>&nbsp;_&nbsp;<span class="keyword">as</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">System</span>.error_to_string&nbsp;s<br>
+<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Configuration</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Parsing</span>&nbsp;e)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;fmt&nbsp;<span class="string">"Parsing&nbsp;error&nbsp;in&nbsp;config-file:&nbsp;%S"</span>&nbsp;e<br>
 <span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Database</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Load</span>,&nbsp;path)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fmt&nbsp;<span class="string">"DB-load:&nbsp;%S"</span>&nbsp;path<br>
 <span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Host</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;fmt&nbsp;<span class="string">"Host:&nbsp;%s"</span>&nbsp;(<span class="constructor">Ketrew_host</span>.<span class="constructor">Error</span>.log&nbsp;e&nbsp;|&gt;&nbsp;<span class="constructor">Log</span>.to_long_string)<br>

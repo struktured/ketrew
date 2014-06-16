@@ -24,7 +24,8 @@
 <link title="Ketrew_pervasives" rel="Chapter" href="Ketrew_pervasives.html">
 <link title="Ketrew_state" rel="Chapter" href="Ketrew_state.html">
 <link title="Ketrew_target" rel="Chapter" href="Ketrew_target.html">
-<link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html"><title>Ketrew API : Index of types</title>
+<link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html">
+<link title="Ketrew_user_command" rel="Chapter" href="Ketrew_user_command.html"><title>Ketrew API : Index of types</title>
 </head>
 <body>
 <div class="navbar">&nbsp;<a class="up" href="index.html" title="Index">Up</a>
@@ -165,6 +166,12 @@ The structure of a volume defines the hierarchy of files relative to
 <tr><td><a href="Ketrew_target.html#TYPEsubmitted_state">submitted_state</a> [<a href="Ketrew_target.html">Ketrew_target</a>]</td>
 <td></td></tr>
 <tr><td align="left"><br>T</td></tr>
+<tr><td><a href="Ketrew_user_command.html#TYPEt">t</a> [<a href="Ketrew_user_command.html">Ketrew_user_command</a>]</td>
+<td><div class="info">
+A user-todo-item, is either asking Ketrew to fail with a message, or
+   to start a workflow.
+</div>
+</td></tr>
 <tr><td><a href="Ketrew_unix_process.Exit_code.html#TYPEt">t</a> [<a href="Ketrew_unix_process.Exit_code.html">Ketrew_unix_process.Exit_code</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ketrew_pervasives.Unique_id.html#TYPEt">t</a> [<a href="Ketrew_pervasives.Unique_id.html">Ketrew_pervasives.Unique_id</a>]</td>
@@ -225,12 +232,6 @@ Host container.
 <td><div class="info">
 General type of file-paths, <code class="code">kind</code> may be <code class="code">file</code> or <code class="code">directory</code>,
    <code class="code">relativity</code> may be <code class="code">relative</code> or <code class="code">absolute</code>.
-</div>
-</td></tr>
-<tr><td align="left"><br>U</td></tr>
-<tr><td><a href="Ketrew_command_line.html#TYPEuser_todo">user_todo</a> [<a href="Ketrew_command_line.html">Ketrew_command_line</a>]</td>
-<td><div class="info">
-User-provided commands.
 </div>
 </td></tr>
 <tr><td align="left"><br>V</td></tr>

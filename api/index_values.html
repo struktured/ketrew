@@ -24,7 +24,8 @@
 <link title="Ketrew_pervasives" rel="Chapter" href="Ketrew_pervasives.html">
 <link title="Ketrew_state" rel="Chapter" href="Ketrew_state.html">
 <link title="Ketrew_target" rel="Chapter" href="Ketrew_target.html">
-<link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html"><title>Ketrew API : Index of values</title>
+<link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html">
+<link title="Ketrew_user_command" rel="Chapter" href="Ketrew_user_command.html"><title>Ketrew API : Index of values</title>
 </head>
 <body>
 <div class="navbar">&nbsp;<a class="up" href="index.html" title="Index">Up</a>
@@ -259,6 +260,8 @@ Create a path to a file.
 Get a value in the DB.
 </div>
 </td></tr>
+<tr><td><a href="Ketrew_state.Configuration.html#VALget_configuration">get_configuration</a> [<a href="Ketrew_state.Configuration.html">Ketrew_state.Configuration</a>]</td>
+<td></td></tr>
 <tr><td><a href="Ketrew_host.html#VALget_file">get_file</a> [<a href="Ketrew_host.html">Ketrew_host</a>]</td>
 <td><div class="info">
 Read the file from the host at <code class="code">path</code>.
@@ -328,12 +331,6 @@ Check whether an aritfact is ready, given its type.
 </div>
 </td></tr>
 <tr><td align="left"><br>K</td></tr>
-<tr><td><a href="Ketrew_edsl.html#VALketrew_fail">ketrew_fail</a> [<a href="Ketrew_edsl.html">Ketrew_edsl</a>]</td>
-<td><div class="info">
-Printf-like function to return ask Ketrew to fail (complementary of
-    <a href="Ketrew_edsl.html#VALrun"><code class="code"><span class="constructor">Ketrew_edsl</span>.run</code></a>).
-</div>
-</td></tr>
 <tr><td><a href="Ketrew_long_running.LONG_RUNNING.html#VALkill">kill</a> [<a href="Ketrew_long_running.LONG_RUNNING.html">Ketrew_long_running.LONG_RUNNING</a>]</td>
 <td><div class="info">
 Kill the long-running computation.
@@ -359,6 +356,11 @@ Load a handle from the given database parameters.
 <tr><td><a href="Ketrew_host.html#VALlocalhost">localhost</a> [<a href="Ketrew_host.html">Ketrew_host</a>]</td>
 <td><div class="info">
 The host <code class="code"><span class="string">"localhost"</span></code> (i.e.
+</div>
+</td></tr>
+<tr><td><a href="Ketrew_user_command.html#VALlog">log</a> [<a href="Ketrew_user_command.html">Ketrew_user_command</a>]</td>
+<td><div class="info">
+Convert a command into a <code class="code"><span class="constructor">Log</span>.t</code> document.
 </div>
 </td></tr>
 <tr><td><a href="Ketrew_target.html#VALlog">log</a> [<a href="Ketrew_target.html">Ketrew_target</a>]</td>
@@ -433,7 +435,7 @@ Get a <code class="code"><span class="constructor">Host</span>.t</code> from an 
 </div>
 </td></tr>
 <tr><td align="left"><br>P</td></tr>
-<tr><td><a href="Ketrew_state.Configuration.html#VALparse_exn">parse_exn</a> [<a href="Ketrew_state.Configuration.html">Ketrew_state.Configuration</a>]</td>
+<tr><td><a href="Ketrew_state.Configuration.html#VALparse">parse</a> [<a href="Ketrew_state.Configuration.html">Ketrew_state.Configuration</a>]</td>
 <td><div class="info">
 Parse the contents of a configuration file.
 </div>
@@ -482,12 +484,18 @@ The root directory (i.e.
 </td></tr>
 <tr><td><a href="Ketrew_edsl.html#VALrun">run</a> [<a href="Ketrew_edsl.html">Ketrew_edsl</a>]</td>
 <td><div class="info">
-Activate <code class="code">user_target</code> and “make” the workflow.
+Activate <code class="code">user_target</code> (the next time Ketrew runs a step, the target will
+    started/run.
 </div>
 </td></tr>
 <tr><td><a href="Ketrew_target.Command.html#VALrun">run</a> [<a href="Ketrew_target.Command.html">Ketrew_target.Command</a>]</td>
 <td><div class="info">
 Run the command and ignore its <code class="code">(stdout, stderr)</code> pair.
+</div>
+</td></tr>
+<tr><td><a href="Ketrew_user_command.html#VALrun_list">run_list</a> [<a href="Ketrew_user_command.html">Ketrew_user_command</a>]</td>
+<td><div class="info">
+Run a todo-list with the given <code class="code">state</code> instance.
 </div>
 </td></tr>
 <tr><td><a href="Ketrew_command_line.html#VALrun_main">run_main</a> [<a href="Ketrew_command_line.html">Ketrew_command_line</a>]</td>
