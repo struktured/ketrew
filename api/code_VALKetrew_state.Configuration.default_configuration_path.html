@@ -23,14 +23,8 @@
 <link title="Ketrew_pervasives" rel="Chapter" href="Ketrew_pervasives.html">
 <link title="Ketrew_state" rel="Chapter" href="Ketrew_state.html">
 <link title="Ketrew_target" rel="Chapter" href="Ketrew_target.html">
-<link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html"><title>Ketrew API : Ketrew_state.Configuration</title>
+<link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html"><title>Ketrew API : Ketrew_state.Configuration.default_configuration_path</title>
 </head>
 <body>
-<code class="code"><span class="keyword">sig</span><br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;create&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;?persistent_state_key:string&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;database_parameters:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_state</span>.<span class="constructor">Configuration</span>.t<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;default_configuration_path&nbsp;:&nbsp;string<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;parse_exn&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_state</span>.<span class="constructor">Configuration</span>.t<br>
-<span class="keyword">end</span></code></body></html>
+<code class="code"><span class="keyword">let</span>&nbsp;default_configuration_path&nbsp;=&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;<span class="constructor">Sys</span>.getenv&nbsp;<span class="string">"HOME"</span>&nbsp;<span class="keyword">with</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"HOME"</span>&nbsp;^&nbsp;<span class="string">"/.config/ketrew"</span></code></body></html>

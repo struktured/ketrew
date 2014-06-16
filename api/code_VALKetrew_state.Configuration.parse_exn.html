@@ -23,26 +23,10 @@
 <link title="Ketrew_pervasives" rel="Chapter" href="Ketrew_pervasives.html">
 <link title="Ketrew_state" rel="Chapter" href="Ketrew_state.html">
 <link title="Ketrew_target" rel="Chapter" href="Ketrew_target.html">
-<link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html"><title>Ketrew API : Ketrew_state.Configuration</title>
+<link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html"><title>Ketrew API : Ketrew_state.Configuration.parse_exn</title>
 </head>
 <body>
-<code class="code"><span class="keyword">struct</span><br>
-<br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;{<br>
-&nbsp;&nbsp;&nbsp;&nbsp;database_parameters:&nbsp;string;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;persistent_state_key:&nbsp;string;<br>
-&nbsp;&nbsp;}<br>
-<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;default_persistent_state_key&nbsp;=&nbsp;<span class="string">"ketrew_persistent_state"</span><br>
-<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;default_configuration_path&nbsp;=&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;<span class="constructor">Sys</span>.getenv&nbsp;<span class="string">"HOME"</span>&nbsp;<span class="keyword">with</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"HOME"</span>&nbsp;^&nbsp;<span class="string">"/.config/ketrew"</span><br>
-<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;create&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?(persistent_state_key=default_persistent_state_key)&nbsp;~database_parameters&nbsp;()&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;database_parameters;&nbsp;persistent_state_key&nbsp;}<br>
-<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;parse_exn&nbsp;str&nbsp;=<br>
+<code class="code"><span class="keyword">let</span>&nbsp;parse_exn&nbsp;str&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;toml&nbsp;=&nbsp;<span class="constructor">Toml</span>.from_string&nbsp;str&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;table&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;<span class="constructor">Toml</span>.get_table&nbsp;toml&nbsp;<span class="string">"database"</span>&nbsp;<span class="keyword">with</span><br>
@@ -53,6 +37,4 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;persistent_state_key&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;<span class="constructor">Toml</span>.get_string&nbsp;table&nbsp;<span class="string">"state-key"</span>&nbsp;<span class="keyword">with</span>&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;default_persistent_state_key&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;create&nbsp;~persistent_state_key&nbsp;~database_parameters&nbsp;()<br>
-<br>
-<span class="keyword">end</span></code></body></html>
+&nbsp;&nbsp;&nbsp;&nbsp;create&nbsp;~persistent_state_key&nbsp;~database_parameters&nbsp;()</code></body></html>
