@@ -28,6 +28,8 @@
  </li>
  <li><a href='#Usage'>Usage</a>
   <ul>
+   <li><a href='#Initialization'>Initialization</a>
+   </li>
    <li><a href='#WorkflowScripts'>Workflow Scripts</a>
    </li>
    <li><a href='#Ketrewclient'>Ketrew-client</a>
@@ -91,6 +93,11 @@ and Graphviz&#39;s <code>dot</code>:</p>
 <pre><code>please.sh doc</code></pre>
 <p>and check-out <code>_doc/index.html</code>.</p>
 <h2 id="Usage">Usage</h2>
+<h3 id="Initialization">Initialization</h3>
+<p>To create a configuration file, run:</p>
+<pre><code>ketrew-client init</code></pre>
+<p>This creates <code>$HOME/.ketrew/client.toml</code> (see <code>ketrew-client init --help</code> to
+choose another path).</p>
 <h3 id="WorkflowScripts">Workflow Scripts</h3>
 <p>A workflow script is an OCaml file (script, compiled, or even inside the
 toplevel).</p>
@@ -111,7 +118,7 @@ toplevel).</p>
 <pre><code>&lt;script.ml&gt; &quot;&lt;some shell command to run on the cluster&gt;&quot;</code></pre>
 <p>See the file <code>src/test/cli.ml</code> for more examples (<em>work-in-progress</em>).</p>
 <h3 id="Ketrewclient">Ketrew-client</h3>
-<p>Ketrew has a command-line client.  See:</p>
+<p>Ketrew is driven from the command-line client.  See:</p>
 <pre><code>ketrew-client --help</code></pre>
 <p>To display the current status:</p>
 <pre><code>ketrew-client info</code></pre>

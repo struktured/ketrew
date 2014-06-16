@@ -37,7 +37,11 @@
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;default_persistent_state_key&nbsp;=&nbsp;<span class="string">"ketrew_persistent_state"</span><br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;default_configuration_path&nbsp;=&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Sys</span>.getenv&nbsp;<span class="string">"HOME"</span>&nbsp;^&nbsp;<span class="string">".config/ketrew/client.toml"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Sys</span>.getenv&nbsp;<span class="string">"HOME"</span>&nbsp;^&nbsp;<span class="string">"/.ketrew/client.toml"</span><br>
+<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;default_database_path&nbsp;=&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Sys</span>.getenv&nbsp;<span class="string">"HOME"</span>&nbsp;^&nbsp;<span class="string">"/.ketrew/database.json"</span><br>
+<br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;create&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?(persistent_state_key=default_persistent_state_key)&nbsp;~database_parameters&nbsp;()&nbsp;=<br>

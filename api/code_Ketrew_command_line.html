@@ -228,6 +228,23 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Arg</span>.(value&nbsp;<span class="keywordsign">&amp;</span>&nbsp;opt&nbsp;string&nbsp;<span class="constructor">Configuration</span>.default_configuration_path<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">&amp;</span>&nbsp;info&nbsp;[<span class="string">"C"</span>;&nbsp;<span class="string">"configuration-file"</span>]&nbsp;~docv&nbsp;~doc)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;init_cmd&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sub_command<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~info:(<span class="constructor">Term</span>.info&nbsp;<span class="string">"init"</span>&nbsp;~version&nbsp;~sdocs:<span class="string">"COMMON&nbsp;OPTIONS"</span>&nbsp;~man:[]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~doc:<span class="string">"Initialize&nbsp;the&nbsp;client&nbsp;(create&nbsp;config-file)"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~term:<span class="constructor">Term</span>.(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pure&nbsp;(<span class="keyword">fun</span>&nbsp;config_path&nbsp;database_path&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">System</span>.ensure_directory_path&nbsp;(<span class="constructor">Filename</span>.dirname&nbsp;config_path)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;content&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fmt&nbsp;<span class="string">"#&nbsp;Ketrew&nbsp;configuration&nbsp;file\n\n[database]\n\&nbsp;&nbsp;path&nbsp;=&nbsp;%S\n"</span>&nbsp;database_path<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">IO</span>.write_file&nbsp;~content&nbsp;config_path)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$&nbsp;config_file_argument<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$&nbsp;<span class="constructor">Arg</span>.(value&nbsp;<span class="keywordsign">&amp;</span>&nbsp;opt&nbsp;string&nbsp;<span class="constructor">Configuration</span>.default_database_path<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">&amp;</span>&nbsp;info&nbsp;[<span class="string">"database"</span>]&nbsp;~docv:<span class="string">"FILE"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~doc:<span class="string">"Use&nbsp;$(docv)&nbsp;as&nbsp;database."</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;info_cmd&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;sub_command<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~info:(<span class="constructor">Term</span>.info&nbsp;<span class="string">"info"</span>&nbsp;~version&nbsp;~sdocs:<span class="string">"COMMON&nbsp;OPTIONS"</span>&nbsp;~man:[]<br>
@@ -287,7 +304,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sub_command<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~term:<span class="constructor">Term</span>.(ret&nbsp;(pure&nbsp;(<span class="keywordsign">`</span><span class="constructor">Help</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Plain</span>,&nbsp;<span class="constructor">None</span>))))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~info:(<span class="constructor">Term</span>.info&nbsp;<span class="string">"ketrew"</span>&nbsp;~version&nbsp;~doc&nbsp;~man)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;cmds&nbsp;=&nbsp;[info_cmd;&nbsp;run_cmd;&nbsp;kill_cmd]&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;cmds&nbsp;=&nbsp;[init_cmd;&nbsp;info_cmd;&nbsp;run_cmd;&nbsp;kill_cmd]&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Term</span>.eval_choice&nbsp;?argv&nbsp;default_cmd&nbsp;cmds&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ok</span>&nbsp;f&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;f<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;exit&nbsp;<span class="constructor">Return_code</span>.cmdliner_error<br>
