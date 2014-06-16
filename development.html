@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="http://cdn.jsdelivr.net/bootstrap/3.1.1/css/bootstrap.min.css" type="text/css">
+  <link rel="stylesheet" href="http://cdn.jsdelivr.net/bootstrap/3.1.1/css/bootstrap-theme.min.css" type="text/css">
+  <link rel="stylesheet" href="code_style.css" type="text/css">
+  <meta charset="utf-8">
+  <title>Ketrew: Development</title>
+</head>
+  <body><div class="container">
+  <h1>Ketrew: Development</h1>
+  <h2>Contents</h2>
+<ul>
+ <li><a href='#Build'>Build</a>
+  <ul>
+   <li><a href='#GettingJustTheDependencies'>Getting Just The Dependencies</a>
+   </li>
+   <li><a href='#Build_1'>Build</a>
+   </li>
+   <li><a href='#Install'>Install</a>
+   </li>
+   <li><a href='#BuildTheDocumentation'>Build The Documentation</a>
+   </li>
+   <li><a href='#RunaToplevel'>Run a Toplevel</a>
+   </li>
+  </ul>
+
+ </li>
+ <li><a href='#Tests'>Tests</a>
+ </li>
+ <li><a href='#CodeDocumentation'>Code Documentation</a>
+ </li>
+</ul>
+<h2 id="Build">Build</h2>
+<h3 id="GettingJustTheDependencies">Getting Just The Dependencies</h3>
+<p>Ketrew depends on</p>
+<ul>
+ <li><code>nonstd</code>: nano-library providing a portable extract of <code>Core_kernel</code></li>
+ <li><code>pvem</code>: error monad</li>
+ <li><code>docout</code>: logging with <code>smart-print</code></li>
+ <li><code>sosa</code>:  String module/functor</li>
+ <li><code>pvem_lwt_unix</code>: <code>Lwt_unix</code> wrapped in a <code>Pvem.t</code> (error monad) with more
+precise error types.</li>
+ <li><code>uri</code>:
+parse <a href='http://www.ietf.org/rfc/rfc3986.txt'>RFC-3986</a>-compliant URIs
+(<code>uri</code> itself depends on <code>camlp4</code>).</li>
+ <li><code>cmdliner</code>: command line parsing</li>
+ <li><code>yojson</code>: JSON parsing/printing</li>
+ <li><code>atdgen/atd</code>: definition of serialization formats (used with <code>Yojson</code>).</li>
+ <li><code>toml</code>: config-file parsing</li>
+</ul>
+
+<p>and uses the <code>ocp-build</code> build system.</p>
+<p>The <code>please.sh</code> script can call <code>opam</code> itself:</p>
+<pre><code>./please.sh get-dependencies</code></pre>
+<h3 id="Build_1">Build</h3>
+<p>Then you may setup and build everything:</p>
+<pre><code>./please.sh build</code></pre>
+<p>(for incremental compilation while developping please use: <code>ocp-build &lt;target&gt;</code>
+directly)</p>
+<h3 id="Install">Install</h3>
+<p>For now, <code>ketrew</code> uses a custom install/uninstall procedure:</p>
+<pre><code>./please.sh install &lt;prefix&gt;</code></pre>
+<p>and uninstall with:</p>
+<pre><code>./please.sh uninstall &lt;prefix&gt;</code></pre>
+<h3 id="BuildTheDocumentation">Build The Documentation</h3>
+<p>The documentation depends on <a href='https://github.com/ocaml/omd'>omd</a>,
+<a href='http://zoggy.github.io/higlo/'>higlo</a>,
+and Graphviz&#39;s <code>dot</code>:</p>
+<pre><code>please.sh doc</code></pre>
+<p>and check-out <code>_doc/index.html</code>.</p>
+<h3 id="RunaToplevel">Run a Toplevel</h3>
+<p>One can start an ocaml-toplevel (<code>ocaml</code> or <code>utop</code>) with Ketrew loaded-in:</p>
+<pre><code>./please.sh top</code></pre>
+<h2 id="Tests">Tests</h2>
+<p>Run the tests like this:</p>
+<pre class='bash'><code class='bash'>    ketrew_test_ssh=&lt;Host&gt; _obuild/ketrew-test/ketrew-test.asm [-no-color] ALL</code></pre>
+<p>where <code>&lt;Host&gt;</code> is often an entry in your <code>.ssh/config</code> file.</p>
+<p>The test will indeed look for the environment variable <code>ketrew_test_ssh</code>; if
+not defined it will use <code>&quot;localhost&quot;</code>. But for the test to succeed it should be
+an SSH host for which the user running the test does not need password.
+The test will run some commands on that host and create files and directories
+in its <code>/tmp</code> directory.</p>
+<h2 id="CodeDocumentation">Code Documentation</h2>
+<ul>
+ <li><a href='api/index.html'>ocaml-doc for the API</a></li>
+</ul>
+
+<p><object class="img-rounded"  type="image/svg+xml" data="modules.svg"
+style="transform-origin: 0% 100% 0;
+       transform: translateY(-100%) rotate(90deg);"
+  >Your browser does not support SVG</object></p>
+</div></body><html>
