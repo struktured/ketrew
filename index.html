@@ -3,10 +3,7 @@
 <head>
   <link rel="stylesheet" href="http://cdn.jsdelivr.net/bootstrap/3.1.1/css/bootstrap.min.css" type="text/css">
   <link rel="stylesheet" href="http://cdn.jsdelivr.net/bootstrap/3.1.1/css/bootstrap-theme.min.css" type="text/css">
-  <link rel="stylesheet" href="http://cdn.jsdelivr.net/highlight.js/8.0/styles/default.css">
-  <link rel="stylesheet" href="http://cdn.jsdelivr.net/highlight.js/8.0/styles/paraiso.dark.css">
-  <script src="http://cdn.jsdelivr.net/highlight.js/8.0/highlight.min.js"></script>
-  <script>hljs.initHighlightingOnLoad();</script>
+  <link rel="stylesheet" href="code_style.css" type="text/css">
   <meta charset="utf-8">
   <title>Ketrew 0.0.1-prealpha</title>
 </head>
@@ -44,61 +41,62 @@ directly)</p>
 <p>You should not install <code>ketrew</code> yet, but you can always call at your own risk:</p>
 <pre><code>ocp-build install</code></pre>
 <h3 id="BuildTheDocumentation">Build The Documentation</h3>
-<p>The documentation depends on <a href='https://github.com/ocaml/omd'>omd</a>, and
-Graphviz&#39;s <code>dot</code>:</p>
+<p>The documentation depends on <a href='https://github.com/ocaml/omd'>omd</a>,
+<a href='http://zoggy.github.io/higlo/'>higlo</a>,
+and Graphviz&#39;s <code>dot</code>:</p>
 <pre><code>please.sh doc</code></pre>
 <p>and check-out <code>_doc/index.html</code>.</p>
 <h2 id="Usage">Usage</h2>
 <p>A workflow script is an OCaml file (script, compiled, or even inside the
 toplevel).</p>
 <p>The minimal file running Ketrew would be:</p>
-<pre class='ocaml'><code class='ocaml'>let `Never_returns =
-  let db_file = &quot;/path/to/ketrew_database&quot; in
-  let configuration = Ketrew_state.Configuration.create db_file () in
-  Ketrew.Command_line.run_main ~configuration ()</code></pre>
+<pre class='ocaml'><code class='ocaml'><span class="kw">let</span><span class="text"> `</span><span class="kw2">Never_returns</span><span class="text"> =
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">db_file</span><span class="text"> = </span><span class="string">&quot;/path/to/ketrew_database&quot;</span><span class="text"> </span><span class="kw">in</span><span class="text">
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">configuration</span><span class="text"> = </span><span class="kw2">Ketrew_state</span><span class="text">.</span><span class="kw2">Configuration</span><span class="text">.</span><span class="id">create</span><span class="text"> </span><span class="id">db_file</span><span class="text"> () </span><span class="kw">in</span><span class="text">
+  </span><span class="kw2">Ketrew</span><span class="text">.</span><span class="kw2">Command_line</span><span class="text">.</span><span class="id">run_main</span><span class="text"> </span><span class="kw4">~configuration</span><span class="text"> ()</span></code></pre>
 <p>this provides Ketrew&#39;s command-line interface, but without any user-defined
 commands/workflows (see <code>&lt;script.ml&gt; --help</code>).</p>
 <blockquote><p><em>Tip</em>: The build system can launch the OCaml toplevel (<code>utop</code>, or <code>ocaml</code>)
 with the library loaded, <strong>and</strong> <code>Ketrew.Command_line.run_main</code>
 can be fed a <code>~argv</code> argument. For example:</p>
-<pre class='ocaml'><code class='ocaml'>let `Never_returns =
-  let db_file = &quot;/tmp/ketrew_database_readme&quot; in
-  let configuration = Ketrew_state.Configuration.create db_file () in
-  Ketrew.Command_line.run_main ~configuration  ~argv:[|&quot;&quot;; &quot;--help&quot;|] ()</code></pre>
+<pre class='ocaml'><code class='ocaml'><span class="kw">let</span><span class="text"> `</span><span class="kw2">Never_returns</span><span class="text"> =
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">db_file</span><span class="text"> = </span><span class="string">&quot;/tmp/ketrew_database_readme&quot;</span><span class="text"> </span><span class="kw">in</span><span class="text">
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">configuration</span><span class="text"> = </span><span class="kw2">Ketrew_state</span><span class="text">.</span><span class="kw2">Configuration</span><span class="text">.</span><span class="id">create</span><span class="text"> </span><span class="id">db_file</span><span class="text"> () </span><span class="kw">in</span><span class="text">
+  </span><span class="kw2">Ketrew</span><span class="text">.</span><span class="kw2">Command_line</span><span class="text">.</span><span class="id">run_main</span><span class="text"> </span><span class="kw4">~configuration</span><span class="text">  </span><span class="kw4">~argv</span><span class="text">:[|</span><span class="string">&quot;&quot;</span><span class="text">; </span><span class="string">&quot;--help&quot;</span><span class="text">|] ()</span></code></pre>
 <p>will display the default help message.</p>
 </blockquote>
 <p>Then, one can add create functions that create and <code>run</code> workflows:</p>
-<pre class='ocaml'><code class='ocaml'>let run_command_with_lsf cmd =
-  let open Ketrew.EDSL in
-  let host = 
-    parse_host &quot;ssh://user42@MyLSFCluster/home/user42/kplayground?shell=bash&quot; in
-  let queue = &quot;normalpeople&quot; in
-  run (
-    target &quot;run_command_with_lsf&quot;
-      ~make:(lsf ~queue ~wall_limit:&quot;1:30&quot; ~processors:(`Min_max (1,1))
-               ~host [cmd])
-  )</code></pre>
+<pre class='ocaml'><code class='ocaml'><span class="kw">let</span><span class="text"> </span><span class="id">run_command_with_lsf</span><span class="text"> </span><span class="id">cmd</span><span class="text"> =
+  </span><span class="kw">let</span><span class="text"> </span><span class="kw">open</span><span class="text"> </span><span class="kw2">Ketrew</span><span class="text">.</span><span class="kw2">EDSL</span><span class="text"> </span><span class="kw">in</span><span class="text">
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">host</span><span class="text"> = 
+    </span><span class="id">parse_host</span><span class="text"> </span><span class="string">&quot;ssh://user42@MyLSFCluster/home/user42/kplayground?shell=bash&quot;</span><span class="text"> </span><span class="kw">in</span><span class="text">
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">queue</span><span class="text"> = </span><span class="string">&quot;normalpeople&quot;</span><span class="text"> </span><span class="kw">in</span><span class="text">
+  </span><span class="id">run</span><span class="text"> (
+    </span><span class="id">target</span><span class="text"> </span><span class="string">&quot;run_command_with_lsf&quot;</span><span class="text">
+      </span><span class="kw4">~make</span><span class="text">:(</span><span class="id">lsf</span><span class="text"> </span><span class="kw4">~queue</span><span class="text"> </span><span class="kw4">~wall_limit</span><span class="text">:</span><span class="string">&quot;1:30&quot;</span><span class="text"> </span><span class="kw4">~processors</span><span class="text">:(`</span><span class="kw2">Min_max</span><span class="text"> (</span><span class="numeric">1</span><span class="text">,</span><span class="numeric">1</span><span class="text">))
+               </span><span class="kw4">~host</span><span class="text"> [</span><span class="id">cmd</span><span class="text">])
+  )</span></code></pre>
 <p>those can be added to the command-line by providing a <code>Cmdliner.Term.t</code>
 (see <a href='http://erratique.ch/software/cmdliner'>documentation</a>)
 to <code>run_main</code>.</p>
-<pre class='ocaml'><code class='ocaml'>let additional_term =
-  let open Cmdliner in
-  let all_args =
-    let doc = &quot; TODO: write some doc here &quot; in
-    Arg.(value &amp; pos_all string [] &amp; info [] ~docv:&quot;SPECIFICATION&quot; ~doc)
-  in
-  let treat_list_of_strings = function
-    | &quot;lsf&quot; :: cmd :: [] -&gt; run_command_with_lsf cmd
-    | some_other_list -&gt; 
-      Ketrew.EDSL.ketrew_fail &quot;Don&#39;t know what to do with %s&quot; 
-        (String.concat &quot;, &quot; some_other_list)
-  in
-  Term.(pure treat_list_of_strings $ all_args)
+<pre class='ocaml'><code class='ocaml'><span class="kw">let</span><span class="text"> </span><span class="id">additional_term</span><span class="text"> =
+  </span><span class="kw">let</span><span class="text"> </span><span class="kw">open</span><span class="text"> </span><span class="kw2">Cmdliner</span><span class="text"> </span><span class="kw">in</span><span class="text">
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">all_args</span><span class="text"> =
+    </span><span class="kw">let</span><span class="text"> </span><span class="id">doc</span><span class="text"> = </span><span class="string">&quot; TODO: write some doc here &quot;</span><span class="text"> </span><span class="kw">in</span><span class="text">
+    </span><span class="kw2">Arg</span><span class="text">.(</span><span class="id">value</span><span class="text"> &amp; </span><span class="id">pos_all</span><span class="text"> </span><span class="kw3">string</span><span class="text"> [] &amp; </span><span class="id">info</span><span class="text"> [] </span><span class="kw4">~docv</span><span class="text">:</span><span class="string">&quot;SPECIFICATION&quot;</span><span class="text"> </span><span class="kw4">~doc</span><span class="text">)
+  </span><span class="kw">in</span><span class="text">
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">treat_list_of_strings</span><span class="text"> = </span><span class="kw">function</span><span class="text">
+    | </span><span class="string">&quot;lsf&quot;</span><span class="text"> :: </span><span class="id">cmd</span><span class="text"> :: [] -&gt; </span><span class="id">run_command_with_lsf</span><span class="text"> </span><span class="id">cmd</span><span class="text">
+    | </span><span class="id">some_other_list</span><span class="text"> -&gt; 
+      </span><span class="kw2">Ketrew</span><span class="text">.</span><span class="kw2">EDSL</span><span class="text">.</span><span class="id">ketrew_fail</span><span class="text"> </span><span class="string">&quot;Don't know what to do with %s&quot;</span><span class="text"> 
+        (</span><span class="kw2">String</span><span class="text">.</span><span class="id">concat</span><span class="text"> </span><span class="string">&quot;, &quot;</span><span class="text"> </span><span class="id">some_other_list</span><span class="text">)
+  </span><span class="kw">in</span><span class="text">
+  </span><span class="kw2">Term</span><span class="text">.(</span><span class="id">pure</span><span class="text"> </span><span class="id">treat_list_of_strings</span><span class="text"> $ </span><span class="id">all_args</span><span class="text">)
 
-let `Never_returns =
-  let db_file = &quot;/path/to/ketrew_database&quot; in
-  let configuration = Ketrew_state.Configuration.create db_file () in
-  Ketrew.Command_line.run_main ~additional_term ~configuration ()</code></pre>
+</span><span class="kw">let</span><span class="text"> `</span><span class="kw2">Never_returns</span><span class="text"> =
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">db_file</span><span class="text"> = </span><span class="string">&quot;/path/to/ketrew_database&quot;</span><span class="text"> </span><span class="kw">in</span><span class="text">
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">configuration</span><span class="text"> = </span><span class="kw2">Ketrew_state</span><span class="text">.</span><span class="kw2">Configuration</span><span class="text">.</span><span class="id">create</span><span class="text"> </span><span class="id">db_file</span><span class="text"> () </span><span class="kw">in</span><span class="text">
+  </span><span class="kw2">Ketrew</span><span class="text">.</span><span class="kw2">Command_line</span><span class="text">.</span><span class="id">run_main</span><span class="text"> </span><span class="kw4">~additional_term</span><span class="text"> </span><span class="kw4">~configuration</span><span class="text"> ()</span></code></pre>
 <p>then one should be able to add and activate mini-workflow with:</p>
 <pre><code>&lt;script.ml&gt; call lsf &quot;&lt;some shell command to run on the cluster&gt;&quot;</code></pre>
 <p>To display the current status:</p>
