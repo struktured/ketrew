@@ -5,23 +5,15 @@
   <link rel="stylesheet" href="http://cdn.jsdelivr.net/bootstrap/3.1.1/css/bootstrap-theme.min.css" type="text/css">
   <link rel="stylesheet" href="code_style.css" type="text/css">
   <meta charset="utf-8">
-  <title>Ketrew 0.0.1-prealpha</title>
+  <title>Ketrew: Home</title>
 </head>
   <body><div class="container">
-  <h1>Ketrew: Keep Track of Experimental Workflows</h1>
+  <h1>Ketrew: Home</h1>
   <h2>Contents</h2>
 <ul>
  <li><a href='#BuildInstall'>Build &amp; Install</a>
   <ul>
    <li><a href='#FromOpam'>From Opam</a>
-   </li>
-   <li><a href='#GettingJustTheDependencies'>Getting Just The Dependencies</a>
-   </li>
-   <li><a href='#Build'>Build</a>
-   </li>
-   <li><a href='#Install'>Install</a>
-   </li>
-   <li><a href='#BuildTheDocumentation'>Build The Documentation</a>
    </li>
   </ul>
 
@@ -37,15 +29,14 @@
   </ul>
 
  </li>
- <li><a href='#Tests'>Tests</a>
- </li>
  <li><a href='#Authors'>Authors</a>
  </li>
- <li><a href='#CodeDocumentation'>Code Documentation</a>
+ <li><a href='#Development'>Development</a>
  </li>
 </ul>
 <p>This is <strong>Work in Progress</strong>, not ready for use.</p>
-<p>This documentation is available at <a href='http://seb.mondet.org/ketrew/'>http://seb.mondet.org/ketrew/</a>.</p>
+<p>This documentation is available at <a href='http://seb.mondet.org/ketrew/'>http://seb.mondet.org/ketrew/</a>,
+the source is at <a href='https://github.com/smondet/ketrew/'>https://github.com/smondet/ketrew/</a>.</p>
 <h2 id="BuildInstall">Build &amp; Install</h2>
 <h3 id="FromOpam">From Opam</h3>
 <p>If you have <code>opam</code> up and running:</p>
@@ -55,43 +46,6 @@ opam install ketrew</code></pre>
 <p>(installing <code>type_conv</code> manually will be useless when
 <a href='https://github.com/ocaml/opam-repository/pull/2240'><code>ocaml/opam-repository#2240</code></a>
 is merged).</p>
-<h3 id="GettingJustTheDependencies">Getting Just The Dependencies</h3>
-<p>Ketrew depends on</p>
-<ul>
- <li><code>nonstd</code>: nano-library providing a portable extract of <code>Core_kernel</code></li>
- <li><code>pvem</code>: error monad</li>
- <li><code>docout</code>: logging with <code>smart-print</code></li>
- <li><code>sosa</code>:  String module/functor</li>
- <li><code>pvem_lwt_unix</code>: <code>Lwt_unix</code> wrapped in a <code>Pvem.t</code> (error monad) with more
-precise error types.</li>
- <li><code>uri</code>:
-parse <a href='http://www.ietf.org/rfc/rfc3986.txt'>RFC-3986</a>-compliant URIs
-(<code>uri</code> itself depends on <code>camlp4</code>).</li>
- <li><code>cmdliner</code>: command line parsing</li>
- <li><code>yojson</code>: JSON parsing/printing</li>
- <li><code>atdgen/atd</code>: definition of serialization formats (used with <code>Yojson</code>).</li>
- <li><code>toml</code>: config-file parsing</li>
-</ul>
-
-<p>and uses the <code>ocp-build</code> build system.</p>
-<p>The <code>please.sh</code> script can call <code>opam</code> itself:</p>
-<pre><code>./please.sh get-dependencies</code></pre>
-<h3 id="Build">Build</h3>
-<p>Then you may setup and build everything:</p>
-<pre><code>./please.sh build</code></pre>
-<p>(for incremental compilation while developping please use: <code>ocp-build &lt;target&gt;</code>
-directly)</p>
-<h3 id="Install">Install</h3>
-<p>For now, <code>ketrew</code> uses a custom install/uninstall procedure:</p>
-<pre><code>./please.sh install &lt;prefix&gt;</code></pre>
-<p>and uninstall with:</p>
-<pre><code>./please.sh uninstall &lt;prefix&gt;</code></pre>
-<h3 id="BuildTheDocumentation">Build The Documentation</h3>
-<p>The documentation depends on <a href='https://github.com/ocaml/omd'>omd</a>,
-<a href='http://zoggy.github.io/higlo/'>higlo</a>,
-and Graphviz&#39;s <code>dot</code>:</p>
-<pre><code>please.sh doc</code></pre>
-<p>and check-out <code>_doc/index.html</code>.</p>
 <h2 id="Usage">Usage</h2>
 <h3 id="Initialization">Initialization</h3>
 <p>To create a configuration file, run:</p>
@@ -116,7 +70,8 @@ toplevel).</p>
   </span><span class="id">run_command_with_lsf</span><span class="text"> </span><span class="kw2">Sys</span><span class="text">.</span><span class="id">argv</span><span class="text">.(</span><span class="numeric">1</span><span class="text">)</span></code></pre>
 <p>then one should be able to add and activate mini-workflow with:</p>
 <pre><code>&lt;script.ml&gt; &quot;&lt;some shell command to run on the cluster&gt;&quot;</code></pre>
-<p>See the file <code>src/test/cli.ml</code> for more examples (<em>work-in-progress</em>).</p>
+<p>See the file <code>src/test/cli.ml</code> for more examples (<em>work-in-progress</em>),
+and the <a href='api/Ketrew_edsl.html'>documentation of the EDSL API</a>.</p>
 <h3 id="Ketrewclient">Ketrew-client</h3>
 <p>Ketrew is driven from the command-line client.  See:</p>
 <pre><code>ketrew-client --help</code></pre>
@@ -128,27 +83,11 @@ toplevel).</p>
 <pre><code>ketrew-client kill &lt;target-ID&gt;</code></pre>
 <p>or do an interactive murder:</p>
 <pre><code>ketrew-client kill --interactive</code></pre>
-<h2 id="Tests">Tests</h2>
-<p>Run the tests like this:</p>
-<pre class='bash'><code class='bash'>    ketrew_test_ssh=&lt;Host&gt; _obuild/ketrew-test/ketrew-test.asm [-no-color]</code></pre>
-<p>where <code>&lt;Host&gt;</code> is often an entry in your <code>.ssh/config</code> file.</p>
-<p>The test will indeed look for the environment variable <code>ketrew_test_ssh</code>; if
-not defined it will use <code>&quot;localhost&quot;</code>. But for the test to succeed it should be
-an SSH host for which the user running the test does not need password.
-The test will run some commands on that host and create files and directories
-in its <code>/tmp</code> directory.</p>
 <h2 id="Authors">Authors</h2>
 <ul>
  <li><a href='http://seb.mondet.org'>Sebastien Mondet</a> (<code>seb@mondet.org</code>)</li>
 </ul>
 
-<h2 id="CodeDocumentation">Code Documentation</h2>
-<ul>
- <li><a href='api/index.html'>ocaml-doc for the API</a></li>
-</ul>
-
-<p><object class="img-rounded"  type="image/svg+xml" data="modules.svg"
-style="transform-origin: 0% 100% 0;
-       transform: translateY(-100%) rotate(90deg);"
-  >Your browser does not support SVG</object></p>
+<h2 id="Development">Development</h2>
+<p>See the <a href='development.html'>development documentation</a>.</p>
 </div></body><html>
