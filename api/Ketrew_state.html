@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
 <link rel="Start" href="index.html">
-<link rel="previous" href="Ketrew_pervasives.html">
+<link rel="previous" href="Ketrew_program.html">
 <link rel="next" href="Ketrew_target.html">
 <link rel="Up" href="index.html">
 <link title="Index of types" rel=Appendix href="index_types.html">
@@ -16,6 +16,7 @@
 <link title="Ketrew" rel="Chapter" href="Ketrew.html">
 <link title="Ketrew_artifact" rel="Chapter" href="Ketrew_artifact.html">
 <link title="Ketrew_command_line" rel="Chapter" href="Ketrew_command_line.html">
+<link title="Ketrew_configuration" rel="Chapter" href="Ketrew_configuration.html">
 <link title="Ketrew_database" rel="Chapter" href="Ketrew_database.html">
 <link title="Ketrew_edsl" rel="Chapter" href="Ketrew_edsl.html">
 <link title="Ketrew_error" rel="Chapter" href="Ketrew_error.html">
@@ -26,13 +27,14 @@
 <link title="Ketrew_nohup_setsid" rel="Chapter" href="Ketrew_nohup_setsid.html">
 <link title="Ketrew_path" rel="Chapter" href="Ketrew_path.html">
 <link title="Ketrew_pervasives" rel="Chapter" href="Ketrew_pervasives.html">
+<link title="Ketrew_program" rel="Chapter" href="Ketrew_program.html">
 <link title="Ketrew_state" rel="Chapter" href="Ketrew_state.html">
 <link title="Ketrew_target" rel="Chapter" href="Ketrew_target.html">
 <link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html">
 <link title="Ketrew_user_command" rel="Chapter" href="Ketrew_user_command.html"><title>Ketrew API : Ketrew_state</title>
 </head>
 <body>
-<div class="navbar"><a class="pre" href="Ketrew_pervasives.html" title="Ketrew_pervasives">Previous</a>
+<div class="navbar"><a class="pre" href="Ketrew_program.html" title="Ketrew_program">Previous</a>
 &nbsp;<a class="up" href="index.html" title="Index">Up</a>
 &nbsp;<a class="post" href="Ketrew_target.html" title="Ketrew_target">Next</a>
 </div>
@@ -42,11 +44,6 @@
 The “application” state; the Engine.<br>
 </div>
 <hr width="100%">
-
-<pre><span class="keyword">module</span> <a href="Ketrew_state.Configuration.html">Configuration</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_state.Configuration.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info">
-Definition of the configuration (input to state creation; contents of the
-    future config-file).
-</div>
 
 <pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> </pre>
 <div class="info ">
@@ -58,7 +55,7 @@ The contents of the application state.<br>
 The “long-running” plugins loaded by default.<br>
 </div>
 
-<pre><span id="VALcreate"><span class="keyword">val</span> <a href="code_VALKetrew_state.create.html">create</a></span> : <code class="type">?plugins:(string * (module Ketrew_long_running.LONG_RUNNING)) list -><br>       <a href="Ketrew_state.Configuration.html#TYPEt">Configuration.t</a> -><br>       (<a href="Ketrew_state.html#TYPEt">t</a>, 'a) Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+<pre><span id="VALcreate"><span class="keyword">val</span> <a href="code_VALKetrew_state.create.html">create</a></span> : <code class="type">?plugins:(string * (module Ketrew_long_running.LONG_RUNNING)) list -><br>       <a href="Ketrew_configuration.html#TYPEt">Ketrew_configuration.t</a> -><br>       (<a href="Ketrew_state.html#TYPEt">t</a>, 'a) Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
 Initialize the state.<br>
 </div>
 
@@ -70,7 +67,7 @@ Add a target to the state.<br>
 Get the list of targets currently handled.<br>
 </div>
 
-<pre><span id="TYPEhappening"><span class="keyword">type</span> <code class="type"></code>happening</span> = <code class="type">[ `Target_activated of <a href="Ketrew_target.html#TYPEid">Ketrew_target.id</a> * [ `Dependency ]<br>       | `Target_died of<br>           <a href="Ketrew_target.html#TYPEid">Ketrew_target.id</a> *<br>           [ `Dependencies_died<br>           | `Failed_to_start of string * string<br>           | `Failed_to_update of string * string<br>           | `Killed<br>           | `Plugin_not_found of string<br>           | `Process_failure<br>           | `Wrong_type ]<br>       | `Target_started of <a href="Ketrew_target.html#TYPEid">Ketrew_target.id</a> * string<br>       | `Target_succeeded of<br>           <a href="Ketrew_target.html#TYPEid">Ketrew_target.id</a> *<br>           [ `Artifact_literal | `Artifact_ready | `Process_success ] ]</code> </pre>
+<pre><span id="TYPEhappening"><span class="keyword">type</span> <code class="type"></code>happening</span> = <code class="type">[ `Target_activated of <a href="Ketrew_target.html#TYPEid">Ketrew_target.id</a> * [ `Dependency ]<br>       | `Target_died of<br>           <a href="Ketrew_target.html#TYPEid">Ketrew_target.id</a> *<br>           [ `Dependencies_died<br>           | `Killed<br>           | `Long_running_unrecoverable of string * string<br>           | `Plugin_not_found of string<br>           | `Process_failure<br>           | `Wrong_type ]<br>       | `Target_started of <a href="Ketrew_target.html#TYPEid">Ketrew_target.id</a> * string<br>       | `Target_succeeded of<br>           <a href="Ketrew_target.html#TYPEid">Ketrew_target.id</a> *<br>           [ `Artifact_literal | `Artifact_ready | `Process_success ] ]</code> </pre>
 <div class="info ">
 Structured log of what can happen during <a href="Ketrew_state.html#VALstep"><code class="code"><span class="constructor">Ketrew_state</span>.step</code></a> or <a href="Ketrew_state.html#VALkill"><code class="code"><span class="constructor">Ketrew_state</span>.kill</code></a>.<br>
 </div>
@@ -84,7 +81,7 @@ Transform an item of the result of <a href="Ketrew_state.html#VALstep"><code cla
 Transform a <a href="Ketrew_state.html#TYPEhappening"><code class="code"><span class="constructor">Ketrew_state</span>.happening</code></a> into <code class="code"><span class="constructor">Log</span>.t</code> document.<br>
 </div>
 
-<pre><span id="VALstep"><span class="keyword">val</span> <a href="code_VALKetrew_state.step.html">step</a></span> : <code class="type"><a href="Ketrew_state.html#TYPEt">t</a> -><br>       (<a href="Ketrew_state.html#TYPEhappening">happening</a> list,<br>        [> `Database of [> `Load ] * string<br>         | `Database_unavailable of <a href="Ketrew_target.html#TYPEid">Ketrew_target.id</a><br>         | `Host of<br>             [> `Exec_failure of string<br>              | `Execution of<br>                  < host : string; message : string; stderr : string option;<br>                    stdout : string option ><br>              | `Ssh_failure of<br>                  [> `Wrong_log of string<br>                   | `Wrong_status of <a href="Ketrew_unix_process.Exit_code.html#TYPEt">Ketrew_unix_process.Exit_code.t</a> ] *<br>                  string ]<br>             <a href="Ketrew_host.Error.html#TYPEexecution">Ketrew_host.Error.execution</a><br>         | `IO of<br>             [> `Read_file_exn of string * exn | `Write_file_exn of string * exn ]<br>         | `Missing_data of <a href="Ketrew_target.html#TYPEid">Ketrew_target.id</a><br>         | `Persistent_state of [> `Deserilization of string ]<br>         | `System of [> `File_info of string ] * [> `Exn of exn ]<br>         | `Target of [> `Deserilization of string ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+<pre><span id="VALstep"><span class="keyword">val</span> <a href="code_VALKetrew_state.step.html">step</a></span> : <code class="type"><a href="Ketrew_state.html#TYPEt">t</a> -><br>       (<a href="Ketrew_state.html#TYPEhappening">happening</a> list,<br>        [> `Database of [> `Load ] * string<br>         | `Database_unavailable of <a href="Ketrew_target.html#TYPEid">Ketrew_target.id</a><br>         | `Host of<br>             [> `Execution of<br>                  < host : string; message : string; stderr : string option;<br>                    stdout : string option ><br>              | `Ssh_failure of<br>                  [> `Wrong_log of string<br>                   | `Wrong_status of <a href="Ketrew_unix_process.Exit_code.html#TYPEt">Ketrew_unix_process.Exit_code.t</a> ] *<br>                  string<br>              | `Unix_exec of string ]<br>             <a href="Ketrew_host.Error.html#TYPEexecution">Ketrew_host.Error.execution</a><br>         | `IO of<br>             [> `Read_file_exn of string * exn | `Write_file_exn of string * exn ]<br>         | `Missing_data of <a href="Ketrew_target.html#TYPEid">Ketrew_target.id</a><br>         | `Persistent_state of [> `Deserilization of string ]<br>         | `System of [> `File_info of string ] * [> `Exn of exn ]<br>         | `Target of [> `Deserilization of string ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
 Run one step of the engine; <code class="code">step</code> returns a list of “things that
     happened”.<br>
 </div>
@@ -93,7 +90,7 @@ Run one step of the engine; <code class="code">step</code> returns a list of “
 Get the state description of a given target (by “id”).<br>
 </div>
 
-<pre><span id="VALkill"><span class="keyword">val</span> <a href="code_VALKetrew_state.kill.html">kill</a></span> : <code class="type"><a href="Ketrew_state.html#TYPEt">t</a> -><br>       id:<a href="Ketrew_target.html#TYPEid">Ketrew_target.id</a> -><br>       ([> `Target_died of<br>             <a href="Ketrew_pervasives.Unique_id.html#TYPEt">Ketrew_pervasives.Unique_id.t</a> *<br>             [> `Killed | `Plugin_not_found of string ] ]<br>        list,<br>        [> `Database of [> `Load ] * string<br>         | `Database_unavailable of string<br>         | `Failed_to_kill of string<br>         | `IO of<br>             [> `Read_file_exn of string * exn | `Write_file_exn of string * exn ]<br>         | `Missing_data of string<br>         | `Not_implemented of string<br>         | `System of [> `File_info of string ] * [> `Exn of exn ]<br>         | `Target of [> `Deserilization of string ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+<pre><span id="VALkill"><span class="keyword">val</span> <a href="code_VALKetrew_state.kill.html">kill</a></span> : <code class="type"><a href="Ketrew_state.html#TYPEt">t</a> -><br>       id:<a href="Ketrew_target.html#TYPEid">Ketrew_target.id</a> -><br>       ([> `Target_died of<br>             <a href="Ketrew_pervasives.Unique_id.html#TYPEt">Ketrew_pervasives.Unique_id.t</a> *<br>             [> `Killed<br>              | `Long_running_unrecoverable of string * string<br>              | `Plugin_not_found of string ] ]<br>        list,<br>        [> `Database of [> `Load ] * string<br>         | `Database_unavailable of string<br>         | `Failed_to_kill of string<br>         | `IO of<br>             [> `Read_file_exn of string * exn | `Write_file_exn of string * exn ]<br>         | `Missing_data of string<br>         | `Not_implemented of string<br>         | `System of [> `File_info of string ] * [> `Exn of exn ]<br>         | `Target of [> `Deserilization of string ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
 Kill a target<br>
 </div>
 </body></html>

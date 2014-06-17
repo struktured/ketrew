@@ -16,6 +16,7 @@
 <link title="Ketrew" rel="Chapter" href="Ketrew.html">
 <link title="Ketrew_artifact" rel="Chapter" href="Ketrew_artifact.html">
 <link title="Ketrew_command_line" rel="Chapter" href="Ketrew_command_line.html">
+<link title="Ketrew_configuration" rel="Chapter" href="Ketrew_configuration.html">
 <link title="Ketrew_database" rel="Chapter" href="Ketrew_database.html">
 <link title="Ketrew_edsl" rel="Chapter" href="Ketrew_edsl.html">
 <link title="Ketrew_error" rel="Chapter" href="Ketrew_error.html">
@@ -26,6 +27,7 @@
 <link title="Ketrew_nohup_setsid" rel="Chapter" href="Ketrew_nohup_setsid.html">
 <link title="Ketrew_path" rel="Chapter" href="Ketrew_path.html">
 <link title="Ketrew_pervasives" rel="Chapter" href="Ketrew_pervasives.html">
+<link title="Ketrew_program" rel="Chapter" href="Ketrew_program.html">
 <link title="Ketrew_state" rel="Chapter" href="Ketrew_state.html">
 <link title="Ketrew_target" rel="Chapter" href="Ketrew_target.html">
 <link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html">
@@ -42,6 +44,12 @@
 Definition of the interface required from “long-running task” plugins.<br>
 </div>
 <hr width="100%">
+
+<pre><span id="TYPEerror"><span class="keyword">type</span> <code class="type"></code>error</span> = <code class="type">[ `Fatal of string | `Recoverable of string ]</code> </pre>
+<div class="info ">
+The “imposed” error types for “long-running” plugins.<br>
+</div>
+
 
 <pre><span class="keyword">module type</span> <a href="Ketrew_long_running.LONG_RUNNING.html">LONG_RUNNING</a> = <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_long_running.LONG_RUNNING.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info">
 The module type <code class="code"><span class="constructor">LONG_RUNNING</span></code> defines the interface for plugins.

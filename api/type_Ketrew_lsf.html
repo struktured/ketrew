@@ -11,6 +11,7 @@
 <link title="Ketrew" rel="Chapter" href="Ketrew.html">
 <link title="Ketrew_artifact" rel="Chapter" href="Ketrew_artifact.html">
 <link title="Ketrew_command_line" rel="Chapter" href="Ketrew_command_line.html">
+<link title="Ketrew_configuration" rel="Chapter" href="Ketrew_configuration.html">
 <link title="Ketrew_database" rel="Chapter" href="Ketrew_database.html">
 <link title="Ketrew_edsl" rel="Chapter" href="Ketrew_edsl.html">
 <link title="Ketrew_error" rel="Chapter" href="Ketrew_error.html">
@@ -21,6 +22,7 @@
 <link title="Ketrew_nohup_setsid" rel="Chapter" href="Ketrew_nohup_setsid.html">
 <link title="Ketrew_path" rel="Chapter" href="Ketrew_path.html">
 <link title="Ketrew_pervasives" rel="Chapter" href="Ketrew_pervasives.html">
+<link title="Ketrew_program" rel="Chapter" href="Ketrew_program.html">
 <link title="Ketrew_state" rel="Chapter" href="Ketrew_state.html">
 <link title="Ketrew_target" rel="Chapter" href="Ketrew_target.html">
 <link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html">
@@ -34,17 +36,17 @@
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;deserialize_exn&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;run_parameters<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;start&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;run_parameters&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;(run_parameters,&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Failed_to_start</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(run_parameters,&nbsp;<span class="constructor">Ketrew_long_running</span>.error)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_pervasives</span>.<span class="constructor">Deferred_result</span>.t<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;update&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;run_parameters&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;([&nbsp;<span class="keywordsign">`</span><span class="constructor">Failed</span>&nbsp;<span class="keyword">of</span>&nbsp;run_parameters&nbsp;*&nbsp;string<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Still_running</span>&nbsp;<span class="keyword">of</span>&nbsp;run_parameters<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Succeeded</span>&nbsp;<span class="keyword">of</span>&nbsp;run_parameters&nbsp;],&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Failed_to_update</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Succeeded</span>&nbsp;<span class="keyword">of</span>&nbsp;run_parameters&nbsp;],&nbsp;<span class="constructor">Ketrew_long_running</span>.error)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_pervasives</span>.<span class="constructor">Deferred_result</span>.t<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;kill&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;run_parameters&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;([&nbsp;<span class="keywordsign">`</span><span class="constructor">Killed</span>&nbsp;<span class="keyword">of</span>&nbsp;run_parameters&nbsp;],&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Failed_to_kill</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;([&nbsp;<span class="keywordsign">`</span><span class="constructor">Killed</span>&nbsp;<span class="keyword">of</span>&nbsp;run_parameters&nbsp;],&nbsp;<span class="constructor">Ketrew_long_running</span>.error)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_pervasives</span>.<span class="constructor">Deferred_result</span>.t<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;create&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;?host:<span class="constructor">Ketrew_host</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
@@ -52,5 +54,5 @@
 &nbsp;&nbsp;&nbsp;&nbsp;?name:string&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?wall_limit:string&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?processors:[&nbsp;<span class="keywordsign">`</span><span class="constructor">Min</span>&nbsp;<span class="keyword">of</span>&nbsp;int&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Min_max</span>&nbsp;<span class="keyword">of</span>&nbsp;int&nbsp;*&nbsp;int&nbsp;]&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Long_running</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;*&nbsp;string&nbsp;]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_program</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span><span class="constructor">Long_running</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;*&nbsp;string&nbsp;]<br>
 <span class="keyword">end</span></code></body></html>
