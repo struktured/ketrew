@@ -58,4 +58,9 @@ Printf-like function to create shell commands.<br>
 <pre><span id="VAL(&&)"><span class="keyword">val</span> <a href="code_VALKetrew_edsl.Program.(_amp__amp_).html">(&amp;&amp;)</a></span> : <code class="type"><a href="Ketrew_edsl.Program.html#TYPEt">t</a> -> <a href="Ketrew_edsl.Program.html#TYPEt">t</a> -> <a href="Ketrew_edsl.Program.html#TYPEt">t</a></code></pre><div class="info ">
 <code class="code">a <span class="keywordsign">&amp;&amp;</span> b</code> is a program than runs <code class="code">a</code> then <code class="code">b</code> iff <code class="code">a</code> succeeded.<br>
 </div>
+
+<pre><span id="VALexec"><span class="keyword">val</span> <a href="code_VALKetrew_edsl.Program.exec.html">exec</a></span> : <code class="type">string list -> <a href="Ketrew_edsl.Program.html#TYPEt">t</a></code></pre><div class="info ">
+Create a program that run in <code class="code"><span class="constructor">Unix</span>.exec</code> mode (i.e. does not need shell
+      escaping).<br>
+</div>
 </body></html>

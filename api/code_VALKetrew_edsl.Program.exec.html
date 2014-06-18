@@ -26,15 +26,7 @@
 <link title="Ketrew_state" rel="Chapter" href="Ketrew_state.html">
 <link title="Ketrew_target" rel="Chapter" href="Ketrew_target.html">
 <link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html">
-<link title="Ketrew_user_command" rel="Chapter" href="Ketrew_user_command.html"><title>Ketrew API : Ketrew_edsl.Program</title>
+<link title="Ketrew_user_command" rel="Chapter" href="Ketrew_user_command.html"><title>Ketrew API : Ketrew_edsl.Program.exec</title>
 </head>
 <body>
-<code class="code"><span class="keyword">sig</span><br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;<span class="constructor">Ketrew_program</span>.t<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sh&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_edsl</span>.<span class="constructor">Program</span>.t<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;shf&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keywordsign">'</span>a,&nbsp;unit,&nbsp;string,&nbsp;<span class="constructor">Ketrew_edsl</span>.<span class="constructor">Program</span>.t)&nbsp;<span class="constructor">Pervasives</span>.format4&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;(&nbsp;<span class="keywordsign">&amp;&amp;</span>&nbsp;)&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_edsl</span>.<span class="constructor">Program</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_edsl</span>.<span class="constructor">Program</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_edsl</span>.<span class="constructor">Program</span>.t<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;exec&nbsp;:&nbsp;string&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_edsl</span>.<span class="constructor">Program</span>.t<br>
-<span class="keyword">end</span></code></body></html>
+<code class="code"><span class="keyword">let</span>&nbsp;exec&nbsp;l&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">Exec</span>&nbsp;l</code></body></html>
