@@ -130,6 +130,7 @@ The identifiers of targets.<br>
 </div>
 
 
+<pre><span class="keyword">module</span> <a href="Ketrew_target.Condition.html">Condition</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_target.Condition.html">..</a> <code class="code"><span class="keyword">end</span></code></pre>
 <pre><code><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = {</code></pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
@@ -177,7 +178,7 @@ The identifiers of targets.<br>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTt.result_type">result_type</span>&nbsp;: <code class="type"><a href="Ketrew_artifact.Type.html#TYPEt">Ketrew_artifact.Type.t</a></code>;</code></td>
+<code><span id="TYPEELTt.condition">condition</span>&nbsp;: <code class="type"><a href="Ketrew_target.Condition.html#TYPEt">Condition.t</a></code>;</code></td>
 
 </tr>
 <tr>
@@ -194,7 +195,7 @@ The fat record holding targets.<br>
 </div>
 
 
-<pre><span id="VALcreate"><span class="keyword">val</span> <a href="code_VALKetrew_target.create.html">create</a></span> : <code class="type">?id:<a href="Ketrew_target.html#TYPEid">id</a> -><br>       ?name:string -><br>       ?persistance:[ `Input_data | `Recomputable of float | `Result ] -><br>       ?metadata:<a href="Ketrew_artifact.html#TYPEvalue">Ketrew_artifact.value</a> -><br>       ?dependencies:<a href="Ketrew_target.html#TYPEid">id</a> list -><br>       ?make:<a href="Ketrew_target.html#TYPEbuild_process">build_process</a> -><br>       <a href="Ketrew_artifact.Type.html#TYPEt">Ketrew_artifact.Type.t</a> -> <a href="Ketrew_target.html#TYPEt">t</a></code></pre><div class="info ">
+<pre><span id="VALcreate"><span class="keyword">val</span> <a href="code_VALKetrew_target.create.html">create</a></span> : <code class="type">?id:<a href="Ketrew_target.html#TYPEid">id</a> -><br>       ?name:string -><br>       ?persistance:[ `Input_data | `Recomputable of float | `Result ] -><br>       ?metadata:<a href="Ketrew_artifact.html#TYPEvalue">Ketrew_artifact.value</a> -><br>       ?dependencies:<a href="Ketrew_target.html#TYPEid">id</a> list -><br>       ?make:<a href="Ketrew_target.html#TYPEbuild_process">build_process</a> -><br>       ?condition:<a href="Ketrew_target.Condition.html#TYPEt">Condition.t</a> -> unit -> <a href="Ketrew_target.html#TYPEt">t</a></code></pre><div class="info ">
 Create a target value (not stored in the DB yet).<br>
 </div>
 
@@ -228,7 +229,7 @@ Get a new target updated with new run paramters (from a plugin),
     raises <code class="code"><span class="constructor">Invalid_argument</span> _</code> if the target is in a wrong state.<br>
 </div>
 
-<pre><span id="VALactive"><span class="keyword">val</span> <a href="code_VALKetrew_target.active.html">active</a></span> : <code class="type">?id:<a href="Ketrew_target.html#TYPEid">id</a> -><br>       ?name:string -><br>       ?persistance:[ `Input_data | `Recomputable of float | `Result ] -><br>       ?metadata:<a href="Ketrew_artifact.html#TYPEvalue">Ketrew_artifact.value</a> -><br>       ?dependencies:<a href="Ketrew_target.html#TYPEid">id</a> list -><br>       ?make:<a href="Ketrew_target.html#TYPEbuild_process">build_process</a> -><br>       <a href="Ketrew_artifact.Type.html#TYPEt">Ketrew_artifact.Type.t</a> -> <a href="Ketrew_target.html#TYPEt">t</a></code></pre><div class="info ">
+<pre><span id="VALactive"><span class="keyword">val</span> <a href="code_VALKetrew_target.active.html">active</a></span> : <code class="type">?id:<a href="Ketrew_target.html#TYPEid">id</a> -><br>       ?name:string -><br>       ?persistance:[ `Input_data | `Recomputable of float | `Result ] -><br>       ?metadata:<a href="Ketrew_artifact.html#TYPEvalue">Ketrew_artifact.value</a> -><br>       ?dependencies:<a href="Ketrew_target.html#TYPEid">id</a> list -><br>       ?make:<a href="Ketrew_target.html#TYPEbuild_process">build_process</a> -><br>       ?condition:<a href="Ketrew_target.Condition.html#TYPEt">Condition.t</a> -> unit -> <a href="Ketrew_target.html#TYPEt">t</a></code></pre><div class="info ">
 Like <a href="Ketrew_target.html#VALcreate"><code class="code"><span class="constructor">Ketrew_target</span>.create</code></a> but set as already activated.<br>
 </div>
 
@@ -246,5 +247,13 @@ Deserilize a target from a string.<br>
 
 <pre><span id="VALlog"><span class="keyword">val</span> <a href="code_VALKetrew_target.log.html">log</a></span> : <code class="type"><a href="Ketrew_target.html#TYPEt">t</a> -> Ketrew_pervasives.Log.t</code></pre><div class="info ">
 Get a <code class="code"><span class="constructor">Log</span>.t</code> “document” to display the target.<br>
+</div>
+
+<pre><span id="VALshould_start"><span class="keyword">val</span> <a href="code_VALKetrew_target.should_start.html">should_start</a></span> : <code class="type"><a href="Ketrew_target.html#TYPEt">t</a> -><br>       (bool,<br>        [> `Host of<br>             [> `Execution of<br>                  < host : string; message : string; stderr : string option;<br>                    stdout : string option ><br>              | `Ssh_failure of<br>                  [> `Wrong_log of string<br>                   | `Wrong_status of <a href="Ketrew_unix_process.Exit_code.html#TYPEt">Ketrew_unix_process.Exit_code.t</a> ] *<br>                  string<br>              | `Unix_exec of string ]<br>             <a href="Ketrew_host.Error.html#TYPEexecution">Ketrew_host.Error.execution</a> ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+Check whether a target is ready or should start, given its condition.<br>
+</div>
+
+<pre><span id="VALdid_ensure_condition"><span class="keyword">val</span> <a href="code_VALKetrew_target.did_ensure_condition.html">did_ensure_condition</a></span> : <code class="type"><a href="Ketrew_target.html#TYPEt">t</a> -><br>       (bool,<br>        [> `Host of<br>             [> `Execution of<br>                  < host : string; message : string; stderr : string option;<br>                    stdout : string option ><br>              | `Ssh_failure of<br>                  [> `Wrong_log of string<br>                   | `Wrong_status of <a href="Ketrew_unix_process.Exit_code.html#TYPEt">Ketrew_unix_process.Exit_code.t</a> ] *<br>                  string<br>              | `Unix_exec of string ]<br>             <a href="Ketrew_host.Error.html#TYPEexecution">Ketrew_host.Error.execution</a> ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+Check whether a target actually did its job, given its condition.<br>
 </div>
 </body></html>

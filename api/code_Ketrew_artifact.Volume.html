@@ -63,6 +63,8 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;paths&nbsp;=&nbsp;all_paths&nbsp;t&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Host</span>.do_files_exist&nbsp;t.host&nbsp;paths<br>
 <br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;to_string_hum&nbsp;{host;&nbsp;root;&nbsp;structure}&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;fmt&nbsp;<span class="string">"Vol(%s:%s)"</span>&nbsp;(<span class="constructor">Host</span>.to_string_hum&nbsp;host)&nbsp;(<span class="constructor">Path</span>.to_string&nbsp;root)<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;log&nbsp;{host;&nbsp;root;&nbsp;structure}&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Vol"</span>&nbsp;%&nbsp;parens&nbsp;(<span class="constructor">Host</span>.log&nbsp;host&nbsp;%&nbsp;s<span class="string">":"</span>&nbsp;%&nbsp;s&nbsp;(<span class="constructor">Path</span>.to_string&nbsp;root)))<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;to_string_hum&nbsp;v&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.to_long_string&nbsp;(log&nbsp;v)<br>
 <span class="keyword">end</span></code></body></html>

@@ -32,10 +32,11 @@
 <code class="code"><span class="keyword">let</span>&nbsp;file&nbsp;?(host=&nbsp;<span class="constructor">Host</span>.tmp_on_localhost)&nbsp;path&nbsp;&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;basename&nbsp;=&nbsp;<span class="constructor">Filename</span>.basename&nbsp;path&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">object</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;artifact_type:&nbsp;<span class="constructor">Artifact</span>.<span class="constructor">Type</span>.t&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">Volume</span>&nbsp;<span class="constructor">Artifact</span>.<span class="constructor">Volume</span>.(<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;create&nbsp;~host<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~root:(<span class="constructor">Path</span>.absolute_directory_exn&nbsp;(<span class="constructor">Filename</span>.dirname&nbsp;path))<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(file&nbsp;basename))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;vol&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Artifact</span>.<span class="constructor">Volume</span>.(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;create&nbsp;~host<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~root:(<span class="constructor">Path</span>.absolute_directory_exn&nbsp;(<span class="constructor">Filename</span>.dirname&nbsp;path))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(file&nbsp;basename))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;path&nbsp;=&nbsp;path<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;exists&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">Volume_exists</span>&nbsp;vol<br>
 &nbsp;&nbsp;<span class="keyword">end</span></code></body></html>

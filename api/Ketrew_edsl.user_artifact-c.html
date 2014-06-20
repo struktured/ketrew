@@ -39,12 +39,16 @@
 <h1>Class type <a href="type_Ketrew_edsl.user_artifact.html">Ketrew_edsl.user_artifact</a></h1>
 
 <pre><span id="TYPEuser_artifact"><span class="keyword">class type</span> user_artifact</span> = <code class="code"><span class="keyword">object</span></code> <a href="Ketrew_edsl.user_artifact-c.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info classtype top">
-Wrapper for <a href="Ketrew_artifact.html#TYPEt"><code class="code"><span class="constructor">Ketrew_artifact</span>.t</code></a> and <a href="Ketrew_artifact.Type.html#TYPEt"><code class="code"><span class="constructor">Ketrew_artifact</span>.<span class="constructor">Type</span>.t</code></a>.<br>
+Wrapper for <a href="Ketrew_artifact.html#TYPEt"><code class="code"><span class="constructor">Ketrew_artifact</span>.t</code></a> and <code class="code"><span class="constructor">Ketrew_artifact</span>.<span class="constructor">Type</span>.t</code>.<br>
 </div>
 <hr width="100%">
 
 <pre><span id="METHODpath"><span class="keyword">method</span> path</span> : <code class="type">string</code></pre><div class="info ">
 Return the path of the artifact if the artifact is a volume containing
       a single file or directory.<br>
+</div>
+
+<pre><span id="METHODexists"><span class="keyword">method</span> exists</span> : <code class="type"><a href="Ketrew_target.Condition.html#TYPEt">Ketrew_target.Condition.t</a></code></pre><div class="info ">
+Get “is-ready” condition (for the <code class="code">~ready_when</code> argument of <a href="Ketrew_edsl.html#VALtarget"><code class="code"><span class="constructor">Ketrew_edsl</span>.target</code></a>.<br>
 </div>
 </body></html>

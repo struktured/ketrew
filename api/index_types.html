@@ -218,6 +218,13 @@ The contents of the application state.
 The contents of the configuration.
 </div>
 </td></tr>
+<tr><td><a href="Ketrew_target.Condition.html#TYPEt">t</a> [<a href="Ketrew_target.Condition.html">Ketrew_target.Condition</a>]</td>
+<td><div class="info">
+A execution anti-condition, the condition defines when a target is
+    (already) ready:  with <code class="code"><span class="keywordsign">`</span><span class="constructor">False</span></code> the target always runs (because never “ready”),, with <code class="code"><span class="keywordsign">`</span><span class="constructor">True</span></code> the target never runs (a bit useless),, with <code class="code"><span class="keywordsign">`</span><span class="constructor">Volume_exists</span> v</code> the target runs if the volume does not exist
+    (<code class="code">make</code>-like behavior).
+</div>
+</td></tr>
 <tr><td><a href="Ketrew_target.Command.html#TYPEt">t</a> [<a href="Ketrew_target.Command.html">Ketrew_target.Command</a>]</td>
 <td><div class="info">
 The type of commands.
@@ -226,11 +233,6 @@ The type of commands.
 <tr><td><a href="Ketrew_target.html#TYPEt">t</a> [<a href="Ketrew_target.html">Ketrew_target</a>]</td>
 <td><div class="info">
 The fat record holding targets.
-</div>
-</td></tr>
-<tr><td><a href="Ketrew_artifact.Type.html#TYPEt">t</a> [<a href="Ketrew_artifact.Type.html">Ketrew_artifact.Type</a>]</td>
-<td><div class="info">
-The specification of an artifact.
 </div>
 </td></tr>
 <tr><td><a href="Ketrew_artifact.Volume.html#TYPEt">t</a> [<a href="Ketrew_artifact.Volume.html">Ketrew_artifact.Volume</a>]</td>
@@ -260,11 +262,6 @@ General type of file-paths, <code class="code">kind</code> may be <code class="c
 <tr><td><a href="Ketrew_artifact.html#TYPEvalue">value</a> [<a href="Ketrew_artifact.html">Ketrew_artifact</a>]</td>
 <td><div class="info">
 Literal values.
-</div>
-</td></tr>
-<tr><td><a href="Ketrew_artifact.Type.html#TYPEvalue_type">value_type</a> [<a href="Ketrew_artifact.Type.html">Ketrew_artifact.Type</a>]</td>
-<td><div class="info">
-The specification of a value's type.
 </div>
 </td></tr>
 <tr><td align="left"><br>W</td></tr>

@@ -42,29 +42,29 @@
 <br>
 <span class="keyword">class</span>&nbsp;<span class="keyword">type</span>&nbsp;user_artifact&nbsp;=&nbsp;<span class="keyword">object</span><br>
 <br>
-&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;artifact_type&nbsp;:&nbsp;<span class="constructor">Artifact</span>.<span class="constructor">Type</span>.t<br>
 &nbsp;&nbsp;<span class="keyword">method</span>&nbsp;path&nbsp;:&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;exists:&nbsp;<span class="constructor">Target</span>.<span class="constructor">Condition</span>.t<br>
 &nbsp;&nbsp;</code><table><tr><td>&nbsp;&nbsp;</td><td><span class="comment">(** Return the path of the artifact if the artifact is a volume containing
       a single file or directory. *)</span></td></tr></table><code class="code"><br>
 <br>
 <span class="keyword">end</span><br>
 <br>
 <span class="keyword">let</span>&nbsp;unit&nbsp;=&nbsp;<span class="keyword">object</span><br>
-&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;artifact_type&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">Value</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Unit</span><br>
 &nbsp;&nbsp;<span class="keyword">method</span>&nbsp;path&nbsp;=&nbsp;failwith&nbsp;<span class="string">"Unit&nbsp;has&nbsp;no&nbsp;path"</span><br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;exists&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">False</span><br>
 <span class="keyword">end</span><br>
 <br>
 <span class="keyword">let</span>&nbsp;file&nbsp;?(host=&nbsp;<span class="constructor">Host</span>.tmp_on_localhost)&nbsp;path&nbsp;&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;basename&nbsp;=&nbsp;<span class="constructor">Filename</span>.basename&nbsp;path&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">object</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;artifact_type:&nbsp;<span class="constructor">Artifact</span>.<span class="constructor">Type</span>.t&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">Volume</span>&nbsp;<span class="constructor">Artifact</span>.<span class="constructor">Volume</span>.(<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;create&nbsp;~host<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~root:(<span class="constructor">Path</span>.absolute_directory_exn&nbsp;(<span class="constructor">Filename</span>.dirname&nbsp;path))<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(file&nbsp;basename))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;vol&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Artifact</span>.<span class="constructor">Volume</span>.(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;create&nbsp;~host<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~root:(<span class="constructor">Path</span>.absolute_directory_exn&nbsp;(<span class="constructor">Filename</span>.dirname&nbsp;path))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(file&nbsp;basename))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;path&nbsp;=&nbsp;path<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;exists&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">Volume_exists</span>&nbsp;vol<br>
 &nbsp;&nbsp;<span class="keyword">end</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;Artifact.Volume.all_paths&nbsp;v&nbsp;|&gt;&nbsp;List.hd_exn&nbsp;|&gt;&nbsp;Path.to_string&nbsp;in&nbsp;*)</span><br>
 <br>
 <span class="keyword">class</span>&nbsp;<span class="keyword">type</span>&nbsp;user_target&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">object</span><br>
@@ -74,6 +74,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;id:&nbsp;<span class="constructor">Unique_id</span>.t<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;render:&nbsp;<span class="constructor">Ketrew_target</span>.t<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;dependencies:&nbsp;user_target&nbsp;list<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;metadata:&nbsp;<span class="constructor">Ketrew_artifact</span>.value<br>
 &nbsp;&nbsp;<span class="keyword">end</span><br>
 <br>
 <br>
@@ -82,7 +83,8 @@
 &nbsp;&nbsp;?(dependencies&nbsp;=&nbsp;[])<br>
 &nbsp;&nbsp;?(name:&nbsp;string&nbsp;option)<br>
 &nbsp;&nbsp;?(make:&nbsp;<span class="constructor">Target</span>.build_process&nbsp;=&nbsp;<span class="constructor">Target</span>.nop)<br>
-&nbsp;&nbsp;?(returns&nbsp;=&nbsp;unit)<br>
+&nbsp;&nbsp;?(ready_when&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">False</span>)<br>
+&nbsp;&nbsp;?(metadata&nbsp;=&nbsp;<span class="constructor">Artifact</span>.unit)<br>
 &nbsp;&nbsp;()<br>
 &nbsp;&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;id&nbsp;=&nbsp;<span class="constructor">Unique_id</span>.create&nbsp;()&nbsp;<span class="keyword">in</span><br>
@@ -96,19 +98,22 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;dependencies&nbsp;=&nbsp;dependencies<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;activate&nbsp;=&nbsp;active&nbsp;&lt;-&nbsp;<span class="keyword">true</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;is_active&nbsp;=&nbsp;active<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;metadata&nbsp;=&nbsp;metadata<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;render&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;creation&nbsp;=&nbsp;<span class="keyword">if</span>&nbsp;active&nbsp;<span class="keyword">then</span>&nbsp;<span class="constructor">Target</span>.active&nbsp;<span class="keyword">else</span>&nbsp;<span class="constructor">Target</span>.create&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;creation&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;creation&nbsp;~metadata<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~id:self<span class="keywordsign">#</span>id<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~dependencies:(<span class="constructor">List</span>.map&nbsp;dependencies&nbsp;~f:(<span class="keyword">fun</span>&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t<span class="keywordsign">#</span>id))<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~name:self<span class="keywordsign">#</span>name<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~make&nbsp;returns<span class="keywordsign">#</span>artifact_type<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~name:self<span class="keywordsign">#</span>name&nbsp;~condition:ready_when<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~make&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
 &nbsp;&nbsp;<span class="keyword">end</span><br>
 <br>
-<span class="keyword">let</span>&nbsp;target&nbsp;?active&nbsp;?dependencies&nbsp;?make&nbsp;?returns&nbsp;name&nbsp;=<br>
-&nbsp;&nbsp;user_target_internal&nbsp;?active&nbsp;?dependencies&nbsp;~name&nbsp;?make&nbsp;?returns&nbsp;()<br>
-<span class="keyword">let</span>&nbsp;active&nbsp;&nbsp;?dependencies&nbsp;?make&nbsp;?returns&nbsp;name&nbsp;=<br>
-&nbsp;&nbsp;user_target_internal&nbsp;~active:<span class="keyword">true</span>&nbsp;?dependencies&nbsp;~name&nbsp;?make&nbsp;?returns&nbsp;()<br>
+<span class="keyword">let</span>&nbsp;target&nbsp;?active&nbsp;?dependencies&nbsp;?make&nbsp;?ready_when&nbsp;?metadata&nbsp;name&nbsp;=<br>
+&nbsp;&nbsp;user_target_internal&nbsp;?active&nbsp;?dependencies&nbsp;~name&nbsp;?make&nbsp;?metadata&nbsp;?ready_when&nbsp;()<br>
+<span class="keyword">let</span>&nbsp;active&nbsp;&nbsp;?dependencies&nbsp;?make&nbsp;?ready_when&nbsp;?metadata&nbsp;name&nbsp;=<br>
+&nbsp;&nbsp;user_target_internal&nbsp;~active:<span class="keyword">true</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?dependencies&nbsp;?metadata&nbsp;~name&nbsp;?make&nbsp;?ready_when&nbsp;()<br>
 <br>
 <span class="comment">(*<br>
 &nbsp;&nbsp;Run&nbsp;a&nbsp;workflow:<br>

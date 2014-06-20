@@ -70,7 +70,6 @@
 &nbsp;&nbsp;&nbsp;&nbsp;root&nbsp;:&nbsp;path;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;structure&nbsp;:&nbsp;volume_structure;<br>
 &nbsp;&nbsp;}<br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;value_type&nbsp;=&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Number</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">String</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Unit</span>&nbsp;]<br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;unique_id&nbsp;=&nbsp;string<br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;time&nbsp;=&nbsp;float<br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;persistent_state&nbsp;=<br>
@@ -84,7 +83,6 @@
 &nbsp;&nbsp;&nbsp;&nbsp;program&nbsp;:&nbsp;program;<br>
 &nbsp;&nbsp;}<br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;artifact_value&nbsp;=&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Number</span>&nbsp;<span class="keyword">of</span>&nbsp;float&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">String</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Unit</span>&nbsp;]<br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;artifact_type&nbsp;=&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Value</span>&nbsp;<span class="keyword">of</span>&nbsp;value_type&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Volume</span>&nbsp;<span class="keyword">of</span>&nbsp;volume&nbsp;]<br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;artifact&nbsp;=&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Value</span>&nbsp;<span class="keyword">of</span>&nbsp;artifact_value&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Volume</span>&nbsp;<span class="keyword">of</span>&nbsp;volume&nbsp;]<br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;unique_id<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;create&nbsp;:&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>

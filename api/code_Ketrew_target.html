@@ -70,16 +70,30 @@
 <br>
 <span class="keyword">include</span>&nbsp;<span class="constructor">Ketrew_gen_target_v0_t</span><br>
 <br>
+<span class="keyword">module</span>&nbsp;<span class="constructor">Condition</span>&nbsp;=&nbsp;<span class="keyword">struct</span><br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;condition<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;log&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(<span class="keyword">function</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">True</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"True"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">False</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"False"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Volume_exists</span>&nbsp;v&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;parens&nbsp;(s&nbsp;<span class="string">"Volume&nbsp;"</span>&nbsp;%&nbsp;<span class="constructor">Artifact</span>.<span class="constructor">Volume</span>.log&nbsp;v&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;exists"</span>))<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;to_string_hum&nbsp;c&nbsp;=&nbsp;<span class="constructor">Log</span>.to_long_string&nbsp;(log&nbsp;c)<br>
+<br>
+<span class="keyword">end</span><br>
+<br>
+<br>
 <span class="keyword">let</span>&nbsp;nop&nbsp;:&nbsp;build_process&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">Artifact</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Value</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Unit</span>)<br>
 <br>
 <span class="keyword">let</span>&nbsp;create<br>
 &nbsp;&nbsp;&nbsp;&nbsp;?id&nbsp;?name&nbsp;?(persistance=<span class="keywordsign">`</span><span class="constructor">Input_data</span>)&nbsp;?(metadata=<span class="constructor">Artifact</span>.unit)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;?(dependencies=[])&nbsp;?(make=nop)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;result_type&nbsp;=&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?(condition=<span class="keywordsign">`</span><span class="constructor">False</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;()&nbsp;=&nbsp;<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;history&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">Created</span>&nbsp;<span class="constructor">Time</span>.(now&nbsp;())&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;id&nbsp;=&nbsp;<span class="constructor">Option</span>.value&nbsp;id&nbsp;~default:(<span class="constructor">Unique_id</span>.create&nbsp;())&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;{&nbsp;id;&nbsp;name&nbsp;=&nbsp;<span class="constructor">Option</span>.value&nbsp;name&nbsp;~default:id;&nbsp;persistance;&nbsp;metadata;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;dependencies;&nbsp;make;&nbsp;result_type;&nbsp;history&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dependencies;&nbsp;make;&nbsp;condition;&nbsp;history&nbsp;}<br>
 <br>
 </code><table><tr><td></td><td><span class="comment">(** Create a new  target but activated from a created one; 
     raises <code class="code"><span class="constructor">Invalid_argument</span> _</code> if current status is not <code class="code"><span class="keywordsign">`</span><span class="constructor">Created</span> _</code>. *)</span></td></tr></table><code class="code"><br>
@@ -128,12 +142,13 @@
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;invalid_argument_exn&nbsp;~where:<span class="string">"Target"</span>&nbsp;(fmt&nbsp;<span class="string">"update_running_exn"</span>)<br>
 <br>
 <br>
+<br>
 <span class="keyword">let</span>&nbsp;active&nbsp;?id<br>
 &nbsp;&nbsp;&nbsp;&nbsp;?name&nbsp;?persistance&nbsp;?metadata<br>
-&nbsp;&nbsp;&nbsp;&nbsp;?dependencies&nbsp;?make<br>
-&nbsp;&nbsp;&nbsp;&nbsp;artifact&nbsp;=&nbsp;<br>
-&nbsp;&nbsp;activate_exn&nbsp;~by:<span class="keywordsign">`</span><span class="constructor">User</span>&nbsp;(create&nbsp;?id&nbsp;?name&nbsp;?persistance&nbsp;?metadata<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?dependencies&nbsp;?make&nbsp;artifact)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?dependencies&nbsp;?make&nbsp;?condition<br>
+&nbsp;&nbsp;&nbsp;&nbsp;()&nbsp;=&nbsp;<br>
+&nbsp;&nbsp;activate_exn&nbsp;~by:<span class="keywordsign">`</span><span class="constructor">User</span>&nbsp;(create&nbsp;?id&nbsp;?name&nbsp;?persistance&nbsp;?metadata&nbsp;?condition<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?dependencies&nbsp;?make&nbsp;())<br>
 <br>
 <span class="keyword">let</span>&nbsp;id&nbsp;t&nbsp;:&nbsp;<span class="constructor">Unique_id</span>.t&nbsp;=&nbsp;t.id<br>
 <br>
@@ -149,6 +164,19 @@
 &nbsp;&nbsp;<span class="keyword">with</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fail&nbsp;(<span class="keywordsign">`</span><span class="constructor">Target</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Deserilization</span>&nbsp;(<span class="constructor">Printexc</span>.to_string&nbsp;e)))<br>
 <br>
 <span class="keyword">let</span>&nbsp;log&nbsp;t&nbsp;=&nbsp;<span class="constructor">Log</span>.(brakets&nbsp;(sf&nbsp;<span class="string">"Target:&nbsp;%s&nbsp;(%s)"</span>&nbsp;t.name&nbsp;t.id))<br>
+<br>
+<span class="keyword">let</span>&nbsp;should_start&nbsp;t&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;t.condition&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">True</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;<span class="keyword">false</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">False</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;<span class="keyword">true</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Volume_exists</span>&nbsp;v&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Artifact</span>.<span class="constructor">Volume</span>.exists&nbsp;v&nbsp;&gt;&gt;|&nbsp;not<br>
+<br>
+<span class="keyword">let</span>&nbsp;did_ensure_condition&nbsp;t&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;t.condition&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">True</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;<span class="keyword">false</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">False</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;<span class="keyword">true</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Volume_exists</span>&nbsp;v&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Artifact</span>.<span class="constructor">Volume</span>.exists&nbsp;v<br>
 <br>
 <br>
 <br>

@@ -213,6 +213,11 @@ Deserialize the run parameters from a string; the engine guaranties
       and assumes that no exception will be thrown in that case.
 </div>
 </td></tr>
+<tr><td><a href="Ketrew_target.html#VALdid_ensure_condition">did_ensure_condition</a> [<a href="Ketrew_target.html">Ketrew_target</a>]</td>
+<td><div class="info">
+Check whether a target actually did its job, given its condition.
+</div>
+</td></tr>
 <tr><td><a href="Ketrew_artifact.Volume.html#VALdir">dir</a> [<a href="Ketrew_artifact.Volume.html">Ketrew_artifact.Volume</a>]</td>
 <td><div class="info">
 Define a “directory” structure.
@@ -379,11 +384,6 @@ Function that have a documented, easy to check contract, can raise
 An action that checks that the <code class="code">key</code> is not set in the DB.
 </div>
 </td></tr>
-<tr><td><a href="Ketrew_artifact.html#VALis_ready">is_ready</a> [<a href="Ketrew_artifact.html">Ketrew_artifact</a>]</td>
-<td><div class="info">
-Check whether an aritfact is ready, given its type.
-</div>
-</td></tr>
 <tr><td><a href="Ketrew_configuration.html#VALis_unix_ssh_failure_fatal">is_unix_ssh_failure_fatal</a> [<a href="Ketrew_configuration.html">Ketrew_configuration</a>]</td>
 <td><div class="info">
 Should we kill targets on ssh/unix errors.
@@ -422,9 +422,16 @@ The host <code class="code"><span class="string">"localhost"</span></code> (i.e.
 Convert a command into a <code class="code"><span class="constructor">Log</span>.t</code> document.
 </div>
 </td></tr>
+<tr><td><a href="Ketrew_target.Condition.html#VALlog">log</a> [<a href="Ketrew_target.Condition.html">Ketrew_target.Condition</a>]</td>
+<td></td></tr>
 <tr><td><a href="Ketrew_target.html#VALlog">log</a> [<a href="Ketrew_target.html">Ketrew_target</a>]</td>
 <td><div class="info">
 Get a <code class="code"><span class="constructor">Log</span>.t</code> “document” to display the target.
+</div>
+</td></tr>
+<tr><td><a href="Ketrew_artifact.Volume.html#VALlog">log</a> [<a href="Ketrew_artifact.Volume.html">Ketrew_artifact.Volume</a>]</td>
+<td><div class="info">
+Get a Human-readable document.
 </div>
 </td></tr>
 <tr><td><a href="Ketrew_program.html#VALlog">log</a> [<a href="Ketrew_program.html">Ketrew_program</a>]</td>
@@ -434,6 +441,11 @@ Create a <code class="code"><span class="constructor">Log</span>.t</code> docume
 </td></tr>
 <tr><td><a href="Ketrew_host.Error.html#VALlog">log</a> [<a href="Ketrew_host.Error.html">Ketrew_host.Error</a>]</td>
 <td></td></tr>
+<tr><td><a href="Ketrew_host.html#VALlog">log</a> [<a href="Ketrew_host.html">Ketrew_host</a>]</td>
+<td><div class="info">
+Get a <code class="code"><span class="constructor">Log</span>.t</code> document.
+</div>
+</td></tr>
 <tr><td><a href="Ketrew_database.html#VALlog_action">log_action</a> [<a href="Ketrew_database.html">Ketrew_database</a>]</td>
 <td><div class="info">
 Get a <code class="code"><span class="constructor">Log</span>.t</code> document representing the <a href="Ketrew_database.html#TYPEaction"><code class="code"><span class="constructor">Ketrew_database</span>.action</code></a>.
@@ -495,11 +507,6 @@ A build process that does nothing.
 <td><div class="info">
 Parse an <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC-3986</a>-compliant
   string into a host, see <a href="Ketrew_host.html#VALof_uri"><code class="code"><span class="constructor">Ketrew_host</span>.of_uri</code></a>.
-</div>
-</td></tr>
-<tr><td><a href="Ketrew_artifact.html#VALof_type">of_type</a> [<a href="Ketrew_artifact.html">Ketrew_artifact</a>]</td>
-<td><div class="info">
-Get the value given it's type, if possible.
 </div>
 </td></tr>
 <tr><td><a href="Ketrew_host.html#VALof_uri">of_uri</a> [<a href="Ketrew_host.html">Ketrew_host</a>]</td>
@@ -641,6 +648,11 @@ Call sh-style commands using the command argument (e.g.
 Printf-like function to create shell commands.
 </div>
 </td></tr>
+<tr><td><a href="Ketrew_target.html#VALshould_start">should_start</a> [<a href="Ketrew_target.html">Ketrew_target</a>]</td>
+<td><div class="info">
+Check whether a target is ready or should start, given its condition.
+</div>
+</td></tr>
 <tr><td><a href="Ketrew_pervasives.html#VALsprintf">sprintf</a> [<a href="Ketrew_pervasives.html">Ketrew_pervasives</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ketrew_host.html#VALssh">ssh</a> [<a href="Ketrew_host.html">Ketrew_host</a>]</td>
@@ -658,11 +670,6 @@ Start the long-running computation, the returned <code class="code">run_paramete
 <td><div class="info">
 Run one step of the engine; <code class="code">step</code> returns a list of “things that
     happened”.
-</div>
-</td></tr>
-<tr><td><a href="Ketrew_artifact.Type.html#VALstring_value">string_value</a> [<a href="Ketrew_artifact.Type.html">Ketrew_artifact.Type</a>]</td>
-<td><div class="info">
-Shortcut for <code class="code"><span class="keywordsign">`</span><span class="constructor">Value</span> <span class="keywordsign">`</span><span class="constructor">String</span></code>.
 </div>
 </td></tr>
 <tr><td><a href="Ketrew_unix_process.html#VALsucceed">succeed</a> [<a href="Ketrew_unix_process.html">Ketrew_unix_process</a>]</td>
@@ -711,12 +718,9 @@ Render the <code class="code">monitored_script</code> to a shell-script string.
 Convert the path to a “Unix” path.
 </div>
 </td></tr>
+<tr><td><a href="Ketrew_target.Condition.html#VALto_string_hum">to_string_hum</a> [<a href="Ketrew_target.Condition.html">Ketrew_target.Condition</a>]</td>
+<td></td></tr>
 <tr><td><a href="Ketrew_target.Command.html#VALto_string_hum">to_string_hum</a> [<a href="Ketrew_target.Command.html">Ketrew_target.Command</a>]</td>
-<td><div class="info">
-Get a Human-readable string.
-</div>
-</td></tr>
-<tr><td><a href="Ketrew_artifact.Type.html#VALto_string_hum">to_string_hum</a> [<a href="Ketrew_artifact.Type.html">Ketrew_artifact.Type</a>]</td>
 <td><div class="info">
 Get a Human-readable string.
 </div>
@@ -766,17 +770,6 @@ Check and update the status of the long-running job.
 <td><div class="info">
 Get a new target updated with new run paramters (from a plugin), 
     raises <code class="code"><span class="constructor">Invalid_argument</span> _</code> if the target is in a wrong state.
-</div>
-</td></tr>
-<tr><td align="left"><br>V</td></tr>
-<tr><td><a href="Ketrew_artifact.Type.html#VALvalue">value</a> [<a href="Ketrew_artifact.Type.html">Ketrew_artifact.Type</a>]</td>
-<td><div class="info">
-Construct a “value-type” artifact type.
-</div>
-</td></tr>
-<tr><td><a href="Ketrew_artifact.Type.html#VALvolume">volume</a> [<a href="Ketrew_artifact.Type.html">Ketrew_artifact.Type</a>]</td>
-<td><div class="info">
-Construct a “volume-specification” artifact type.
 </div>
 </td></tr>
 <tr><td align="left"><br>W</td></tr>

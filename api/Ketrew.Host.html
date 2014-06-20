@@ -109,6 +109,10 @@ Parse an <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC-3986</a>-compliant
 Get a display-friendly string for the host (“name”, or hostname).<br>
 </div>
 
+<pre><span id="VALlog"><span class="keyword">val</span> <a href="code_VALKetrew_host.log.html">log</a></span> : <code class="type"><a href="Ketrew_host.html#TYPEt">t</a> -> Ketrew_pervasives.Log.t</code></pre><div class="info ">
+Get a <code class="code"><span class="constructor">Log</span>.t</code> document.<br>
+</div>
+
 <pre><span class="keyword">module</span> <a href="Ketrew_host.Error.html">Error</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_host.Error.html">..</a> <code class="code"><span class="keyword">end</span></code></pre>
 <pre><span id="VALexecute"><span class="keyword">val</span> <a href="code_VALKetrew_host.execute.html">execute</a></span> : <code class="type"><a href="Ketrew_host.html#TYPEt">t</a> -><br>       string list -><br>       (< exited : int; stderr : string; stdout : string >,<br>        [> `Host of<br>             [> `Execution of<br>                  < host : string; message : string; stderr : string option;<br>                    stdout : string option ><br>              | `Ssh_failure of<br>                  [> `Wrong_log of string<br>                   | `Wrong_status of <a href="Ketrew_unix_process.Exit_code.html#TYPEt">Ketrew_unix_process.Exit_code.t</a> ] *<br>                  string<br>              | `Unix_exec of string ]<br>             <a href="Ketrew_host.Error.html#TYPEexecution">Error.execution</a> ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
 Generic execution which tries to behave like <code class="code"><span class="constructor">Unix</span>.execv</code> even

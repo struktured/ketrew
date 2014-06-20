@@ -70,46 +70,18 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;paths&nbsp;=&nbsp;all_paths&nbsp;t&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Host</span>.do_files_exist&nbsp;t.host&nbsp;paths<br>
 <br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;to_string_hum&nbsp;{host;&nbsp;root;&nbsp;structure}&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;fmt&nbsp;<span class="string">"Vol(%s:%s)"</span>&nbsp;(<span class="constructor">Host</span>.to_string_hum&nbsp;host)&nbsp;(<span class="constructor">Path</span>.to_string&nbsp;root)<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;log&nbsp;{host;&nbsp;root;&nbsp;structure}&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Vol"</span>&nbsp;%&nbsp;parens&nbsp;(<span class="constructor">Host</span>.log&nbsp;host&nbsp;%&nbsp;s<span class="string">":"</span>&nbsp;%&nbsp;s&nbsp;(<span class="constructor">Path</span>.to_string&nbsp;root)))<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;to_string_hum&nbsp;v&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.to_long_string&nbsp;(log&nbsp;v)<br>
 <span class="keyword">end</span><br>
 <br>
-<span class="keyword">module</span>&nbsp;<span class="constructor">Type</span>&nbsp;=&nbsp;<span class="keyword">struct</span><br>
-<br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;value_type&nbsp;=&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.value_type<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;value_type_to_string&nbsp;=&nbsp;<span class="keyword">function</span><br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Unit</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"Unit"</span><br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">String</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"String"</span><br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Number</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"Number"</span><br>
-<br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.artifact_type<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;value&nbsp;vt&nbsp;:&nbsp;t&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">Value</span>&nbsp;vt<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;string_value&nbsp;:&nbsp;t&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">Value</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">String</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;volume&nbsp;v&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">Volume</span>&nbsp;v<br>
-<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;to_string_hum&nbsp;=&nbsp;<span class="keyword">function</span><br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Value</span>&nbsp;v&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fmt&nbsp;<span class="string">"Value&nbsp;%s"</span>&nbsp;(value_type_to_string&nbsp;v)<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Volume</span>&nbsp;v&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fmt&nbsp;<span class="string">"Volume&nbsp;%s"</span>&nbsp;(<span class="constructor">Volume</span>.to_string_hum&nbsp;v)<br>
-<br>
-<span class="keyword">end</span><br>
 <br>
 <span class="keyword">type</span>&nbsp;value&nbsp;=&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.artifact_value<br>
 <br>
 <span class="keyword">let</span>&nbsp;unit&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">Unit</span><br>
 <br>
 <span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.artifact<br>
-<br>
-<span class="comment">(*&nbsp;TODO&nbsp;those&nbsp;two&nbsp;functions&nbsp;should&nbsp;be&nbsp;more&nbsp;type-safe&nbsp;*)</span><br>
-<span class="keyword">let</span>&nbsp;is_ready&nbsp;specification&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;specification&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Value</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;<span class="keyword">false</span><br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Volume</span>&nbsp;v&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Volume</span>.exists&nbsp;v<br>
-<br>
-<span class="keyword">let</span>&nbsp;of_type:&nbsp;<span class="constructor">Type</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t&nbsp;option&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">function</span><br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Value</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Unit</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Some</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Value</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Unit</span>)<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Value</span>&nbsp;v&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Volume</span>&nbsp;v&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Some</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Volume</span>&nbsp;v)<br>
 <br>
 <br>
 <br>

@@ -45,10 +45,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;exec&nbsp;:&nbsp;string&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
 &nbsp;&nbsp;<span class="keyword">class</span>&nbsp;<span class="keyword">type</span>&nbsp;user_artifact&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">object</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;artifact_type&nbsp;:&nbsp;<span class="constructor">Ketrew_artifact</span>.<span class="constructor">Type</span>.t<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;path&nbsp;:&nbsp;string<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">object</span>&nbsp;<span class="keyword">method</span>&nbsp;exists&nbsp;:&nbsp;<span class="constructor">Ketrew_target</span>.<span class="constructor">Condition</span>.t&nbsp;<span class="keyword">method</span>&nbsp;path&nbsp;:&nbsp;string&nbsp;<span class="keyword">end</span><br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;file&nbsp;:&nbsp;?host:<span class="constructor">Ketrew_host</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;user_artifact<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;unit&nbsp;:&nbsp;user_artifact<br>
 &nbsp;&nbsp;<span class="keyword">class</span>&nbsp;<span class="keyword">type</span>&nbsp;user_target&nbsp;=<br>
@@ -57,6 +54,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;dependencies&nbsp;:&nbsp;user_target&nbsp;list<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;id&nbsp;:&nbsp;<span class="constructor">Ketrew_pervasives</span>.<span class="constructor">Unique_id</span>.t<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;is_active&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;metadata&nbsp;:&nbsp;<span class="constructor">Ketrew_artifact</span>.value<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;name&nbsp;:&nbsp;string<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;render&nbsp;:&nbsp;<span class="constructor">Ketrew_target</span>.t<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
@@ -64,11 +62,13 @@
 &nbsp;&nbsp;&nbsp;&nbsp;?active:bool&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?dependencies:user_target&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?make:<span class="constructor">Ketrew_target</span>.build_process&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;?returns:user_artifact&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;user_target<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?ready_when:<span class="constructor">Ketrew_target</span>.<span class="constructor">Condition</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?metadata:<span class="constructor">Ketrew_artifact</span>.value&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;user_target<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;active&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;?dependencies:user_target&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?make:<span class="constructor">Ketrew_target</span>.build_process&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;?returns:user_artifact&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;user_target<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?ready_when:<span class="constructor">Ketrew_target</span>.<span class="constructor">Condition</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?metadata:<span class="constructor">Ketrew_artifact</span>.value&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;user_target<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;nohup_setsid&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;host:<span class="constructor">Ketrew_host</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Program</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_target</span>.build_process<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;direct_execution&nbsp;:<br>

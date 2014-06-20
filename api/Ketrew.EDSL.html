@@ -81,7 +81,7 @@ Build “things to run”.
 <h3 id="3_Artifacts">Artifacts</h3><br>
 
 <pre><span id="TYPEuser_artifact"><span class="keyword">class type</span> <a href="Ketrew_edsl.user_artifact-c.html">user_artifact</a></span> = <code class="code"><span class="keyword">object</span></code> <a href="Ketrew_edsl.user_artifact-c.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info">
-Wrapper for <a href="Ketrew_artifact.html#TYPEt"><code class="code"><span class="constructor">Ketrew_artifact</span>.t</code></a> and <a href="Ketrew_artifact.Type.html#TYPEt"><code class="code"><span class="constructor">Ketrew_artifact</span>.<span class="constructor">Type</span>.t</code></a>.
+Wrapper for <a href="Ketrew_artifact.html#TYPEt"><code class="code"><span class="constructor">Ketrew_artifact</span>.t</code></a> and <code class="code"><span class="constructor">Ketrew_artifact</span>.<span class="constructor">Type</span>.t</code>.
 </div>
 
 <pre><span id="VALfile"><span class="keyword">val</span> <a href="code_VALKetrew_edsl.file.html">file</a></span> : <code class="type">?host:<a href="Ketrew_host.html#TYPEt">Ketrew_host.t</a> -> string -> <a href="Ketrew_edsl.user_artifact-c.html">user_artifact</a></code></pre><div class="info ">
@@ -99,11 +99,11 @@ The artifact that is “never ready” (i.e. the target associated will always
 Wrapper around <a href="Ketrew_target.html#TYPEt"><code class="code"><span class="constructor">Ketrew_target</span>.t</code></a>.
 </div>
 
-<pre><span id="VALtarget"><span class="keyword">val</span> <a href="code_VALKetrew_edsl.target.html">target</a></span> : <code class="type">?active:bool -><br>       ?dependencies:<a href="Ketrew_edsl.user_target-c.html">user_target</a> list -><br>       ?make:<a href="Ketrew_target.html#TYPEbuild_process">Ketrew_target.build_process</a> -><br>       ?returns:<a href="Ketrew_edsl.user_artifact-c.html">user_artifact</a> -> string -> <a href="Ketrew_edsl.user_target-c.html">user_target</a></code></pre><div class="info ">
+<pre><span id="VALtarget"><span class="keyword">val</span> <a href="code_VALKetrew_edsl.target.html">target</a></span> : <code class="type">?active:bool -><br>       ?dependencies:<a href="Ketrew_edsl.user_target-c.html">user_target</a> list -><br>       ?make:<a href="Ketrew_target.html#TYPEbuild_process">Ketrew_target.build_process</a> -><br>       ?ready_when:<a href="Ketrew_target.Condition.html#TYPEt">Ketrew_target.Condition.t</a> -><br>       ?metadata:<a href="Ketrew_artifact.html#TYPEvalue">Ketrew_artifact.value</a> -> string -> <a href="Ketrew_edsl.user_target-c.html">user_target</a></code></pre><div class="info ">
 Create a new target.<br>
 </div>
 
-<pre><span id="VALactive"><span class="keyword">val</span> <a href="code_VALKetrew_edsl.active.html">active</a></span> : <code class="type">?dependencies:<a href="Ketrew_edsl.user_target-c.html">user_target</a> list -><br>       ?make:<a href="Ketrew_target.html#TYPEbuild_process">Ketrew_target.build_process</a> -><br>       ?returns:<a href="Ketrew_edsl.user_artifact-c.html">user_artifact</a> -> string -> <a href="Ketrew_edsl.user_target-c.html">user_target</a></code></pre><div class="info ">
+<pre><span id="VALactive"><span class="keyword">val</span> <a href="code_VALKetrew_edsl.active.html">active</a></span> : <code class="type">?dependencies:<a href="Ketrew_edsl.user_target-c.html">user_target</a> list -><br>       ?make:<a href="Ketrew_target.html#TYPEbuild_process">Ketrew_target.build_process</a> -><br>       ?ready_when:<a href="Ketrew_target.Condition.html#TYPEt">Ketrew_target.Condition.t</a> -><br>       ?metadata:<a href="Ketrew_artifact.html#TYPEvalue">Ketrew_artifact.value</a> -> string -> <a href="Ketrew_edsl.user_target-c.html">user_target</a></code></pre><div class="info ">
 Create a new target but with <code class="code">~active:<span class="keyword">true</span></code>.<br>
 </div>
 
