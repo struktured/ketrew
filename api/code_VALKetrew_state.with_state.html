@@ -26,19 +26,23 @@
 <link title="Ketrew_state" rel="Chapter" href="Ketrew_state.html">
 <link title="Ketrew_target" rel="Chapter" href="Ketrew_target.html">
 <link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html">
-<link title="Ketrew_user_command" rel="Chapter" href="Ketrew_user_command.html"><title>Ketrew API : Ketrew_edsl.run</title>
+<link title="Ketrew_user_command" rel="Chapter" href="Ketrew_user_command.html"><title>Ketrew API : Ketrew_state.with_state</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;run&nbsp;?plugins&nbsp;?override_configuration&nbsp;t&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;todo_list&nbsp;=&nbsp;user_command_list&nbsp;t&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Lwt_main</span>.run&nbsp;(<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_configuration</span>.(<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get_configuration&nbsp;?override_configuration&nbsp;default_configuration_path)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;configuration&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_state</span>.with_state&nbsp;?plugins&nbsp;~configuration&nbsp;(<span class="keyword">fun</span>&nbsp;~state&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_user_command</span>.run_list&nbsp;~state&nbsp;todo_list)<br>
-&nbsp;&nbsp;)&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ok</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
+<code class="code"><span class="keyword">let</span>&nbsp;with_state&nbsp;?plugins&nbsp;~configuration&nbsp;f&nbsp;=<br>
+&nbsp;&nbsp;create&nbsp;?plugins&nbsp;configuration<br>
+&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;state&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">try</span>&nbsp;f&nbsp;~state&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;release&nbsp;state<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;fail&nbsp;(<span class="keywordsign">`</span><span class="constructor">Failure</span>&nbsp;(fmt&nbsp;<span class="string">"with_state:&nbsp;client&nbsp;function&nbsp;threw&nbsp;exception:&nbsp;%s"</span>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Printexc</span>.to_string&nbsp;e)))<br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;&gt;&gt;&lt;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ok</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;release&nbsp;state<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Run-error:&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;(<span class="constructor">Ketrew_error</span>.to_string&nbsp;e)&nbsp;@&nbsp;error);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;(<span class="constructor">Ketrew_error</span>.to_string&nbsp;e)</code></body></html>
+&nbsp;&nbsp;&nbsp;&nbsp;release&nbsp;state&nbsp;&gt;&gt;&lt;&nbsp;<span class="keyword">fun</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;fail&nbsp;e<br>
+&nbsp;&nbsp;<span class="keyword">end</span></code></body></html>

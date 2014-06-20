@@ -69,22 +69,48 @@ An action that checks that the <code class="code">key</code> is set in the DB an
 An action that checks that the <code class="code">key</code> is not set in the DB.<br>
 </div>
 
+<pre><span id="VALunset"><span class="keyword">val</span> <a href="code_VALKetrew_database.unset.html">unset</a></span> : <code class="type">string -> <a href="Ketrew_database.html#TYPEaction">action</a></code></pre><div class="info ">
+An actions that removes a value from the DB.<br>
+</div>
+
 <pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> </pre>
 <div class="info ">
 The handle to the database.<br>
 </div>
 
 
-<pre><span id="VALload"><span class="keyword">val</span> <a href="code_VALKetrew_database.load.html">load</a></span> : <code class="type">string -><br>       (<a href="Ketrew_database.html#TYPEt">t</a>,<br>        [> `Database of [> `Load ] * string<br>         | `IO of<br>             [> `Read_file_exn of string * exn | `Write_file_exn of string * exn ]<br>         | `System of [> `File_info of string ] * [> `Exn of exn ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+<pre><span id="VALload"><span class="keyword">val</span> <a href="code_VALKetrew_database.load.html">load</a></span> : <code class="type">string -><br>       (<a href="Ketrew_database.html#TYPEt">t</a>, [> `Database of [> `Load of string ] * string ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
 Load a handle from the given database parameters.<br>
 </div>
 
-<pre><span id="VALget"><span class="keyword">val</span> <a href="code_VALKetrew_database.get.html">get</a></span> : <code class="type"><a href="Ketrew_database.html#TYPEt">t</a> -><br>       key:string -> (string option, 'a) Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+<pre><span id="VALclose"><span class="keyword">val</span> <a href="code_VALKetrew_database.close.html">close</a></span> : <code class="type"><a href="Ketrew_database.html#TYPEt">t</a> -><br>       (unit, [> `Database of [> `Close ] * string ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+Close the DB.<br>
+</div>
+
+<pre><span id="VALget"><span class="keyword">val</span> <a href="code_VALKetrew_database.get.html">get</a></span> : <code class="type"><a href="Ketrew_database.html#TYPEt">t</a> -><br>       key:string -><br>       (string option, [> `Database of [> `Get of string ] * string ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
 Get a value in the DB.<br>
 </div>
 
-<pre><span id="VALact"><span class="keyword">val</span> <a href="code_VALKetrew_database.act.html">act</a></span> : <code class="type"><a href="Ketrew_database.html#TYPEt">t</a> -><br>       action:<a href="Ketrew_database.html#TYPEaction">action</a> -><br>       ([> `Done | `Not_done ], [> `IO of [> `Write_file_exn of string * exn ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+<pre><span id="VALact"><span class="keyword">val</span> <a href="code_VALKetrew_database.act.html">act</a></span> : <code class="type"><a href="Ketrew_database.html#TYPEt">t</a> -><br>       action:<a href="Ketrew_database.html#TYPEaction">action</a> -><br>       ([ `Done | `Not_done ],<br>        [> `Database of [> `Act of <a href="Ketrew_database.html#TYPEaction">action</a> ] * string ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
 Process a transaction, which can be <code class="code"><span class="keywordsign">`</span><span class="constructor">Done</span></code> is successful or <code class="code"><span class="keywordsign">`</span><span class="constructor">Not_done</span></code>
     if one of the checks in the <code class="code">action</code> failed.<br>
+</div>
+
+<pre><span id="VALlog_action"><span class="keyword">val</span> <a href="code_VALKetrew_database.log_action.html">log_action</a></span> : <code class="type"><a href="Ketrew_database.html#TYPEaction">action</a> -> Ketrew_pervasives.Log.t</code></pre><div class="info ">
+Get a <code class="code"><span class="constructor">Log</span>.t</code> document representing the <a href="Ketrew_database.html#TYPEaction"><code class="code"><span class="constructor">Ketrew_database</span>.action</code></a>.<br>
+</div>
+
+<pre><span id="TYPEerror"><span class="keyword">type</span> <code class="type"></code>error</span> = <code class="type">[ `Act of <a href="Ketrew_database.html#TYPEaction">action</a> | `Close | `Get of string | `Load of string ] *<br>       string</code> </pre>
+<div class="info ">
+Merge of the possible errors.<br>
+</div>
+
+
+<pre><span id="VALlog_error"><span class="keyword">val</span> <a href="code_VALKetrew_database.log_error.html">log_error</a></span> : <code class="type">[< `Database of <a href="Ketrew_database.html#TYPEerror">error</a> ] -> Ketrew_pervasives.Log.t</code></pre><div class="info ">
+Get a <code class="code"><span class="constructor">Log</span>.t</code> document describing an error.<br>
+</div>
+
+<pre><span id="VALglobal_debug_level"><span class="keyword">val</span> <a href="code_VALKetrew_database.global_debug_level.html">global_debug_level</a></span> : <code class="type">int Pervasives.ref</code></pre><div class="info ">
+Debug-logging level used in the module (default: 4).<br>
 </div>
 </body></html>

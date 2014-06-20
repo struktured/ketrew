@@ -135,9 +135,8 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_configuration</span>.(<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get_configuration&nbsp;?override_configuration&nbsp;default_configuration_path)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;configuration&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_state</span>.create&nbsp;?plugins&nbsp;configuration<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;state&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_user_command</span>.run_list&nbsp;~state&nbsp;todo_list<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_state</span>.with_state&nbsp;?plugins&nbsp;~configuration&nbsp;(<span class="keyword">fun</span>&nbsp;~state&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_user_command</span>.run_list&nbsp;~state&nbsp;todo_list)<br>
 &nbsp;&nbsp;)&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ok</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span><br>

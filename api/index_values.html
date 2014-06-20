@@ -90,11 +90,21 @@ Get all the paths of the given Volume (files and directories).
 Coerce a path to any kind of path (file or directory).
 </div>
 </td></tr>
+<tr><td><a href="Ketrew_state.html#VALarchive_target">archive_target</a> [<a href="Ketrew_state.html">Ketrew_state</a>]</td>
+<td><div class="info">
+Move a target to the “archived” list.
+</div>
+</td></tr>
 <tr><td align="left"><br>C</td></tr>
 <tr><td><a href="Ketrew_host.Error.html#VALclassify">classify</a> [<a href="Ketrew_host.Error.html">Ketrew_host.Error</a>]</td>
 <td><div class="info">
 Get a glance at the gravity of the situation:  <code class="code"><span class="keywordsign">`</span><span class="constructor">Unix</span></code>: a function of the kind <code class="code"><span class="constructor">Unix</span>.exec</code> failed., <code class="code"><span class="keywordsign">`</span><span class="constructor">Ssh</span></code>: SSH failed to run something but it does not mean that the
      actual command is wrong., <code class="code"><span class="keywordsign">`</span><span class="constructor">Execution</span></code>: SSH/<code class="code"><span class="constructor">Unix</span></code> succeeded but the command failed.
+</div>
+</td></tr>
+<tr><td><a href="Ketrew_database.html#VALclose">close</a> [<a href="Ketrew_database.html">Ketrew_database</a>]</td>
+<td><div class="info">
+Close the DB.
 </div>
 </td></tr>
 <tr><td><a href="Ketrew_path.html#VALconcat">concat</a> [<a href="Ketrew_path.html">Ketrew_path</a>]</td>
@@ -131,11 +141,6 @@ Create a new script, which will run the list of commands, and store state
 Create a “long-running” <a href="Ketrew_target.html#TYPEbuild_process"><code class="code"><span class="constructor">Ketrew_target</span>.build_process</code></a> to run a 
     <a href="Ketrew_program.html#TYPEt"><code class="code"><span class="constructor">Ketrew_program</span>.t</code></a> on a given LSF-enabled host (run parameters
     already serialized):  <code class="code">?queue</code> is the name of the LSF queue requested (<code class="code"><span class="string">"-q"</span></code> option). , <code class="code">?name</code> is the job name (<code class="code"><span class="string">"-J"</span></code> option). , <code class="code">?wall_limit</code> is the job's Wall-time timeout (<code class="code"><span class="string">"-W"</span></code> option). , <code class="code">?processors</code> is the “processors” request (<code class="code"><span class="string">"-n"</span></code> option). 
-</div>
-</td></tr>
-<tr><td><a href="Ketrew_state.html#VALcreate">create</a> [<a href="Ketrew_state.html">Ketrew_state</a>]</td>
-<td><div class="info">
-Initialize the state.
 </div>
 </td></tr>
 <tr><td><a href="Ketrew_configuration.html#VALcreate">create</a> [<a href="Ketrew_configuration.html">Ketrew_configuration</a>]</td>
@@ -344,6 +349,11 @@ Get the state description of a given target (by “id”).
 </td></tr>
 <tr><td><a href="Ketrew_pervasives.html#VALglobal_debug_level">global_debug_level</a> [<a href="Ketrew_pervasives.html">Ketrew_pervasives</a>]</td>
 <td></td></tr>
+<tr><td><a href="Ketrew_database.html#VALglobal_debug_level">global_debug_level</a> [<a href="Ketrew_database.html">Ketrew_database</a>]</td>
+<td><div class="info">
+Debug-logging level used in the module (default: 4).
+</div>
+</td></tr>
 <tr><td><a href="Ketrew_pervasives.html#VALglobal_with_color">global_with_color</a> [<a href="Ketrew_pervasives.html">Ketrew_pervasives</a>]</td>
 <td></td></tr>
 <tr><td align="left"><br>H</td></tr>
@@ -424,6 +434,16 @@ Create a <code class="code"><span class="constructor">Log</span>.t</code> docume
 </td></tr>
 <tr><td><a href="Ketrew_host.Error.html#VALlog">log</a> [<a href="Ketrew_host.Error.html">Ketrew_host.Error</a>]</td>
 <td></td></tr>
+<tr><td><a href="Ketrew_database.html#VALlog_action">log_action</a> [<a href="Ketrew_database.html">Ketrew_database</a>]</td>
+<td><div class="info">
+Get a <code class="code"><span class="constructor">Log</span>.t</code> document representing the <a href="Ketrew_database.html#TYPEaction"><code class="code"><span class="constructor">Ketrew_database</span>.action</code></a>.
+</div>
+</td></tr>
+<tr><td><a href="Ketrew_database.html#VALlog_error">log_error</a> [<a href="Ketrew_database.html">Ketrew_database</a>]</td>
+<td><div class="info">
+Get a <code class="code"><span class="constructor">Log</span>.t</code> document describing an error.
+</div>
+</td></tr>
 <tr><td><a href="Ketrew_monitored_script.html#VALlog_file">log_file</a> [<a href="Ketrew_monitored_script.html">Ketrew_monitored_script</a>]</td>
 <td><div class="info">
 Path to the log file of the script.
@@ -732,6 +752,11 @@ The artifact that is “never ready” (i.e.
 Alias for <code class="code"><span class="keywordsign">`</span><span class="constructor">Unit</span></code>.
 </div>
 </td></tr>
+<tr><td><a href="Ketrew_database.html#VALunset">unset</a> [<a href="Ketrew_database.html">Ketrew_database</a>]</td>
+<td><div class="info">
+An actions that removes a value from the DB.
+</div>
+</td></tr>
 <tr><td><a href="Ketrew_long_running.LONG_RUNNING.html#VALupdate">update</a> [<a href="Ketrew_long_running.LONG_RUNNING.html">Ketrew_long_running.LONG_RUNNING</a>]</td>
 <td><div class="info">
 Check and update the status of the long-running job.
@@ -758,6 +783,11 @@ Construct a “volume-specification” artifact type.
 <tr><td><a href="Ketrew_state.html#VALwhat_happened_to_string">what_happened_to_string</a> [<a href="Ketrew_state.html">Ketrew_state</a>]</td>
 <td><div class="info">
 Transform an item of the result of <a href="Ketrew_state.html#VALstep"><code class="code"><span class="constructor">Ketrew_state</span>.step</code></a> to a human-readable string.
+</div>
+</td></tr>
+<tr><td><a href="Ketrew_state.html#VALwith_state">with_state</a> [<a href="Ketrew_state.html">Ketrew_state</a>]</td>
+<td><div class="info">
+Create a <code class="code"><span class="constructor">State</span>.t</code>, run the function passed as argument, and properly dispose of it.
 </div>
 </td></tr>
 </table>

@@ -46,12 +46,11 @@
 <span class="keyword">module</span>&nbsp;<span class="constructor">Persistent_state</span>&nbsp;=&nbsp;<span class="keyword">struct</span><br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.persistent_state&nbsp;=&nbsp;{<br>
 &nbsp;&nbsp;&nbsp;&nbsp;current_targets:&nbsp;<span class="constructor">Target</span>.id&nbsp;list;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;keep&nbsp;db&nbsp;id&nbsp;of&nbsp;a&nbsp;list&nbsp;of&nbsp;all&nbsp;"archived"&nbsp;targets&nbsp;*)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;archived_targets:&nbsp;<span class="constructor">Target</span>.id&nbsp;list;<br>
 &nbsp;&nbsp;}<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;create&nbsp;()&nbsp;=&nbsp;{current_targets&nbsp;=&nbsp;[];}<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;create&nbsp;()&nbsp;=&nbsp;{current_targets&nbsp;=&nbsp;[];&nbsp;archived_targets&nbsp;=&nbsp;[]}<br>
 <br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;serialize&nbsp;t&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_gen_versioned_j</span>.string_of_persistent_state&nbsp;(<span class="keywordsign">`</span><span class="constructor">V0</span>&nbsp;t)<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;serialize&nbsp;t&nbsp;=&nbsp;<span class="constructor">Ketrew_gen_versioned_j</span>.string_of_persistent_state&nbsp;(<span class="keywordsign">`</span><span class="constructor">V0</span>&nbsp;t)<br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;deserialize&nbsp;s&nbsp;=&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;return&nbsp;(<br>
@@ -60,7 +59,11 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fail&nbsp;(<span class="keywordsign">`</span><span class="constructor">Persistent_state</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Deserilization</span>&nbsp;(<span class="constructor">Printexc</span>.to_string&nbsp;e)))<br>
 <br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;add&nbsp;t&nbsp;target&nbsp;=&nbsp;{&nbsp;current_targets&nbsp;=&nbsp;<span class="constructor">Target</span>.id&nbsp;target&nbsp;::&nbsp;t.current_targets&nbsp;}<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;add&nbsp;t&nbsp;target&nbsp;=&nbsp;{&nbsp;t&nbsp;<span class="keyword">with</span>&nbsp;current_targets&nbsp;=&nbsp;<span class="constructor">Target</span>.id&nbsp;target&nbsp;::&nbsp;t.current_targets&nbsp;}<br>
+<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;archive&nbsp;t&nbsp;target&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;current_targets&nbsp;=&nbsp;<span class="constructor">List</span>.filter&nbsp;t.current_targets&nbsp;(<span class="keyword">fun</span>&nbsp;i&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;i&nbsp;=&nbsp;target);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;archived_targets&nbsp;=&nbsp;target&nbsp;::&nbsp;t.archived_targets&nbsp;}<br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;current_targets&nbsp;t&nbsp;=&nbsp;t.current_targets<br>
 <span class="keyword">end</span><br>
@@ -77,6 +80,30 @@
 <span class="keyword">let</span>&nbsp;create&nbsp;?(plugins=default_plugins)&nbsp;configuration&nbsp;=<br>
 &nbsp;&nbsp;return&nbsp;{database_handle&nbsp;=&nbsp;<span class="constructor">None</span>;&nbsp;configuration;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;long_running_plugins&nbsp;=&nbsp;plugins}<br>
+<br>
+<span class="keyword">let</span>&nbsp;release&nbsp;t&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;t.database_handle&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Database</span>.close&nbsp;s<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;()<br>
+<br>
+<span class="keyword">let</span>&nbsp;with_state&nbsp;?plugins&nbsp;~configuration&nbsp;f&nbsp;=<br>
+&nbsp;&nbsp;create&nbsp;?plugins&nbsp;configuration<br>
+&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;state&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">try</span>&nbsp;f&nbsp;~state&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;release&nbsp;state<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;fail&nbsp;(<span class="keywordsign">`</span><span class="constructor">Failure</span>&nbsp;(fmt&nbsp;<span class="string">"with_state:&nbsp;client&nbsp;function&nbsp;threw&nbsp;exception:&nbsp;%s"</span>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Printexc</span>.to_string&nbsp;e)))<br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;&gt;&gt;&lt;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ok</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;release&nbsp;state<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;release&nbsp;state&nbsp;&gt;&gt;&lt;&nbsp;<span class="keyword">fun</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;fail&nbsp;e<br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+<br>
 <br>
 <span class="keyword">let</span>&nbsp;not_implemented&nbsp;msg&nbsp;=&nbsp;<br>
 &nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Going&nbsp;through&nbsp;not&nbsp;implemented&nbsp;stuff:&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;msg&nbsp;@&nbsp;verbose);<br>
@@ -131,13 +158,22 @@
 &nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;persistent&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;new_persistent&nbsp;=&nbsp;<span class="constructor">Persistent_state</span>.add&nbsp;persistent&nbsp;target&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;save_persistent&nbsp;t&nbsp;new_persistent<br>
-<span class="comment">(*&nbsp;TODO:&nbsp;remove&nbsp;target&nbsp;if&nbsp;this&nbsp;fails,&nbsp;or&nbsp;put&nbsp;in&nbsp;same&nbsp;transaction&nbsp;*)</span><br>
+<br>
 <br>
 <span class="keyword">let</span>&nbsp;get_target&nbsp;db&nbsp;id&nbsp;=<br>
 &nbsp;&nbsp;<span class="constructor">Database</span>.get&nbsp;db&nbsp;id<br>
 &nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">function</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;of_result&nbsp;(<span class="constructor">Target</span>.deserialize&nbsp;t)<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fail&nbsp;(<span class="keywordsign">`</span><span class="constructor">Missing_data</span>&nbsp;id)<br>
+<br>
+<span class="keyword">let</span>&nbsp;archive_target&nbsp;t&nbsp;target_id&nbsp;=<br>
+&nbsp;&nbsp;database&nbsp;t&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;db&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;get_target&nbsp;db&nbsp;target_id&nbsp;<span class="comment">(*&nbsp;Making&nbsp;sure&nbsp;that&nbsp;the&nbsp;id&nbsp;exists.&nbsp;*)</span><br>
+&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;(_&nbsp;:&nbsp;<span class="constructor">Target</span>.t)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;get_persistent&nbsp;t<br>
+&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;persistent&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;new_persistent&nbsp;=&nbsp;<span class="constructor">Persistent_state</span>.archive&nbsp;persistent&nbsp;target_id&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;save_persistent&nbsp;t&nbsp;new_persistent<br>
 <br>
 <span class="keyword">let</span>&nbsp;current_targets&nbsp;t&nbsp;=<br>
 &nbsp;&nbsp;database&nbsp;t&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;db&nbsp;<span class="keywordsign">-&gt;</span><br>
@@ -168,8 +204,11 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Dead</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;(<span class="keywordsign">`</span><span class="constructor">Die</span>&nbsp;dep)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Successful</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;<span class="keywordsign">`</span><span class="constructor">Go</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Missing_data</span>&nbsp;s)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Database</span>&nbsp;_&nbsp;<span class="keyword">as</span>&nbsp;e)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Missing_data</span>&nbsp;_&nbsp;<span class="keyword">as</span>&nbsp;e)&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;Dependency&nbsp;not-found&nbsp;=&gt;&nbsp;should&nbsp;get&nbsp;out&nbsp;of&nbsp;the&nbsp;way&nbsp;*)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Error&nbsp;while&nbsp;activating&nbsp;dependencies:&nbsp;"</span>&nbsp;%<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;(<span class="constructor">Ketrew_error</span>.to_string&nbsp;e)&nbsp;@&nbsp;error);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;(<span class="keywordsign">`</span><span class="constructor">Die</span>&nbsp;dep)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Target</span>&nbsp;_&nbsp;<span class="keyword">as</span>&nbsp;e)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fail&nbsp;e<br>
 &nbsp;&nbsp;&nbsp;&nbsp;)<br>

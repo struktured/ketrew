@@ -57,7 +57,7 @@
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;do_ssh&nbsp;ssh&nbsp;command&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[<span class="string">"ssh"</span>;&nbsp;!_configuration_ssh_batch_option]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;(<span class="keyword">match</span>&nbsp;ssh.port&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;p&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[<span class="string">"-p"</span>;&nbsp;<span class="string">"port"</span>]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;p&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[<span class="string">"-p"</span>;&nbsp;<span class="constructor">Int</span>.to_string&nbsp;p]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[])<br>
 &nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;(<span class="keyword">match</span>&nbsp;ssh.user&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[ssh.address]<br>

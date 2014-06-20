@@ -30,5 +30,7 @@
 </head>
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;get&nbsp;t&nbsp;~key&nbsp;=<br>
-&nbsp;&nbsp;<span class="constructor">List</span>.find_map&nbsp;t.db&nbsp;~f:(<span class="keyword">fun</span>&nbsp;(k,&nbsp;v)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">if</span>&nbsp;k&nbsp;=&nbsp;key&nbsp;<span class="keyword">then</span>&nbsp;<span class="constructor">Some</span>&nbsp;v&nbsp;<span class="keyword">else</span>&nbsp;<span class="constructor">None</span>)<br>
-&nbsp;&nbsp;|&gt;&nbsp;return</code></body></html>
+&nbsp;&nbsp;wrap_dbm_call&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;dbm_get&nbsp;t&nbsp;key)&nbsp;~error_location:(<span class="keywordsign">`</span><span class="constructor">Get</span>&nbsp;key)<br>
+&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;o&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"got&nbsp;"</span>&nbsp;%&nbsp;sf&nbsp;<span class="string">"%S"</span>&nbsp;key&nbsp;%&nbsp;s&nbsp;<span class="string">",&nbsp;"</span>&nbsp;%&nbsp;<span class="constructor">OCaml</span>.option&nbsp;s&nbsp;o&nbsp;&nbsp;@&nbsp;local_verbosity&nbsp;());<br>
+&nbsp;&nbsp;return&nbsp;o</code></body></html>

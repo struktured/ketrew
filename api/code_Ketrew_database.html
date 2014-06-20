@@ -32,71 +32,128 @@
 <code class="code"><br>
 <span class="keyword">open</span>&nbsp;<span class="constructor">Ketrew_pervasives</span><br>
 <br>
+<span class="keyword">let</span>&nbsp;global_debug_level&nbsp;=&nbsp;ref&nbsp;4<br>
+<span class="keyword">let</span>&nbsp;local_verbosity&nbsp;()&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">Debug</span>&nbsp;!global_debug_level<br>
+<br>
 <span class="keyword">type</span>&nbsp;action&nbsp;=<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Set</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;*&nbsp;string<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Unset</span>&nbsp;<span class="keyword">of</span>&nbsp;string<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Sequence</span>&nbsp;<span class="keyword">of</span>&nbsp;action&nbsp;list<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Check</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;*&nbsp;string&nbsp;option<br>
 <span class="keyword">let</span>&nbsp;set&nbsp;~key&nbsp;value&nbsp;=&nbsp;<span class="constructor">Set</span>&nbsp;(key,&nbsp;value)<br>
 <span class="keyword">let</span>&nbsp;seq&nbsp;l&nbsp;=&nbsp;<span class="constructor">Sequence</span>&nbsp;l<br>
 <span class="keyword">let</span>&nbsp;contains&nbsp;~key&nbsp;v&nbsp;=&nbsp;<span class="constructor">Check</span>&nbsp;(key,&nbsp;<span class="constructor">Some</span>&nbsp;v)&nbsp;<br>
 <span class="keyword">let</span>&nbsp;is_not_set&nbsp;key&nbsp;=&nbsp;<span class="constructor">Check</span>&nbsp;(key,&nbsp;<span class="constructor">None</span>)<br>
+<span class="keyword">let</span>&nbsp;unset&nbsp;key&nbsp;=&nbsp;<span class="constructor">Unset</span>&nbsp;key<br>
 <br>
-<span class="keyword">type</span>&nbsp;stupid_db&nbsp;=&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.stupid_db<br>
-<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.database&nbsp;=&nbsp;{<br>
-&nbsp;&nbsp;<span class="keyword">mutable</span>&nbsp;db:&nbsp;stupid_db;<br>
+<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;log_action&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">open</span>&nbsp;<span class="constructor">Log</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Set</span>&nbsp;(k,&nbsp;v)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;brakets(s&nbsp;<span class="string">"Set&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;k&nbsp;%&nbsp;sp&nbsp;%&nbsp;s&nbsp;v)<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Check</span>&nbsp;(k,&nbsp;vo)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;brakets(s&nbsp;<span class="string">"Check&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;k&nbsp;%&nbsp;sp&nbsp;%&nbsp;<span class="constructor">OCaml</span>.option&nbsp;s&nbsp;vo)<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Unset</span>&nbsp;k&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;brakets(s&nbsp;<span class="string">"Uet&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;k)<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Sequence</span>&nbsp;l&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">OCaml</span>.list&nbsp;log_action&nbsp;l<br>
+<br>
+<span class="keyword">type</span>&nbsp;error&nbsp;=<br>
+&nbsp;&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Act</span>&nbsp;<span class="keyword">of</span>&nbsp;action&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Get</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Load</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Close</span>&nbsp;]&nbsp;*&nbsp;string<br>
+<span class="keyword">let</span>&nbsp;log_error&nbsp;=&nbsp;<span class="keyword">function</span><br>
+<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Database</span>&nbsp;(what,&nbsp;msg)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Database"</span>&nbsp;%&nbsp;sp<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;parens&nbsp;(<span class="keyword">match</span>&nbsp;what&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Load</span>&nbsp;path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"Loading&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;path<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Get</span>&nbsp;k&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"Getting&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;k<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Act</span>&nbsp;a&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"Processing&nbsp;"</span>&nbsp;%&nbsp;log_action&nbsp;a<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Close</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"Closing"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;→&nbsp;"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;s&nbsp;msg)<br>
+<br>
+<span class="comment">(*&nbsp;type&nbsp;stupid_db&nbsp;=&nbsp;Ketrew_gen_base_v0_t.stupid_db&nbsp;*)</span><br>
+<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;{<br>
+&nbsp;&nbsp;<span class="keyword">mutable</span>&nbsp;db:&nbsp;<span class="constructor">Dbm</span>.t;<br>
 &nbsp;&nbsp;<span class="comment">(*&nbsp;mutable&nbsp;history:&nbsp;(action&nbsp;*&nbsp;stupid_db)&nbsp;list;&nbsp;*)</span><br>
 &nbsp;&nbsp;parameters:&nbsp;string;<br>
 }<br>
-<span class="keyword">let</span>&nbsp;create&nbsp;parameters&nbsp;=&nbsp;{db&nbsp;=&nbsp;[];&nbsp;parameters}&nbsp;<br>
+<span class="keyword">let</span>&nbsp;create&nbsp;db&nbsp;parameters&nbsp;=&nbsp;{db;&nbsp;parameters}&nbsp;<br>
 <br>
-<span class="keyword">let</span>&nbsp;save&nbsp;t&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;content&nbsp;=&nbsp;<span class="constructor">Ketrew_gen_base_v0_j</span>.string_of_database&nbsp;t&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">IO</span>.write_file&nbsp;t.parameters&nbsp;~content<br>
+<span class="comment">(*&nbsp;let&nbsp;save&nbsp;t&nbsp;=&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;let&nbsp;content&nbsp;=&nbsp;Ketrew_gen_base_v0_j.string_of_database&nbsp;t&nbsp;in&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;IO.write_file&nbsp;t.parameters&nbsp;~content&nbsp;*)</span><br>
+<br>
+<span class="keyword">exception</span>&nbsp;<span class="constructor">In_thread_exception</span>&nbsp;<span class="keyword">of</span>&nbsp;string<br>
+<span class="keyword">let</span>&nbsp;failwithf&nbsp;fmt&nbsp;=&nbsp;<span class="constructor">Printf</span>.ksprintf&nbsp;(<span class="keyword">fun</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;raise&nbsp;(<span class="constructor">In_thread_exception</span>&nbsp;s))&nbsp;fmt<br>
+<br>
+<span class="keyword">let</span>&nbsp;wrap_dbm_call&nbsp;~error_location&nbsp;f&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">Lwt_preemptive</span>.detach&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">Ok</span>&nbsp;(f&nbsp;())<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Dbm</span>.<span class="constructor">Dbm_error</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Database</span>&nbsp;(error_location,&nbsp;s))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">In_thread_exception</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Database</span>&nbsp;(error_location,&nbsp;s))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;)&nbsp;()<br>
+&nbsp;&nbsp;&gt;&gt;&lt;&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ok</span>&nbsp;o&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;o<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Database</span>&nbsp;_&nbsp;<span class="keyword">as</span>&nbsp;e)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fail&nbsp;e<br>
 <br>
 <span class="keyword">let</span>&nbsp;load&nbsp;path&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="constructor">System</span>.file_info&nbsp;~follow_symlink:<span class="keyword">true</span>&nbsp;path<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">function</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Regular_file</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Loading&nbsp;database&nbsp;at&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;path&nbsp;@&nbsp;very_verbose);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">IO</span>.read_file&nbsp;path<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;content&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">try</span>&nbsp;return&nbsp;(<span class="constructor">Ketrew_gen_base_v0_j</span>.database_of_string&nbsp;content)&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fail&nbsp;(<span class="keywordsign">`</span><span class="constructor">Database</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Load</span>,&nbsp;path))<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Creating&nbsp;new&nbsp;database&nbsp;at&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;path&nbsp;@&nbsp;very_verbose);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;db&nbsp;=&nbsp;create&nbsp;path&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;save&nbsp;db&nbsp;<span class="comment">(*&nbsp;should&nbsp;create&nbsp;+&nbsp;save&nbsp;be&nbsp;in&nbsp;`Database`?&nbsp;*)</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;db<br>
-&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;wrap_dbm_call&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Dbm</span>.opendbm&nbsp;path&nbsp;[<span class="constructor">Dbm</span>.<span class="constructor">Dbm_rdwr</span>;&nbsp;<span class="constructor">Dbm</span>.<span class="constructor">Dbm_create</span>]&nbsp;0o600)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~error_location:(<span class="keywordsign">`</span><span class="constructor">Load</span>&nbsp;path)<br>
+&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;db&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;return&nbsp;(create&nbsp;db&nbsp;path)<br>
+<br>
+<span class="keyword">let</span>&nbsp;close&nbsp;t&nbsp;=<br>
+&nbsp;&nbsp;wrap_dbm_call&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Dbm</span>.close&nbsp;t.db)&nbsp;~error_location:(<span class="keywordsign">`</span><span class="constructor">Close</span>)<br>
+<br>
+<span class="keyword">let</span>&nbsp;dbm_get&nbsp;t&nbsp;key&nbsp;=&nbsp;<span class="keyword">try</span>&nbsp;<span class="constructor">Some</span>&nbsp;(<span class="constructor">Dbm</span>.find&nbsp;t.db&nbsp;key)&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">Not_found</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;&nbsp;<span class="constructor">None</span><br>
 <br>
 <span class="keyword">let</span>&nbsp;get&nbsp;t&nbsp;~key&nbsp;=<br>
-&nbsp;&nbsp;<span class="constructor">List</span>.find_map&nbsp;t.db&nbsp;~f:(<span class="keyword">fun</span>&nbsp;(k,&nbsp;v)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">if</span>&nbsp;k&nbsp;=&nbsp;key&nbsp;<span class="keyword">then</span>&nbsp;<span class="constructor">Some</span>&nbsp;v&nbsp;<span class="keyword">else</span>&nbsp;<span class="constructor">None</span>)<br>
-&nbsp;&nbsp;|&gt;&nbsp;return<br>
-<span class="keyword">let</span>&nbsp;act&nbsp;t&nbsp;~action&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;current&nbsp;=&nbsp;ref&nbsp;t.db&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;go&nbsp;=&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;wrap_dbm_call&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;dbm_get&nbsp;t&nbsp;key)&nbsp;~error_location:(<span class="keywordsign">`</span><span class="constructor">Get</span>&nbsp;key)<br>
+&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;o&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"got&nbsp;"</span>&nbsp;%&nbsp;sf&nbsp;<span class="string">"%S"</span>&nbsp;key&nbsp;%&nbsp;s&nbsp;<span class="string">",&nbsp;"</span>&nbsp;%&nbsp;<span class="constructor">OCaml</span>.option&nbsp;s&nbsp;o&nbsp;&nbsp;@&nbsp;local_verbosity&nbsp;());<br>
+&nbsp;&nbsp;return&nbsp;o<br>
+<br>
+<span class="comment">(*&nbsp;Sqlite3&nbsp;does&nbsp;not&nbsp;work&nbsp;on&nbsp;Maxosx,&nbsp;Dbm&nbsp;does&nbsp;not&nbsp;have&nbsp;transactions,<br>
+&nbsp;&nbsp;&nbsp;so&nbsp;here&nbsp;is&nbsp;a&nbsp;non-ACID&nbsp;transaction&nbsp;implementation.&nbsp;*)</span><br>
+<span class="keyword">let</span>&nbsp;act_thread&nbsp;t&nbsp;~action&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">open</span>&nbsp;<span class="constructor">Result</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;go_backwards&nbsp;=&nbsp;ref&nbsp;[]&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;go&nbsp;act&nbsp;=&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"DB:&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;<span class="string">"go&nbsp;"</span>&nbsp;%&nbsp;log_action&nbsp;act&nbsp;@&nbsp;local_verbosity&nbsp;());<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;act&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Set</span>&nbsp;(key,&nbsp;value)&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;current&nbsp;:=&nbsp;(key,&nbsp;value)&nbsp;::&nbsp;!current;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;previous&nbsp;=&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;dbm_get&nbsp;t&nbsp;key&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Unset</span>&nbsp;key<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Set</span>&nbsp;(key,&nbsp;s)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Dbm</span>.replace&nbsp;t.db&nbsp;key&nbsp;value;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;go_backwards&nbsp;:=&nbsp;&nbsp;previous&nbsp;::&nbsp;!go_backwards;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"success:&nbsp;"</span>&nbsp;%&nbsp;log_action&nbsp;act&nbsp;@&nbsp;local_verbosity&nbsp;());<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">true</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Check</span>&nbsp;(key,&nbsp;value)&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">List</span>.find&nbsp;!current&nbsp;(<span class="keyword">fun</span>&nbsp;(k,&nbsp;v)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;key&nbsp;=&nbsp;k)&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;(k,&nbsp;v)&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Some</span>&nbsp;v&nbsp;=&nbsp;value&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">true</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keyword">when</span>&nbsp;value&nbsp;=&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">true</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">false</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Unset</span>&nbsp;key&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">match</span>&nbsp;dbm_get&nbsp;t&nbsp;key&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">true</span>&nbsp;<span class="comment">(*&nbsp;nothing&nbsp;to&nbsp;do&nbsp;*)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Dbm</span>.remove&nbsp;t.db&nbsp;key;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;go_backwards&nbsp;:=&nbsp;<span class="constructor">Set</span>&nbsp;(key,&nbsp;s)&nbsp;::&nbsp;!go_backwards;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">true</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Sequence</span>&nbsp;actions&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.for_all&nbsp;actions&nbsp;go<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Check</span>&nbsp;(key,&nbsp;value)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;indb&nbsp;=&nbsp;dbm_get&nbsp;t&nbsp;key&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;indb&nbsp;=&nbsp;value&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Sequence</span>&nbsp;actions&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">List</span>.for_all&nbsp;actions&nbsp;go<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">if</span>&nbsp;go&nbsp;action&nbsp;<br>
-&nbsp;&nbsp;<span class="keyword">then</span>&nbsp;<span class="keyword">begin</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;t.db&nbsp;&lt;-&nbsp;!current;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;save&nbsp;t&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;<span class="keywordsign">`</span><span class="constructor">Done</span><br>
-&nbsp;&nbsp;<span class="keyword">end</span><br>
-&nbsp;&nbsp;<span class="keyword">else</span>&nbsp;return&nbsp;<span class="keywordsign">`</span><span class="constructor">Not_done</span><br>
+&nbsp;&nbsp;<span class="keyword">then</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Done</span><br>
+&nbsp;&nbsp;<span class="keyword">else</span>&nbsp;(<span class="keyword">if</span>&nbsp;go&nbsp;(<span class="constructor">Sequence</span>&nbsp;!go_backwards)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">then</span>&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">Not_done</span>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwithf&nbsp;<span class="string">"fatal:&nbsp;transaction&nbsp;failed&nbsp;to&nbsp;go&nbsp;back"</span>)<br>
 <br>
+<span class="keyword">let</span>&nbsp;act&nbsp;t&nbsp;~action&nbsp;=<br>
+&nbsp;&nbsp;wrap_dbm_call&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;act_thread&nbsp;t&nbsp;~action)&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~error_location:(<span class="keywordsign">`</span><span class="constructor">Act</span>&nbsp;action)<br>
 <br>
 </code></body></html>

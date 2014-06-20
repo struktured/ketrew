@@ -26,12 +26,7 @@
 <link title="Ketrew_state" rel="Chapter" href="Ketrew_state.html">
 <link title="Ketrew_target" rel="Chapter" href="Ketrew_target.html">
 <link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html">
-<link title="Ketrew_user_command" rel="Chapter" href="Ketrew_user_command.html"><title>Ketrew API : Ketrew_database.load</title>
+<link title="Ketrew_user_command" rel="Chapter" href="Ketrew_user_command.html"><title>Ketrew API : Ketrew_database.unset</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;load&nbsp;path&nbsp;=<br>
-&nbsp;&nbsp;wrap_dbm_call&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Dbm</span>.opendbm&nbsp;path&nbsp;[<span class="constructor">Dbm</span>.<span class="constructor">Dbm_rdwr</span>;&nbsp;<span class="constructor">Dbm</span>.<span class="constructor">Dbm_create</span>]&nbsp;0o600)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;~error_location:(<span class="keywordsign">`</span><span class="constructor">Load</span>&nbsp;path)<br>
-&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;db&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;return&nbsp;(create&nbsp;db&nbsp;path)</code></body></html>
+<code class="code"><span class="keyword">let</span>&nbsp;unset&nbsp;key&nbsp;=&nbsp;<span class="constructor">Unset</span>&nbsp;key</code></body></html>

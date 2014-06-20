@@ -54,7 +54,7 @@ A user-todo-item, is either asking Ketrew to fail with a message, or
 Convert a command into a <code class="code"><span class="constructor">Log</span>.t</code> document.<br>
 </div>
 
-<pre><span id="VALrun_list"><span class="keyword">val</span> <a href="code_VALKetrew_user_command.run_list.html">run_list</a></span> : <code class="type">state:<a href="Ketrew_state.html#TYPEt">Ketrew_state.t</a> -><br>       <a href="Ketrew_user_command.html#TYPEt">t</a> list -><br>       (unit,<br>        [> `Database of [> `Load ] * string<br>         | `Database_unavailable of <a href="Ketrew_target.html#TYPEid">Ketrew_target.id</a><br>         | `Failure of string<br>         | `IO of<br>             [> `Read_file_exn of string * exn | `Write_file_exn of string * exn ]<br>         | `Persistent_state of [> `Deserilization of string ]<br>         | `System of [> `File_info of string ] * [> `Exn of exn ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+<pre><span id="VALrun_list"><span class="keyword">val</span> <a href="code_VALKetrew_user_command.run_list.html">run_list</a></span> : <code class="type">state:<a href="Ketrew_state.html#TYPEt">Ketrew_state.t</a> -><br>       <a href="Ketrew_user_command.html#TYPEt">t</a> list -><br>       (unit,<br>        [> `Database of <a href="Ketrew_database.html#TYPEerror">Ketrew_database.error</a><br>         | `Database_unavailable of <a href="Ketrew_target.html#TYPEid">Ketrew_target.id</a><br>         | `Failure of string<br>         | `Persistent_state of [> `Deserilization of string ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
 Run a todo-list with the given <code class="code">state</code> instance.<br>
 </div>
 </body></html>

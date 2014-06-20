@@ -73,20 +73,15 @@
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;value_type&nbsp;=&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Number</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">String</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Unit</span>&nbsp;]<br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;unique_id&nbsp;=&nbsp;string<br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;time&nbsp;=&nbsp;float<br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;stupid_db&nbsp;=&nbsp;(string&nbsp;*&nbsp;string)&nbsp;list<br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;persistent_state&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.persistent_state&nbsp;=&nbsp;{<br>
 &nbsp;&nbsp;&nbsp;&nbsp;current_targets&nbsp;:&nbsp;unique_id&nbsp;list;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;archived_targets&nbsp;:&nbsp;unique_id&nbsp;list;<br>
 &nbsp;&nbsp;}<br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;monitored_script&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.monitored_script&nbsp;=&nbsp;{<br>
 &nbsp;&nbsp;&nbsp;&nbsp;playground&nbsp;:&nbsp;path;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;program&nbsp;:&nbsp;program;<br>
-&nbsp;&nbsp;}<br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;database&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.database&nbsp;=&nbsp;{<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">mutable</span>&nbsp;db&nbsp;:&nbsp;stupid_db;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;parameters&nbsp;:&nbsp;string;<br>
 &nbsp;&nbsp;}<br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;artifact_value&nbsp;=&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Number</span>&nbsp;<span class="keyword">of</span>&nbsp;float&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">String</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Unit</span>&nbsp;]<br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;artifact_type&nbsp;=&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Value</span>&nbsp;<span class="keyword">of</span>&nbsp;value_type&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Volume</span>&nbsp;<span class="keyword">of</span>&nbsp;volume&nbsp;]<br>
