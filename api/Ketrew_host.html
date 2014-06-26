@@ -17,6 +17,7 @@
 <link title="Ketrew_artifact" rel="Chapter" href="Ketrew_artifact.html">
 <link title="Ketrew_command_line" rel="Chapter" href="Ketrew_command_line.html">
 <link title="Ketrew_configuration" rel="Chapter" href="Ketrew_configuration.html">
+<link title="Ketrew_daemonize" rel="Chapter" href="Ketrew_daemonize.html">
 <link title="Ketrew_database" rel="Chapter" href="Ketrew_database.html">
 <link title="Ketrew_edsl" rel="Chapter" href="Ketrew_edsl.html">
 <link title="Ketrew_error" rel="Chapter" href="Ketrew_error.html">
@@ -24,7 +25,6 @@
 <link title="Ketrew_long_running" rel="Chapter" href="Ketrew_long_running.html">
 <link title="Ketrew_lsf" rel="Chapter" href="Ketrew_lsf.html">
 <link title="Ketrew_monitored_script" rel="Chapter" href="Ketrew_monitored_script.html">
-<link title="Ketrew_nohup_setsid" rel="Chapter" href="Ketrew_nohup_setsid.html">
 <link title="Ketrew_path" rel="Chapter" href="Ketrew_path.html">
 <link title="Ketrew_pervasives" rel="Chapter" href="Ketrew_pervasives.html">
 <link title="Ketrew_program" rel="Chapter" href="Ketrew_program.html">
@@ -108,8 +108,12 @@ Parse an <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC-3986</a>-compliant
   string into a host, see <a href="Ketrew_host.html#VALof_uri"><code class="code"><span class="constructor">Ketrew_host</span>.of_uri</code></a>.<br>
 </div>
 
+<pre><span id="VALto_uri"><span class="keyword">val</span> <a href="code_VALKetrew_host.to_uri.html">to_uri</a></span> : <code class="type"><a href="Ketrew_host.html#TYPEt">t</a> -> Uri.t</code></pre><div class="info ">
+Convert a <code class="code"><span class="constructor">Host</span>.t</code> to an URI representing it.<br>
+</div>
+
 <pre><span id="VALto_string_hum"><span class="keyword">val</span> <a href="code_VALKetrew_host.to_string_hum.html">to_string_hum</a></span> : <code class="type"><a href="Ketrew_host.html#TYPEt">t</a> -> string</code></pre><div class="info ">
-Get a display-friendly string for the host (“name”, or hostname).<br>
+Get a display-friendly string for the host.<br>
 </div>
 
 <pre><span id="VALlog"><span class="keyword">val</span> <a href="code_VALKetrew_host.log.html">log</a></span> : <code class="type"><a href="Ketrew_host.html#TYPEt">t</a> -> Ketrew_pervasives.Log.t</code></pre><div class="info ">
@@ -166,5 +170,10 @@ Write a file on the host at <code class="code">path</code> containing <code clas
 
 <pre><span id="VALget_file"><span class="keyword">val</span> <a href="code_VALKetrew_host.get_file.html">get_file</a></span> : <code class="type"><a href="Ketrew_host.html#TYPEt">t</a> -><br>       path:< kind : <a href="Ketrew_path.html#TYPEfile">Ketrew_path.file</a>; relativity : 'a > <a href="Ketrew_path.html#TYPEt">Ketrew_path.t</a> -><br>       (string,<br>        [> `Cannot_read_file of string * string<br>         | `IO of [> `Read_file_exn of Ketrew_pervasives.IO.path * exn ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
 Read the file from the host at <code class="code">path</code>.<br>
+</div>
+
+<pre><span id="VALgrab_file_or_log"><span class="keyword">val</span> <a href="code_VALKetrew_host.grab_file_or_log.html">grab_file_or_log</a></span> : <code class="type"><a href="Ketrew_host.html#TYPEt">t</a> -><br>       < kind : <a href="Ketrew_path.html#TYPEfile">Ketrew_path.file</a>; relativity : 'a > <a href="Ketrew_path.html#TYPEt">Ketrew_path.t</a> -><br>       (string, Ketrew_pervasives.Log.t) Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+Weakly typed version of <a href="Ketrew_host.html#VALget_file"><code class="code"><span class="constructor">Ketrew_host</span>.get_file</code></a>, it fails with a <code class="code"><span class="constructor">Log</span>.t</code>
+    (for use in “long-running” plugins).<br>
 </div>
 </body></html>

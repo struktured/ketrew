@@ -5,7 +5,7 @@
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
 <link rel="Start" href="index.html">
 <link rel="previous" href="Ketrew_command_line.html">
-<link rel="next" href="Ketrew_database.html">
+<link rel="next" href="Ketrew_daemonize.html">
 <link rel="Up" href="index.html">
 <link title="Index of types" rel=Appendix href="index_types.html">
 <link title="Index of values" rel=Appendix href="index_values.html">
@@ -17,6 +17,7 @@
 <link title="Ketrew_artifact" rel="Chapter" href="Ketrew_artifact.html">
 <link title="Ketrew_command_line" rel="Chapter" href="Ketrew_command_line.html">
 <link title="Ketrew_configuration" rel="Chapter" href="Ketrew_configuration.html">
+<link title="Ketrew_daemonize" rel="Chapter" href="Ketrew_daemonize.html">
 <link title="Ketrew_database" rel="Chapter" href="Ketrew_database.html">
 <link title="Ketrew_edsl" rel="Chapter" href="Ketrew_edsl.html">
 <link title="Ketrew_error" rel="Chapter" href="Ketrew_error.html">
@@ -24,7 +25,6 @@
 <link title="Ketrew_long_running" rel="Chapter" href="Ketrew_long_running.html">
 <link title="Ketrew_lsf" rel="Chapter" href="Ketrew_lsf.html">
 <link title="Ketrew_monitored_script" rel="Chapter" href="Ketrew_monitored_script.html">
-<link title="Ketrew_nohup_setsid" rel="Chapter" href="Ketrew_nohup_setsid.html">
 <link title="Ketrew_path" rel="Chapter" href="Ketrew_path.html">
 <link title="Ketrew_pervasives" rel="Chapter" href="Ketrew_pervasives.html">
 <link title="Ketrew_program" rel="Chapter" href="Ketrew_program.html">
@@ -36,7 +36,7 @@
 <body>
 <div class="navbar"><a class="pre" href="Ketrew_command_line.html" title="Ketrew_command_line">Previous</a>
 &nbsp;<a class="up" href="index.html" title="Index">Up</a>
-&nbsp;<a class="post" href="Ketrew_database.html" title="Ketrew_database">Next</a>
+&nbsp;<a class="post" href="Ketrew_daemonize.html" title="Ketrew_daemonize">Next</a>
 </div>
 <h1>Module <a href="type_Ketrew_configuration.html">Ketrew_configuration</a> (<a href="code_Ketrew_configuration.html">.ml</a>)</h1>
 
@@ -52,7 +52,7 @@ The contents of the configuration.<br>
 </div>
 
 
-<pre><span id="VALcreate"><span class="keyword">val</span> <a href="code_VALKetrew_configuration.create.html">create</a></span> : <code class="type">?turn_unix_ssh_failure_into_target_failure:bool -><br>       ?persistent_state_key:string -><br>       database_parameters:string -> unit -> <a href="Ketrew_configuration.html#TYPEt">t</a></code></pre><div class="info ">
+<pre><span id="VALcreate"><span class="keyword">val</span> <a href="code_VALKetrew_configuration.create.html">create</a></span> : <code class="type">?debug_level:int -><br>       ?with_color:bool -><br>       ?turn_unix_ssh_failure_into_target_failure:bool -><br>       ?persistent_state_key:string -><br>       database_parameters:string -> unit -> <a href="Ketrew_configuration.html#TYPEt">t</a></code></pre><div class="info ">
 Create a configuration, <code class="code">persistent_state_key</code> is the “key” of the
     state storage in the database, <code class="code">database_parameters</code> are used to call
     <a href="Ketrew_database.html#VALload"><code class="code"><span class="constructor">Ketrew_database</span>.load</code></a>.
@@ -90,8 +90,17 @@ Should we kill targets on ssh/unix errors.<br>
 Parse the contents of a configuration file.<br>
 </div>
 
-<pre><span id="VALget_configuration"><span class="keyword">val</span> <a href="code_VALKetrew_configuration.get_configuration.html">get_configuration</a></span> : <code class="type">?override_configuration:<a href="Ketrew_configuration.html#TYPEt">t</a> -><br>       string -><br>       (<a href="Ketrew_configuration.html#TYPEt">t</a>,<br>        [> `Configuration of [> `Parsing of string ]<br>         | `IO of [> `Read_file_exn of string * exn ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+<pre><span id="VALapply_globals"><span class="keyword">val</span> <a href="code_VALKetrew_configuration.apply_globals.html">apply_globals</a></span> : <code class="type"><a href="Ketrew_configuration.html#TYPEt">t</a> -> unit</code></pre><div class="info ">
+Apply options that have global impact (debug levels/colors).<br>
+</div>
+
+<pre><span id="VALget_configuration"><span class="keyword">val</span> <a href="code_VALKetrew_configuration.get_configuration.html">get_configuration</a></span> : <code class="type">?and_apply:bool -><br>       ?override_configuration:<a href="Ketrew_configuration.html#TYPEt">t</a> -><br>       string -><br>       (<a href="Ketrew_configuration.html#TYPEt">t</a>,<br>        [> `Configuration of [> `Parsing of string ]<br>         | `IO of [> `Read_file_exn of string * exn ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
 The call <code class="code">get_configuration file</code> reads and parses the file <code class="code">f</code>, unless
-    <code class="code">override_configuration</code> is provided.<br>
+    <code class="code">override_configuration</code> is provided.
+    if <code class="code">and_apply</code> is <code class="code"><span class="keyword">true</span></code> (the default), then <a href="Ketrew_configuration.html#VALapply_globals"><code class="code"><span class="constructor">Ketrew_configuration</span>.apply_globals</code></a> is called.<br>
+</div>
+
+<pre><span id="VALlog"><span class="keyword">val</span> <a href="code_VALKetrew_configuration.log.html">log</a></span> : <code class="type"><a href="Ketrew_configuration.html#TYPEt">t</a> -> Ketrew_pervasives.Log.t list</code></pre><div class="info ">
+Get a display-friendly list of configuration items.<br>
 </div>
 </body></html>
