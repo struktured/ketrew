@@ -127,6 +127,11 @@ Get the list of targets that have been archived.
 Call a query on a target.
 </div>
 </td></tr>
+<tr><td><a href="Ketrew_edsl.Program.html#VALchain">chain</a> [<a href="Ketrew_edsl.Program.html">Ketrew_edsl.Program</a>]</td>
+<td><div class="info">
+Chain a list of programs like with <code class="code"><span class="keywordsign">&amp;&amp;</span></code>.
+</div>
+</td></tr>
 <tr><td><a href="Ketrew_host.Error.html#VALclassify">classify</a> [<a href="Ketrew_host.Error.html">Ketrew_host.Error</a>]</td>
 <td><div class="info">
 Get a glance at the gravity of the situation:  <code class="code"><span class="keywordsign">`</span><span class="constructor">Unix</span></code>: a function of the kind <code class="code"><span class="constructor">Unix</span>.exec</code> failed., <code class="code"><span class="keywordsign">`</span><span class="constructor">Ssh</span></code>: SSH failed to run something but it does not mean that the
@@ -154,6 +159,15 @@ Configure global “Batch option”,
 <td><div class="info">
 An action that checks that the <code class="code">key</code> is set in the DB and has the given
     value.
+</div>
+</td></tr>
+<tr><td><a href="Ketrew_edsl.Program.html#VALcopy_files">copy_files</a> [<a href="Ketrew_edsl.Program.html">Ketrew_edsl.Program</a>]</td>
+<td><div class="info">
+The call 
+      <code class="code">copy_files ~source:(host, files) ~dest:(dest_host, dest_path) ~f</code>
+      calls <code class="code">f</code> with a program and (potential) host to run a copy 
+      (involving <code class="code"><span class="string">"cp"</span></code> or <code class="code"><span class="string">"scp"</span></code> depending on the source and destination
+      hosts.
 </div>
 </td></tr>
 <tr><td><a href="Ketrew_pervasives.Unique_id.html#VALcreate">create</a> [<a href="Ketrew_pervasives.Unique_id.html">Ketrew_pervasives.Unique_id</a>]</td>
@@ -706,6 +720,17 @@ Run a shell command on the host (succeeds <i>iff </i> the exit status is <code c
 <tr><td><a href="Ketrew_target.Is.html#VALrunning">running</a> [<a href="Ketrew_target.Is.html">Ketrew_target.Is</a>]</td>
 <td></td></tr>
 <tr><td align="left"><br>S</td></tr>
+<tr><td><a href="Ketrew_host.Ssh.html#VALscp_pull">scp_pull</a> [<a href="Ketrew_host.Ssh.html">Ketrew_host.Ssh</a>]</td>
+<td><div class="info">
+Generate an SCP command for the given host as source.
+</div>
+</td></tr>
+<tr><td><a href="Ketrew_host.Ssh.html#VALscp_push">scp_push</a> [<a href="Ketrew_host.Ssh.html">Ketrew_host.Ssh</a>]</td>
+<td><div class="info">
+Generate an SCP command for the given host with the destination
+      directory or file path.
+</div>
+</td></tr>
 <tr><td><a href="Ketrew_database.html#VALseq">seq</a> [<a href="Ketrew_database.html">Ketrew_database</a>]</td>
 <td><div class="info">
 Put a sequence of actions into a transaction.

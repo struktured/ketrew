@@ -55,12 +55,31 @@ Create a program that runs a shell command.<br>
 Printf-like function to create shell commands.<br>
 </div>
 
+<pre><span id="VALexec"><span class="keyword">val</span> <a href="code_VALKetrew_edsl.Program.exec.html">exec</a></span> : <code class="type">string list -> <a href="Ketrew_edsl.Program.html#TYPEt">t</a></code></pre><div class="info ">
+Create a program that run in <code class="code"><span class="constructor">Unix</span>.exec</code> mode (i.e. does not need shell
+      escaping).<br>
+</div>
+
 <pre><span id="VAL(&&)"><span class="keyword">val</span> <a href="code_VALKetrew_edsl.Program.(_amp__amp_).html">(&amp;&amp;)</a></span> : <code class="type"><a href="Ketrew_edsl.Program.html#TYPEt">t</a> -> <a href="Ketrew_edsl.Program.html#TYPEt">t</a> -> <a href="Ketrew_edsl.Program.html#TYPEt">t</a></code></pre><div class="info ">
 <code class="code">a <span class="keywordsign">&amp;&amp;</span> b</code> is a program than runs <code class="code">a</code> then <code class="code">b</code> iff <code class="code">a</code> succeeded.<br>
 </div>
 
-<pre><span id="VALexec"><span class="keyword">val</span> <a href="code_VALKetrew_edsl.Program.exec.html">exec</a></span> : <code class="type">string list -> <a href="Ketrew_edsl.Program.html#TYPEt">t</a></code></pre><div class="info ">
-Create a program that run in <code class="code"><span class="constructor">Unix</span>.exec</code> mode (i.e. does not need shell
-      escaping).<br>
+<pre><span id="VALchain"><span class="keyword">val</span> <a href="code_VALKetrew_edsl.Program.chain.html">chain</a></span> : <code class="type"><a href="Ketrew_edsl.Program.html#TYPEt">t</a> list -> <a href="Ketrew_edsl.Program.html#TYPEt">t</a></code></pre><div class="info ">
+Chain a list of programs like with <code class="code"><span class="keywordsign">&amp;&amp;</span></code>.<br>
+</div>
+
+<pre><span id="VALcopy_files"><span class="keyword">val</span> <a href="code_VALKetrew_edsl.Program.copy_files.html">copy_files</a></span> : <code class="type">source:<a href="Ketrew_host.html#TYPEt">Ketrew_host.t</a> * string list -><br>       destination:<a href="Ketrew_host.html#TYPEt">Ketrew_host.t</a> * string -><br>       f:(?host:<a href="Ketrew_host.html#TYPEt">Ketrew_host.t</a> -> <a href="Ketrew_edsl.Program.html#TYPEt">t</a> -> 'a) -> 'a</code></pre><div class="info ">
+The call 
+      <code class="code">copy_files ~source:(host, files) ~dest:(dest_host, dest_path) ~f</code>
+      calls <code class="code">f</code> with a program and (potential) host to run a copy 
+      (involving <code class="code"><span class="string">"cp"</span></code> or <code class="code"><span class="string">"scp"</span></code> depending on the source and destination
+      hosts.
+<p>
+
+      If both source and destination are SSH-based hosts, <code class="code">copy_files</code>
+      will try its best, but it's difficult to ensure the correctness
+      of such a command (Ketrew does not know which kind of ssh client is
+      installed on the source host, and the destination host could not be
+      reachable with the same parameters from there).<br>
 </div>
 </body></html>

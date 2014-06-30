@@ -43,6 +43,12 @@ Definitions specific to “SSH” hosts (see <code class="code">connection</code
 </div>
 <hr width="100%">
 
+<pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = <code class="type">Ketrew_gen_base_v0_t.ssh_host</code> </pre>
+<div class="info ">
+The type of SSH-based hosts.<br>
+</div>
+
+
 <pre><span id="VALconfigure_ssh_batch_option"><span class="keyword">val</span> <a href="code_VALKetrew_host.Ssh.configure_ssh_batch_option.html">configure_ssh_batch_option</a></span> : <code class="type">[ `Custom of string | `Dropbear | `Openssh ] -> unit</code></pre><div class="info ">
 Configure global “Batch option”,
       (call <code class="code">ssh</code> without password/question):
@@ -51,5 +57,14 @@ Configure global “Batch option”,
 <li>for DropBear, it is <code class="code"><span class="string">"-s"</span></code>.  </li>
 </ul>
 <br>
+</div>
+
+<pre><span id="VALscp_push"><span class="keyword">val</span> <a href="code_VALKetrew_host.Ssh.scp_push.html">scp_push</a></span> : <code class="type"><a href="Ketrew_host.Ssh.html#TYPEt">t</a> -> src:string list -> dest:string -> string list</code></pre><div class="info ">
+Generate an SCP command for the given host with the destination
+      directory or file path.<br>
+</div>
+
+<pre><span id="VALscp_pull"><span class="keyword">val</span> <a href="code_VALKetrew_host.Ssh.scp_pull.html">scp_pull</a></span> : <code class="type"><a href="Ketrew_host.Ssh.html#TYPEt">t</a> -> src:string list -> dest:string -> string list</code></pre><div class="info ">
+Generate an SCP command for the given host as source.<br>
 </div>
 </body></html>

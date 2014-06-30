@@ -34,7 +34,12 @@
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sh&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_edsl</span>.<span class="constructor">Program</span>.t<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;shf&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;(<span class="keywordsign">'</span>a,&nbsp;unit,&nbsp;string,&nbsp;<span class="constructor">Ketrew_edsl</span>.<span class="constructor">Program</span>.t)&nbsp;<span class="constructor">Pervasives</span>.format4&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;exec&nbsp;:&nbsp;string&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_edsl</span>.<span class="constructor">Program</span>.t<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;(&nbsp;<span class="keywordsign">&amp;&amp;</span>&nbsp;)&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_edsl</span>.<span class="constructor">Program</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_edsl</span>.<span class="constructor">Program</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_edsl</span>.<span class="constructor">Program</span>.t<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;exec&nbsp;:&nbsp;string&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_edsl</span>.<span class="constructor">Program</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;chain&nbsp;:&nbsp;<span class="constructor">Ketrew_edsl</span>.<span class="constructor">Program</span>.t&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_edsl</span>.<span class="constructor">Program</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;copy_files&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;source:<span class="constructor">Ketrew_host</span>.t&nbsp;*&nbsp;string&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;destination:<span class="constructor">Ketrew_host</span>.t&nbsp;*&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;f:(?host:<span class="constructor">Ketrew_host</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_edsl</span>.<span class="constructor">Program</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a<br>
 <span class="keyword">end</span></code></body></html>

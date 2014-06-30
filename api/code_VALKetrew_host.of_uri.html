@@ -32,7 +32,10 @@
 <code class="code"><span class="keyword">let</span>&nbsp;of_uri&nbsp;uri&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;connection&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Option</span>.value_map&nbsp;~default:<span class="keywordsign">`</span><span class="constructor">Localhost</span>&nbsp;(<span class="constructor">Uri</span>.host&nbsp;uri)&nbsp;~f:(<span class="keyword">fun</span>&nbsp;address&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">Ssh</span>&nbsp;{<span class="constructor">Ssh</span>.address;&nbsp;port&nbsp;=&nbsp;<span class="constructor">Uri</span>.port&nbsp;uri;&nbsp;user&nbsp;=&nbsp;<span class="constructor">Uri</span>.userinfo&nbsp;uri})<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;add_ssh_options&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Option</span>.value&nbsp;~default:[]&nbsp;(<span class="constructor">Uri</span>.get_query_param'&nbsp;uri&nbsp;<span class="string">"ssh-option"</span>)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;user&nbsp;=&nbsp;<span class="constructor">Uri</span>.userinfo&nbsp;uri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">Ssh</span>&nbsp;{<span class="constructor">Ssh</span>.address;&nbsp;port&nbsp;=&nbsp;<span class="constructor">Uri</span>.port&nbsp;uri;&nbsp;user;&nbsp;add_ssh_options})<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;playground&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Uri</span>.path&nbsp;uri&nbsp;<span class="keyword">with</span><br>

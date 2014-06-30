@@ -49,7 +49,8 @@
 &nbsp;&nbsp;&nbsp;&nbsp;([&nbsp;<span class="keywordsign">`</span><span class="constructor">Killed</span>&nbsp;<span class="keyword">of</span>&nbsp;run_parameters&nbsp;],&nbsp;<span class="constructor">Ketrew_long_running</span>.error)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_pervasives</span>.<span class="constructor">Deferred_result</span>.t<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;log&nbsp;:&nbsp;run_parameters&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(string&nbsp;*&nbsp;<span class="constructor">Ketrew_pervasives</span>.<span class="constructor">Log</span>.t)&nbsp;list<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;additional_queries&nbsp;:&nbsp;(string&nbsp;*&nbsp;<span class="constructor">Ketrew_pervasives</span>.<span class="constructor">Log</span>.t)&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;additional_queries&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;run_parameters&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(string&nbsp;*&nbsp;<span class="constructor">Ketrew_pervasives</span>.<span class="constructor">Log</span>.t)&nbsp;list<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;query&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;run_parameters&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span><br>

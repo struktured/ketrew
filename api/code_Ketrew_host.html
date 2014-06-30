@@ -29,7 +29,23 @@
 <link title="Ketrew_user_command" rel="Chapter" href="Ketrew_user_command.html"><title>Ketrew API : Ketrew_host</title>
 </head>
 <body>
-<code class="code"><span class="keyword">open</span>&nbsp;<span class="constructor">Ketrew_pervasives</span><br>
+<code class="code"></code><table><tr><td></td><td><span class="comment">(**************************************************************************)</span></td></tr></table><code class="code"><br>
+<span class="comment">(*&nbsp;&nbsp;Copyright&nbsp;2014,&nbsp;Sebastien&nbsp;Mondet&nbsp;&lt;seb@mondet.org&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;Licensed&nbsp;under&nbsp;the&nbsp;Apache&nbsp;License,&nbsp;Version&nbsp;2.0&nbsp;(the&nbsp;"License");&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;you&nbsp;may&nbsp;not&nbsp;use&nbsp;this&nbsp;file&nbsp;except&nbsp;in&nbsp;compliance&nbsp;with&nbsp;the&nbsp;License.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;You&nbsp;may&nbsp;obtain&nbsp;a&nbsp;copy&nbsp;of&nbsp;the&nbsp;License&nbsp;at&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;http://www.apache.org/licenses/LICENSE-2.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;Unless&nbsp;required&nbsp;by&nbsp;applicable&nbsp;law&nbsp;or&nbsp;agreed&nbsp;to&nbsp;in&nbsp;writing,&nbsp;software&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;distributed&nbsp;under&nbsp;the&nbsp;License&nbsp;is&nbsp;distributed&nbsp;on&nbsp;an&nbsp;"AS&nbsp;IS"&nbsp;BASIS,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;WITHOUT&nbsp;WARRANTIES&nbsp;OR&nbsp;CONDITIONS&nbsp;OF&nbsp;ANY&nbsp;KIND,&nbsp;either&nbsp;express&nbsp;or&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;implied.&nbsp;&nbsp;See&nbsp;the&nbsp;License&nbsp;for&nbsp;the&nbsp;specific&nbsp;language&nbsp;governing&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;permissions&nbsp;and&nbsp;limitations&nbsp;under&nbsp;the&nbsp;License.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+</code><table><tr><td></td><td><span class="comment">(**************************************************************************)</span></td></tr></table><code class="code"><br>
+<br>
+<span class="keyword">open</span>&nbsp;<span class="constructor">Ketrew_pervasives</span><br>
 <span class="keyword">module</span>&nbsp;<span class="constructor">Path</span>&nbsp;=&nbsp;<span class="constructor">Ketrew_path</span><br>
 <br>
 <span class="keyword">module</span>&nbsp;<span class="constructor">Ssh</span>&nbsp;=&nbsp;<span class="keyword">struct</span><br>
@@ -51,11 +67,13 @@
 &nbsp;&nbsp;&nbsp;&nbsp;address:&nbsp;string;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;port:&nbsp;int&nbsp;option;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;user:&nbsp;string&nbsp;option;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;add_ssh_options:&nbsp;string&nbsp;list;<br>
 &nbsp;&nbsp;}<br>
 <br>
 &nbsp;&nbsp;</code><table><tr><td>&nbsp;&nbsp;</td><td><span class="comment">(** Generate a proper SSH command for the given host. *)</span></td></tr></table><code class="code"><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;do_ssh&nbsp;ssh&nbsp;command&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[<span class="string">"ssh"</span>;&nbsp;!_configuration_ssh_batch_option]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;ssh.add_ssh_options<br>
 &nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;(<span class="keyword">match</span>&nbsp;ssh.port&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;p&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[<span class="string">"-p"</span>;&nbsp;<span class="constructor">Int</span>.to_string&nbsp;p]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[])<br>
@@ -116,6 +134,7 @@
       directory or file path. *)</span></td></tr></table><code class="code"><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;scp_push&nbsp;ssh&nbsp;~src&nbsp;~dest&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[<span class="string">"scp"</span>;&nbsp;!_configuration_ssh_batch_option]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;ssh.add_ssh_options<br>
 &nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;(<span class="keyword">match</span>&nbsp;ssh.port&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;p&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[<span class="string">"-P"</span>;&nbsp;<span class="string">"port"</span>]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[])<br>
@@ -127,6 +146,7 @@
 &nbsp;&nbsp;</code><table><tr><td>&nbsp;&nbsp;</td><td><span class="comment">(** Generate an SCP command for the given host as source. *)</span></td></tr></table><code class="code"><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;scp_pull&nbsp;&nbsp;ssh&nbsp;~src&nbsp;~dest&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[<span class="string">"scp"</span>;&nbsp;!_configuration_ssh_batch_option]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;ssh.add_ssh_options<br>
 &nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;(<span class="keyword">match</span>&nbsp;ssh.port&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;p&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[<span class="string">"-P"</span>;&nbsp;<span class="string">"port"</span>]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[])<br>
@@ -163,14 +183,17 @@
 &nbsp;&nbsp;localhost&nbsp;~playground:(<span class="constructor">Path</span>.absolute_directory_exn&nbsp;<span class="string">"/tmp"</span>)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;~name:<span class="string">"file://tmp"</span>&nbsp;()<br>
 <br>
-<span class="keyword">let</span>&nbsp;ssh&nbsp;?default_shell&nbsp;?playground&nbsp;?port&nbsp;?user&nbsp;?name&nbsp;address&nbsp;=<br>
+<span class="keyword">let</span>&nbsp;ssh&nbsp;?(add_ssh_options=[])&nbsp;?default_shell&nbsp;?playground&nbsp;?port&nbsp;?user&nbsp;?name&nbsp;address&nbsp;=<br>
 &nbsp;&nbsp;create&nbsp;?playground&nbsp;?default_shell&nbsp;<span class="constructor">Option</span>.(value&nbsp;name&nbsp;~default:address)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;~connection:(<span class="keywordsign">`</span><span class="constructor">Ssh</span>&nbsp;{<span class="constructor">Ssh</span>.&nbsp;address;&nbsp;port;&nbsp;user})<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~connection:(<span class="keywordsign">`</span><span class="constructor">Ssh</span>&nbsp;{<span class="constructor">Ssh</span>.&nbsp;address;&nbsp;port;&nbsp;user;&nbsp;add_ssh_options})<br>
 <br>
 <span class="keyword">let</span>&nbsp;of_uri&nbsp;uri&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;connection&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Option</span>.value_map&nbsp;~default:<span class="keywordsign">`</span><span class="constructor">Localhost</span>&nbsp;(<span class="constructor">Uri</span>.host&nbsp;uri)&nbsp;~f:(<span class="keyword">fun</span>&nbsp;address&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">Ssh</span>&nbsp;{<span class="constructor">Ssh</span>.address;&nbsp;port&nbsp;=&nbsp;<span class="constructor">Uri</span>.port&nbsp;uri;&nbsp;user&nbsp;=&nbsp;<span class="constructor">Uri</span>.userinfo&nbsp;uri})<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;add_ssh_options&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Option</span>.value&nbsp;~default:[]&nbsp;(<span class="constructor">Uri</span>.get_query_param'&nbsp;uri&nbsp;<span class="string">"ssh-option"</span>)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;user&nbsp;=&nbsp;<span class="constructor">Uri</span>.userinfo&nbsp;uri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">Ssh</span>&nbsp;{<span class="constructor">Ssh</span>.address;&nbsp;port&nbsp;=&nbsp;<span class="constructor">Uri</span>.port&nbsp;uri;&nbsp;user;&nbsp;add_ssh_options})<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;playground&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Uri</span>.path&nbsp;uri&nbsp;<span class="keyword">with</span><br>

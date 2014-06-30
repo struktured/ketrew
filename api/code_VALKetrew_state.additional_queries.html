@@ -31,14 +31,27 @@
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;additional_queries&nbsp;~state&nbsp;target&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;target.<span class="constructor">Target</span>.make&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Long_running</span>&nbsp;(plugin,&nbsp;rp)&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">match</span>&nbsp;find_plugin&nbsp;~state&nbsp;plugin&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;m&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">Long_running</span>&nbsp;=&nbsp;(<span class="keyword">val</span>&nbsp;m&nbsp;:&nbsp;<span class="constructor">LONG_RUNNING</span>)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Long_running</span>.additional_queries<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Long_running</span>&nbsp;(plugin,&nbsp;_)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Target</span>.latest_run_parameters&nbsp;target&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;rp&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">match</span>&nbsp;find_plugin&nbsp;~state&nbsp;plugin&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;m&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">Long_running</span>&nbsp;=&nbsp;(<span class="keyword">val</span>&nbsp;m&nbsp;:&nbsp;<span class="constructor">LONG_RUNNING</span>)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">try</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;c&nbsp;=&nbsp;<span class="constructor">Long_running</span>.deserialize_exn&nbsp;rp&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Long_running</span>.additional_queries&nbsp;c<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;log&nbsp;=&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Serialization&nbsp;exception:&nbsp;"</span>&nbsp;%&nbsp;exn&nbsp;e)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(log&nbsp;@&nbsp;error);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;log&nbsp;=&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Plugin&nbsp;not&nbsp;found:&nbsp;"</span>&nbsp;%&nbsp;sf&nbsp;<span class="string">"%S"</span>&nbsp;plugin)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(log&nbsp;@&nbsp;error);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;log&nbsp;=&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Plugin&nbsp;not&nbsp;found:&nbsp;"</span>&nbsp;%&nbsp;sf&nbsp;<span class="string">"%S"</span>&nbsp;plugin)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(log&nbsp;@&nbsp;error);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Target&nbsp;has&nbsp;no&nbsp;run-parameters:&nbsp;"</span>&nbsp;%&nbsp;<span class="constructor">Target</span>.log&nbsp;target&nbsp;@&nbsp;error);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;other&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[]</code></body></html>

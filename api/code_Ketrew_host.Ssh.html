@@ -48,11 +48,13 @@
 &nbsp;&nbsp;&nbsp;&nbsp;address:&nbsp;string;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;port:&nbsp;int&nbsp;option;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;user:&nbsp;string&nbsp;option;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;add_ssh_options:&nbsp;string&nbsp;list;<br>
 &nbsp;&nbsp;}<br>
 <br>
 &nbsp;&nbsp;</code><table><tr><td>&nbsp;&nbsp;</td><td><span class="comment">(** Generate a proper SSH command for the given host. *)</span></td></tr></table><code class="code"><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;do_ssh&nbsp;ssh&nbsp;command&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[<span class="string">"ssh"</span>;&nbsp;!_configuration_ssh_batch_option]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;ssh.add_ssh_options<br>
 &nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;(<span class="keyword">match</span>&nbsp;ssh.port&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;p&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[<span class="string">"-p"</span>;&nbsp;<span class="constructor">Int</span>.to_string&nbsp;p]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[])<br>
@@ -113,6 +115,7 @@
       directory or file path. *)</span></td></tr></table><code class="code"><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;scp_push&nbsp;ssh&nbsp;~src&nbsp;~dest&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[<span class="string">"scp"</span>;&nbsp;!_configuration_ssh_batch_option]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;ssh.add_ssh_options<br>
 &nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;(<span class="keyword">match</span>&nbsp;ssh.port&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;p&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[<span class="string">"-P"</span>;&nbsp;<span class="string">"port"</span>]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[])<br>
@@ -124,6 +127,7 @@
 &nbsp;&nbsp;</code><table><tr><td>&nbsp;&nbsp;</td><td><span class="comment">(** Generate an SCP command for the given host as source. *)</span></td></tr></table><code class="code"><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;scp_pull&nbsp;&nbsp;ssh&nbsp;~src&nbsp;~dest&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[<span class="string">"scp"</span>;&nbsp;!_configuration_ssh_batch_option]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;ssh.add_ssh_options<br>
 &nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;(<span class="keyword">match</span>&nbsp;ssh.port&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;p&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[<span class="string">"-P"</span>;&nbsp;<span class="string">"port"</span>]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[])<br>

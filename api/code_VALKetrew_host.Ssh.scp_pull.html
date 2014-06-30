@@ -26,9 +26,17 @@
 <link title="Ketrew_state" rel="Chapter" href="Ketrew_state.html">
 <link title="Ketrew_target" rel="Chapter" href="Ketrew_target.html">
 <link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html">
-<link title="Ketrew_user_command" rel="Chapter" href="Ketrew_user_command.html"><title>Ketrew API : Ketrew_host.ssh</title>
+<link title="Ketrew_user_command" rel="Chapter" href="Ketrew_user_command.html"><title>Ketrew API : Ketrew_host.Ssh.scp_pull</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;ssh&nbsp;?(add_ssh_options=[])&nbsp;?default_shell&nbsp;?playground&nbsp;?port&nbsp;?user&nbsp;?name&nbsp;address&nbsp;=<br>
-&nbsp;&nbsp;create&nbsp;?playground&nbsp;?default_shell&nbsp;<span class="constructor">Option</span>.(value&nbsp;name&nbsp;~default:address)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;~connection:(<span class="keywordsign">`</span><span class="constructor">Ssh</span>&nbsp;{<span class="constructor">Ssh</span>.&nbsp;address;&nbsp;port;&nbsp;user;&nbsp;add_ssh_options})</code></body></html>
+<code class="code"><span class="keyword">let</span>&nbsp;scp_pull&nbsp;&nbsp;ssh&nbsp;~src&nbsp;~dest&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[<span class="string">"scp"</span>;&nbsp;!_configuration_ssh_batch_option]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;ssh.add_ssh_options<br>
+&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;(<span class="keyword">match</span>&nbsp;ssh.port&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;p&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[<span class="string">"-P"</span>;&nbsp;<span class="string">"port"</span>]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;(<span class="constructor">List</span>.map&nbsp;src&nbsp;~f:(<span class="keyword">fun</span>&nbsp;src_item&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;ssh.user&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fmt&nbsp;<span class="string">"%s:%s"</span>&nbsp;ssh.address&nbsp;src_item<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;u&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fmt&nbsp;<span class="string">"%s@%s:%s"</span>&nbsp;u&nbsp;ssh.address&nbsp;src_item))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;[dest]</code></body></html>

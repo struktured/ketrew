@@ -30,6 +30,11 @@
 </head>
 <body>
 <code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.ssh_host<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;configure_ssh_batch_option&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Custom</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Dropbear</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Openssh</span>&nbsp;]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;scp_push&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_host</span>.<span class="constructor">Ssh</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;src:string&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;dest:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;scp_pull&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_host</span>.<span class="constructor">Ssh</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;src:string&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;dest:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;list<br>
 <span class="keyword">end</span></code></body></html>

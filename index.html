@@ -26,6 +26,8 @@
    </li>
    <li><a href='#Ketrewclient'>Ketrew-client</a>
    </li>
+   <li><a href='#License'>License</a>
+   </li>
   </ul>
 
  </li>
@@ -41,11 +43,7 @@ the source is at <a href='https://github.com/smondet/ketrew/'>https://github.com
 <h3 id="FromOpam">From Opam</h3>
 <p>If you have <code>opam</code> up and running:</p>
 <pre><code>opam remote add smondet git@github.com:smondet/dev-opam-repo
-opam install type_conv
 opam install ketrew</code></pre>
-<p>(installing <code>type_conv</code> manually will be useless when
-<a href='https://github.com/ocaml/opam-repository/pull/2240'><code>ocaml/opam-repository#2240</code></a>
-is merged).</p>
 <h2 id="Usage">Usage</h2>
 <h3 id="Initialization">Initialization</h3>
 <p>To create a configuration file, run:</p>
@@ -77,13 +75,20 @@ and the <a href='api/Ketrew_edsl.html'>documentation of the EDSL API</a>.</p>
 <p>Ketrew is driven from the command-line client.  See:</p>
 <pre><code>ketrew-client --help</code></pre>
 <p>To display the current status:</p>
-<pre><code>ketrew-client info</code></pre>
+<pre><code>ketrew-client status</code></pre>
 <p>To run as many steps as possible until a “fix-point” is reached:</p>
 <pre><code>ketrew-client run fix</code></pre>
 <p>To kill running jobs use</p>
 <pre><code>ketrew-client kill &lt;target-ID&gt;</code></pre>
 <p>or do an interactive murder:</p>
 <pre><code>ketrew-client kill --interactive</code></pre>
+<p>Once targets are dead, one can “archive” them, i.e. put them in a less-visible
+list.</p>
+<pre><code>ketrew-client archive [--interactive] [&lt;target-ID&gt;]*</code></pre>
+<p>See also <code>ketrew-client interact</code> or <code>ketrew-client explore</code> for fun
+<em>one-key-based</em> navigation.</p>
+<h3 id="License">License</h3>
+<p>It&#39;s <a href='http://www.apache.org/licenses/LICENSE-2.0'>Apache 2.0</a>.</p>
 <h2 id="Authors">Authors</h2>
 <ul>
  <li><a href='http://seb.mondet.org'>Sebastien Mondet</a> (<code>seb@mondet.org</code>)</li>

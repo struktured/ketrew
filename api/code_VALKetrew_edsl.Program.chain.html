@@ -26,9 +26,7 @@
 <link title="Ketrew_state" rel="Chapter" href="Ketrew_state.html">
 <link title="Ketrew_target" rel="Chapter" href="Ketrew_target.html">
 <link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html">
-<link title="Ketrew_user_command" rel="Chapter" href="Ketrew_user_command.html"><title>Ketrew API : Ketrew_host.ssh</title>
+<link title="Ketrew_user_command" rel="Chapter" href="Ketrew_user_command.html"><title>Ketrew API : Ketrew_edsl.Program.chain</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;ssh&nbsp;?(add_ssh_options=[])&nbsp;?default_shell&nbsp;?playground&nbsp;?port&nbsp;?user&nbsp;?name&nbsp;address&nbsp;=<br>
-&nbsp;&nbsp;create&nbsp;?playground&nbsp;?default_shell&nbsp;<span class="constructor">Option</span>.(value&nbsp;name&nbsp;~default:address)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;~connection:(<span class="keywordsign">`</span><span class="constructor">Ssh</span>&nbsp;{<span class="constructor">Ssh</span>.&nbsp;address;&nbsp;port;&nbsp;user;&nbsp;add_ssh_options})</code></body></html>
+<code class="code"><span class="keyword">let</span>&nbsp;chain&nbsp;l&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">And</span>&nbsp;l</code></body></html>

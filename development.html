@@ -27,6 +27,13 @@
 
  </li>
  <li><a href='#Tests'>Tests</a>
+  <ul>
+   <li><a href='#AutomatedTests'>Automated Tests</a>
+   </li>
+   <li><a href='#ThecliTest'>The <code>cli</code> Test</a>
+   </li>
+  </ul>
+
  </li>
  <li><a href='#CodeDocumentation'>Code Documentation</a>
  </li>
@@ -48,6 +55,7 @@ parse <a href='http://www.ietf.org/rfc/rfc3986.txt'>RFC-3986</a>-compliant URIs
  <li><code>yojson</code>: JSON parsing/printing</li>
  <li><code>atdgen/atd</code>: definition of serialization formats (used with <code>Yojson</code>).</li>
  <li><code>toml</code>: config-file parsing</li>
+ <li><code>dbm</code>: unix key-value database</li>
 </ul>
 
 <p>and uses the <code>ocp-build</code> build system.</p>
@@ -73,6 +81,7 @@ and Graphviz&#39;s <code>dot</code>:</p>
 <p>One can start an ocaml-toplevel (<code>ocaml</code> or <code>utop</code>) with Ketrew loaded-in:</p>
 <pre><code>./please.sh top</code></pre>
 <h2 id="Tests">Tests</h2>
+<h3 id="AutomatedTests">Automated Tests</h3>
 <p>Run the tests like this:</p>
 <pre class='bash'><code class='bash'>    ketrew_test_ssh=&lt;Host&gt; _obuild/ketrew-test/ketrew-test.asm [-no-color] ALL</code></pre>
 <p>where <code>&lt;Host&gt;</code> is often an entry in your <code>.ssh/config</code> file.</p>
@@ -81,6 +90,26 @@ not defined it will use <code>&quot;localhost&quot;</code>. But for the test to 
 an SSH host for which the user running the test does not need password.
 The test will run some commands on that host and create files and directories
 in its <code>/tmp</code> directory.</p>
+<h3 id="ThecliTest">The <code>cli</code> Test</h3>
+<p>There is also a more interactive test: <code>src/test/cli.ml</code> which provides
+workflows to be created from the command line. In order to not impact a
+potential “global” installation of Ketrew it uses <code>/tmp/ketrew_cli_test_db</code> as
+database.</p>
+<p>Hence to interact with the workflows, use a config-file like this:</p>
+<pre class='toml'><code class='toml'># Ketrew configuration file
+
+debug-level = 2
+
+[client]
+  color = true
+
+[database]
+  path = &quot;/tmp/ketrew_cli_test_db&quot;</code></pre>
+<p>and force its usage with the option <code>-C</code> of the client or (the
+<code>KETREW_CONFIGURATION</code> environment variable).
+For example, with the following bash-aliases:</p>
+<pre><code>alias cli=&#39;KETREW_CONFIGURATION=cli-test.toml _obuild/ketrew-client/ketrew-client.asm&#39;
+alias CT=&#39;_obuild/ketrew-cli-test/ketrew-cli-test.asm&#39;</code></pre>
 <h2 id="CodeDocumentation">Code Documentation</h2>
 <ul>
  <li><a href='api/index.html'>ocaml-doc for the API</a></li>

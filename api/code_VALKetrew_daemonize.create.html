@@ -29,6 +29,8 @@
 <link title="Ketrew_user_command" rel="Chapter" href="Ketrew_user_command.html"><title>Ketrew API : Ketrew_daemonize.create</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;create&nbsp;?(using=<span class="keywordsign">`</span><span class="constructor">Nohup_setsid</span>)&nbsp;?(host=<span class="constructor">Host</span>.tmp_on_localhost)&nbsp;program&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;c&nbsp;=&nbsp;{host;&nbsp;program;&nbsp;using_hack&nbsp;=&nbsp;using&nbsp;}&nbsp;<span class="keyword">in</span><br>
+<code class="code"><span class="keyword">let</span>&nbsp;create&nbsp;<br>
+&nbsp;&nbsp;?(starting_timeout=5.)<br>
+&nbsp;&nbsp;?(using=<span class="keywordsign">`</span><span class="constructor">Nohup_setsid</span>)&nbsp;?(host=<span class="constructor">Host</span>.tmp_on_localhost)&nbsp;program&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;c&nbsp;=&nbsp;{host;&nbsp;program;&nbsp;using_hack&nbsp;=&nbsp;using;&nbsp;starting_timeout&nbsp;}&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">Long_running</span>&nbsp;(name,&nbsp;<span class="keywordsign">`</span><span class="constructor">Created</span>&nbsp;c&nbsp;|&gt;&nbsp;serialize)</code></body></html>

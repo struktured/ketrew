@@ -32,8 +32,13 @@
 <code class="code"><span class="keyword">sig</span><br>
 &nbsp;&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">Ssh</span>&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">sig</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.ssh_host<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;configure_ssh_batch_option&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Custom</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Dropbear</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Openssh</span>&nbsp;]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;scp_push&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_host</span>.<span class="constructor">Ssh</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;src:string&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;dest:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;list<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;scp_pull&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_host</span>.<span class="constructor">Ssh</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;src:string&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;dest:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;list<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;default_shell<br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.host<br>
@@ -47,6 +52,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;?name:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_host</span>.t<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;tmp_on_localhost&nbsp;:&nbsp;<span class="constructor">Ketrew_host</span>.t<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;ssh&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?add_ssh_options:string&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?default_shell:<span class="constructor">Ketrew_host</span>.default_shell&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?playground:<span class="constructor">Ketrew_path</span>.absolute_directory&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?port:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?user:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?name:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_host</span>.t<br>
