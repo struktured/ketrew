@@ -84,8 +84,11 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;<span class="string">"ketrew"</span><br>
 &nbsp;&nbsp;<span class="keyword">end</span>)<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;to_long_string&nbsp;=&nbsp;to_string&nbsp;~line_width:max_int&nbsp;~indent:4<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;if_color&nbsp;color&nbsp;log&nbsp;=&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;!global_with_color&nbsp;<span class="keyword">then</span>&nbsp;color&nbsp;log&nbsp;<span class="keyword">else</span>&nbsp;log<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;nbsp&nbsp;=&nbsp;s&nbsp;<span class="string">" "</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;quote&nbsp;=&nbsp;sf&nbsp;<span class="string">"%S"</span><br>
 <span class="keyword">end</span><br>
-<br>
 </code><table><tr><td></td><td><span class="comment">(** Function that have a documented, easy to check contract, can raise
     <code class="code"><span class="constructor">Invalid_argument</span> _</code> (their name should end in <code class="code">_exn</code>). *)</span></td></tr></table><code class="code"><br>
 <span class="keyword">let</span>&nbsp;invalid_argument_exn&nbsp;?(where=<span class="string">"pervasives"</span>)&nbsp;what&nbsp;=<br>

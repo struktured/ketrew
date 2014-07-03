@@ -351,6 +351,11 @@ Define a “file” structure.
 Create a path to a file.
 </div>
 </td></tr>
+<tr><td><a href="Ketrew_edsl.html#VALfile_target">file_target</a> [<a href="Ketrew_edsl.html">Ketrew_edsl</a>]</td>
+<td><div class="info">
+Create a file <a href="Ketrew_edsl.user_artifact-c.html"><code class="code"><span class="constructor">Ketrew_edsl</span>.user_artifact</code></a> and the <a href="Ketrew_edsl.user_target-c.html"><code class="code"><span class="constructor">Ketrew_edsl</span>.user_target</code></a> that produces it.
+</div>
+</td></tr>
 <tr><td><a href="Ketrew_target.Is.html#VALfinished">finished</a> [<a href="Ketrew_target.Is.html">Ketrew_target.Is</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ketrew_pervasives.html#VALfmt">fmt</a> [<a href="Ketrew_pervasives.html">Ketrew_pervasives</a>]</td>
@@ -403,6 +408,11 @@ Run a shell command on the host, and return its <code class="code">(stdout, stde
 Run a shell command on the host, and return its exit status value.
 </div>
 </td></tr>
+<tr><td><a href="Ketrew_artifact.Volume.html#VALget_size">get_size</a> [<a href="Ketrew_artifact.Volume.html">Ketrew_artifact.Volume</a>]</td>
+<td><div class="info">
+Get the total size of a volume in bytes.
+</div>
+</td></tr>
 <tr><td><a href="Ketrew_state.html#VALget_status">get_status</a> [<a href="Ketrew_state.html">Ketrew_state</a>]</td>
 <td><div class="info">
 Get the state description of a given target (by “id”).
@@ -440,6 +450,8 @@ Cmdliner term which creates a host argument or flag.
 Get a target's id.
 </div>
 </td></tr>
+<tr><td><a href="Ketrew_pervasives.Log.html#VALif_color">if_color</a> [<a href="Ketrew_pervasives.Log.html">Ketrew_pervasives.Log</a>]</td>
+<td></td></tr>
 <tr><td><a href="Ketrew_pervasives.html#VALinvalid_argument_exn">invalid_argument_exn</a> [<a href="Ketrew_pervasives.html">Ketrew_pervasives</a>]</td>
 <td><div class="info">
 Function that have a documented, easy to check contract, can raise
@@ -606,6 +618,8 @@ The (unique) name of the plugin.
 Get a target's user-defined name.
 </div>
 </td></tr>
+<tr><td><a href="Ketrew_pervasives.Log.html#VALnbsp">nbsp</a> [<a href="Ketrew_pervasives.Log.html">Ketrew_pervasives.Log</a>]</td>
+<td></td></tr>
 <tr><td><a href="Ketrew_target.html#VALnop">nop</a> [<a href="Ketrew_target.html">Ketrew_target</a>]</td>
 <td><div class="info">
 A build process that does nothing.
@@ -672,7 +686,14 @@ Write a file on the host at <code class="code">path</code> containing <code clas
 Perform a query.
 </div>
 </td></tr>
+<tr><td><a href="Ketrew_pervasives.Log.html#VALquote">quote</a> [<a href="Ketrew_pervasives.Log.html">Ketrew_pervasives.Log</a>]</td>
+<td></td></tr>
 <tr><td align="left"><br>R</td></tr>
+<tr><td><a href="Ketrew_target.html#VALreactivate">reactivate</a> [<a href="Ketrew_target.html">Ketrew_target</a>]</td>
+<td><div class="info">
+“Clone” the target as an activated new target.
+</div>
+</td></tr>
 <tr><td><a href="Ketrew_path.html#VALrelative_directory_exn">relative_directory_exn</a> [<a href="Ketrew_path.html">Ketrew_path</a>]</td>
 <td><div class="info">
 Create a relative  path to a directory, raises <code class="code"><span class="constructor">Invalid_argument</span> _</code> if the
@@ -683,6 +704,12 @@ Create a relative  path to a directory, raises <code class="code"><span class="c
 <td><div class="info">
 Create a relative to a file, raises <code class="code"><span class="constructor">Invalid_argument</span> _</code> if the path
     is not relative.
+</div>
+</td></tr>
+<tr><td><a href="Ketrew_state.html#VALrestart_target">restart_target</a> [<a href="Ketrew_state.html">Ketrew_state</a>]</td>
+<td><div class="info">
+Make new activated targets out of a given target and its “transitive
+    reverse dependencies”
 </div>
 </td></tr>
 <tr><td><a href="Ketrew_path.html#VALroot">root</a> [<a href="Ketrew_path.html">Ketrew_path</a>]</td>
@@ -781,6 +808,12 @@ Printf-like function to create shell commands.
 <tr><td><a href="Ketrew_target.html#VALshould_start">should_start</a> [<a href="Ketrew_target.html">Ketrew_target</a>]</td>
 <td><div class="info">
 Check whether a target is ready or should start, given its condition.
+</div>
+</td></tr>
+<tr><td><a href="Ketrew_path.html#VALsize_shell_command">size_shell_command</a> [<a href="Ketrew_path.html">Ketrew_path</a>]</td>
+<td><div class="info">
+Create a <code class="code"><span class="string">"/bin/sh"</span></code> command that outputs <code class="code"><span class="string">"0"</span></code> for directories and
+    their size for files.
 </div>
 </td></tr>
 <tr><td><a href="Ketrew_pervasives.html#VALsprintf">sprintf</a> [<a href="Ketrew_pervasives.html">Ketrew_pervasives</a>]</td>

@@ -30,7 +30,12 @@
 </head>
 <body>
 <code class="code"><span class="keyword">sig</span><br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">False</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">True</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Volume_exists</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ketrew_artifact</span>.<span class="constructor">Volume</span>.t&nbsp;]<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Command_returns</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ketrew_target</span>.<span class="constructor">Command</span>.t&nbsp;*&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">False</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">True</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Volume_exists</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ketrew_artifact</span>.<span class="constructor">Volume</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Volume_size_bigger_than</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ketrew_artifact</span>.<span class="constructor">Volume</span>.t&nbsp;*&nbsp;int&nbsp;]<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;log&nbsp;:&nbsp;<span class="constructor">Ketrew_target</span>.<span class="constructor">Condition</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_pervasives</span>.<span class="constructor">Log</span>.t<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;to_string_hum&nbsp;:&nbsp;<span class="constructor">Ketrew_target</span>.<span class="constructor">Condition</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
 <span class="keyword">end</span></code></body></html>

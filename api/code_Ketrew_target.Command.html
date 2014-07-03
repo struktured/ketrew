@@ -50,6 +50,10 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;cmd&nbsp;=&nbsp;<span class="constructor">Program</span>.to_single_shell_command&nbsp;action&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Host</span>.get_shell_command_output&nbsp;host&nbsp;cmd<br>
 <br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;get_return_value&nbsp;{host;&nbsp;action}&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;cmd&nbsp;=&nbsp;<span class="constructor">Program</span>.to_single_shell_command&nbsp;action&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Host</span>.get_shell_command_return_value&nbsp;host&nbsp;cmd<br>
+<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;run&nbsp;t&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;get_output&nbsp;t&nbsp;<span class="comment">(*&nbsp;TODO&nbsp;optimize&nbsp;to&nbsp;not&nbsp;record&nbsp;the&nbsp;output&nbsp;*)</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;(_,&nbsp;_)&nbsp;<span class="keywordsign">-&gt;</span><br>

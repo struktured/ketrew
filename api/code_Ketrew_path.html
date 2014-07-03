@@ -97,8 +97,13 @@
 <span class="keyword">let</span>&nbsp;any_kind:&nbsp;&lt;relativity:&nbsp;<span class="keywordsign">'</span>a;&nbsp;kind:&nbsp;<span class="keywordsign">'</span>b&gt;&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;&lt;relativity:&nbsp;<span class="keywordsign">'</span>a;&nbsp;kind:&nbsp;<span class="keywordsign">'</span>c&gt;&nbsp;t&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">fun</span>&nbsp;x&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;{&nbsp;x&nbsp;<span class="keyword">with</span>&nbsp;kind&nbsp;=&nbsp;x.kind&nbsp;}<br>
 <br>
+<span class="keyword">let</span>&nbsp;size_shell_command&nbsp;=&nbsp;<span class="keyword">function</span><br>
+<span class="keywordsign">|</span>&nbsp;{kind&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">File</span>;&nbsp;path&nbsp;}&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;fmt&nbsp;<span class="string">"\\ls&nbsp;-nl&nbsp;%s&nbsp;|&nbsp;awk&nbsp;'{print&nbsp;$5}'"</span>&nbsp;(<span class="constructor">Filename</span>.quote&nbsp;path)<br>
+<span class="keywordsign">|</span>&nbsp;{kind&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">Directory</span>;&nbsp;path&nbsp;}&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;&nbsp;<span class="string">"echo&nbsp;'0'"</span><br>
+<br>
 <span class="keyword">let</span>&nbsp;exists_shell_condition&nbsp;=&nbsp;<span class="keyword">function</span><br>
-<span class="keywordsign">|</span>&nbsp;{kind&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">File</span>;&nbsp;path&nbsp;}&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;&nbsp;fmt&nbsp;<span class="string">"[&nbsp;-f&nbsp;%S&nbsp;]"</span>&nbsp;path<br>
-<span class="keywordsign">|</span>&nbsp;{kind&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">Directory</span>;&nbsp;path&nbsp;}&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;&nbsp;fmt&nbsp;<span class="string">"[&nbsp;-d&nbsp;%S&nbsp;]"</span>&nbsp;path<br>
+<span class="keywordsign">|</span>&nbsp;{kind&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">File</span>;&nbsp;path&nbsp;}&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;&nbsp;fmt&nbsp;<span class="string">"[&nbsp;-f&nbsp;%s&nbsp;]"</span>&nbsp;(<span class="constructor">Filename</span>.quote&nbsp;path)<br>
+<span class="keywordsign">|</span>&nbsp;{kind&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">Directory</span>;&nbsp;path&nbsp;}&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;&nbsp;fmt&nbsp;<span class="string">"[&nbsp;-d&nbsp;%s&nbsp;]"</span>&nbsp;(<span class="constructor">Filename</span>.quote&nbsp;path)<br>
 <br>
 </code></body></html>

@@ -43,7 +43,13 @@ Activate the target.
 <tr><td align="left"><br>E</td></tr>
 <tr><td><a href="Ketrew_edsl.user_artifact-c.html#METHODexists">exists</a> [<a href="Ketrew_edsl.user_artifact-c.html">Ketrew_edsl.user_artifact</a>]</td>
 <td><div class="info">
-Get “is-ready” condition (for the <code class="code">~ready_when</code> argument of <a href="Ketrew_edsl.html#VALtarget"><code class="code"><span class="constructor">Ketrew_edsl</span>.target</code></a>.
+Get “exists” condition (for the <code class="code">~ready_when</code> argument of <a href="Ketrew_edsl.html#VALtarget"><code class="code"><span class="constructor">Ketrew_edsl</span>.target</code></a>.
+</div>
+</td></tr>
+<tr><td align="left"><br>I</td></tr>
+<tr><td><a href="Ketrew_edsl.user_artifact-c.html#METHODis_bigger_than">is_bigger_than</a> [<a href="Ketrew_edsl.user_artifact-c.html">Ketrew_edsl.user_artifact</a>]</td>
+<td><div class="info">
+Get the “is bigger than &lt;size&gt;” condition.
 </div>
 </td></tr>
 <tr><td align="left"><br>M</td></tr>
@@ -63,6 +69,12 @@ Get the name of the target
 <td><div class="info">
 Return the path of the artifact if the artifact is a volume containing
       a single file or directory.
+</div>
+</td></tr>
+<tr><td><a href="Ketrew_edsl.user_target-c.html#METHODproduct">product</a> [<a href="Ketrew_edsl.user_target-c.html">Ketrew_edsl.user_target</a>]</td>
+<td><div class="info">
+The user-artifact produced by the target, if known (raises exception if
+        unknown).
 </div>
 </td></tr>
 </table>

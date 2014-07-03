@@ -75,6 +75,10 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;cmd&nbsp;=&nbsp;<span class="constructor">Program</span>.to_single_shell_command&nbsp;action&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Host</span>.get_shell_command_output&nbsp;host&nbsp;cmd<br>
 <br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;get_return_value&nbsp;{host;&nbsp;action}&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;cmd&nbsp;=&nbsp;<span class="constructor">Program</span>.to_single_shell_command&nbsp;action&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Host</span>.get_shell_command_return_value&nbsp;host&nbsp;cmd<br>
+<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;run&nbsp;t&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;get_output&nbsp;t&nbsp;<span class="comment">(*&nbsp;TODO&nbsp;optimize&nbsp;to&nbsp;not&nbsp;record&nbsp;the&nbsp;output&nbsp;*)</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;(_,&nbsp;_)&nbsp;<span class="keywordsign">-&gt;</span><br>
@@ -92,7 +96,13 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">True</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"True"</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">False</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"False"</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Volume_exists</span>&nbsp;v&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;parens&nbsp;(s&nbsp;<span class="string">"Volume&nbsp;"</span>&nbsp;%&nbsp;<span class="constructor">Artifact</span>.<span class="constructor">Volume</span>.log&nbsp;v&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;exists"</span>))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;parens&nbsp;(s&nbsp;<span class="string">"Volume&nbsp;"</span>&nbsp;%&nbsp;<span class="constructor">Artifact</span>.<span class="constructor">Volume</span>.log&nbsp;v&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;exists"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Volume_size_bigger_than</span>&nbsp;(v,&nbsp;sz)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;parens&nbsp;(s&nbsp;<span class="string">"Volume&nbsp;"</span>&nbsp;%&nbsp;<span class="constructor">Artifact</span>.<span class="constructor">Volume</span>.log&nbsp;v&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;≥&nbsp;"</span>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;i&nbsp;sz&nbsp;%&nbsp;nbsp&nbsp;%&nbsp;s&nbsp;<span class="string">"KB"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Command_returns</span>&nbsp;(c,&nbsp;ret)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;parens&nbsp;(s&nbsp;<span class="string">"Command&nbsp;"</span>&nbsp;%&nbsp;<span class="constructor">Command</span>.log&nbsp;c&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;returns&nbsp;"</span>&nbsp;%&nbsp;i&nbsp;ret)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;to_string_hum&nbsp;c&nbsp;=&nbsp;<span class="constructor">Log</span>.to_long_string&nbsp;(log&nbsp;c)<br>
 <br>
 <span class="keyword">end</span><br>
@@ -165,6 +175,15 @@
 &nbsp;&nbsp;activate_exn&nbsp;~by:<span class="keywordsign">`</span><span class="constructor">User</span>&nbsp;(create&nbsp;?id&nbsp;?name&nbsp;?persistance&nbsp;?metadata&nbsp;?condition<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?dependencies&nbsp;?make&nbsp;())<br>
 <br>
+<span class="keyword">let</span>&nbsp;reactivate&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?with_id&nbsp;?with_name&nbsp;?with_metadata&nbsp;t&nbsp;=<br>
+&nbsp;&nbsp;activate_exn&nbsp;~by:<span class="keywordsign">`</span><span class="constructor">User</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;{t&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;history&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">Created</span>&nbsp;(<span class="constructor">Time</span>.now&nbsp;());<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;id&nbsp;=&nbsp;<span class="constructor">Option</span>.value&nbsp;with_id&nbsp;~default:(<span class="constructor">Unique_id</span>.create&nbsp;());<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;name&nbsp;=&nbsp;<span class="constructor">Option</span>.value&nbsp;with_name&nbsp;~default:t.name;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;metadata&nbsp;=&nbsp;<span class="constructor">Option</span>.value&nbsp;with_metadata&nbsp;~default:t.metadata}<br>
+<br>
 <span class="keyword">let</span>&nbsp;id&nbsp;t&nbsp;:&nbsp;<span class="constructor">Unique_id</span>.t&nbsp;=&nbsp;t.id<br>
 <span class="keyword">let</span>&nbsp;name&nbsp;t&nbsp;=&nbsp;t.name<br>
 <br>
@@ -187,12 +206,28 @@
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">False</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;<span class="keyword">true</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Volume_exists</span>&nbsp;v&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Artifact</span>.<span class="constructor">Volume</span>.exists&nbsp;v&nbsp;&gt;&gt;|&nbsp;not<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Volume_size_bigger_than</span>&nbsp;(v,&nbsp;sz)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Artifact</span>.<span class="constructor">Volume</span>.get_size&nbsp;v<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;size&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;(size&nbsp;&lt;&nbsp;sz)<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Command_returns</span>&nbsp;(c,&nbsp;ret)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Command</span>.get_return_value&nbsp;c&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;return_value&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;(ret&nbsp;&lt;&gt;&nbsp;return_value)<br>
 <br>
 <span class="keyword">let</span>&nbsp;did_ensure_condition&nbsp;t&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;t.condition&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">True</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;<span class="keyword">false</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">False</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;<span class="keyword">true</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Volume_exists</span>&nbsp;v&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Artifact</span>.<span class="constructor">Volume</span>.exists&nbsp;v<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Volume_size_bigger_than</span>&nbsp;(v,&nbsp;sz)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Artifact</span>.<span class="constructor">Volume</span>.get_size&nbsp;v<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;size&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;(size&nbsp;&gt;=&nbsp;sz)<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Command_returns</span>&nbsp;(c,&nbsp;ret)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Command</span>.get_return_value&nbsp;c&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;return_value&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;(ret&nbsp;=&nbsp;return_value)<br>
 <br>
 <span class="keyword">module</span>&nbsp;<span class="constructor">Is</span>&nbsp;=&nbsp;<span class="keyword">struct</span><br>
 <br>

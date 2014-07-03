@@ -34,4 +34,12 @@
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">True</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;<span class="keyword">false</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">False</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;<span class="keyword">true</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Volume_exists</span>&nbsp;v&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Artifact</span>.<span class="constructor">Volume</span>.exists&nbsp;v&nbsp;&gt;&gt;|&nbsp;not</code></body></html>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Artifact</span>.<span class="constructor">Volume</span>.exists&nbsp;v&nbsp;&gt;&gt;|&nbsp;not<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Volume_size_bigger_than</span>&nbsp;(v,&nbsp;sz)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Artifact</span>.<span class="constructor">Volume</span>.get_size&nbsp;v<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;size&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;(size&nbsp;&lt;&nbsp;sz)<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Command_returns</span>&nbsp;(c,&nbsp;ret)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Command</span>.get_return_value&nbsp;c&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;return_value&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;(ret&nbsp;&lt;&gt;&nbsp;return_value)</code></body></html>

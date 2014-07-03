@@ -630,4 +630,47 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fail&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Target&nbsp;has&nbsp;no&nbsp;run-parameters:&nbsp;"</span>&nbsp;%&nbsp;<span class="constructor">Target</span>.log&nbsp;target)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;other&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fail&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Target&nbsp;has&nbsp;no&nbsp;queries:&nbsp;"</span>&nbsp;%&nbsp;<span class="constructor">Target</span>.log&nbsp;target)<br>
+<br>
+<span class="keyword">let</span>&nbsp;restart_target&nbsp;~state&nbsp;target&nbsp;=<br>
+&nbsp;&nbsp;current_targets&nbsp;state<br>
+&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;targets&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;id_translation&nbsp;=&nbsp;ref&nbsp;[]&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;new_target&nbsp;trgt&nbsp;&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;with_name&nbsp;=&nbsp;<span class="string">"Re:"</span>&nbsp;^&nbsp;<span class="constructor">Target</span>.name&nbsp;trgt&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;re&nbsp;=&nbsp;<span class="constructor">Target</span>.reactivate&nbsp;~with_name&nbsp;trgt&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;id_translation&nbsp;:=&nbsp;(<span class="constructor">Target</span>.id&nbsp;trgt,&nbsp;<span class="constructor">Target</span>.id&nbsp;re)&nbsp;::&nbsp;!id_translation;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;re<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;get_reverse_dependencies&nbsp;trgt&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.filter&nbsp;targets&nbsp;~f:(<span class="keyword">fun</span>&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.exists&nbsp;t.<span class="constructor">Target</span>.dependencies&nbsp;~f:(<span class="keyword">fun</span>&nbsp;dep&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Target</span>.id&nbsp;trgt&nbsp;=&nbsp;dep))<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;explore_upper_dag&nbsp;trgt&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;reverse_dependencies&nbsp;=&nbsp;get_reverse_dependencies&nbsp;trgt&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"reverse_dependencies&nbsp;of&nbsp;"</span>&nbsp;%&nbsp;<span class="constructor">Target</span>.log&nbsp;trgt&nbsp;%&nbsp;s&nbsp;<span class="string">":&nbsp;"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;<span class="constructor">OCaml</span>.list&nbsp;<span class="constructor">Target</span>.log&nbsp;reverse_dependencies&nbsp;@&nbsp;very_verbose);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;trgt&nbsp;::&nbsp;reverse_dependencies<br>
+&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;<span class="constructor">List</span>.concat_map&nbsp;~f:explore_upper_dag&nbsp;reverse_dependencies<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;this_new_target&nbsp;=&nbsp;new_target&nbsp;target&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;upper_dag&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;its_reverse_deps&nbsp;=&nbsp;get_reverse_dependencies&nbsp;target&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.dedup&nbsp;~compare:(<span class="keyword">fun</span>&nbsp;ta&nbsp;tb&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Target</span>.(<span class="constructor">String</span>.compare&nbsp;(id&nbsp;ta)&nbsp;(id&nbsp;tb)))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">List</span>.concat_map&nbsp;~f:explore_upper_dag&nbsp;its_reverse_deps)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;|&gt;&nbsp;<span class="constructor">List</span>.map&nbsp;~f:new_target<br>
+&nbsp;&nbsp;&nbsp;&nbsp;|&gt;&nbsp;<span class="constructor">List</span>.map&nbsp;~f:(<span class="keyword">fun</span>&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">open</span>&nbsp;<span class="constructor">Target</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;t&nbsp;<span class="keyword">with</span>&nbsp;dependencies&nbsp;=&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.map&nbsp;t.dependencies&nbsp;~f:(<span class="keyword">fun</span>&nbsp;dep&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.find&nbsp;!id_translation&nbsp;(<span class="keyword">fun</span>&nbsp;(a,&nbsp;_)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;a&nbsp;=&nbsp;dep)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;(_,&nbsp;new_id)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;new_id<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;dep)&nbsp;})<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="constructor">Deferred_list</span>.while_sequential&nbsp;(this_new_target&nbsp;::&nbsp;upper_dag)&nbsp;(<span class="keyword">fun</span>&nbsp;trgt&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;add_target&nbsp;state&nbsp;trgt)<br>
+&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;(_&nbsp;:&nbsp;unit&nbsp;list)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;return&nbsp;(this_new_target,&nbsp;upper_dag)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
 </code></body></html>

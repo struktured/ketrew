@@ -242,48 +242,74 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span>&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;menu_loop&nbsp;0<br>
 <br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;build_sublist_of_targets&nbsp;~state&nbsp;~list_name&nbsp;~filter&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;format_target_for_menu&nbsp;t&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">open</span>&nbsp;<span class="constructor">Log</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;if_color&nbsp;f&nbsp;x&nbsp;=&nbsp;<span class="keyword">if</span>&nbsp;!global_with_color&nbsp;<span class="keyword">then</span>&nbsp;f&nbsp;x&nbsp;<span class="keyword">else</span>&nbsp;x&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;if_color&nbsp;bold_yellow&nbsp;(s&nbsp;(<span class="constructor">Target</span>.name&nbsp;t))&nbsp;%&nbsp;n<br>
+&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;if_color&nbsp;greyish&nbsp;(s&nbsp;(<span class="constructor">Target</span>.id&nbsp;t))&nbsp;%&nbsp;n<br>
+&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">match</span>&nbsp;t.<span class="constructor">Target</span>.history&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Created</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"Created"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Activated</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"Activated"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Running</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;if_color&nbsp;bold_red&nbsp;(s&nbsp;<span class="string">"Running"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Dead</span>&nbsp;(_,&nbsp;_,&nbsp;<span class="keywordsign">`</span><span class="constructor">Killed</span>&nbsp;reason)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;if_color&nbsp;bold_red&nbsp;(sf&nbsp;<span class="string">"Killed:&nbsp;%s"</span>&nbsp;reason)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Dead</span>&nbsp;(_,&nbsp;_,&nbsp;<span class="keywordsign">`</span><span class="constructor">Failed</span>&nbsp;reason)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;if_color&nbsp;bold_red&nbsp;(sf&nbsp;<span class="string">"Failed:&nbsp;%s"</span>&nbsp;reason)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Successful</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;if_color&nbsp;bold_green&nbsp;(s&nbsp;<span class="string">"Successful"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;)<br>
+<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;build_sublist_of_targets&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~state&nbsp;~list_name&nbsp;~all_log&nbsp;~go_verb&nbsp;~filter&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_state</span>.current_targets&nbsp;state<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;all_targets&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;to_process&nbsp;=&nbsp;ref&nbsp;[]&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;all_valid_targets&nbsp;()&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.filter&nbsp;all_targets&nbsp;~f:(<span class="keyword">fun</span>&nbsp;target&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;filter&nbsp;target&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">&amp;&amp;</span>&nbsp;not&nbsp;(<span class="constructor">List</span>.exists&nbsp;!to_process&nbsp;~f:(<span class="keyword">fun</span>&nbsp;id&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;id&nbsp;=&nbsp;<span class="constructor">Target</span>.id&nbsp;target)))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;target_menu&nbsp;()&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.filter_map&nbsp;all_targets&nbsp;~f:(<span class="keyword">fun</span>&nbsp;target&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;not&nbsp;(filter&nbsp;target)&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">||</span>&nbsp;<span class="constructor">List</span>.exists&nbsp;!to_process&nbsp;~f:(<span class="keyword">fun</span>&nbsp;id&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;id&nbsp;=&nbsp;<span class="constructor">Target</span>.id&nbsp;target)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keyword">true</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keyword">false</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;item_format&nbsp;=&nbsp;<span class="string">"$name&nbsp;($status,&nbsp;$id)"</span>&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Some</span>&nbsp;(<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;menu_item&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~log:<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Add:&nbsp;"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;bold_yellow&nbsp;(s&nbsp;(format_target&nbsp;~item_format&nbsp;target)))<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keywordsign">`</span><span class="constructor">Add</span>&nbsp;(<span class="constructor">Target</span>.id&nbsp;target))))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.map&nbsp;(all_valid_targets&nbsp;())&nbsp;~f:(<span class="keyword">fun</span>&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;menu_item&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~log:<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Add:&nbsp;"</span>&nbsp;%&nbsp;format_target_for_menu&nbsp;t)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keywordsign">`</span><span class="constructor">Add</span>&nbsp;(<span class="constructor">Target</span>.id&nbsp;t)))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;loop&nbsp;()&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;all_valid_ids&nbsp;=&nbsp;all_valid_targets&nbsp;()&nbsp;|&gt;&nbsp;<span class="constructor">List</span>.map&nbsp;~f:<span class="constructor">Target</span>.id&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;always_there&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;go&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;!to_process&nbsp;=&nbsp;[]&nbsp;<span class="keyword">then</span>&nbsp;[]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;log&nbsp;=&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Go;&nbsp;"</span>&nbsp;%&nbsp;if_color&nbsp;bold_red&nbsp;go_verb&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;the&nbsp;"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;(<span class="keyword">match</span>&nbsp;!to_process&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[one]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"target"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;more&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;i&nbsp;(<span class="constructor">List</span>.length&nbsp;more)&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;targets"</span>))&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[menu_item&nbsp;~char:<span class="string">'G'</span>&nbsp;~log&nbsp;<span class="keywordsign">`</span><span class="constructor">Done</span>]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;loop&nbsp;()&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;menu&nbsp;~sentence:<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Add&nbsp;targets&nbsp;to&nbsp;“"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;s&nbsp;list_name&nbsp;%&nbsp;s&nbsp;<span class="string">"”"</span>)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~always_there:[<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;menu_item&nbsp;~char:<span class="string">'G'</span>&nbsp;~log:<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Go;&nbsp;proceed"</span>)&nbsp;<span class="keywordsign">`</span><span class="constructor">Done</span>;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;menu_item&nbsp;~char:<span class="string">'q'</span>&nbsp;~log:<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Cancel"</span>)&nbsp;<span class="keywordsign">`</span><span class="constructor">Cancel</span>;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(target_menu&nbsp;())<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">function</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Add</span>&nbsp;id&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;to_process&nbsp;:=&nbsp;id&nbsp;::&nbsp;!to_process;&nbsp;loop&nbsp;()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Cancel</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;<span class="keywordsign">`</span><span class="constructor">Cancel</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Done</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;(<span class="keywordsign">`</span><span class="constructor">Go</span>&nbsp;!to_process)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;loop&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;go&nbsp;@&nbsp;[&nbsp;menu_item&nbsp;~char:<span class="string">'q'</span>&nbsp;~log:<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Cancel"</span>)&nbsp;<span class="keywordsign">`</span><span class="constructor">Cancel</span>&nbsp;]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;(<span class="keyword">if</span>&nbsp;all_valid_ids&nbsp;=&nbsp;[]&nbsp;<span class="keyword">then</span>&nbsp;[]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span>&nbsp;[&nbsp;menu_item&nbsp;~char:<span class="string">'A'</span>&nbsp;~log:all_log&nbsp;<span class="keywordsign">`</span><span class="constructor">All</span>;&nbsp;])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;sentence&nbsp;=&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;all_valid_ids&nbsp;=&nbsp;[]&nbsp;<span class="keyword">then</span>&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Nothing&nbsp;to&nbsp;"</span>&nbsp;%&nbsp;go_verb)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span>&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Add&nbsp;targets&nbsp;to&nbsp;“"</span>&nbsp;%&nbsp;s&nbsp;list_name&nbsp;%&nbsp;s&nbsp;<span class="string">"”"</span>)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;menu&nbsp;~sentence&nbsp;~always_there&nbsp;(target_menu&nbsp;())<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Add</span>&nbsp;id&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;to_process&nbsp;:=&nbsp;id&nbsp;::&nbsp;!to_process;&nbsp;loop&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">All</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;to_process&nbsp;:=&nbsp;all_valid_ids&nbsp;@&nbsp;!to_process;&nbsp;loop&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Cancel</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;<span class="keywordsign">`</span><span class="constructor">Cancel</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Done</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;(<span class="keywordsign">`</span><span class="constructor">Go</span>&nbsp;!to_process)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;loop&nbsp;()<br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;make_target_menu&nbsp;~targets&nbsp;?(filter_target=<span class="keyword">fun</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">true</span>)&nbsp;()&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;item_format&nbsp;=&nbsp;<span class="string">"$name&nbsp;($id)"</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.filter_map&nbsp;targets&nbsp;~f:(<span class="keyword">fun</span>&nbsp;target&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;filter_target&nbsp;target&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keyword">false</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keyword">true</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Some</span>&nbsp;(<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;menu_item&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~log:<span class="constructor">Log</span>.(bold_yellow&nbsp;(s&nbsp;(format_target&nbsp;~item_format&nbsp;target)))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~log:<span class="constructor">Log</span>.(format_target_for_menu&nbsp;target)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keywordsign">`</span><span class="constructor">Go</span>&nbsp;(<span class="constructor">Target</span>.id&nbsp;target))))<br>
 <br>
 <span class="keyword">end</span><br>
@@ -415,6 +441,7 @@
 &nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">if</span>&nbsp;interactive&nbsp;<span class="keyword">then</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Interaction</span>.build_sublist_of_targets&nbsp;~state&nbsp;~list_name:<span class="string">"Kill&nbsp;list"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~all_log:<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Kill'em&nbsp;All"</span>)&nbsp;~go_verb:<span class="constructor">Log</span>.(s&nbsp;<span class="string">"kill"</span>)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~filter:<span class="constructor">Target</span>.<span class="constructor">Is</span>.killable<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;(<span class="keywordsign">`</span><span class="constructor">Go</span>&nbsp;[])<br>
@@ -456,6 +483,7 @@
 &nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">if</span>&nbsp;interactive&nbsp;<span class="keyword">then</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Interaction</span>.build_sublist_of_targets&nbsp;~state&nbsp;~list_name:<span class="string">"Archival&nbsp;list"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~all_log:<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Archive&nbsp;them&nbsp;all"</span>)&nbsp;~go_verb:<span class="constructor">Log</span>.(s&nbsp;<span class="string">"archive"</span>)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~filter:<span class="constructor">Target</span>.<span class="constructor">Is</span>.finished<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;(<span class="keywordsign">`</span><span class="constructor">Go</span>&nbsp;[])<br>
@@ -573,12 +601,18 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[menu_item&nbsp;~char:<span class="string">'d'</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~log:<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Follow&nbsp;a&nbsp;dependency"</span>)&nbsp;<span class="keywordsign">`</span><span class="constructor">Follow_dependencies</span>]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;restart_item&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;<span class="constructor">Target</span>.<span class="constructor">Is</span>.finished&nbsp;target<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">then</span>&nbsp;[menu_item&nbsp;~char:<span class="string">'r'</span>&nbsp;~log:<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Restart&nbsp;(clone&nbsp;&amp;&nbsp;activate)"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">Restart</span>]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span>&nbsp;[]&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;menu&nbsp;~sentence&nbsp;~always_there:cancel_menu_items&nbsp;(<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[menu_item&nbsp;~char:<span class="string">'s'</span>&nbsp;~log:<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Show&nbsp;status"</span>)&nbsp;<span class="keywordsign">`</span><span class="constructor">Status</span>]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;build_process_details_item<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;follow_deps_item<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;kill_item<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;archive_item<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;restart_item<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;[menu_item&nbsp;~char:<span class="string">'O'</span>&nbsp;~log:<span class="constructor">Log</span>.(s&nbsp;<span class="string">"See&nbsp;JSON&nbsp;in&nbsp;$EDITOR"</span>)&nbsp;<span class="keywordsign">`</span><span class="constructor">View_json</span>]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;))<br>
 <br>
@@ -764,6 +798,16 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;explore&nbsp;~state&nbsp;(one&nbsp;::&nbsp;history)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Archive</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_state</span>.archive_target&nbsp;state&nbsp;(<span class="constructor">Target</span>.id&nbsp;chosen)&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;explore&nbsp;~state&nbsp;(one&nbsp;::&nbsp;history)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Restart</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_state</span>.restart_target&nbsp;~state&nbsp;chosen<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;(this_target,&nbsp;new_upper_dag)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"New&nbsp;Targets:"</span>&nbsp;%&nbsp;n<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;indent&nbsp;(<span class="constructor">Interaction</span>.format_target_for_menu&nbsp;this_target)&nbsp;%&nbsp;n<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;s&nbsp;<span class="string">"and&nbsp;its&nbsp;reverse&nbsp;dependencies:"</span>&nbsp;%&nbsp;n<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;indent&nbsp;(separate&nbsp;n&nbsp;(<span class="constructor">List</span>.map&nbsp;new_upper_dag<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~f:<span class="constructor">Interaction</span>.format_target_for_menu))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;normal);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;explore&nbsp;~state&nbsp;(one&nbsp;::&nbsp;history)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">View_json</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;view_json&nbsp;~state&nbsp;chosen&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>

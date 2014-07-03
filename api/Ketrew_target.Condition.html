@@ -42,7 +42,7 @@
 
 <pre><span class="keyword">module</span> Condition: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_target.Condition.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><hr width="100%">
 
-<pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = <code class="type">[ `False | `True | `Volume_exists of <a href="Ketrew_artifact.Volume.html#TYPEt">Ketrew_artifact.Volume.t</a> ]</code> </pre>
+<pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = <code class="type">[ `Command_returns of <a href="Ketrew_target.Command.html#TYPEt">Ketrew_target.Command.t</a> * int<br>       | `False<br>       | `True<br>       | `Volume_exists of <a href="Ketrew_artifact.Volume.html#TYPEt">Ketrew_artifact.Volume.t</a><br>       | `Volume_size_bigger_than of <a href="Ketrew_artifact.Volume.html#TYPEt">Ketrew_artifact.Volume.t</a> * int ]</code> </pre>
 <div class="info ">
 A execution anti-condition, the condition defines when a target is
     (already) ready: <ul>

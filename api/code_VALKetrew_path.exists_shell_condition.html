@@ -30,5 +30,5 @@
 </head>
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;exists_shell_condition&nbsp;=&nbsp;<span class="keyword">function</span><br>
-<span class="keywordsign">|</span>&nbsp;{kind&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">File</span>;&nbsp;path&nbsp;}&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;&nbsp;fmt&nbsp;<span class="string">"[&nbsp;-f&nbsp;%S&nbsp;]"</span>&nbsp;path<br>
-<span class="keywordsign">|</span>&nbsp;{kind&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">Directory</span>;&nbsp;path&nbsp;}&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;&nbsp;fmt&nbsp;<span class="string">"[&nbsp;-d&nbsp;%S&nbsp;]"</span>&nbsp;path</code></body></html>
+<span class="keywordsign">|</span>&nbsp;{kind&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">File</span>;&nbsp;path&nbsp;}&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;&nbsp;fmt&nbsp;<span class="string">"[&nbsp;-f&nbsp;%s&nbsp;]"</span>&nbsp;(<span class="constructor">Filename</span>.quote&nbsp;path)<br>
+<span class="keywordsign">|</span>&nbsp;{kind&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">Directory</span>;&nbsp;path&nbsp;}&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;&nbsp;fmt&nbsp;<span class="string">"[&nbsp;-d&nbsp;%s&nbsp;]"</span>&nbsp;(<span class="constructor">Filename</span>.quote&nbsp;path)</code></body></html>

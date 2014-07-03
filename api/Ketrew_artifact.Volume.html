@@ -92,6 +92,11 @@ Get all the paths of the given Volume (files and directories).<br>
 Check whether the whole structure of the Volume exists on the host.<br>
 </div>
 
+<pre><span id="VALget_size"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.Volume.get_size.html">get_size</a></span> : <code class="type"><a href="Ketrew_artifact.Volume.html#TYPEt">t</a> -><br>       (int,<br>        [> `Host of<br>             [> `Execution of<br>                  < host : string; message : string; stderr : string option;<br>                    stdout : string option ><br>              | `Non_zero of string * int<br>              | `Ssh_failure of<br>                  [> `Wrong_log of string<br>                   | `Wrong_status of <a href="Ketrew_unix_process.Exit_code.html#TYPEt">Ketrew_unix_process.Exit_code.t</a> ] *<br>                  string<br>              | `Unix_exec of string ]<br>             <a href="Ketrew_host.Error.html#TYPEexecution">Ketrew_host.Error.execution</a> <a href="Ketrew_host.Error.html#TYPEnon_zero_execution">Ketrew_host.Error.non_zero_execution</a><br>         | `Volume of [> `No_size of Ketrew_pervasives.Log.t ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+Get the total size of a volume in bytes. Returns 0 if the volume does
+        not exist (actually calls <a href="Ketrew_artifact.Volume.html#VALexists"><code class="code"><span class="constructor">Ketrew_artifact</span>.<span class="constructor">Volume</span>.exists</code></a>).<br>
+</div>
+
 <pre><span id="VALto_string_hum"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.Volume.to_string_hum.html">to_string_hum</a></span> : <code class="type"><a href="Ketrew_artifact.Volume.html#TYPEt">t</a> -> string</code></pre><div class="info ">
 Get a Human-readable string.<br>
 </div>

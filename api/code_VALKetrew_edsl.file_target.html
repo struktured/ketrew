@@ -26,11 +26,11 @@
 <link title="Ketrew_state" rel="Chapter" href="Ketrew_state.html">
 <link title="Ketrew_target" rel="Chapter" href="Ketrew_target.html">
 <link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html">
-<link title="Ketrew_user_command" rel="Chapter" href="Ketrew_user_command.html"><title>Ketrew API : Ketrew_edsl.unit</title>
+<link title="Ketrew_user_command" rel="Chapter" href="Ketrew_user_command.html"><title>Ketrew API : Ketrew_edsl.file_target</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;unit&nbsp;=&nbsp;<span class="keyword">object</span><br>
-&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;path&nbsp;=&nbsp;failwith&nbsp;<span class="string">"Unit&nbsp;has&nbsp;no&nbsp;path"</span><br>
-&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;exists&nbsp;=&nbsp;failwith&nbsp;<span class="string">"Unit&nbsp;does&nbsp;not&nbsp;“exist”"</span><br>
-&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;is_bigger_than&nbsp;_&nbsp;=&nbsp;failwith&nbsp;<span class="string">"Unit&nbsp;has&nbsp;no&nbsp;size"</span><br>
-<span class="keyword">end</span></code></body></html>
+<code class="code"><span class="keyword">let</span>&nbsp;file_target&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?dependencies&nbsp;?make&nbsp;?metadata&nbsp;?name&nbsp;?host&nbsp;path&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;product&nbsp;=&nbsp;file&nbsp;?host&nbsp;path&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;<span class="constructor">Option</span>.value&nbsp;name&nbsp;~default:(<span class="string">"Make:"</span>&nbsp;^&nbsp;path)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;target&nbsp;~product&nbsp;~ready_when:product<span class="keywordsign">#</span>exists&nbsp;?dependencies&nbsp;?make&nbsp;?metadata&nbsp;name</code></body></html>
