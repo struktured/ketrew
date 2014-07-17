@@ -31,6 +31,7 @@
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;classify&nbsp;(e&nbsp;:&nbsp;_&nbsp;non_zero_execution)&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;e&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">System</span>&nbsp;_&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Timeout</span>&nbsp;_<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Unix_exec</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Unix</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Execution</span>&nbsp;_&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Non_zero</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Execution</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ssh_failure</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ssh</span></code></body></html>

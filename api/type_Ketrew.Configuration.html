@@ -35,7 +35,9 @@
 &nbsp;&nbsp;&nbsp;&nbsp;?debug_level:int&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?with_color:bool&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?turn_unix_ssh_failure_into_target_failure:bool&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;?persistent_state_key:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;database_parameters:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?persistent_state_key:string&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?host_timeout_upper_bound:float&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;database_parameters:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;default_configuration_path&nbsp;:&nbsp;string<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;default_database_path&nbsp;:&nbsp;string<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;database_parameters&nbsp;:&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>

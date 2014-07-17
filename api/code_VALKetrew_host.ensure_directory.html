@@ -29,6 +29,6 @@
 <link title="Ketrew_user_command" rel="Chapter" href="Ketrew_user_command.html"><title>Ketrew API : Ketrew_host.ensure_directory</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;ensure_directory&nbsp;?with_shell&nbsp;t&nbsp;~path&nbsp;=<br>
+<code class="code"><span class="keyword">let</span>&nbsp;ensure_directory&nbsp;?timeout&nbsp;?with_shell&nbsp;t&nbsp;~path&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;cmd&nbsp;=&nbsp;fmt&nbsp;<span class="string">"mkdir&nbsp;-p&nbsp;%s"</span>&nbsp;<span class="constructor">Path</span>.(to_string_quoted&nbsp;path)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;run_shell_command&nbsp;?with_shell&nbsp;t&nbsp;cmd</code></body></html>
+&nbsp;&nbsp;run_shell_command&nbsp;?timeout&nbsp;?with_shell&nbsp;t&nbsp;cmd</code></body></html>

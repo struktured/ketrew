@@ -108,7 +108,7 @@ Coerce a path to any kind of path (file or directory).
 </td></tr>
 <tr><td><a href="Ketrew_configuration.html#VALapply_globals">apply_globals</a> [<a href="Ketrew_configuration.html">Ketrew_configuration</a>]</td>
 <td><div class="info">
-Apply options that have global impact (debug levels/colors).
+Apply options that have global impact.
 </div>
 </td></tr>
 <tr><td><a href="Ketrew_state.html#VALarchive_target">archive_target</a> [<a href="Ketrew_state.html">Ketrew_state</a>]</td>
@@ -251,6 +251,11 @@ Use
   <code class="code">default_shell ~binary:<span class="string">"/bin/sh"</span> ~options:[<span class="string">"-l"</span>; <span class="string">"--something"</span>; <span class="string">"blah"</span> ]
       ~command_option:<span class="string">"-c"</span> <span class="string">"sh"</span></code>
   to define a default-shell calling <code class="code"><span class="string">"sh -l --something blah -c &lt;command&gt;"</span></code>.
+</div>
+</td></tr>
+<tr><td><a href="Ketrew_host.html#VALdefault_timeout_upper_bound">default_timeout_upper_bound</a> [<a href="Ketrew_host.html">Ketrew_host</a>]</td>
+<td><div class="info">
+Default (upper bound) of the `?timeout` arguments.
 </div>
 </td></tr>
 <tr><td><a href="Ketrew_target.html#VALdeserialize">deserialize</a> [<a href="Ketrew_target.html">Ketrew_target</a>]</td>

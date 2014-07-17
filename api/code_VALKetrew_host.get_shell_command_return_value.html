@@ -29,7 +29,7 @@
 <link title="Ketrew_user_command" rel="Chapter" href="Ketrew_user_command.html"><title>Ketrew API : Ketrew_host.get_shell_command_return_value</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;get_shell_command_return_value&nbsp;?with_shell&nbsp;t&nbsp;cmd&nbsp;=<br>
-&nbsp;&nbsp;execute&nbsp;t&nbsp;(override_shell&nbsp;?with_shell&nbsp;t&nbsp;cmd)<br>
+<code class="code"><span class="keyword">let</span>&nbsp;get_shell_command_return_value&nbsp;?timeout&nbsp;?with_shell&nbsp;t&nbsp;cmd&nbsp;=<br>
+&nbsp;&nbsp;execute&nbsp;?timeout&nbsp;t&nbsp;(override_shell&nbsp;?with_shell&nbsp;t&nbsp;cmd)<br>
 &nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;execution&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;return&nbsp;execution<span class="keywordsign">#</span>exited</code></body></html>

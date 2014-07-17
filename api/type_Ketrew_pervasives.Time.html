@@ -38,6 +38,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">And</span>&nbsp;<span class="keyword">of</span>&nbsp;program&nbsp;list<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Exec</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;list<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Shell_command</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;]<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;time&nbsp;=&nbsp;float<br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;ssh_host&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.ssh_host&nbsp;=&nbsp;{<br>
 &nbsp;&nbsp;&nbsp;&nbsp;address&nbsp;:&nbsp;string;<br>
@@ -64,6 +65,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;connection&nbsp;:&nbsp;connection;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;playground&nbsp;:&nbsp;path&nbsp;option;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;default_shell&nbsp;:&nbsp;default_shell;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;execution_timeout&nbsp;:&nbsp;time&nbsp;option;<br>
 &nbsp;&nbsp;}<br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;volume&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.volume&nbsp;=&nbsp;{<br>
@@ -72,7 +74,6 @@
 &nbsp;&nbsp;&nbsp;&nbsp;structure&nbsp;:&nbsp;volume_structure;<br>
 &nbsp;&nbsp;}<br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;unique_id&nbsp;=&nbsp;string<br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;time&nbsp;=&nbsp;float<br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;persistent_state&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.persistent_state&nbsp;=&nbsp;{<br>
 &nbsp;&nbsp;&nbsp;&nbsp;current_targets&nbsp;:&nbsp;unique_id&nbsp;list;<br>

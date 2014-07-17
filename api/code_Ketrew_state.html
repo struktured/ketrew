@@ -306,7 +306,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;[<span class="keywordsign">`</span><span class="constructor">Target_died</span>&nbsp;(<span class="constructor">Target</span>.id&nbsp;target,<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;make_error&nbsp;plugin_name&nbsp;str)]<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Recoverable</span>&nbsp;str,&nbsp;<span class="keyword">false</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"[%s]&nbsp;Recoverable&nbsp;error:&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;str&nbsp;@&nbsp;warning);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Recoverable&nbsp;error:&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;str&nbsp;@&nbsp;warning);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;[]<br>
 <br>
 <span class="keyword">let</span>&nbsp;_start_running_target&nbsp;t&nbsp;target&nbsp;=<br>

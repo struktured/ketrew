@@ -29,20 +29,30 @@
 <link title="Ketrew_user_command" rel="Chapter" href="Ketrew_user_command.html"><title>Ketrew API : Ketrew_host.put_file</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;put_file&nbsp;t&nbsp;~path&nbsp;~content&nbsp;=<br>
+<code class="code"><span class="keyword">let</span>&nbsp;put_file&nbsp;?timeout&nbsp;t&nbsp;~path&nbsp;~content&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;t.connection&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Localhost</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">IO</span>.write_file&nbsp;~content&nbsp;<span class="constructor">Path</span>.(to_string&nbsp;path)<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ssh</span>&nbsp;ssh&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;temp&nbsp;=&nbsp;<span class="constructor">Filename</span>.temp_file&nbsp;<span class="string">"ketrew"</span>&nbsp;<span class="string">"ssh_put_file"</span>&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">IO</span>.write_file&nbsp;~content&nbsp;temp<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;scp_cmd&nbsp;=&nbsp;<span class="constructor">Ssh</span>.(scp_push&nbsp;ssh&nbsp;~src:[temp]&nbsp;~dest:(<span class="constructor">Path</span>.to_string&nbsp;path))&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="constructor">Ketrew_unix_process</span>.succeed&nbsp;scp_cmd<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;run&nbsp;~log&nbsp;()&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">IO</span>.write_file&nbsp;~content&nbsp;temp<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;scp_cmd&nbsp;=&nbsp;<span class="constructor">Ssh</span>.(scp_push&nbsp;ssh&nbsp;~src:[temp]&nbsp;~dest:(<span class="constructor">Path</span>.to_string&nbsp;path))&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="constructor">Ketrew_unix_process</span>.succeed&nbsp;scp_cmd<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&lt;&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ok</span>&nbsp;(out,&nbsp;err)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Process</span>&nbsp;_&nbsp;<span class="keyword">as</span>&nbsp;process_error)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;msg&nbsp;=&nbsp;<span class="constructor">Ketrew_unix_process</span>.error_to_string&nbsp;process_error&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Scp-cmd&nbsp;"</span>&nbsp;%&nbsp;<span class="constructor">OCaml</span>.list&nbsp;(sf&nbsp;<span class="string">"%S"</span>)&nbsp;scp_cmd&nbsp;&nbsp;%&nbsp;sp&nbsp;%&nbsp;log<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;failed:&nbsp;"</span>&nbsp;%s&nbsp;msg&nbsp;@&nbsp;verbose);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fail_exec&nbsp;t&nbsp;msg<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;run_with_timeout&nbsp;?timeout&nbsp;t&nbsp;~run<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&lt;&nbsp;<span class="keyword">function</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ok</span>&nbsp;(out,&nbsp;err)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Process</span>&nbsp;_&nbsp;<span class="keyword">as</span>&nbsp;process_error)&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;msg&nbsp;=&nbsp;<span class="constructor">Ketrew_unix_process</span>.error_to_string&nbsp;process_error&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Scp-cmd&nbsp;"</span>&nbsp;%&nbsp;<span class="constructor">OCaml</span>.list&nbsp;(sf&nbsp;<span class="string">"%S"</span>)&nbsp;scp_cmd&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;failed:&nbsp;"</span>&nbsp;%s&nbsp;msg&nbsp;@&nbsp;verbose);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fail_exec&nbsp;t&nbsp;msg<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ok</span>&nbsp;o&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;o<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">IO</span>&nbsp;_&nbsp;<span class="keyword">as</span>&nbsp;e)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fail&nbsp;e<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Host</span>&nbsp;e)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fail&nbsp;(<span class="keywordsign">`</span><span class="constructor">Host</span>&nbsp;e)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">System</span>&nbsp;_&nbsp;<span class="keyword">as</span>&nbsp;e)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Timeout</span>&nbsp;_&nbsp;<span class="keyword">as</span>&nbsp;e)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fail&nbsp;(<span class="keywordsign">`</span><span class="constructor">Host</span>&nbsp;e)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span></code></body></html>

@@ -29,10 +29,10 @@
 <link title="Ketrew_user_command" rel="Chapter" href="Ketrew_user_command.html"><title>Ketrew API : Ketrew_host.do_files_exist</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;do_files_exist&nbsp;?with_shell&nbsp;t&nbsp;paths&nbsp;=<br>
+<code class="code"><span class="keyword">let</span>&nbsp;do_files_exist&nbsp;?timeout&nbsp;?with_shell&nbsp;t&nbsp;paths&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;cmd&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.map&nbsp;paths&nbsp;~f:<span class="constructor">Path</span>.exists_shell_condition&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;|&gt;&nbsp;<span class="constructor">String</span>.concat&nbsp;~sep:<span class="string">"&nbsp;&amp;&amp;&nbsp;"</span>&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;get_shell_command_return_value&nbsp;?with_shell&nbsp;t&nbsp;cmd<br>
+&nbsp;&nbsp;get_shell_command_return_value&nbsp;?timeout&nbsp;?with_shell&nbsp;t&nbsp;cmd<br>
 &nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;ret&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;return&nbsp;(ret&nbsp;=&nbsp;0)</code></body></html>

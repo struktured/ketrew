@@ -58,4 +58,8 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Some</span>&nbsp;(default_shell&nbsp;~command_option&nbsp;one&nbsp;~options)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;create&nbsp;?playground&nbsp;~connection&nbsp;?default_shell&nbsp;(<span class="constructor">Uri</span>.to_string&nbsp;uri)</code></body></html>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;execution_timeout&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Uri</span>.get_query_param&nbsp;uri&nbsp;<span class="string">"timeout"</span>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;|&gt;&nbsp;<span class="constructor">Option</span>.bind&nbsp;~f:<span class="constructor">Float</span>.of_string&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;create&nbsp;?playground&nbsp;~connection&nbsp;?default_shell&nbsp;?execution_timeout<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Uri</span>.to_string&nbsp;uri)</code></body></html>

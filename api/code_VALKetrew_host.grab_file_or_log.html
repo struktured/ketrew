@@ -29,12 +29,14 @@
 <link title="Ketrew_user_command" rel="Chapter" href="Ketrew_user_command.html"><title>Ketrew API : Ketrew_host.grab_file_or_log</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;grab_file_or_log&nbsp;host&nbsp;path&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;get_file&nbsp;host&nbsp;~path<br>
+<code class="code"><span class="keyword">let</span>&nbsp;grab_file_or_log&nbsp;?timeout&nbsp;host&nbsp;path&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;get_file&nbsp;?timeout&nbsp;host&nbsp;~path<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&lt;&nbsp;<span class="keyword">function</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ok</span>&nbsp;c&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;c<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Cannot_read_file</span>&nbsp;_)&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fail&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"cannot&nbsp;read&nbsp;file"</span>&nbsp;%&nbsp;s&nbsp;(<span class="constructor">Path</span>.to_string&nbsp;path))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">IO</span>&nbsp;_&nbsp;<span class="keyword">as</span>&nbsp;e)&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fail&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"I/O&nbsp;error:&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;(<span class="constructor">IO</span>.error_to_string&nbsp;e))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Timeout</span>&nbsp;time)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fail&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Timeout:&nbsp;"</span>&nbsp;%&nbsp;f&nbsp;time)<br>
 &nbsp;&nbsp;<span class="keyword">end</span></code></body></html>
