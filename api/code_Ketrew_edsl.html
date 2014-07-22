@@ -105,6 +105,7 @@
 &nbsp;&nbsp;?(ready_when&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">False</span>)<br>
 &nbsp;&nbsp;?(metadata&nbsp;=&nbsp;<span class="constructor">Artifact</span>.<span class="constructor">Value</span>.unit)<br>
 &nbsp;&nbsp;?product<br>
+&nbsp;&nbsp;?equivalence<br>
 &nbsp;&nbsp;()<br>
 &nbsp;&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;id&nbsp;=&nbsp;<span class="constructor">Unique_id</span>.create&nbsp;()&nbsp;<span class="keyword">in</span><br>
@@ -125,6 +126,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~id:self<span class="keywordsign">#</span>id<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~dependencies:(<span class="constructor">List</span>.map&nbsp;dependencies&nbsp;~f:(<span class="keyword">fun</span>&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t<span class="keywordsign">#</span>id))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~name:self<span class="keywordsign">#</span>name&nbsp;~condition:ready_when<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?equivalence<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~make&nbsp;()<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;product&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Option</span>.value_exn&nbsp;product&nbsp;<br>
@@ -132,18 +134,18 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
 &nbsp;&nbsp;<span class="keyword">end</span><br>
 <br>
-<span class="keyword">let</span>&nbsp;target&nbsp;?active&nbsp;?dependencies&nbsp;?make&nbsp;?ready_when&nbsp;?metadata&nbsp;?product&nbsp;name&nbsp;=<br>
+<span class="keyword">let</span>&nbsp;target&nbsp;?active&nbsp;?dependencies&nbsp;?make&nbsp;?ready_when&nbsp;?metadata&nbsp;?product<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?equivalence&nbsp;name&nbsp;=<br>
 &nbsp;&nbsp;user_target_internal<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?equivalence<br>
 &nbsp;&nbsp;&nbsp;&nbsp;?active&nbsp;?dependencies&nbsp;~name&nbsp;?make&nbsp;?metadata&nbsp;?ready_when&nbsp;?product&nbsp;()<br>
-<span class="keyword">let</span>&nbsp;active&nbsp;&nbsp;?dependencies&nbsp;?make&nbsp;?ready_when&nbsp;?metadata&nbsp;?product&nbsp;name&nbsp;=<br>
-&nbsp;&nbsp;user_target_internal&nbsp;~active:<span class="keyword">true</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;?dependencies&nbsp;?metadata&nbsp;~name&nbsp;?make&nbsp;?ready_when&nbsp;?product&nbsp;()<br>
 <br>
 <span class="keyword">let</span>&nbsp;file_target&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;?dependencies&nbsp;?make&nbsp;?metadata&nbsp;?name&nbsp;?host&nbsp;path&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?dependencies&nbsp;?make&nbsp;?metadata&nbsp;?name&nbsp;?host&nbsp;?equivalence&nbsp;path&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;product&nbsp;=&nbsp;file&nbsp;?host&nbsp;path&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;<span class="constructor">Option</span>.value&nbsp;name&nbsp;~default:(<span class="string">"Make:"</span>&nbsp;^&nbsp;path)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;target&nbsp;~product&nbsp;~ready_when:product<span class="keywordsign">#</span>exists&nbsp;?dependencies&nbsp;?make&nbsp;?metadata&nbsp;name<br>
+&nbsp;&nbsp;target&nbsp;~product&nbsp;?equivalence<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~ready_when:product<span class="keywordsign">#</span>exists&nbsp;?dependencies&nbsp;?make&nbsp;?metadata&nbsp;name<br>
 <br>
 <span class="comment">(*<br>
 &nbsp;&nbsp;Run&nbsp;a&nbsp;workflow:<br>

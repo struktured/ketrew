@@ -91,8 +91,14 @@ Get a <code class="code"><span class="constructor">Host</span>.t</code> from an 
     the “path” part of the URI is the playground.
 <p>
 
-    If present, a <code class="code"><span class="string">"shell"</span></code> argument defines the <code class="code">default_shell</code>.
+    Optional arguments can be added to the URL:
 <p>
+<ul>
+<li>a <code class="code"><span class="string">"shell"</span></code> argument defines the <code class="code">default_shell</code>.</li>
+<li>a list of <code class="code"><span class="string">"ssh-option"</span></code> parameters can be added for SSH-based host, they
+    add options to SSH/SCP calls.</li>
+<li>a <code class="code"><span class="string">"timeout"</span></code> value can be defined (in seconds) for all system/SSH calls.</li>
+</ul>
 
     For example
     <code class="code">of_string <span class="string">"//user@SomeHost:42/tmp/pg?shell=bash,-l,--init-file,bouh,-c&amp;timeout=42"</span></code>

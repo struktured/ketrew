@@ -131,6 +131,7 @@ The identifiers of targets.<br>
 
 
 <pre><span class="keyword">module</span> <a href="Ketrew_target.Condition.html">Condition</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_target.Condition.html">..</a> <code class="code"><span class="keyword">end</span></code></pre>
+<pre><span class="keyword">module</span> <a href="Ketrew_target.Equivalence.html">Equivalence</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_target.Equivalence.html">..</a> <code class="code"><span class="keyword">end</span></code></pre>
 <pre><code><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = {</code></pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
@@ -185,6 +186,13 @@ The identifiers of targets.<br>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
+<code><span id="TYPEELTt.equivalence">equivalence</span>&nbsp;: <code class="type"><a href="Ketrew_target.Equivalence.html#TYPEt">Equivalence.t</a></code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
 <code><span id="TYPEELTt.history">history</span>&nbsp;: <code class="type"><a href="Ketrew_target.html#TYPEworkflow_state">workflow_state</a></code>;</code></td>
 
 </tr></table>
@@ -195,7 +203,7 @@ The fat record holding targets.<br>
 </div>
 
 
-<pre><span id="VALcreate"><span class="keyword">val</span> <a href="code_VALKetrew_target.create.html">create</a></span> : <code class="type">?id:<a href="Ketrew_target.html#TYPEid">id</a> -><br>       ?name:string -><br>       ?persistance:[ `Input_data | `Recomputable of float | `Result ] -><br>       ?metadata:<a href="Ketrew_artifact.Value.html#TYPEt">Ketrew_artifact.Value.t</a> -><br>       ?dependencies:<a href="Ketrew_target.html#TYPEid">id</a> list -><br>       ?make:<a href="Ketrew_target.html#TYPEbuild_process">build_process</a> -><br>       ?condition:<a href="Ketrew_target.Condition.html#TYPEt">Condition.t</a> -> unit -> <a href="Ketrew_target.html#TYPEt">t</a></code></pre><div class="info ">
+<pre><span id="VALcreate"><span class="keyword">val</span> <a href="code_VALKetrew_target.create.html">create</a></span> : <code class="type">?id:<a href="Ketrew_target.html#TYPEid">id</a> -><br>       ?name:string -><br>       ?persistance:[ `Input_data | `Recomputable of float | `Result ] -><br>       ?metadata:<a href="Ketrew_artifact.Value.html#TYPEt">Ketrew_artifact.Value.t</a> -><br>       ?dependencies:<a href="Ketrew_target.html#TYPEid">id</a> list -><br>       ?make:<a href="Ketrew_target.html#TYPEbuild_process">build_process</a> -><br>       ?condition:<a href="Ketrew_target.Condition.html#TYPEt">Condition.t</a> -><br>       ?equivalence:<a href="Ketrew_target.Equivalence.html#TYPEt">Equivalence.t</a> -> unit -> <a href="Ketrew_target.html#TYPEt">t</a></code></pre><div class="info ">
 Create a target value (not stored in the DB yet).<br>
 </div>
 
@@ -229,12 +237,18 @@ Get a new target updated with new run paramters (from a plugin),
     raises <code class="code"><span class="constructor">Invalid_argument</span> _</code> if the target is in a wrong state.<br>
 </div>
 
-<pre><span id="VALactive"><span class="keyword">val</span> <a href="code_VALKetrew_target.active.html">active</a></span> : <code class="type">?id:<a href="Ketrew_target.html#TYPEid">id</a> -><br>       ?name:string -><br>       ?persistance:[ `Input_data | `Recomputable of float | `Result ] -><br>       ?metadata:<a href="Ketrew_artifact.Value.html#TYPEt">Ketrew_artifact.Value.t</a> -><br>       ?dependencies:<a href="Ketrew_target.html#TYPEid">id</a> list -><br>       ?make:<a href="Ketrew_target.html#TYPEbuild_process">build_process</a> -><br>       ?condition:<a href="Ketrew_target.Condition.html#TYPEt">Condition.t</a> -> unit -> <a href="Ketrew_target.html#TYPEt">t</a></code></pre><div class="info ">
+<pre><span id="VALactive"><span class="keyword">val</span> <a href="code_VALKetrew_target.active.html">active</a></span> : <code class="type">?id:<a href="Ketrew_target.html#TYPEid">id</a> -><br>       ?name:string -><br>       ?persistance:[ `Input_data | `Recomputable of float | `Result ] -><br>       ?metadata:<a href="Ketrew_artifact.Value.html#TYPEt">Ketrew_artifact.Value.t</a> -><br>       ?dependencies:<a href="Ketrew_target.html#TYPEid">id</a> list -><br>       ?make:<a href="Ketrew_target.html#TYPEbuild_process">build_process</a> -><br>       ?condition:<a href="Ketrew_target.Condition.html#TYPEt">Condition.t</a> -><br>       ?equivalence:<a href="Ketrew_target.Equivalence.html#TYPEt">Equivalence.t</a> -> unit -> <a href="Ketrew_target.html#TYPEt">t</a></code></pre><div class="info ">
 Like <a href="Ketrew_target.html#VALcreate"><code class="code"><span class="constructor">Ketrew_target</span>.create</code></a> but set as already activated.<br>
 </div>
 
 <pre><span id="VALreactivate"><span class="keyword">val</span> <a href="code_VALKetrew_target.reactivate.html">reactivate</a></span> : <code class="type">?with_id:string -><br>       ?with_name:string -><br>       ?with_metadata:<a href="Ketrew_artifact.Value.html#TYPEt">Ketrew_artifact.Value.t</a> -> <a href="Ketrew_target.html#TYPEt">t</a> -> <a href="Ketrew_target.html#TYPEt">t</a></code></pre><div class="info ">
 “Clone” the target as an activated new target.<br>
+</div>
+
+<pre><span id="VALis_equivalent"><span class="keyword">val</span> <a href="code_VALKetrew_target.is_equivalent.html">is_equivalent</a></span> : <code class="type"><a href="Ketrew_target.html#TYPEt">t</a> -> <a href="Ketrew_target.html#TYPEt">t</a> -> bool</code></pre><div class="info ">
+Tell whether the first on is equivalent to the second one. This not
+    a commutative operation: the function does not look at
+    the second target's <code class="code"><span class="constructor">Equivalence</span></code> field.<br>
 </div>
 
 <pre><span id="VALid"><span class="keyword">val</span> <a href="code_VALKetrew_target.id.html">id</a></span> : <code class="type"><a href="Ketrew_target.html#TYPEt">t</a> -> <a href="Ketrew_pervasives.Unique_id.html#TYPEt">Ketrew_pervasives.Unique_id.t</a></code></pre><div class="info ">

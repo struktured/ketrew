@@ -107,18 +107,31 @@
 <br>
 <span class="keyword">end</span><br>
 <br>
+<span class="keyword">module</span>&nbsp;<span class="constructor">Equivalence</span>&nbsp;=&nbsp;<span class="keyword">struct</span><br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;<span class="constructor">Ketrew_gen_target_v0_t</span>.equivalence<br>
+<span class="keyword">end</span><br>
 <br>
 <span class="keyword">let</span>&nbsp;nop&nbsp;:&nbsp;build_process&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">Artifact</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Value</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Unit</span>)<br>
 <br>
 <span class="keyword">let</span>&nbsp;create<br>
 &nbsp;&nbsp;&nbsp;&nbsp;?id&nbsp;?name&nbsp;?(persistance=<span class="keywordsign">`</span><span class="constructor">Input_data</span>)&nbsp;?(metadata=<span class="constructor">Artifact</span>.<span class="constructor">Value</span>.unit)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;?(dependencies=[])&nbsp;?(make=nop)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;?(condition=<span class="keywordsign">`</span><span class="constructor">False</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?(condition=<span class="keywordsign">`</span><span class="constructor">False</span>)&nbsp;?(equivalence=<span class="keywordsign">`</span><span class="constructor">Same_active_condition</span>)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;()&nbsp;=&nbsp;<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;history&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">Created</span>&nbsp;<span class="constructor">Time</span>.(now&nbsp;())&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;id&nbsp;=&nbsp;<span class="constructor">Option</span>.value&nbsp;id&nbsp;~default:(<span class="constructor">Unique_id</span>.create&nbsp;())&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;{&nbsp;id;&nbsp;name&nbsp;=&nbsp;<span class="constructor">Option</span>.value&nbsp;name&nbsp;~default:id;&nbsp;persistance;&nbsp;metadata;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;dependencies;&nbsp;make;&nbsp;condition;&nbsp;history&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dependencies;&nbsp;make;&nbsp;condition;&nbsp;history;&nbsp;equivalence&nbsp;}<br>
+<br>
+<span class="keyword">let</span>&nbsp;is_equivalent&nbsp;t&nbsp;ext&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;t.equivalence&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">false</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Same_active_condition</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">match</span>&nbsp;t.condition&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">True</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">False</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">false</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;other&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;other&nbsp;=&nbsp;ext.condition<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+<br>
 <br>
 </code><table><tr><td></td><td><span class="comment">(** Create a new  target but activated from a created one; 
     raises <code class="code"><span class="constructor">Invalid_argument</span> _</code> if current status is not <code class="code"><span class="keywordsign">`</span><span class="constructor">Created</span> _</code>. *)</span></td></tr></table><code class="code"><br>
@@ -170,10 +183,10 @@
 <br>
 <span class="keyword">let</span>&nbsp;active&nbsp;?id<br>
 &nbsp;&nbsp;&nbsp;&nbsp;?name&nbsp;?persistance&nbsp;?metadata<br>
-&nbsp;&nbsp;&nbsp;&nbsp;?dependencies&nbsp;?make&nbsp;?condition<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?dependencies&nbsp;?make&nbsp;?condition&nbsp;?equivalence<br>
 &nbsp;&nbsp;&nbsp;&nbsp;()&nbsp;=&nbsp;<br>
 &nbsp;&nbsp;activate_exn&nbsp;~by:<span class="keywordsign">`</span><span class="constructor">User</span>&nbsp;(create&nbsp;?id&nbsp;?name&nbsp;?persistance&nbsp;?metadata&nbsp;?condition<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?dependencies&nbsp;?make&nbsp;())<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?equivalence&nbsp;?dependencies&nbsp;?make&nbsp;())<br>
 <br>
 <span class="keyword">let</span>&nbsp;reactivate&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;?with_id&nbsp;?with_name&nbsp;?with_metadata&nbsp;t&nbsp;=<br>

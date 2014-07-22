@@ -30,7 +30,8 @@
 </head>
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;file_target&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;?dependencies&nbsp;?make&nbsp;?metadata&nbsp;?name&nbsp;?host&nbsp;path&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?dependencies&nbsp;?make&nbsp;?metadata&nbsp;?name&nbsp;?host&nbsp;?equivalence&nbsp;path&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;product&nbsp;=&nbsp;file&nbsp;?host&nbsp;path&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;<span class="constructor">Option</span>.value&nbsp;name&nbsp;~default:(<span class="string">"Make:"</span>&nbsp;^&nbsp;path)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;target&nbsp;~product&nbsp;~ready_when:product<span class="keywordsign">#</span>exists&nbsp;?dependencies&nbsp;?make&nbsp;?metadata&nbsp;name</code></body></html>
+&nbsp;&nbsp;target&nbsp;~product&nbsp;?equivalence<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~ready_when:product<span class="keywordsign">#</span>exists&nbsp;?dependencies&nbsp;?make&nbsp;?metadata&nbsp;name</code></body></html>

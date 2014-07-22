@@ -148,6 +148,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;log&nbsp;:&nbsp;<span class="constructor">Ketrew_target</span>.<span class="constructor">Condition</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_pervasives</span>.<span class="constructor">Log</span>.t<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;to_string_hum&nbsp;:&nbsp;<span class="constructor">Ketrew_target</span>.<span class="constructor">Condition</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">Equivalence</span>&nbsp;:&nbsp;<span class="keyword">sig</span>&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;<span class="constructor">Ketrew_gen_target_v0_t</span>.equivalence&nbsp;<span class="keyword">end</span><br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;{<br>
 &nbsp;&nbsp;&nbsp;&nbsp;id&nbsp;:&nbsp;<span class="constructor">Ketrew_target</span>.id;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;name&nbsp;:&nbsp;string;<br>
@@ -156,6 +157,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;dependencies&nbsp;:&nbsp;<span class="constructor">Ketrew_target</span>.id&nbsp;list;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;make&nbsp;:&nbsp;<span class="constructor">Ketrew_target</span>.build_process;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;condition&nbsp;:&nbsp;<span class="constructor">Ketrew_target</span>.<span class="constructor">Condition</span>.t;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;equivalence&nbsp;:&nbsp;<span class="constructor">Ketrew_target</span>.<span class="constructor">Equivalence</span>.t;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;history&nbsp;:&nbsp;<span class="constructor">Ketrew_target</span>.workflow_state;<br>
 &nbsp;&nbsp;}<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;create&nbsp;:<br>
@@ -165,7 +167,8 @@
 &nbsp;&nbsp;&nbsp;&nbsp;?metadata:<span class="constructor">Ketrew_artifact</span>.<span class="constructor">Value</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?dependencies:<span class="constructor">Ketrew_target</span>.id&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?make:<span class="constructor">Ketrew_target</span>.build_process&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;?condition:<span class="constructor">Ketrew_target</span>.<span class="constructor">Condition</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_target</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?condition:<span class="constructor">Ketrew_target</span>.<span class="constructor">Condition</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?equivalence:<span class="constructor">Ketrew_target</span>.<span class="constructor">Equivalence</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_target</span>.t<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;activate_exn&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_target</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;by:[&nbsp;<span class="keywordsign">`</span><span class="constructor">Dependency</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">User</span>&nbsp;]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_target</span>.t<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;make_succeed_exn&nbsp;:<br>
@@ -184,12 +187,14 @@
 &nbsp;&nbsp;&nbsp;&nbsp;?metadata:<span class="constructor">Ketrew_artifact</span>.<span class="constructor">Value</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?dependencies:<span class="constructor">Ketrew_target</span>.id&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?make:<span class="constructor">Ketrew_target</span>.build_process&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;?condition:<span class="constructor">Ketrew_target</span>.<span class="constructor">Condition</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_target</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?condition:<span class="constructor">Ketrew_target</span>.<span class="constructor">Condition</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?equivalence:<span class="constructor">Ketrew_target</span>.<span class="constructor">Equivalence</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_target</span>.t<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;reactivate&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;?with_id:string&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?with_name:string&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?with_metadata:<span class="constructor">Ketrew_artifact</span>.<span class="constructor">Value</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_target</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_target</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;is_equivalent&nbsp;:&nbsp;<span class="constructor">Ketrew_target</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_target</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;id&nbsp;:&nbsp;<span class="constructor">Ketrew_target</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_pervasives</span>.<span class="constructor">Unique_id</span>.t<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;name&nbsp;:&nbsp;<span class="constructor">Ketrew_target</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;serialize&nbsp;:&nbsp;<span class="constructor">Ketrew_target</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
