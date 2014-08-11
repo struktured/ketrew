@@ -78,13 +78,13 @@ The container of volumes.<br>
 </div>
 
 
-<pre><span id="VALcreate"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.Volume.create.html">create</a></span> : <code class="type">host:<a href="Ketrew_host.html#TYPEt">Ketrew_host.t</a> -><br>       root:<a href="Ketrew_path.html#TYPEabsolute_directory">Ketrew_path.absolute_directory</a> -><br>       <a href="Ketrew_artifact.Volume.html#TYPEstructure">structure</a> -> <a href="Ketrew_artifact.Volume.html#TYPEt">t</a></code></pre><div class="info ">
+<pre><span id="VALcreate"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.Volume.create.html">create</a></span> : <code class="type">host:<a href="Ketrew_host.html#TYPEt">Ketrew_host.t</a> -><br>       root:<a href="Ketrew_path.html#TYPEt">Ketrew_path.t</a> -><br>       <a href="Ketrew_artifact.Volume.html#TYPEstructure">structure</a> -> <a href="Ketrew_artifact.Volume.html#TYPEt">t</a></code></pre><div class="info ">
 Create a volume. Example <pre class="codepre"><code class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;sources&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Volume</span>.create&nbsp;~host:deployment_server&nbsp;~root:git_repository<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;src_dir_structure&nbsp;</code></pre><br>
 </div>
 
-<pre><span id="VALall_paths"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.Volume.all_paths.html">all_paths</a></span> : <code class="type"><a href="Ketrew_artifact.Volume.html#TYPEt">t</a> -><br>       < kind : 'a; relativity : <a href="Ketrew_path.html#TYPEabsolute">Ketrew_path.absolute</a> > <a href="Ketrew_path.html#TYPEt">Ketrew_path.t</a> list</code></pre><div class="info ">
+<pre><span id="VALall_paths"><span class="keyword">val</span> <a href="code_VALKetrew_artifact.Volume.all_paths.html">all_paths</a></span> : <code class="type"><a href="Ketrew_artifact.Volume.html#TYPEt">t</a> -> <a href="Ketrew_path.html#TYPEt">Ketrew_path.t</a> list</code></pre><div class="info ">
 Get all the paths of the given Volume (files and directories).<br>
 </div>
 

@@ -30,62 +30,17 @@
 </head>
 <body>
 <code class="code"><span class="keyword">sig</span><br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;relative<br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;absolute<br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;file<br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;directory<br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;t&nbsp;=&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.path<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">constraint</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;=&nbsp;&lt;&nbsp;kind&nbsp;:&nbsp;<span class="keywordsign">'</span>file_kind;&nbsp;relativity&nbsp;:&nbsp;<span class="keywordsign">'</span>relativity&nbsp;&gt;<br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;absolute_directory&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&nbsp;kind&nbsp;:&nbsp;<span class="constructor">Ketrew_path</span>.directory;&nbsp;relativity&nbsp;:&nbsp;<span class="constructor">Ketrew_path</span>.absolute&nbsp;&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_path</span>.t<br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;absolute_file&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&nbsp;kind&nbsp;:&nbsp;<span class="constructor">Ketrew_path</span>.file;&nbsp;relativity&nbsp;:&nbsp;<span class="constructor">Ketrew_path</span>.absolute&nbsp;&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_path</span>.t<br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;relative_directory&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&nbsp;kind&nbsp;:&nbsp;<span class="constructor">Ketrew_path</span>.directory;&nbsp;relativity&nbsp;:&nbsp;<span class="constructor">Ketrew_path</span>.relative&nbsp;&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_path</span>.t<br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;relative_file&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&nbsp;kind&nbsp;:&nbsp;<span class="constructor">Ketrew_path</span>.file;&nbsp;relativity&nbsp;:&nbsp;<span class="constructor">Ketrew_path</span>.relative&nbsp;&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_path</span>.t<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;file&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;&lt;&nbsp;kind&nbsp;:&nbsp;<span class="constructor">Ketrew_path</span>.file;&nbsp;relativity&nbsp;:&nbsp;<span class="keywordsign">'</span>any&nbsp;&gt;&nbsp;<span class="constructor">Ketrew_path</span>.t<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;directory&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;&nbsp;kind&nbsp;:&nbsp;<span class="constructor">Ketrew_path</span>.directory;&nbsp;relativity&nbsp;:&nbsp;<span class="keywordsign">'</span>any&nbsp;&gt;&nbsp;<span class="constructor">Ketrew_path</span>.t<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;root&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;&nbsp;kind&nbsp;:&nbsp;<span class="constructor">Ketrew_path</span>.directory;&nbsp;relativity&nbsp;:&nbsp;<span class="constructor">Ketrew_path</span>.absolute&nbsp;&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_path</span>.t<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;absolute_file_exn&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;&nbsp;kind&nbsp;:&nbsp;<span class="constructor">Ketrew_path</span>.file;&nbsp;relativity&nbsp;:&nbsp;<span class="constructor">Ketrew_path</span>.absolute&nbsp;&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_path</span>.t<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;absolute_directory_exn&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;&nbsp;kind&nbsp;:&nbsp;<span class="constructor">Ketrew_path</span>.directory;&nbsp;relativity&nbsp;:&nbsp;<span class="constructor">Ketrew_path</span>.absolute&nbsp;&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_path</span>.t<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;relative_directory_exn&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;&nbsp;kind&nbsp;:&nbsp;<span class="constructor">Ketrew_path</span>.directory;&nbsp;relativity&nbsp;:&nbsp;<span class="constructor">Ketrew_path</span>.relative&nbsp;&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_path</span>.t<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;relative_file_exn&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;&nbsp;kind&nbsp;:&nbsp;<span class="constructor">Ketrew_path</span>.file;&nbsp;relativity&nbsp;:&nbsp;<span class="constructor">Ketrew_path</span>.relative&nbsp;&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_path</span>.t<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;concat&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;&nbsp;kind&nbsp;:&nbsp;<span class="constructor">Ketrew_path</span>.directory;&nbsp;relativity&nbsp;:&nbsp;<span class="keywordsign">'</span>a&nbsp;&gt;&nbsp;<span class="constructor">Ketrew_path</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;&nbsp;kind&nbsp;:&nbsp;<span class="keywordsign">'</span>b;&nbsp;relativity&nbsp;:&nbsp;<span class="constructor">Ketrew_path</span>.relative&nbsp;&gt;&nbsp;<span class="constructor">Ketrew_path</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;&nbsp;kind&nbsp;:&nbsp;<span class="keywordsign">'</span>b;&nbsp;relativity&nbsp;:&nbsp;<span class="keywordsign">'</span>a&nbsp;&gt;&nbsp;<span class="constructor">Ketrew_path</span>.t<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;to_string&nbsp;:&nbsp;&lt;&nbsp;kind&nbsp;:&nbsp;<span class="keywordsign">'</span>a;&nbsp;relativity&nbsp;:&nbsp;<span class="keywordsign">'</span>b&nbsp;&gt;&nbsp;<span class="constructor">Ketrew_path</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;to_string_quoted&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;&nbsp;kind&nbsp;:&nbsp;<span class="keywordsign">'</span>a;&nbsp;relativity&nbsp;:&nbsp;<span class="keywordsign">'</span>b&nbsp;&gt;&nbsp;<span class="constructor">Ketrew_path</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;any_kind&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;&nbsp;kind&nbsp;:&nbsp;<span class="keywordsign">'</span>some_kind;&nbsp;relativity&nbsp;:&nbsp;<span class="keywordsign">'</span>relativity&nbsp;&gt;&nbsp;<span class="constructor">Ketrew_path</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;&nbsp;kind&nbsp;:&nbsp;<span class="keywordsign">'</span>any_kind;&nbsp;relativity&nbsp;:&nbsp;<span class="keywordsign">'</span>relativity&nbsp;&gt;&nbsp;<span class="constructor">Ketrew_path</span>.t<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;exists_shell_condition&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;&nbsp;kind&nbsp;:&nbsp;<span class="keywordsign">'</span>any_kind;&nbsp;relativity&nbsp;:&nbsp;<span class="keywordsign">'</span>any_relativity&nbsp;&gt;&nbsp;<span class="constructor">Ketrew_path</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;string<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;size_shell_command&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;&nbsp;kind&nbsp;:&nbsp;<span class="keywordsign">'</span>any_kind;&nbsp;relativity&nbsp;:&nbsp;<span class="keywordsign">'</span>any_relativity&nbsp;&gt;&nbsp;<span class="constructor">Ketrew_path</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.path<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;file&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_path</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;directory&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_path</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;root&nbsp;:&nbsp;<span class="constructor">Ketrew_path</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;absolute_file_exn&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_path</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;absolute_directory_exn&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_path</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;relative_directory_exn&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_path</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;relative_file_exn&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_path</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;concat&nbsp;:&nbsp;<span class="constructor">Ketrew_path</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_path</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_path</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;to_string&nbsp;:&nbsp;<span class="constructor">Ketrew_path</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;to_string_quoted&nbsp;:&nbsp;<span class="constructor">Ketrew_path</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;exists_shell_condition&nbsp;:&nbsp;<span class="constructor">Ketrew_path</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;size_shell_command&nbsp;:&nbsp;<span class="constructor">Ketrew_path</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
 <span class="keyword">end</span></code></body></html>

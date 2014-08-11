@@ -29,7 +29,7 @@
 <link title="Ketrew_user_command" rel="Chapter" href="Ketrew_user_command.html"><title>Ketrew API : Ketrew_path.absolute_file_exn</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;absolute_file_exn&nbsp;s&nbsp;:&nbsp;&lt;relativity&nbsp;:&nbsp;absolute;&nbsp;kind:&nbsp;file&gt;&nbsp;t&nbsp;=<br>
+<code class="code"><span class="keyword">let</span>&nbsp;absolute_file_exn&nbsp;s&nbsp;:&nbsp;t&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">if</span>&nbsp;<span class="constructor">Filename</span>.is_relative&nbsp;s<br>
 &nbsp;&nbsp;<span class="keyword">then</span>&nbsp;invalid_argument_exn&nbsp;~where:<span class="string">"Path"</span>&nbsp;<span class="string">"absolute_file_exn"</span><br>
 &nbsp;&nbsp;<span class="keyword">else</span>&nbsp;file&nbsp;s</code></body></html>

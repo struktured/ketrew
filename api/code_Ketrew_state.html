@@ -181,7 +181,10 @@
 &nbsp;&nbsp;<span class="keyword">end</span><br>
 <br>
 <br>
-<span class="keyword">let</span>&nbsp;get_target_with_db&nbsp;db&nbsp;id&nbsp;=<br>
+</code><table><tr><td></td><td><span class="comment">(** This internal function gets a target value from the database <b>without
+    following pointers</b>.
+*)</span></td></tr></table><code class="code"><br>
+<span class="keyword">let</span>&nbsp;_get_target_from_db&nbsp;db&nbsp;id&nbsp;=<br>
 &nbsp;&nbsp;<span class="constructor">Database</span>.get&nbsp;db&nbsp;id<br>
 &nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">function</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;of_result&nbsp;(<span class="constructor">Target</span>.deserialize&nbsp;t)<br>
@@ -191,12 +194,10 @@
 &nbsp;&nbsp;database&nbsp;t&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;db&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;get_persistent&nbsp;t&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;persistent&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;actual_id&nbsp;=&nbsp;<span class="constructor">Persistent_state</span>.follow_pointers&nbsp;persistent&nbsp;id&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;get_target_with_db&nbsp;db&nbsp;actual_id<br>
+&nbsp;&nbsp;_get_target_from_db&nbsp;db&nbsp;actual_id&nbsp;</code><table><tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td><span class="comment">(** After following pointers we can say we
+                                       get the target from the DB. *)</span></td></tr></table><code class="code"><br>
 <br>
 <span class="keyword">let</span>&nbsp;archive_target&nbsp;t&nbsp;target_id&nbsp;=<br>
-&nbsp;&nbsp;database&nbsp;t&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;db&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;get_target_with_db&nbsp;db&nbsp;target_id&nbsp;<span class="comment">(*&nbsp;Making&nbsp;sure&nbsp;that&nbsp;the&nbsp;id&nbsp;exists.&nbsp;*)</span><br>
-&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;(_&nbsp;:&nbsp;<span class="constructor">Target</span>.t)&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;get_persistent&nbsp;t<br>
 &nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;persistent&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;new_persistent&nbsp;=&nbsp;<span class="constructor">Persistent_state</span>.archive&nbsp;persistent&nbsp;target_id&nbsp;<span class="keyword">in</span><br>
@@ -206,12 +207,60 @@
 &nbsp;&nbsp;database&nbsp;t&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;db&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;get_persistent&nbsp;t&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;persistent&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;target_ids&nbsp;=&nbsp;<span class="constructor">Persistent_state</span>.current_targets&nbsp;persistent&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">Deferred_list</span>.for_concurrent&nbsp;target_ids&nbsp;~f:(get_target_with_db&nbsp;db)<br>
+&nbsp;&nbsp;</code><table><tr><td>&nbsp;&nbsp;</td><td><span class="comment">(** The <code class="code">current_targets</code> are the ones we care about; not pointers which
+      would create a lot useless duplicates. *)</span></td></tr></table><code class="code"><br>
+&nbsp;&nbsp;<span class="constructor">Deferred_list</span>.for_concurrent&nbsp;target_ids&nbsp;~f:(_get_target_from_db&nbsp;db)<br>
 &nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;(targets,&nbsp;errors)&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">match</span>&nbsp;errors&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;targets<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;some&nbsp;::&nbsp;more&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fail&nbsp;some&nbsp;<span class="comment">(*&nbsp;TODO&nbsp;do&nbsp;not&nbsp;forget&nbsp;other&nbsp;errors&nbsp;*)</span><br>
 &nbsp;&nbsp;<span class="keyword">end</span><br>
+<br>
+<span class="keyword">module</span>&nbsp;<span class="constructor">Target_graph</span>&nbsp;=&nbsp;<span class="keyword">struct</span><br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;state&nbsp;=&nbsp;t<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;vertices:&nbsp;<span class="constructor">Target</span>.t&nbsp;list;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;edges:&nbsp;(<span class="constructor">Target</span>.t&nbsp;*&nbsp;<span class="constructor">Target</span>.t)&nbsp;list;<br>
+&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;get_current&nbsp;~state&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;current_targets&nbsp;state&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;vertices&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;get_persistent&nbsp;state&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;persistent&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;archived_but_there&nbsp;=&nbsp;ref&nbsp;[]&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Deferred_list</span>.while_sequential&nbsp;vertices&nbsp;~f:(<span class="keyword">fun</span>&nbsp;trgt&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Deferred_list</span>.while_sequential&nbsp;trgt.<span class="constructor">Target</span>.dependencies&nbsp;(<span class="keyword">fun</span>&nbsp;id&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;actual_id&nbsp;=&nbsp;<span class="constructor">Persistent_state</span>.follow_pointers&nbsp;persistent&nbsp;id&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">List</span>.find&nbsp;vertices&nbsp;~f:(<span class="keyword">fun</span>&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Target</span>.id&nbsp;t&nbsp;=&nbsp;actual_id)&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;(trgt,&nbsp;t)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get_target&nbsp;state&nbsp;actual_id<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;archived_but_there&nbsp;:=&nbsp;t&nbsp;::&nbsp;!archived_but_there;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;(trgt,&nbsp;t)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;|&nbsp;<span class="constructor">List</span>.concat<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;edges&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;{vertices&nbsp;=&nbsp;vertices&nbsp;@&nbsp;!archived_but_there;&nbsp;edges}<br>
+<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;log&nbsp;g&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">OCaml</span>.list&nbsp;(<span class="keyword">fun</span>&nbsp;(t1,&nbsp;t2)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;<span class="string">"*&nbsp;"</span>&nbsp;%&nbsp;<span class="constructor">Target</span>.log&nbsp;t1&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;→&nbsp;"</span>&nbsp;%&nbsp;<span class="constructor">Target</span>.log&nbsp;t2)&nbsp;g.edges<br>
+&nbsp;&nbsp;&nbsp;&nbsp;)<br>
+<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;vertices&nbsp;g&nbsp;=&nbsp;g.vertices<br>
+<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;transitive_predecessors&nbsp;g&nbsp;~target&nbsp;=&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;g&nbsp;t&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.filter_map&nbsp;g.edges&nbsp;~f:(<span class="keyword">fun</span>&nbsp;(t1,&nbsp;t2)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;<span class="constructor">Target</span>.id&nbsp;t2&nbsp;=&nbsp;<span class="constructor">Target</span>.id&nbsp;t&nbsp;<span class="keyword">then</span>&nbsp;<span class="constructor">Some</span>&nbsp;t1&nbsp;<span class="keyword">else</span>&nbsp;<span class="constructor">None</span>)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;trans_pred&nbsp;g&nbsp;t&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;preds&nbsp;=&nbsp;pred&nbsp;g&nbsp;t&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.dedup&nbsp;(preds&nbsp;@&nbsp;<span class="constructor">List</span>.concat_map&nbsp;preds&nbsp;(<span class="keyword">fun</span>&nbsp;v&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;trans_pred&nbsp;g&nbsp;v))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;trans_pred&nbsp;g&nbsp;target<br>
+<br>
+<span class="keyword">end</span>&nbsp;<br>
 <br>
 <span class="keyword">let</span>&nbsp;add_target&nbsp;t&nbsp;target&nbsp;=<br>
 &nbsp;&nbsp;add_or_update_target&nbsp;t&nbsp;target<br>
@@ -247,7 +296,9 @@
 &nbsp;&nbsp;database&nbsp;t&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;db&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;get_persistent&nbsp;t&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;persistent&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;target_ids&nbsp;=&nbsp;<span class="constructor">Persistent_state</span>.archived_targets&nbsp;persistent&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">Deferred_list</span>.for_concurrent&nbsp;target_ids&nbsp;~f:(get_target_with_db&nbsp;db)<br>
+&nbsp;&nbsp;</code><table><tr><td>&nbsp;&nbsp;</td><td><span class="comment">(** Here also we don't want duplicates, <code class="code"><span class="constructor">Persistent_state</span>.archived_targets</code>
+      are “real” targets. *)</span></td></tr></table><code class="code"><br>
+&nbsp;&nbsp;<span class="constructor">Deferred_list</span>.for_concurrent&nbsp;target_ids&nbsp;~f:(_get_target_from_db&nbsp;db)<br>
 &nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;(targets,&nbsp;errors)&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">match</span>&nbsp;errors&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;targets<br>
@@ -260,11 +311,11 @@
 &nbsp;&nbsp;return&nbsp;(<span class="constructor">List</span>.exists&nbsp;arch&nbsp;~f:(<span class="keyword">fun</span>&nbsp;x&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Target</span>.id&nbsp;x&nbsp;=&nbsp;tid))<br>
 <br>
 <span class="keyword">let</span>&nbsp;_check_and_activate_dependencies&nbsp;~t&nbsp;ids&nbsp;=<br>
-&nbsp;&nbsp;database&nbsp;t&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;db&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;database&nbsp;t&nbsp;&gt;&gt;=&nbsp;fun&nbsp;db&nbsp;-&gt;&nbsp;*)</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;what_happened&nbsp;=&nbsp;ref&nbsp;[]&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;happened&nbsp;h&nbsp;=&nbsp;what_happened&nbsp;:=&nbsp;h&nbsp;::&nbsp;!what_happened&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">Deferred_list</span>.while_sequential&nbsp;ids&nbsp;~f:(<span class="keyword">fun</span>&nbsp;dep&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get_target_with_db&nbsp;db&nbsp;dep&nbsp;&gt;&gt;&lt;&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get_target&nbsp;t&nbsp;dep&nbsp;&gt;&gt;&lt;&nbsp;<span class="keyword">function</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ok</span>&nbsp;dependency&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">match</span>&nbsp;dependency.<span class="constructor">Target</span>.history&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Created</span>&nbsp;_&nbsp;&nbsp;<span class="keywordsign">-&gt;</span><br>
@@ -283,6 +334,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Error&nbsp;while&nbsp;activating&nbsp;dependencies:&nbsp;"</span>&nbsp;%<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;(<span class="constructor">Ketrew_error</span>.to_string&nbsp;e)&nbsp;@&nbsp;error);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;(<span class="keywordsign">`</span><span class="constructor">Die</span>&nbsp;dep)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Persistent_state</span>&nbsp;_&nbsp;<span class="keyword">as</span>&nbsp;e)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Target</span>&nbsp;_&nbsp;<span class="keyword">as</span>&nbsp;e)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fail&nbsp;e<br>
 &nbsp;&nbsp;&nbsp;&nbsp;)<br>
 &nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;statuses&nbsp;<span class="keywordsign">-&gt;</span><br>
@@ -552,13 +604,12 @@
 &nbsp;&nbsp;<span class="keyword">end</span>&nbsp;<br>
 <br>
 <span class="keyword">let</span>&nbsp;get_status&nbsp;t&nbsp;id&nbsp;=<br>
-&nbsp;&nbsp;database&nbsp;t&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;db&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;get_target_with_db&nbsp;db&nbsp;id&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;target&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;database&nbsp;t&nbsp;&gt;&gt;=&nbsp;fun&nbsp;db&nbsp;-&gt;&nbsp;*)</span><br>
+&nbsp;&nbsp;get_target&nbsp;t&nbsp;id&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;target&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;return&nbsp;target.<span class="constructor">Target</span>.history&nbsp;<br>
 <br>
 <span class="keyword">let</span>&nbsp;kill&nbsp;t&nbsp;~id&nbsp;=<br>
-&nbsp;&nbsp;database&nbsp;t&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;db&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;get_target_with_db&nbsp;db&nbsp;id&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;target&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;get_target&nbsp;t&nbsp;id&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;target&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">match</span>&nbsp;target.<span class="constructor">Target</span>.history&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Created</span>&nbsp;c&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;add_or_update_target&nbsp;t&nbsp;<span class="constructor">Target</span>.(<br>

@@ -33,7 +33,9 @@
 &nbsp;&nbsp;database&nbsp;t&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;db&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;get_persistent&nbsp;t&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;persistent&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;target_ids&nbsp;=&nbsp;<span class="constructor">Persistent_state</span>.archived_targets&nbsp;persistent&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">Deferred_list</span>.for_concurrent&nbsp;target_ids&nbsp;~f:(get_target_with_db&nbsp;db)<br>
+&nbsp;&nbsp;</code><table><tr><td>&nbsp;&nbsp;</td><td><span class="comment">(** Here also we don't want duplicates, <code class="code"><span class="constructor">Persistent_state</span>.archived_targets</code>
+      are “real” targets. *)</span></td></tr></table><code class="code"><br>
+&nbsp;&nbsp;<span class="constructor">Deferred_list</span>.for_concurrent&nbsp;target_ids&nbsp;~f:(_get_target_from_db&nbsp;db)<br>
 &nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;(targets,&nbsp;errors)&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">match</span>&nbsp;errors&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;targets<br>

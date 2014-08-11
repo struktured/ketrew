@@ -29,7 +29,4 @@
 <link title="Ketrew_user_command" rel="Chapter" href="Ketrew_user_command.html"><title>Ketrew API : Ketrew_path.concat</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;concat:&nbsp;&lt;relativity:&nbsp;<span class="keywordsign">'</span>a;&nbsp;kind:&nbsp;directory&gt;&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&lt;relativity:&nbsp;relative;&nbsp;kind:&nbsp;<span class="keywordsign">'</span>b&gt;&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;&lt;relativity:&nbsp;<span class="keywordsign">'</span>a;&nbsp;kind:&nbsp;<span class="keywordsign">'</span>b&gt;&nbsp;t&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">fun</span>&nbsp;x&nbsp;y&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;kind&nbsp;=&nbsp;y.kind;&nbsp;path&nbsp;=&nbsp;<span class="constructor">Filename</span>.concat&nbsp;x.path&nbsp;y.path}</code></body></html>
+<code class="code"><span class="keyword">let</span>&nbsp;concat&nbsp;=&nbsp;<span class="keyword">fun</span>&nbsp;x&nbsp;y&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;{&nbsp;kind&nbsp;=&nbsp;y.kind;&nbsp;path&nbsp;=&nbsp;<span class="constructor">Filename</span>.concat&nbsp;x.path&nbsp;y.path}</code></body></html>

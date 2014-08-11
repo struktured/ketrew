@@ -30,6 +30,6 @@
 </head>
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;get_status&nbsp;t&nbsp;id&nbsp;=<br>
-&nbsp;&nbsp;database&nbsp;t&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;db&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;get_target_with_db&nbsp;db&nbsp;id&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;target&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;database&nbsp;t&nbsp;&gt;&gt;=&nbsp;fun&nbsp;db&nbsp;-&gt;&nbsp;*)</span><br>
+&nbsp;&nbsp;get_target&nbsp;t&nbsp;id&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;target&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;return&nbsp;target.<span class="constructor">Target</span>.history</code></body></html>

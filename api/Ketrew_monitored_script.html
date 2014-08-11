@@ -54,7 +54,7 @@ The goal of this module is the create shell scripts from a high-level
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTt.playground">playground</span>&nbsp;: <code class="type"><a href="Ketrew_path.html#TYPEabsolute_directory">Ketrew_path.absolute_directory</a></code>;</code></td>
+<code><span id="TYPEELTt.playground">playground</span>&nbsp;: <code class="type"><a href="Ketrew_path.html#TYPEt">Ketrew_path.t</a></code>;</code></td>
 
 </tr>
 <tr>
@@ -71,16 +71,16 @@ The definition of a monitored script.<br>
 </div>
 
 
-<pre><span id="VALcreate"><span class="keyword">val</span> <a href="code_VALKetrew_monitored_script.create.html">create</a></span> : <code class="type">playground:<a href="Ketrew_path.html#TYPEabsolute_directory">Ketrew_path.absolute_directory</a> -><br>       <a href="Ketrew_program.html#TYPEt">Ketrew_program.t</a> -> <a href="Ketrew_monitored_script.html#TYPEt">t</a></code></pre><div class="info ">
+<pre><span id="VALcreate"><span class="keyword">val</span> <a href="code_VALKetrew_monitored_script.create.html">create</a></span> : <code class="type">playground:<a href="Ketrew_path.html#TYPEt">Ketrew_path.t</a> -> <a href="Ketrew_program.html#TYPEt">Ketrew_program.t</a> -> <a href="Ketrew_monitored_script.html#TYPEt">t</a></code></pre><div class="info ">
 Create a new script, which will run the list of commands, and store state
     values in the <code class="code">playground</code> directory.<br>
 </div>
 
-<pre><span id="VALlog_file"><span class="keyword">val</span> <a href="code_VALKetrew_monitored_script.log_file.html">log_file</a></span> : <code class="type"><a href="Ketrew_monitored_script.html#TYPEt">t</a> -> <a href="Ketrew_path.html#TYPEabsolute_file">Ketrew_path.absolute_file</a></code></pre><div class="info ">
+<pre><span id="VALlog_file"><span class="keyword">val</span> <a href="code_VALKetrew_monitored_script.log_file.html">log_file</a></span> : <code class="type"><a href="Ketrew_monitored_script.html#TYPEt">t</a> -> <a href="Ketrew_path.html#TYPEt">Ketrew_path.t</a></code></pre><div class="info ">
 Path to the log file of the script.<br>
 </div>
 
-<pre><span id="VALpid_file"><span class="keyword">val</span> <a href="code_VALKetrew_monitored_script.pid_file.html">pid_file</a></span> : <code class="type"><a href="Ketrew_monitored_script.html#TYPEt">t</a> -> <a href="Ketrew_path.html#TYPEabsolute_file">Ketrew_path.absolute_file</a></code></pre><div class="info ">
+<pre><span id="VALpid_file"><span class="keyword">val</span> <a href="code_VALKetrew_monitored_script.pid_file.html">pid_file</a></span> : <code class="type"><a href="Ketrew_monitored_script.html#TYPEt">t</a> -> <a href="Ketrew_path.html#TYPEt">Ketrew_path.t</a></code></pre><div class="info ">
 Path to the “PID” file: where the script stores the PID of the process
     running the script, <code class="code">- pid</code> will be the process id of the process group
     created by `setsid` (useful for killing the whole process tree).<br>

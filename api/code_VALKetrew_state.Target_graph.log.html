@@ -26,11 +26,11 @@
 <link title="Ketrew_state" rel="Chapter" href="Ketrew_state.html">
 <link title="Ketrew_target" rel="Chapter" href="Ketrew_target.html">
 <link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html">
-<link title="Ketrew_user_command" rel="Chapter" href="Ketrew_user_command.html"><title>Ketrew API : Ketrew_state.archive_target</title>
+<link title="Ketrew_user_command" rel="Chapter" href="Ketrew_user_command.html"><title>Ketrew API : Ketrew_state.Target_graph.log</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;archive_target&nbsp;t&nbsp;target_id&nbsp;=<br>
-&nbsp;&nbsp;get_persistent&nbsp;t<br>
-&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;persistent&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;new_persistent&nbsp;=&nbsp;<span class="constructor">Persistent_state</span>.archive&nbsp;persistent&nbsp;target_id&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;save_persistent&nbsp;t&nbsp;new_persistent</code></body></html>
+<code class="code"><span class="keyword">let</span>&nbsp;log&nbsp;g&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">OCaml</span>.list&nbsp;(<span class="keyword">fun</span>&nbsp;(t1,&nbsp;t2)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;<span class="string">"*&nbsp;"</span>&nbsp;%&nbsp;<span class="constructor">Target</span>.log&nbsp;t1&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;→&nbsp;"</span>&nbsp;%&nbsp;<span class="constructor">Target</span>.log&nbsp;t2)&nbsp;g.edges<br>
+&nbsp;&nbsp;&nbsp;&nbsp;)</code></body></html>

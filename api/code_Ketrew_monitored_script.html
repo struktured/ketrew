@@ -49,7 +49,7 @@
 <span class="keyword">module</span>&nbsp;<span class="constructor">Path</span>&nbsp;=&nbsp;<span class="constructor">Ketrew_path</span><br>
 <br>
 <span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>.monitored_script&nbsp;=<br>
-&nbsp;&nbsp;{playground:&nbsp;<span class="constructor">Path</span>.absolute_directory;&nbsp;program:&nbsp;<span class="constructor">Ketrew_program</span>.t}<br>
+&nbsp;&nbsp;{playground:&nbsp;<span class="constructor">Path</span>.t;&nbsp;program:&nbsp;<span class="constructor">Ketrew_program</span>.t}<br>
 <br>
 <span class="keyword">let</span>&nbsp;create&nbsp;~playground&nbsp;program&nbsp;=&nbsp;{playground;&nbsp;program}<br>
 <br>

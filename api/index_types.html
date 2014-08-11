@@ -35,21 +35,6 @@
 <h1>Index of types</h1>
 <table>
 <tr><td align="left"><br>A</td></tr>
-<tr><td><a href="Ketrew_path.html#TYPEabsolute">absolute</a> [<a href="Ketrew_path.html">Ketrew_path</a>]</td>
-<td><div class="info">
-Abstract phantom type.
-</div>
-</td></tr>
-<tr><td><a href="Ketrew_path.html#TYPEabsolute_directory">absolute_directory</a> [<a href="Ketrew_path.html">Ketrew_path</a>]</td>
-<td><div class="info">
-Readable alias.
-</div>
-</td></tr>
-<tr><td><a href="Ketrew_path.html#TYPEabsolute_file">absolute_file</a> [<a href="Ketrew_path.html">Ketrew_path</a>]</td>
-<td><div class="info">
-Readable alias.
-</div>
-</td></tr>
 <tr><td><a href="Ketrew_database.html#TYPEaction">action</a> [<a href="Ketrew_database.html">Ketrew_database</a>]</td>
 <td><div class="info">
 An action is a transaction that (attempts) to modify the database.
@@ -71,11 +56,6 @@ Specification of how to build a target.
 Specification of the default shell of a Host.
 </div>
 </td></tr>
-<tr><td><a href="Ketrew_path.html#TYPEdirectory">directory</a> [<a href="Ketrew_path.html">Ketrew_path</a>]</td>
-<td><div class="info">
-Abstract phantom type.
-</div>
-</td></tr>
 <tr><td align="left"><br>E</td></tr>
 <tr><td><a href="Ketrew_long_running.html#TYPEerror">error</a> [<a href="Ketrew_long_running.html">Ketrew_long_running</a>]</td>
 <td><div class="info">
@@ -90,11 +70,6 @@ Merge of the possible errors.
 <tr><td><a href="Ketrew_host.Error.html#TYPEexecution">execution</a> [<a href="Ketrew_host.Error.html">Ketrew_host.Error</a>]</td>
 <td></td></tr>
 <tr><td align="left"><br>F</td></tr>
-<tr><td><a href="Ketrew_path.html#TYPEfile">file</a> [<a href="Ketrew_path.html">Ketrew_path</a>]</td>
-<td><div class="info">
-Abstract phantom type.
-</div>
-</td></tr>
 <tr><td><a href="Ketrew_target.html#TYPEfinished_state">finished_state</a> [<a href="Ketrew_target.html">Ketrew_target</a>]</td>
 <td><div class="info">
 The potential cases of a “finished” target (defined as <pre class="codepre"><code class="code"><span class="keyword">type</span>&nbsp;finished_state&nbsp;=&nbsp;[<br>
@@ -124,21 +99,6 @@ The identifiers of targets.
 <tr><td><a href="Ketrew_host.Error.html#TYPEnon_zero_execution">non_zero_execution</a> [<a href="Ketrew_host.Error.html">Ketrew_host.Error</a>]</td>
 <td></td></tr>
 <tr><td align="left"><br>R</td></tr>
-<tr><td><a href="Ketrew_path.html#TYPErelative">relative</a> [<a href="Ketrew_path.html">Ketrew_path</a>]</td>
-<td><div class="info">
-Abstract phantom type.
-</div>
-</td></tr>
-<tr><td><a href="Ketrew_path.html#TYPErelative_directory">relative_directory</a> [<a href="Ketrew_path.html">Ketrew_path</a>]</td>
-<td><div class="info">
-Readable alias.
-</div>
-</td></tr>
-<tr><td><a href="Ketrew_path.html#TYPErelative_file">relative_file</a> [<a href="Ketrew_path.html">Ketrew_path</a>]</td>
-<td><div class="info">
-Readable alias.
-</div>
-</td></tr>
 <tr><td><a href="Ketrew_target.html#TYPErun_bookkeeping">run_bookkeeping</a> [<a href="Ketrew_target.html">Ketrew_target</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ketrew_long_running.LONG_RUNNING.html#TYPErun_parameters">run_parameters</a> [<a href="Ketrew_long_running.LONG_RUNNING.html">Ketrew_long_running.LONG_RUNNING</a>]</td>
@@ -154,6 +114,11 @@ Hidden type kept serialized by the engine.
 A “shell” is a function that takes a command and returns, and
      execv-style string list; the default for each host
      is <code class="code"><span class="string">"sh"</span>; <span class="string">"-c"</span>; cmd</code>
+</div>
+</td></tr>
+<tr><td><a href="Ketrew_state.Target_graph.html#TYPEstate">state</a> [<a href="Ketrew_state.Target_graph.html">Ketrew_state.Target_graph</a>]</td>
+<td><div class="info">
+An alias for <a href="Ketrew_state.Target_graph.html#TYPEt"><code class="code"><span class="constructor">Ketrew_state</span>.<span class="constructor">Target_graph</span>.t</code></a>, the state.
 </div>
 </td></tr>
 <tr><td><a href="Ketrew_artifact.Volume.html#TYPEstructure">structure</a> [<a href="Ketrew_artifact.Volume.html">Ketrew_artifact.Volume</a>]</td>
@@ -206,6 +171,11 @@ The handle to the database.
 <tr><td><a href="Ketrew_edsl.Program.html#TYPEt">t</a> [<a href="Ketrew_edsl.Program.html">Ketrew_edsl.Program</a>]</td>
 <td><div class="info">
 Something to run <i>is</i> a <a href="Ketrew_program.html#TYPEt"><code class="code"><span class="constructor">Ketrew_program</span>.t</code></a>.
+</div>
+</td></tr>
+<tr><td><a href="Ketrew_state.Target_graph.html#TYPEt">t</a> [<a href="Ketrew_state.Target_graph.html">Ketrew_state.Target_graph</a>]</td>
+<td><div class="info">
+The actual representation of the Graph.
 </div>
 </td></tr>
 <tr><td><a href="Ketrew_state.html#TYPEt">t</a> [<a href="Ketrew_state.html">Ketrew_state</a>]</td>
@@ -266,8 +236,7 @@ Host container.
 </td></tr>
 <tr><td><a href="Ketrew_path.html#TYPEt">t</a> [<a href="Ketrew_path.html">Ketrew_path</a>]</td>
 <td><div class="info">
-General type of file-paths, <code class="code">kind</code> may be <code class="code">file</code> or <code class="code">directory</code>,
-   <code class="code">relativity</code> may be <code class="code">relative</code> or <code class="code">absolute</code>.
+General type of file-paths.
 </div>
 </td></tr>
 <tr><td><a href="Ketrew_host.html#TYPEtimeout">timeout</a> [<a href="Ketrew_host.html">Ketrew_host</a>]</td>

@@ -29,5 +29,5 @@
 <link title="Ketrew_user_command" rel="Chapter" href="Ketrew_user_command.html"><title>Ketrew API : Ketrew_artifact.Volume.all_paths</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;all_paths&nbsp;t:&nbsp;&lt;kind:&nbsp;<span class="keywordsign">'</span>any;&nbsp;relativity:&nbsp;<span class="constructor">Path</span>.absolute&gt;&nbsp;<span class="constructor">Path</span>.t&nbsp;list&nbsp;=<br>
+<code class="code"><span class="keyword">let</span>&nbsp;all_paths&nbsp;t:&nbsp;<span class="constructor">Path</span>.t&nbsp;list&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.map&nbsp;~f:(<span class="constructor">Path</span>.concat&nbsp;t.root)&nbsp;(all_structure_paths&nbsp;t.structure)</code></body></html>

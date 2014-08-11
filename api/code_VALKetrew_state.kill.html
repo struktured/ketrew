@@ -30,8 +30,7 @@
 </head>
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;kill&nbsp;t&nbsp;~id&nbsp;=<br>
-&nbsp;&nbsp;database&nbsp;t&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;db&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;get_target_with_db&nbsp;db&nbsp;id&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;target&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;get_target&nbsp;t&nbsp;id&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;target&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">match</span>&nbsp;target.<span class="constructor">Target</span>.history&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Created</span>&nbsp;c&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;add_or_update_target&nbsp;t&nbsp;<span class="constructor">Target</span>.(<br>

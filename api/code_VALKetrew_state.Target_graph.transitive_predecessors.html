@@ -26,11 +26,15 @@
 <link title="Ketrew_state" rel="Chapter" href="Ketrew_state.html">
 <link title="Ketrew_target" rel="Chapter" href="Ketrew_target.html">
 <link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html">
-<link title="Ketrew_user_command" rel="Chapter" href="Ketrew_user_command.html"><title>Ketrew API : Ketrew_state.archive_target</title>
+<link title="Ketrew_user_command" rel="Chapter" href="Ketrew_user_command.html"><title>Ketrew API : Ketrew_state.Target_graph.transitive_predecessors</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;archive_target&nbsp;t&nbsp;target_id&nbsp;=<br>
-&nbsp;&nbsp;get_persistent&nbsp;t<br>
-&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;persistent&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;new_persistent&nbsp;=&nbsp;<span class="constructor">Persistent_state</span>.archive&nbsp;persistent&nbsp;target_id&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;save_persistent&nbsp;t&nbsp;new_persistent</code></body></html>
+<code class="code"><span class="keyword">let</span>&nbsp;transitive_predecessors&nbsp;g&nbsp;~target&nbsp;=&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;g&nbsp;t&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.filter_map&nbsp;g.edges&nbsp;~f:(<span class="keyword">fun</span>&nbsp;(t1,&nbsp;t2)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;<span class="constructor">Target</span>.id&nbsp;t2&nbsp;=&nbsp;<span class="constructor">Target</span>.id&nbsp;t&nbsp;<span class="keyword">then</span>&nbsp;<span class="constructor">Some</span>&nbsp;t1&nbsp;<span class="keyword">else</span>&nbsp;<span class="constructor">None</span>)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;trans_pred&nbsp;g&nbsp;t&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;preds&nbsp;=&nbsp;pred&nbsp;g&nbsp;t&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.dedup&nbsp;(preds&nbsp;@&nbsp;<span class="constructor">List</span>.concat_map&nbsp;preds&nbsp;(<span class="keyword">fun</span>&nbsp;v&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;trans_pred&nbsp;g&nbsp;v))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;trans_pred&nbsp;g&nbsp;target</code></body></html>

@@ -96,11 +96,6 @@ Get the potential additional queries (<code class="code">(key, description)</cod
 Get all the paths of the given Volume (files and directories).
 </div>
 </td></tr>
-<tr><td><a href="Ketrew_path.html#VALany_kind">any_kind</a> [<a href="Ketrew_path.html">Ketrew_path</a>]</td>
-<td><div class="info">
-Coerce a path to any kind of path (file or directory).
-</div>
-</td></tr>
 <tr><td><a href="Ketrew_configuration.html#VALapply_globals">apply_globals</a> [<a href="Ketrew_configuration.html">Ketrew_configuration</a>]</td>
 <td><div class="info">
 Apply options that have global impact.
@@ -372,6 +367,12 @@ The call <code class="code">get_configuration file</code> reads and parses the f
     <code class="code">override_configuration</code> is provided.
 </div>
 </td></tr>
+<tr><td><a href="Ketrew_state.Target_graph.html#VALget_current">get_current</a> [<a href="Ketrew_state.Target_graph.html">Ketrew_state.Target_graph</a>]</td>
+<td><div class="info">
+Do like <a href="Ketrew_state.html#VALcurrent_targets"><code class="code"><span class="constructor">Ketrew_state</span>.current_targets</code></a> as a graph, hence this may also pull
+      “archived” targets, through dependencies.
+</div>
+</td></tr>
 <tr><td><a href="Ketrew_host.html#VALget_file">get_file</a> [<a href="Ketrew_host.html">Ketrew_host</a>]</td>
 <td><div class="info">
 Read the file from the host at <code class="code">path</code>.
@@ -525,6 +526,11 @@ Convert a command into a <code class="code"><span class="constructor">Log</span>
 <tr><td><a href="Ketrew_long_running.LONG_RUNNING.html#VALlog">log</a> [<a href="Ketrew_long_running.LONG_RUNNING.html">Ketrew_long_running.LONG_RUNNING</a>]</td>
 <td><div class="info">
 Get a list of things to display.
+</div>
+</td></tr>
+<tr><td><a href="Ketrew_state.Target_graph.html#VALlog">log</a> [<a href="Ketrew_state.Target_graph.html">Ketrew_state.Target_graph</a>]</td>
+<td><div class="info">
+Get a displayable <code class="code"><span class="constructor">Log</span>.t</code> for the graph.
 </div>
 </td></tr>
 <tr><td><a href="Ketrew_configuration.html#VALlog">log</a> [<a href="Ketrew_configuration.html">Ketrew_configuration</a>]</td>
@@ -922,6 +928,11 @@ Convert the path to a “Unix” path quoted for a shell command (c.f.
 Convert a <code class="code"><span class="constructor">Host</span>.t</code> to an URI representing it.
 </div>
 </td></tr>
+<tr><td><a href="Ketrew_state.Target_graph.html#VALtransitive_predecessors">transitive_predecessors</a> [<a href="Ketrew_state.Target_graph.html">Ketrew_state.Target_graph</a>]</td>
+<td><div class="info">
+Get all the predecessors of a given target; i.e.
+</div>
+</td></tr>
 <tr><td align="left"><br>U</td></tr>
 <tr><td><a href="Ketrew_edsl.html#VALunit">unit</a> [<a href="Ketrew_edsl.html">Ketrew_edsl</a>]</td>
 <td><div class="info">
@@ -947,6 +958,13 @@ Check and update the status of the long-running job.
 <td><div class="info">
 Get a new target updated with new run paramters (from a plugin), 
     raises <code class="code"><span class="constructor">Invalid_argument</span> _</code> if the target is in a wrong state.
+</div>
+</td></tr>
+<tr><td align="left"><br>V</td></tr>
+<tr><td><a href="Ketrew_state.Target_graph.html#VALvertices">vertices</a> [<a href="Ketrew_state.Target_graph.html">Ketrew_state.Target_graph</a>]</td>
+<td><div class="info">
+Get all the vertices of the graph (<a href="Ketrew_state.html#VALcurrent_targets"><code class="code"><span class="constructor">Ketrew_state</span>.current_targets</code></a> + the transitive
+      closure).
 </div>
 </td></tr>
 <tr><td align="left"><br>W</td></tr>
