@@ -31,7 +31,7 @@
 <body>
 <code class="code"><span class="keyword">struct</span><br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;condition<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;log&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;log&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(<span class="keyword">function</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">True</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"True"</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">False</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"False"</span><br>
@@ -39,9 +39,11 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;parens&nbsp;(s&nbsp;<span class="string">"Volume&nbsp;"</span>&nbsp;%&nbsp;<span class="constructor">Artifact</span>.<span class="constructor">Volume</span>.log&nbsp;v&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;exists"</span>)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Volume_size_bigger_than</span>&nbsp;(v,&nbsp;sz)&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;parens&nbsp;(s&nbsp;<span class="string">"Volume&nbsp;"</span>&nbsp;%&nbsp;<span class="constructor">Artifact</span>.<span class="constructor">Volume</span>.log&nbsp;v&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;≥&nbsp;"</span>&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;i&nbsp;sz&nbsp;%&nbsp;nbsp&nbsp;%&nbsp;s&nbsp;<span class="string">"KB"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;i&nbsp;sz&nbsp;%&nbsp;nbsp&nbsp;%&nbsp;s&nbsp;<span class="string">"B"</span>)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Command_returns</span>&nbsp;(c,&nbsp;ret)&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;parens&nbsp;(s&nbsp;<span class="string">"Command&nbsp;"</span>&nbsp;%&nbsp;<span class="constructor">Command</span>.log&nbsp;c&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;returns&nbsp;"</span>&nbsp;%&nbsp;i&nbsp;ret)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">And</span>&nbsp;l&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;parens&nbsp;(separate&nbsp;(s&nbsp;<span class="string">"&nbsp;&amp;&amp;&nbsp;"</span>)&nbsp;(<span class="constructor">List</span>.map&nbsp;l&nbsp;~f:log))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;to_string_hum&nbsp;c&nbsp;=&nbsp;<span class="constructor">Log</span>.to_long_string&nbsp;(log&nbsp;c)<br>
 <br>

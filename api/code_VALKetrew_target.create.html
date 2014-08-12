@@ -32,7 +32,7 @@
 <code class="code"><span class="keyword">let</span>&nbsp;create<br>
 &nbsp;&nbsp;&nbsp;&nbsp;?id&nbsp;?name&nbsp;?(persistance=<span class="keywordsign">`</span><span class="constructor">Input_data</span>)&nbsp;?(metadata=<span class="constructor">Artifact</span>.<span class="constructor">Value</span>.unit)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;?(dependencies=[])&nbsp;?(make=nop)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;?(condition=<span class="keywordsign">`</span><span class="constructor">False</span>)&nbsp;?(equivalence=<span class="keywordsign">`</span><span class="constructor">Same_active_condition</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?condition&nbsp;?(equivalence=<span class="keywordsign">`</span><span class="constructor">Same_active_condition</span>)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;()&nbsp;=&nbsp;<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;history&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">Created</span>&nbsp;<span class="constructor">Time</span>.(now&nbsp;())&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;id&nbsp;=&nbsp;<span class="constructor">Option</span>.value&nbsp;id&nbsp;~default:(<span class="constructor">Unique_id</span>.create&nbsp;())&nbsp;<span class="keyword">in</span><br>

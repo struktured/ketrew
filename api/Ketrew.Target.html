@@ -46,7 +46,7 @@
 Definition of command-lines to run on a given <a href="Ketrew_host.html#TYPEt"><code class="code"><span class="constructor">Ketrew_host</span>.t</code></a>.
 </div>
 
-<pre><span id="TYPEbuild_process"><span class="keyword">type</span> <code class="type"></code>build_process</span> = <code class="type">[ `Artifact of <a href="Ketrew_artifact.html#TYPEt">Ketrew_artifact.t</a><br>       | `Direct_command of <a href="Ketrew_target.Command.html#TYPEt">Command.t</a><br>       | `Get_output of <a href="Ketrew_target.Command.html#TYPEt">Command.t</a><br>       | `Long_running of string * string ]</code> </pre>
+<pre><span id="TYPEbuild_process"><span class="keyword">type</span> <code class="type"></code>build_process</span> = <code class="type">[ `Artifact of <a href="Ketrew_artifact.html#TYPEt">Ketrew_artifact.t</a><br>       | `Direct_command of <a href="Ketrew_target.Command.html#TYPEt">Command.t</a><br>       | `Long_running of string * string ]</code> </pre>
 <div class="info ">
 Specification of how to build a target. <ul>
 <li> <code class="code"><span class="keywordsign">`</span><span class="constructor">Artifact</span> a</code>: literal, already-built, artifact, </li>
@@ -179,7 +179,7 @@ The identifiers of targets.<br>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTt.condition">condition</span>&nbsp;: <code class="type"><a href="Ketrew_target.Condition.html#TYPEt">Condition.t</a></code>;</code></td>
+<code><span id="TYPEELTt.condition">condition</span>&nbsp;: <code class="type"><a href="Ketrew_target.Condition.html#TYPEt">Condition.t</a> option</code>;</code></td>
 
 </tr>
 <tr>

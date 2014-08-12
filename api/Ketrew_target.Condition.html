@@ -42,7 +42,7 @@
 
 <pre><span class="keyword">module</span> Condition: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_target.Condition.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><hr width="100%">
 
-<pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = <code class="type">[ `Command_returns of <a href="Ketrew_target.Command.html#TYPEt">Ketrew_target.Command.t</a> * int<br>       | `False<br>       | `True<br>       | `Volume_exists of <a href="Ketrew_artifact.Volume.html#TYPEt">Ketrew_artifact.Volume.t</a><br>       | `Volume_size_bigger_than of <a href="Ketrew_artifact.Volume.html#TYPEt">Ketrew_artifact.Volume.t</a> * int ]</code> </pre>
+<pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = <code class="type">[ `And of <a href="Ketrew_target.Condition.html#TYPEt">t</a> list<br>       | `Command_returns of <a href="Ketrew_target.Command.html#TYPEt">Ketrew_target.Command.t</a> * int<br>       | `False<br>       | `True<br>       | `Volume_exists of <a href="Ketrew_artifact.Volume.html#TYPEt">Ketrew_artifact.Volume.t</a><br>       | `Volume_size_bigger_than of <a href="Ketrew_artifact.Volume.html#TYPEt">Ketrew_artifact.Volume.t</a> * int ]</code> </pre>
 <div class="info ">
 A execution anti-condition, the condition defines when a target is
     (already) ready: <ul>
@@ -50,6 +50,11 @@ A execution anti-condition, the condition defines when a target is
 <li>with <code class="code"><span class="keywordsign">`</span><span class="constructor">True</span></code> the target never runs (a bit useless),</li>
 <li>with <code class="code"><span class="keywordsign">`</span><span class="constructor">Volume_exists</span> v</code> the target runs if the volume does not exist
     (<code class="code">make</code>-like behavior).</li>
+<li>with <code class="code"><span class="keywordsign">`</span><span class="constructor">Volume_size_bigger_than</span> (v, sz)</code> Ketrew will get the total size
+    of the volume (in bytes) and check that it is bigger.</li>
+<li>with <code class="code"><span class="keywordsign">`</span><span class="constructor">Command_returns</span> (c, v)</code> Ketrew will run the <a href="Ketrew_target.Command.html#TYPEt"><code class="code"><span class="constructor">Ketrew_target</span>.<span class="constructor">Command</span>.t</code></a> and
+    check its return value.</li>
+<li><code class="code"><span class="keywordsign">`</span><span class="constructor">And</span> list_of_conditions</code> is a conjunction of conditions.</li>
 </ul>
 <br>
 </div>

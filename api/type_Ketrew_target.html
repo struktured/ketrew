@@ -79,7 +79,6 @@
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;build_process&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Artifact</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ketrew_artifact</span>.t<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Direct_command</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ketrew_target</span>.<span class="constructor">Command</span>.t<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Get_output</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ketrew_target</span>.<span class="constructor">Command</span>.t<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Long_running</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;*&nbsp;string&nbsp;]<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;nop&nbsp;:&nbsp;<span class="constructor">Ketrew_target</span>.build_process<br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;submitted_state&nbsp;=&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Created</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ketrew_pervasives</span>.<span class="constructor">Time</span>.t&nbsp;]<br>
@@ -140,7 +139,8 @@
 &nbsp;&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">Condition</span>&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">sig</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Command_returns</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ketrew_target</span>.<span class="constructor">Command</span>.t&nbsp;*&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">And</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ketrew_target</span>.<span class="constructor">Condition</span>.t&nbsp;list<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Command_returns</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ketrew_target</span>.<span class="constructor">Command</span>.t&nbsp;*&nbsp;int<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">False</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">True</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Volume_exists</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ketrew_artifact</span>.<span class="constructor">Volume</span>.t<br>
@@ -156,7 +156,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;metadata&nbsp;:&nbsp;<span class="constructor">Ketrew_artifact</span>.<span class="constructor">Value</span>.t;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;dependencies&nbsp;:&nbsp;<span class="constructor">Ketrew_target</span>.id&nbsp;list;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;make&nbsp;:&nbsp;<span class="constructor">Ketrew_target</span>.build_process;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;condition&nbsp;:&nbsp;<span class="constructor">Ketrew_target</span>.<span class="constructor">Condition</span>.t;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;condition&nbsp;:&nbsp;<span class="constructor">Ketrew_target</span>.<span class="constructor">Condition</span>.t&nbsp;option;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;equivalence&nbsp;:&nbsp;<span class="constructor">Ketrew_target</span>.<span class="constructor">Equivalence</span>.t;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;history&nbsp;:&nbsp;<span class="constructor">Ketrew_target</span>.workflow_state;<br>
 &nbsp;&nbsp;}<br>

@@ -124,11 +124,6 @@ Create a direct process (not “long-running”).<br>
 Shortcut for <code class="code">direct_execution ?host <span class="constructor">Program</span>.(sh cmd)</code>.<br>
 </div>
 
-<pre><span id="VALget_output"><span class="keyword">val</span> <a href="code_VALKetrew_edsl.get_output.html">get_output</a></span> : <code class="type">?host:<a href="Ketrew_host.html#TYPEt">Ketrew_host.t</a> -> <a href="Ketrew_edsl.Program.html#TYPEt">Program.t</a> -> <a href="Ketrew_target.html#TYPEbuild_process">Ketrew_target.build_process</a></code></pre><div class="info ">
-Create a direct process (not “long-running”) that stores the output (i.e.
-    <code class="code">stdout</code>) of the program.<br>
-</div>
-
 <pre><span id="VALlsf"><span class="keyword">val</span> <a href="code_VALKetrew_edsl.lsf.html">lsf</a></span> : <code class="type">?host:<a href="Ketrew_host.html#TYPEt">Ketrew_host.t</a> -><br>       ?queue:string -><br>       ?name:string -><br>       ?wall_limit:string -><br>       ?processors:[ `Min of int | `Min_max of int * int ] -><br>       <a href="Ketrew_edsl.Program.html#TYPEt">Program.t</a> -> <a href="Ketrew_target.html#TYPEbuild_process">Ketrew_target.build_process</a></code></pre><div class="info ">
 Create an “LSF” build process.<br>
 </div>
