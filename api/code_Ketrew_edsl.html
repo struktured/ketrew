@@ -92,6 +92,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;id:&nbsp;<span class="constructor">Unique_id</span>.t<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;render:&nbsp;<span class="constructor">Ketrew_target</span>.t<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;dependencies:&nbsp;user_target&nbsp;list<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;if_fails_activate:&nbsp;user_target&nbsp;list<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;metadata:&nbsp;<span class="constructor">Ketrew_artifact</span>.<span class="constructor">Value</span>.t<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;product:&nbsp;user_artifact<br>
 &nbsp;&nbsp;<span class="keyword">end</span><br>
@@ -118,6 +119,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;id&nbsp;=&nbsp;id<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;dependencies&nbsp;=&nbsp;dependencies<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;if_fails_activate&nbsp;=&nbsp;if_fails_activate<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;activate&nbsp;=&nbsp;active&nbsp;&lt;-&nbsp;<span class="keyword">true</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;is_active&nbsp;=&nbsp;active<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;metadata&nbsp;=&nbsp;metadata<br>
@@ -161,7 +163,8 @@
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;go_through_deps&nbsp;t&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;t<span class="keywordsign">#</span>render&nbsp;::&nbsp;<span class="constructor">List</span>.concat_map&nbsp;t<span class="keywordsign">#</span>dependencies&nbsp;~f:go_through_deps&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;targets&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;go_through_deps&nbsp;t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(go_through_deps&nbsp;t&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;<span class="constructor">List</span>.concat_map&nbsp;~f:go_through_deps&nbsp;t<span class="keywordsign">#</span>if_fails_activate)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;|&gt;&nbsp;<span class="constructor">List</span>.dedup&nbsp;~compare:<span class="constructor">Target</span>.(<span class="keyword">fun</span>&nbsp;ta&nbsp;tb&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;compare&nbsp;ta.id&nbsp;tb.id)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;targets&nbsp;<span class="keyword">with</span><br>
