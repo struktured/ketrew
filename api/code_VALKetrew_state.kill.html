@@ -33,18 +33,12 @@
 &nbsp;&nbsp;get_target&nbsp;t&nbsp;id&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;target&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">match</span>&nbsp;target.<span class="constructor">Target</span>.history&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Created</span>&nbsp;c&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;add_or_update_target&nbsp;t&nbsp;<span class="constructor">Target</span>.(<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;kill_exn&nbsp;(activate_exn&nbsp;target&nbsp;~by:<span class="keywordsign">`</span><span class="constructor">Dependency</span>)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~msg:(fmt&nbsp;<span class="string">"Manual&nbsp;killing"</span>))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;make_target_die&nbsp;t&nbsp;~reason:(<span class="keywordsign">`</span><span class="constructor">Killed</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~target:(<span class="constructor">Target</span>.activate_exn&nbsp;target&nbsp;~by:<span class="keywordsign">`</span><span class="constructor">Dependency</span>)<br>
 &nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;we&nbsp;use&nbsp;`Dependency`&nbsp;because&nbsp;if&nbsp;a&nbsp;target&nbsp;is&nbsp;there&nbsp;and&nbsp;just&nbsp;"created"<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;it&nbsp;is&nbsp;most&nbsp;likely&nbsp;a&nbsp;dependency.&nbsp;*)</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;[<span class="keywordsign">`</span><span class="constructor">Target_died</span>&nbsp;(<span class="constructor">Target</span>.id&nbsp;target,&nbsp;<span class="keywordsign">`</span><span class="constructor">Killed</span>)]<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Activated</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;add_or_update_target&nbsp;t&nbsp;<span class="constructor">Target</span>.(<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;kill_exn&nbsp;target&nbsp;~msg:(fmt&nbsp;<span class="string">"Manual&nbsp;killing"</span>))<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;[<span class="keywordsign">`</span><span class="constructor">Target_died</span>&nbsp;(<span class="constructor">Target</span>.id&nbsp;target,&nbsp;<span class="keywordsign">`</span><span class="constructor">Killed</span>)]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;make_target_die&nbsp;t&nbsp;~target&nbsp;~reason:(<span class="keywordsign">`</span><span class="constructor">Killed</span>)<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Running</span>&nbsp;(bookkeeping,&nbsp;activation)&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;plugin_name&nbsp;=&nbsp;bookkeeping.<span class="constructor">Target</span>.plugin_name&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;with_plugin_or_kill_target&nbsp;t&nbsp;~plugin_name&nbsp;~target&nbsp;(<span class="keyword">fun</span>&nbsp;m&nbsp;<span class="keywordsign">-&gt;</span><br>
@@ -54,10 +48,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Long_running</span>.kill&nbsp;run_parameters<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&lt;&nbsp;<span class="keyword">function</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ok</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Killed</span>&nbsp;rp)&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;add_or_update_target&nbsp;t&nbsp;<span class="constructor">Target</span>.(<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;kill_exn&nbsp;target&nbsp;~msg:(fmt&nbsp;<span class="string">"Manual&nbsp;killing&nbsp;(%s)"</span>&nbsp;plugin_name))<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;[<span class="keywordsign">`</span><span class="constructor">Target_died</span>&nbsp;(<span class="constructor">Target</span>.id&nbsp;target,&nbsp;<span class="keywordsign">`</span><span class="constructor">Killed</span>)]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;make_target_die&nbsp;t&nbsp;~target&nbsp;~reason:<span class="keywordsign">`</span><span class="constructor">Killed</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;long_running_error_to_potential_target_failure&nbsp;t&nbsp;e&nbsp;~target<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~plugin_name<br>

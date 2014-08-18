@@ -79,6 +79,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;?metadata:<span class="constructor">Ketrew_artifact</span>.<span class="constructor">Value</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?product:<span class="constructor">Ketrew_edsl</span>.user_artifact&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?equivalence:<span class="constructor">Ketrew_target</span>.<span class="constructor">Equivalence</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?if_fails_activate:<span class="constructor">Ketrew_edsl</span>.user_target&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_edsl</span>.user_target<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;file_target&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;?dependencies:<span class="constructor">Ketrew_edsl</span>.user_target&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span><br>
@@ -87,6 +88,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;?name:string&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?host:<span class="constructor">Ketrew_edsl</span>.host&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?equivalence:<span class="constructor">Ketrew_target</span>.<span class="constructor">Equivalence</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?if_fails_activate:<span class="constructor">Ketrew_edsl</span>.user_target&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_edsl</span>.user_target<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;daemonize&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;?starting_timeout:float&nbsp;<span class="keywordsign">-&gt;</span><br>
