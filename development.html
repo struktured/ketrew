@@ -71,6 +71,9 @@ directly)</p>
 <pre><code>./please.sh install &lt;prefix&gt;</code></pre>
 <p>and uninstall with:</p>
 <pre><code>./please.sh uninstall &lt;prefix&gt;</code></pre>
+<p>If you use Opam ≥ <em>1.2.0~beta4</em>, you don&#39;t need a custom opam-repository:</p>
+<pre><code>./please.sh local-opam
+opam pin add -k path ketrew .</code></pre>
 <h3 id="BuildTheDocumentation">Build The Documentation</h3>
 <p>The documentation depends on <a href='https://github.com/ocaml/omd'>omd</a>,
 <a href='http://zoggy.github.io/higlo/'>higlo</a>,
