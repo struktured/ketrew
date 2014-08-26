@@ -24,6 +24,7 @@
 <link title="Ketrew_path" rel="Chapter" href="Ketrew_path.html">
 <link title="Ketrew_pervasives" rel="Chapter" href="Ketrew_pervasives.html">
 <link title="Ketrew_program" rel="Chapter" href="Ketrew_program.html">
+<link title="Ketrew_server" rel="Chapter" href="Ketrew_server.html">
 <link title="Ketrew_state" rel="Chapter" href="Ketrew_state.html">
 <link title="Ketrew_target" rel="Chapter" href="Ketrew_target.html">
 <link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html">
@@ -41,6 +42,8 @@ An action is a transaction that (attempts) to modify the database.
 </div>
 </td></tr>
 <tr><td><a href="Ketrew_target.html#TYPEactivated_state">activated_state</a> [<a href="Ketrew_target.html">Ketrew_target</a>]</td>
+<td></td></tr>
+<tr><td><a href="Ketrew_server.html#TYPEanswer">answer</a> [<a href="Ketrew_server.html">Ketrew_server</a>]</td>
 <td></td></tr>
 <tr><td align="left"><br>B</td></tr>
 <tr><td><a href="Ketrew_target.html#TYPEbuild_process">build_process</a> [<a href="Ketrew_target.html">Ketrew_target</a>]</td>
@@ -109,6 +112,8 @@ Hidden type kept serialized by the engine.
 <tr><td><a href="Ketrew_target.html#TYPErunning_state">running_state</a> [<a href="Ketrew_target.html">Ketrew_target</a>]</td>
 <td></td></tr>
 <tr><td align="left"><br>S</td></tr>
+<tr><td><a href="Ketrew_configuration.html#TYPEserver">server</a> [<a href="Ketrew_configuration.html">Ketrew_configuration</a>]</td>
+<td></td></tr>
 <tr><td><a href="Ketrew_host.html#TYPEshell">shell</a> [<a href="Ketrew_host.html">Ketrew_host</a>]</td>
 <td><div class="info">
 A “shell” is a function that takes a command and returns, and
@@ -150,6 +155,10 @@ A user-todo-item, is either asking Ketrew to fail with a message, or
 </div>
 </td></tr>
 <tr><td><a href="Ketrew_unix_process.Exit_code.html#TYPEt">t</a> [<a href="Ketrew_unix_process.Exit_code.html">Ketrew_unix_process.Exit_code</a>]</td>
+<td></td></tr>
+<tr><td><a href="Ketrew_server.Server_state.html#TYPEt">t</a> [<a href="Ketrew_server.Server_state.html">Ketrew_server.Server_state</a>]</td>
+<td></td></tr>
+<tr><td><a href="Ketrew_server.Authentication.html#TYPEt">t</a> [<a href="Ketrew_server.Authentication.html">Ketrew_server.Authentication</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ketrew_pervasives.Unique_id.html#TYPEt">t</a> [<a href="Ketrew_pervasives.Unique_id.html">Ketrew_pervasives.Unique_id</a>]</td>
 <td><div class="info">
@@ -246,6 +255,8 @@ General type of file-paths.
 Timeout specification for execution functions below.
 </div>
 </td></tr>
+<tr><td><a href="Ketrew_server.Authentication.html#TYPEtoken">token</a> [<a href="Ketrew_server.Authentication.html">Ketrew_server.Authentication</a>]</td>
+<td></td></tr>
 <tr><td align="left"><br>W</td></tr>
 <tr><td><a href="Ketrew_target.html#TYPEworkflow_state">workflow_state</a> [<a href="Ketrew_target.html">Ketrew_target</a>]</td>
 <td><div class="info">

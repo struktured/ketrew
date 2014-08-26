@@ -28,6 +28,7 @@
 <link title="Ketrew_path" rel="Chapter" href="Ketrew_path.html">
 <link title="Ketrew_pervasives" rel="Chapter" href="Ketrew_pervasives.html">
 <link title="Ketrew_program" rel="Chapter" href="Ketrew_program.html">
+<link title="Ketrew_server" rel="Chapter" href="Ketrew_server.html">
 <link title="Ketrew_state" rel="Chapter" href="Ketrew_state.html">
 <link title="Ketrew_target" rel="Chapter" href="Ketrew_target.html">
 <link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html">
@@ -42,13 +43,21 @@
 
 <pre><span class="keyword">module</span> Configuration: <code class="type">Ketrew_configuration</code></pre><hr width="100%">
 
+<pre><span id="TYPEserver"><span class="keyword">type</span> <code class="type"></code>server</span> </pre>
+
+
 <pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> </pre>
 <div class="info ">
 The contents of the configuration.<br>
 </div>
 
 
-<pre><span id="VALcreate"><span class="keyword">val</span> <a href="code_VALKetrew_configuration.create.html">create</a></span> : <code class="type">?debug_level:int -><br>       ?with_color:bool -><br>       ?turn_unix_ssh_failure_into_target_failure:bool -><br>       ?persistent_state_key:string -><br>       ?host_timeout_upper_bound:float -><br>       database_parameters:string -> unit -> <a href="Ketrew_configuration.html#TYPEt">t</a></code></pre><div class="info ">
+<pre><span id="VALcreate_server"><span class="keyword">val</span> <a href="code_VALKetrew_configuration.create_server.html">create_server</a></span> : <code class="type">?authorized_tokens_path:string -><br>       ?return_error_messages:bool -><br>       ?command_pipe:string -><br>       ?daemon:bool -><br>       ?log_path:string -><br>       [ `Tls of string * string * int ] -> <a href="Ketrew_configuration.html#TYPEserver">server</a></code></pre><div class="info ">
+Create a server configuration (to pass as optional argument to the
+      <a href="Ketrew_configuration.html#VALcreate"><code class="code"><span class="constructor">Ketrew_configuration</span>.create</code></a> function).<br>
+</div>
+
+<pre><span id="VALcreate"><span class="keyword">val</span> <a href="code_VALKetrew_configuration.create.html">create</a></span> : <code class="type">?debug_level:int -><br>       ?with_color:bool -><br>       ?turn_unix_ssh_failure_into_target_failure:bool -><br>       ?persistent_state_key:string -><br>       ?host_timeout_upper_bound:float -><br>       ?server:<a href="Ketrew_configuration.html#TYPEserver">server</a> -><br>       database_parameters:string -> unit -> <a href="Ketrew_configuration.html#TYPEt">t</a></code></pre><div class="info ">
 Create a configuration, <code class="code">persistent_state_key</code> is the “key” of the
     state storage in the database, <code class="code">database_parameters</code> are used to call
     <a href="Ketrew_database.html#VALload"><code class="code"><span class="constructor">Ketrew_database</span>.load</code></a>.
@@ -96,6 +105,13 @@ The call <code class="code">get_configuration file</code> reads and parses the f
     if <code class="code">and_apply</code> is <code class="code"><span class="keyword">true</span></code> (the default), then <a href="Ketrew_configuration.html#VALapply_globals"><code class="code"><span class="constructor">Ketrew_configuration</span>.apply_globals</code></a> is called.<br>
 </div>
 
+<pre><span id="VALserver_configuration"><span class="keyword">val</span> <a href="code_VALKetrew_configuration.server_configuration.html">server_configuration</a></span> : <code class="type"><a href="Ketrew_configuration.html#TYPEt">t</a> -> <a href="Ketrew_configuration.html#TYPEserver">server</a> option</code></pre>
+<pre><span id="VALauthorized_tokens_path"><span class="keyword">val</span> <a href="code_VALKetrew_configuration.authorized_tokens_path.html">authorized_tokens_path</a></span> : <code class="type"><a href="Ketrew_configuration.html#TYPEserver">server</a> -> string option</code></pre>
+<pre><span id="VALlisten_to"><span class="keyword">val</span> <a href="code_VALKetrew_configuration.listen_to.html">listen_to</a></span> : <code class="type"><a href="Ketrew_configuration.html#TYPEserver">server</a> -> [ `Tls of string * string * int ]</code></pre>
+<pre><span id="VALreturn_error_messages"><span class="keyword">val</span> <a href="code_VALKetrew_configuration.return_error_messages.html">return_error_messages</a></span> : <code class="type"><a href="Ketrew_configuration.html#TYPEserver">server</a> -> bool</code></pre>
+<pre><span id="VALcommand_pipe"><span class="keyword">val</span> <a href="code_VALKetrew_configuration.command_pipe.html">command_pipe</a></span> : <code class="type"><a href="Ketrew_configuration.html#TYPEserver">server</a> -> string option</code></pre>
+<pre><span id="VALdaemon"><span class="keyword">val</span> <a href="code_VALKetrew_configuration.daemon.html">daemon</a></span> : <code class="type"><a href="Ketrew_configuration.html#TYPEserver">server</a> -> bool</code></pre>
+<pre><span id="VALlog_path"><span class="keyword">val</span> <a href="code_VALKetrew_configuration.log_path.html">log_path</a></span> : <code class="type"><a href="Ketrew_configuration.html#TYPEserver">server</a> -> string option</code></pre>
 <pre><span id="VALlog"><span class="keyword">val</span> <a href="code_VALKetrew_configuration.log.html">log</a></span> : <code class="type"><a href="Ketrew_configuration.html#TYPEt">t</a> -> Ketrew_pervasives.Log.t list</code></pre><div class="info ">
 Get a display-friendly list of configuration items.<br>
 </div>

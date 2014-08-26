@@ -24,7 +24,7 @@
    </li>
    <li><a href='#WorkflowScripts'>Workflow Scripts</a>
    </li>
-   <li><a href='#Ketrewclient'>Ketrew-client</a>
+   <li><a href='#Ketrew'>Ketrew</a>
    </li>
    <li><a href='#TheConfigurationFile'>The Configuration File</a>
    </li>
@@ -59,8 +59,8 @@ opam install ketrew</code></pre>
 <h2 id="Usage">Usage</h2>
 <h3 id="Initialization">Initialization</h3>
 <p>To create a configuration file, run:</p>
-<pre><code>ketrew-client init</code></pre>
-<p>This creates <code>$HOME/.ketrew/client.toml</code> (see <code>ketrew-client init --help</code> to
+<pre><code>ketrew init</code></pre>
+<p>This creates <code>$HOME/.ketrew/client.toml</code> (see <code>ketrew init --help</code> to
 choose another path).</p>
 <h3 id="WorkflowScripts">Workflow Scripts</h3>
 <p>A workflow script is an OCaml file (script, compiled, or even inside the
@@ -83,21 +83,21 @@ toplevel).</p>
 <pre><code>&lt;script.ml&gt; &quot;&lt;some shell command to run on the cluster&gt;&quot;</code></pre>
 <p>See the file <code>src/test/cli.ml</code> for more examples (<em>work-in-progress</em>),
 and the <a href='api/Ketrew_edsl.html'>documentation of the EDSL API</a>.</p>
-<h3 id="Ketrewclient">Ketrew-client</h3>
+<h3 id="Ketrew">Ketrew</h3>
 <p>Ketrew is driven from the command-line client.  See:</p>
-<pre><code>ketrew-client --help</code></pre>
+<pre><code>ketrew --help</code></pre>
 <p>To display the current status:</p>
-<pre><code>ketrew-client status</code></pre>
+<pre><code>ketrew status</code></pre>
 <p>To run as many steps as possible until a “fix-point” is reached:</p>
-<pre><code>ketrew-client run fix</code></pre>
+<pre><code>ketrew run fix</code></pre>
 <p>To kill running jobs use</p>
-<pre><code>ketrew-client kill &lt;target-ID&gt;</code></pre>
+<pre><code>ketrew kill &lt;target-ID&gt;</code></pre>
 <p>or do an interactive murder:</p>
-<pre><code>ketrew-client kill --interactive</code></pre>
+<pre><code>ketrew kill --interactive</code></pre>
 <p>Once targets are dead, one can “archive” them, i.e. put them in a less-visible
 list.</p>
-<pre><code>ketrew-client archive [--interactive] [&lt;target-ID&gt;]*</code></pre>
-<p>See also <code>ketrew-client interact</code> or <code>ketrew-client explore</code> for fun
+<pre><code>ketrew archive [--interactive] [&lt;target-ID&gt;]*</code></pre>
+<p>See also <code>ketrew interact</code> or <code>ketrew explore</code> for fun
 <em>one-key-based</em> navigation.</p>
 <h3 id="TheConfigurationFile">The Configuration File</h3>
 <p>The general format used to the configuration file is
@@ -131,7 +131,7 @@ host-timeout-upper-bound = 120
   # (normal users should not change that):
   state-key = &quot;some-string&quot;</code></pre>
 <p>One can test their configuration with:</p>
-<pre><code>ketrew-client print-configuration</code></pre>
+<pre><code>ketrew print-configuration</code></pre>
 <h2 id="License">License</h2>
 <p>It&#39;s <a href='http://www.apache.org/licenses/LICENSE-2.0'>Apache 2.0</a>.</p>
 <h2 id="Authors">Authors</h2>

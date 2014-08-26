@@ -128,8 +128,15 @@
 <br>
 <span class="keyword">let</span>&nbsp;handle_request&nbsp;~server_state&nbsp;~body&nbsp;req&nbsp;:&nbsp;(answer,&nbsp;_)&nbsp;<span class="constructor">Deferred_result</span>.t&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Uri</span>.path&nbsp;(<span class="constructor">Cohttp_server_core</span>.<span class="constructor">Request</span>.uri&nbsp;req)&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"/hello"</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;<span class="keywordsign">`</span><span class="constructor">Unit</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"/targets"</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Cohttp_server_core</span>.<span class="constructor">Request</span>.meth&nbsp;req&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">GET</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;other&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wrong_request&nbsp;<span class="string">"wrong&nbsp;method"</span>&nbsp;(<span class="constructor">Cohttp</span>.<span class="constructor">Code</span>.string_of_method&nbsp;other)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;token&nbsp;=&nbsp;token_parameter&nbsp;req&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Authentication</span>.ensure_can&nbsp;server_state.authentication&nbsp;?token&nbsp;<span class="keywordsign">`</span><span class="constructor">See_targets</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
@@ -202,6 +209,8 @@
 <span class="keyword">let</span>&nbsp;mandatory_for_starting&nbsp;opt&nbsp;~msg&nbsp;=<br>
 &nbsp;&nbsp;<span class="constructor">Deferred_result</span>.some&nbsp;opt&nbsp;~or_fail:(<span class="keywordsign">`</span><span class="constructor">Start_server_error</span>&nbsp;msg)<br>
 <br>
+<span class="keyword">let</span>&nbsp;die_command&nbsp;=&nbsp;<span class="string">"die"</span><br>
+<br>
 <span class="keyword">let</span>&nbsp;start_listening_on_command_pipe&nbsp;conf&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Ketrew_configuration</span>.command_pipe&nbsp;conf&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;file_path&nbsp;<span class="keywordsign">-&gt;</span><br>
@@ -210,14 +219,13 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~on_exn:(<span class="keyword">fun</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Start_server_error</span>&nbsp;(<span class="constructor">Printexc</span>.to_string&nbsp;e))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Lwt_unix</span>.mkfifo&nbsp;file_path&nbsp;0o600)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pipe&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;I&nbsp;“stole”&nbsp;this&nbsp;bit&nbsp;from&nbsp;Ocsigenserver:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c.f.&nbsp;https://github.com/ocsigen/ocsigenserver/blob/1c4fe43b9244b5121c327c0828f80cec83b94909/src/server/ocsigen_server.ml#L1335<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Lwt_chan</span>.in_channel_of_descr<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Lwt_unix</span>.of_unix_file_descr<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Unix</span>.openfile&nbsp;file_path<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<span class="constructor">Unix</span>.<span class="constructor">O_RDWR</span>;&nbsp;<span class="constructor">Unix</span>.<span class="constructor">O_NONBLOCK</span>;&nbsp;<span class="constructor">Unix</span>.<span class="constructor">O_APPEND</span>]&nbsp;0o660))&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;wrap_deferred<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~on_exn:(<span class="keyword">fun</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Start_server_error</span>&nbsp;(<span class="constructor">Printexc</span>.to_string&nbsp;e))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Lwt_io</span>.open_file&nbsp;~buffer_size:16<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~flags:[<span class="constructor">Unix</span>.<span class="constructor">O_RDWR</span>;&nbsp;<span class="constructor">Unix</span>.<span class="constructor">O_NONBLOCK</span>;&nbsp;<span class="constructor">Unix</span>.<span class="constructor">O_APPEND</span>]&nbsp;~perm:0o660<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~mode:<span class="constructor">Lwt_io</span>.input&nbsp;file_path)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;pipe&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">open</span>&nbsp;<span class="constructor">Lwt</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;read_loop&nbsp;~error_count&nbsp;()&nbsp;=<br>
@@ -225,7 +233,11 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Lwt</span>.catch&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Lwt_io</span>.read_line&nbsp;pipe<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">function</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;&nbsp;<span class="string">"die"</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;exit&nbsp;0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;&nbsp;die&nbsp;<span class="keyword">when</span>&nbsp;die&nbsp;=&nbsp;die_command&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Server&nbsp;killed&nbsp;by&nbsp;“die”&nbsp;command&nbsp;"</span>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;parens&nbsp;(<span class="constructor">OCaml</span>.string&nbsp;file_path)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;normal);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit&nbsp;0<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;&nbsp;other&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Cannot&nbsp;understand&nbsp;command:&nbsp;"</span>&nbsp;%&nbsp;<span class="constructor">OCaml</span>.string&nbsp;other&nbsp;@&nbsp;error);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;read_loop&nbsp;~error_count&nbsp;())<br>
@@ -302,6 +314,27 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;<span class="constructor">Cohttp_lwt_unix</span>.<span class="constructor">Server</span>.callback&nbsp;=&nbsp;callback;&nbsp;conn_closed&nbsp;}&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;handler_http&nbsp;=&nbsp;<span class="constructor">Cohttp_server_core</span>.(callback&nbsp;config)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Lwt_unix_conduit</span>.serve&nbsp;~mode&nbsp;~sockaddr&nbsp;handler_http)<br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+<br>
+<span class="keyword">let</span>&nbsp;stop&nbsp;~state&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;config&nbsp;=&nbsp;&nbsp;<span class="constructor">Ketrew_state</span>.configuration&nbsp;state&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="constructor">Deferred_result</span>.some&nbsp;~or_fail:(<span class="keywordsign">`</span><span class="constructor">Stop_server_error</span>&nbsp;<span class="string">"No&nbsp;server&nbsp;configured"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Ketrew_configuration</span>.server_configuration&nbsp;config)<br>
+&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;server_config&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;<span class="constructor">Deferred_result</span>.some&nbsp;~or_fail:(<span class="keywordsign">`</span><span class="constructor">Stop_server_error</span>&nbsp;<span class="string">"No&nbsp;command-pipe&nbsp;configured"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Ketrew_configuration</span>.command_pipe&nbsp;server_config)<br>
+&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;file_path&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;<span class="keyword">begin</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">System</span>.with_timeout&nbsp;2.&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">IO</span>.with_out_channel&nbsp;(<span class="keywordsign">`</span><span class="constructor">Append_to_file</span>&nbsp;file_path)&nbsp;~buffer_size:16&nbsp;~f:(<span class="keyword">fun</span>&nbsp;oc&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">IO</span>.write&nbsp;oc&nbsp;die_command<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">IO</span>.write&nbsp;oc&nbsp;<span class="string">"\n"</span>))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&lt;&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ok</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;<span class="keywordsign">`</span><span class="constructor">Done</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Timeout</span>&nbsp;_)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;<span class="keywordsign">`</span><span class="constructor">Timeout</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">IO</span>&nbsp;_&nbsp;<span class="keyword">as</span>&nbsp;e)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fail&nbsp;e<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">System</span>&nbsp;_)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fail&nbsp;(<span class="keywordsign">`</span><span class="constructor">Stop_server_error</span>&nbsp;<span class="string">"System.timeout&nbsp;failed!"</span>)<br>
 &nbsp;&nbsp;<span class="keyword">end</span><br>
 <br>
 </code></body></html>
