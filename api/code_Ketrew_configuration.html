@@ -56,6 +56,7 @@
 &nbsp;&nbsp;daemon:&nbsp;bool;<br>
 &nbsp;&nbsp;log_path:&nbsp;string&nbsp;option;<br>
 }<br>
+<span class="keyword">type</span>&nbsp;plugin&nbsp;=&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Compiled</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">OCamlfind</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;]<br>
 <span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;{<br>
 &nbsp;&nbsp;database_parameters:&nbsp;string;<br>
 &nbsp;&nbsp;persistent_state_key:&nbsp;string;<br>
@@ -64,6 +65,7 @@
 &nbsp;&nbsp;with_color:&nbsp;bool;<br>
 &nbsp;&nbsp;host_timeout_upper_bound:&nbsp;float;<br>
 &nbsp;&nbsp;server:&nbsp;server&nbsp;option;<br>
+&nbsp;&nbsp;plugins:&nbsp;plugin&nbsp;list;<br>
 }<br>
 <br>
 <span class="keyword">let</span>&nbsp;log&nbsp;t&nbsp;=<br>
@@ -78,7 +80,15 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;<span class="string">"Debug-level:&nbsp;"</span>&nbsp;%&nbsp;i&nbsp;t.debug_level;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;<span class="string">"Client&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;(<span class="keyword">if</span>&nbsp;t.with_color&nbsp;<span class="keyword">then</span>&nbsp;<span class="string">"with"</span>&nbsp;<span class="keyword">else</span>&nbsp;<span class="string">"without"</span>)&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;colors"</span>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;<span class="string">"Timeout-upper-bound:&nbsp;"</span>&nbsp;%&nbsp;f&nbsp;t.host_timeout_upper_bound&nbsp;%&nbsp;s&nbsp;<span class="string">" seconds"</span>;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;<span class="string">"Server:&nbsp;"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;<span class="string">"Plugins:&nbsp;"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">match</span>&nbsp;t.plugins&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"None"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;more&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;n&nbsp;%&nbsp;indent&nbsp;(separate&nbsp;n&nbsp;(<span class="constructor">List</span>.map&nbsp;more&nbsp;~f:(<span class="keyword">function</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Compiled</span>&nbsp;path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"*&nbsp;Compiled:&nbsp;"</span>&nbsp;%&nbsp;quote&nbsp;path<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">OCamlfind</span>&nbsp;pack&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"*&nbsp;OCamlfind&nbsp;package:&nbsp;"</span>&nbsp;%&nbsp;quote&nbsp;pack<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)))&nbsp;%&nbsp;n<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;s&nbsp;<span class="string">"Server:&nbsp;"</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;(<span class="keyword">match</span>&nbsp;t.server&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"Not&nbsp;configured"</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;srv&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;indent&nbsp;(<br>
@@ -121,11 +131,12 @@
 &nbsp;&nbsp;&nbsp;&nbsp;?(turn_unix_ssh_failure_into_target_failure=<span class="keyword">false</span>)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;?(persistent_state_key=default_persistent_state_key)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;?(host_timeout_upper_bound=60.)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?(plugins=[])<br>
 &nbsp;&nbsp;&nbsp;&nbsp;?server<br>
 &nbsp;&nbsp;&nbsp;&nbsp;~database_parameters&nbsp;()&nbsp;=<br>
 &nbsp;&nbsp;{<br>
 &nbsp;&nbsp;&nbsp;&nbsp;database_parameters;&nbsp;persistent_state_key;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;turn_unix_ssh_failure_into_target_failure;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;turn_unix_ssh_failure_into_target_failure;&nbsp;plugins;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;debug_level;&nbsp;with_color;&nbsp;host_timeout_upper_bound;&nbsp;server;<br>
 &nbsp;&nbsp;}<br>
 <br>
@@ -150,6 +161,23 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;table&nbsp;=&nbsp;toml_mandatory&nbsp;<span class="constructor">Toml</span>.get_table&nbsp;<span class="string">"database"</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;toml_mandatory&nbsp;~table&nbsp;<span class="constructor">Toml</span>.get_string&nbsp;&nbsp;<span class="string">"path"</span>,<br>
 &nbsp;&nbsp;&nbsp;&nbsp;toml_option&nbsp;~table&nbsp;<span class="constructor">Toml</span>.get_string&nbsp;<span class="string">"state-key"</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;plugins&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;toml_option&nbsp;<span class="constructor">Toml</span>.get_table&nbsp;<span class="string">"plugins"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;|&gt;&nbsp;<span class="constructor">Option</span>.value_map&nbsp;~default:[]&nbsp;~f:<span class="constructor">Toml</span>.toml_to_list<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;Toml.toml_to_list&nbsp;seems&nbsp;to&nbsp;reverse&nbsp;the&nbsp;order&nbsp;of&nbsp;the&nbsp;table,&nbsp;so&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;we&nbsp;reverse&nbsp;back:&nbsp;*)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;|&gt;&nbsp;<span class="constructor">List</span>.rev_map&nbsp;~f:(<span class="keyword">function</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;(<span class="string">"compiled"</span>,&nbsp;<span class="constructor">TomlType</span>.<span class="constructor">TString</span>&nbsp;path)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[<span class="keywordsign">`</span><span class="constructor">Compiled</span>&nbsp;path]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;(<span class="string">"ocamlfind"</span>,&nbsp;<span class="constructor">TomlType</span>.<span class="constructor">TString</span>&nbsp;pack)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[<span class="keywordsign">`</span><span class="constructor">OCamlfind</span>&nbsp;pack]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;(<span class="string">"compiled"</span>,&nbsp;<span class="constructor">TomlType</span>.<span class="constructor">TArray</span>&nbsp;(<span class="constructor">TomlType</span>.<span class="constructor">NodeString</span>&nbsp;paths))&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.map&nbsp;paths&nbsp;~f:(<span class="keyword">fun</span>&nbsp;p&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Compiled</span>&nbsp;p)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;(<span class="string">"ocamlfind"</span>,&nbsp;<span class="constructor">TomlType</span>.<span class="constructor">TArray</span>&nbsp;(<span class="constructor">TomlType</span>.<span class="constructor">NodeString</span>&nbsp;packs))&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.map&nbsp;packs&nbsp;~f:(<span class="keyword">fun</span>&nbsp;p&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">OCamlfind</span>&nbsp;p)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;(other,&nbsp;_)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;(fmt&nbsp;<span class="string">"Expecting&nbsp;“compiled”&nbsp;plugins&nbsp;only"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;|&gt;&nbsp;<span class="constructor">List</span>.concat<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;server&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">open</span>&nbsp;<span class="constructor">Option</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;toml_option&nbsp;<span class="constructor">Toml</span>.get_table&nbsp;<span class="string">"server"</span><br>
@@ -178,6 +206,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;?with_color<br>
 &nbsp;&nbsp;&nbsp;&nbsp;?persistent_state_key&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;?host_timeout_upper_bound<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~plugins<br>
 &nbsp;&nbsp;&nbsp;&nbsp;?server<br>
 &nbsp;&nbsp;&nbsp;&nbsp;~database_parameters&nbsp;()<br>
 <br>
@@ -204,6 +233,8 @@
 &nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;conf&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;<span class="keyword">if</span>&nbsp;and_apply&nbsp;<span class="keyword">then</span>&nbsp;apply_globals&nbsp;conf;<br>
 &nbsp;&nbsp;return&nbsp;conf<br>
+<br>
+<span class="keyword">let</span>&nbsp;plugins&nbsp;t&nbsp;=&nbsp;t.plugins<br>
 <br>
 <span class="keyword">let</span>&nbsp;server_configuration&nbsp;t&nbsp;=&nbsp;t.server<br>
 <br>

@@ -714,6 +714,8 @@ Path to the “PID” file: where the script stores the PID of the process
     created by `setsid` (useful for killing the whole process tree).
 </div>
 </td></tr>
+<tr><td><a href="Ketrew_configuration.html#VALplugins">plugins</a> [<a href="Ketrew_configuration.html">Ketrew_configuration</a>]</td>
+<td></td></tr>
 <tr><td><a href="Ketrew_pervasives.html#VALprintf">printf</a> [<a href="Ketrew_pervasives.html">Ketrew_pervasives</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ketrew_target.Command.html#VALprogram">program</a> [<a href="Ketrew_target.Command.html">Ketrew_target.Command</a>]</td>
@@ -738,6 +740,11 @@ Perform a query.
 <tr><td><a href="Ketrew_target.html#VALreactivate">reactivate</a> [<a href="Ketrew_target.html">Ketrew_target</a>]</td>
 <td><div class="info">
 “Clone” the target as an activated new target.
+</div>
+</td></tr>
+<tr><td><a href="Ketrew_state.html#VALregister_long_running_plugin">register_long_running_plugin</a> [<a href="Ketrew_state.html">Ketrew_state</a>]</td>
+<td><div class="info">
+Function to be called from dynamically loaded plugins.
 </div>
 </td></tr>
 <tr><td><a href="Ketrew_path.html#VALrelative_directory_exn">relative_directory_exn</a> [<a href="Ketrew_path.html">Ketrew_path</a>]</td>
@@ -1029,6 +1036,8 @@ Transform an item of the result of <a href="Ketrew_state.html#VALstep"><code cla
 Create a <code class="code"><span class="constructor">State</span>.t</code>, run the function passed as argument, and properly dispose of it.
 </div>
 </td></tr>
+<tr><td><a href="Ketrew_pervasives.html#VALwrap_preemptively">wrap_preemptively</a> [<a href="Ketrew_pervasives.html">Ketrew_pervasives</a>]</td>
+<td></td></tr>
 <tr><td><a href="Ketrew_server.html#VALwrong_request">wrong_request</a> [<a href="Ketrew_server.html">Ketrew_server</a>]</td>
 <td></td></tr>
 </table>

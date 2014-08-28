@@ -56,12 +56,15 @@ The contents of the configuration.<br>
 </div>
 
 
+<pre><span id="TYPEplugin"><span class="keyword">type</span> <code class="type"></code>plugin</span> = <code class="type">[ `Compiled of string | `OCamlfind of string ]</code> </pre>
+
+
 <pre><span id="VALcreate_server"><span class="keyword">val</span> <a href="code_VALKetrew_configuration.create_server.html">create_server</a></span> : <code class="type">?authorized_tokens_path:string -><br>       ?return_error_messages:bool -><br>       ?command_pipe:string -><br>       ?daemon:bool -><br>       ?log_path:string -><br>       [ `Tls of string * string * int ] -> <a href="Ketrew_configuration.html#TYPEserver">server</a></code></pre><div class="info ">
 Create a server configuration (to pass as optional argument to the
       <a href="Ketrew_configuration.html#VALcreate"><code class="code"><span class="constructor">Ketrew_configuration</span>.create</code></a> function).<br>
 </div>
 
-<pre><span id="VALcreate"><span class="keyword">val</span> <a href="code_VALKetrew_configuration.create.html">create</a></span> : <code class="type">?debug_level:int -><br>       ?with_color:bool -><br>       ?turn_unix_ssh_failure_into_target_failure:bool -><br>       ?persistent_state_key:string -><br>       ?host_timeout_upper_bound:float -><br>       ?server:<a href="Ketrew_configuration.html#TYPEserver">server</a> -><br>       database_parameters:string -> unit -> <a href="Ketrew_configuration.html#TYPEt">t</a></code></pre><div class="info ">
+<pre><span id="VALcreate"><span class="keyword">val</span> <a href="code_VALKetrew_configuration.create.html">create</a></span> : <code class="type">?debug_level:int -><br>       ?with_color:bool -><br>       ?turn_unix_ssh_failure_into_target_failure:bool -><br>       ?persistent_state_key:string -><br>       ?host_timeout_upper_bound:float -><br>       ?plugins:<a href="Ketrew_configuration.html#TYPEplugin">plugin</a> list -><br>       ?server:<a href="Ketrew_configuration.html#TYPEserver">server</a> -><br>       database_parameters:string -> unit -> <a href="Ketrew_configuration.html#TYPEt">t</a></code></pre><div class="info ">
 Create a configuration, <code class="code">persistent_state_key</code> is the “key” of the
     state storage in the database, <code class="code">database_parameters</code> are used to call
     <a href="Ketrew_database.html#VALload"><code class="code"><span class="constructor">Ketrew_database</span>.load</code></a>.
@@ -109,6 +112,7 @@ The call <code class="code">get_configuration file</code> reads and parses the f
     if <code class="code">and_apply</code> is <code class="code"><span class="keyword">true</span></code> (the default), then <a href="Ketrew_configuration.html#VALapply_globals"><code class="code"><span class="constructor">Ketrew_configuration</span>.apply_globals</code></a> is called.<br>
 </div>
 
+<pre><span id="VALplugins"><span class="keyword">val</span> <a href="code_VALKetrew_configuration.plugins.html">plugins</a></span> : <code class="type"><a href="Ketrew_configuration.html#TYPEt">t</a> -> <a href="Ketrew_configuration.html#TYPEplugin">plugin</a> list</code></pre>
 <pre><span id="VALserver_configuration"><span class="keyword">val</span> <a href="code_VALKetrew_configuration.server_configuration.html">server_configuration</a></span> : <code class="type"><a href="Ketrew_configuration.html#TYPEt">t</a> -> <a href="Ketrew_configuration.html#TYPEserver">server</a> option</code></pre>
 <pre><span id="VALauthorized_tokens_path"><span class="keyword">val</span> <a href="code_VALKetrew_configuration.authorized_tokens_path.html">authorized_tokens_path</a></span> : <code class="type"><a href="Ketrew_configuration.html#TYPEserver">server</a> -> string option</code></pre>
 <pre><span id="VALlisten_to"><span class="keyword">val</span> <a href="code_VALKetrew_configuration.listen_to.html">listen_to</a></span> : <code class="type"><a href="Ketrew_configuration.html#TYPEserver">server</a> -> [ `Tls of string * string * int ]</code></pre>

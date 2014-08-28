@@ -61,4 +61,11 @@
 <span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Wrong_http_request</span>&nbsp;(short,&nbsp;long)&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;fmt&nbsp;<span class="string">"Wrong&nbsp;HTTP&nbsp;Request:&nbsp;%s&nbsp;→&nbsp;%s"</span>&nbsp;short&nbsp;long<br>
 <span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Client</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Get_exn</span>&nbsp;e)&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;fmt&nbsp;<span class="string">"HTTP-Client:&nbsp;error&nbsp;while&nbsp;GET-ing:&nbsp;%s"</span>&nbsp;(<span class="constructor">Printexc</span>.to_string&nbsp;e)</code></body></html>
+&nbsp;&nbsp;fmt&nbsp;<span class="string">"HTTP-Client:&nbsp;error&nbsp;while&nbsp;GET-ing:&nbsp;%s"</span>&nbsp;(<span class="constructor">Printexc</span>.to_string&nbsp;e)<br>
+<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Dyn_plugin</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">match</span>&nbsp;e&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Dynlink_error</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;fmt&nbsp;<span class="string">"Dynamic&nbsp;plugin&nbsp;linking&nbsp;error:&nbsp;%s"</span>&nbsp;(<span class="constructor">Dynlink</span>.error_message&nbsp;e)<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Findlib</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;fmt&nbsp;<span class="string">"Dynamic&nbsp;plugin&nbsp;findlib&nbsp;error:&nbsp;%s"</span>&nbsp;(<span class="constructor">Printexc</span>.to_string&nbsp;e)<br>
+&nbsp;&nbsp;<span class="keyword">end</span></code></body></html>

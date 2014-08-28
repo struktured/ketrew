@@ -27,12 +27,10 @@
 <link title="Ketrew_state" rel="Chapter" href="Ketrew_state.html">
 <link title="Ketrew_target" rel="Chapter" href="Ketrew_target.html">
 <link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html">
-<link title="Ketrew_user_command" rel="Chapter" href="Ketrew_user_command.html"><title>Ketrew API : Ketrew.Command_line</title>
+<link title="Ketrew_user_command" rel="Chapter" href="Ketrew_user_command.html"><title>Ketrew API : Ketrew_pervasives.wrap_preemptively</title>
 </head>
 <body>
-<code class="code"><span class="keyword">sig</span><br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;run_main&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;?argv:string&nbsp;array&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;?override_configuration:<span class="constructor">Ketrew_configuration</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Never_returns</span>&nbsp;]<br>
-<span class="keyword">end</span></code></body></html>
+<code class="code"><span class="keyword">let</span>&nbsp;wrap_preemptively&nbsp;~on_exn&nbsp;f&nbsp;=<br>
+&nbsp;&nbsp;wrap_deferred&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Lwt_preemptive</span>.detach&nbsp;f&nbsp;())<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~on_exn</code></body></html>

@@ -133,4 +133,8 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Time</span>.(now&nbsp;()&nbsp;|&gt;&nbsp;to_filename)&nbsp;(<span class="constructor">Random</span>.int&nbsp;1_000_000_000)<br>
 <span class="keyword">end</span><br>
 <br>
+<span class="keyword">let</span>&nbsp;wrap_preemptively&nbsp;~on_exn&nbsp;f&nbsp;=<br>
+&nbsp;&nbsp;wrap_deferred&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Lwt_preemptive</span>.detach&nbsp;f&nbsp;())<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~on_exn<br>
 </code></body></html>
