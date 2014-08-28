@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="http://cdn.jsdelivr.net/bootstrap/3.1.1/css/bootstrap.min.css" type="text/css">
+  <link rel="stylesheet" href="http://cdn.jsdelivr.net/bootstrap/3.1.1/css/bootstrap-theme.min.css" type="text/css">
+  <link rel="stylesheet" href="code_style.css" type="text/css">
+  <meta charset="utf-8">
+  <title>Ketrew: configuration_file</title>
+</head>
+  <body><div class="container">
+  <h1>Ketrew: configuration_file</h1>
+  <h2>Contents</h2>
+<p>One can always test their configuration with:</p>
+<pre><code>ketrew print-configuration</code></pre>
+<p>The general format used to the configuration file is
+<a href='https://github.com/toml-lang/toml'>Toml</a>.
+Here is a complete and commented example:</p>
+<pre class='toml'><code class='toml'># Ketrew configuration file
+
+# How much noise do you want on your terminal:
+debug-level = 2
+
+# When an SSH or system call fails it may not mean that the command in your
+# workflow is wrong (could be an SSH config or tunneling problem), by default,
+# Ketrew tries to be clever and does not make targets fail. To change this
+# behavior put the following option to `true`:
+turn-unix-ssh-failure-into-target-failure = false
+
+# Unless explicitly told, all SSH/system calls are bounded by a timeout.  A
+# given Host can have a specific timeout, but Ketrew has an upper-bound of all
+# timeouts allowed  (default 60 seconds) here is how to set it:
+host-timeout-upper-bound = 120
+
+[client]
+  # One can remove the colors in the output of the client with:
+  color = false
+
+
+[database]
+  # The path to the database (mandatory):
+  path = &quot;/path/to/some/file&quot;
+  # What is the &#39;master-key&#39; of the state inside the database
+  # (normal users should not change that):
+  state-key = &quot;some-string&quot;</code></pre>
+</div></body><html>

@@ -56,11 +56,7 @@ The contents of the application state.<br>
 The “long-running” plugins loaded by default.<br>
 </div>
 
-<pre><span id="VALregister_long_running_plugin"><span class="keyword">val</span> <a href="code_VALKetrew_state.register_long_running_plugin.html">register_long_running_plugin</a></span> : <code class="type">name:string -> (module Ketrew_long_running.LONG_RUNNING) -> unit</code></pre><div class="info ">
-Function to be called from dynamically loaded plugins.<br>
-</div>
-
-<pre><span id="VALwith_state"><span class="keyword">val</span> <a href="code_VALKetrew_state.with_state.html">with_state</a></span> : <code class="type">configuration:<a href="Ketrew_configuration.html#TYPEt">Ketrew_configuration.t</a> -><br>       (state:<a href="Ketrew_state.html#TYPEt">t</a> -><br>        (unit,<br>         [> `Database of <a href="Ketrew_database.html#TYPEerror">Ketrew_database.error</a><br>          | `Dyn_plugin of [> `Dynlink_error of Dynlink.error | `Findlib of exn ]<br>          | `Failure of string ]<br>         as 'merge_error)<br>        Ketrew_pervasives.Deferred_result.t) -><br>       (unit, 'merge_error) Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+<pre><span id="VALwith_state"><span class="keyword">val</span> <a href="code_VALKetrew_state.with_state.html">with_state</a></span> : <code class="type">?plugins:(string * (module Ketrew_long_running.LONG_RUNNING)) list -><br>       configuration:<a href="Ketrew_configuration.html#TYPEt">Ketrew_configuration.t</a> -><br>       (state:<a href="Ketrew_state.html#TYPEt">t</a> -><br>        (unit,<br>         [> `Database of <a href="Ketrew_database.html#TYPEerror">Ketrew_database.error</a> | `Failure of string ]<br>         as 'merge_error)<br>        Ketrew_pervasives.Deferred_result.t) -><br>       (unit, 'merge_error) Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
 Create a <code class="code"><span class="constructor">State</span>.t</code>, run the function passed as argument, and properly dispose of it.<br>
 </div>
 

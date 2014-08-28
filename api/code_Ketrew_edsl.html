@@ -175,7 +175,7 @@
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">assert</span>&nbsp;<span class="keyword">false</span>&nbsp;<span class="comment">(*&nbsp;there&nbsp;is&nbsp;at&nbsp;least&nbsp;the&nbsp;argument&nbsp;one&nbsp;*)</span><br>
 <br>
 <br>
-<span class="keyword">let</span>&nbsp;run&nbsp;?override_configuration&nbsp;t&nbsp;=<br>
+<span class="keyword">let</span>&nbsp;run&nbsp;?plugins&nbsp;?override_configuration&nbsp;t&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;todo_list&nbsp;=&nbsp;user_command_list&nbsp;t&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;config_path&nbsp;=&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">try</span>&nbsp;<span class="constructor">Sys</span>.getenv&nbsp;<span class="string">"KETREW_CONFIGURATION"</span>&nbsp;<span class="keyword">with</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<br>
@@ -185,7 +185,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_configuration</span>.(<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get_configuration&nbsp;?override_configuration&nbsp;config_path)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;configuration&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_state</span>.with_state&nbsp;~configuration&nbsp;(<span class="keyword">fun</span>&nbsp;~state&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_state</span>.with_state&nbsp;?plugins&nbsp;~configuration&nbsp;(<span class="keyword">fun</span>&nbsp;~state&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_user_command</span>.run_list&nbsp;~state&nbsp;todo_list)<br>
 &nbsp;&nbsp;)&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ok</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>

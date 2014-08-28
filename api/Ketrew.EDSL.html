@@ -126,7 +126,7 @@ Create an “LSF” build process.<br>
 <br>
 <h3 id="3_Workflows">Workflows</h3><br>
 
-<pre><span id="VALrun"><span class="keyword">val</span> <a href="code_VALKetrew_edsl.run.html">run</a></span> : <code class="type">?override_configuration:<a href="Ketrew_configuration.html#TYPEt">Ketrew_configuration.t</a> -><br>       <a href="Ketrew_edsl.user_target-c.html">user_target</a> -> unit</code></pre><div class="info ">
+<pre><span id="VALrun"><span class="keyword">val</span> <a href="code_VALKetrew_edsl.run.html">run</a></span> : <code class="type">?plugins:(string * (module Ketrew_long_running.LONG_RUNNING)) list -><br>       ?override_configuration:<a href="Ketrew_configuration.html#TYPEt">Ketrew_configuration.t</a> -><br>       <a href="Ketrew_edsl.user_target-c.html">user_target</a> -> unit</code></pre><div class="info ">
 Activate <code class="code">user_target</code> (the next time Ketrew runs a step, the target will
     started/run.<br>
 </div>

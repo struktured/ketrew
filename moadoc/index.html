@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="http://cdn.jsdelivr.net/bootstrap/3.1.1/css/bootstrap.min.css" type="text/css">
+  <link rel="stylesheet" href="http://cdn.jsdelivr.net/bootstrap/3.1.1/css/bootstrap-theme.min.css" type="text/css">
+  <link rel="stylesheet" href="code_style.css" type="text/css">
+  <meta charset="utf-8">
+  <title>Ketrew: Home</title>
+</head>
+  <body><div class="container">
+  <h1>Ketrew: Home</h1>
+  <h2>Contents</h2>
+<ul>
+ <li><a href='#BuildInstall'>Build &amp; Install</a>
+  <ul>
+   <li><a href='#FromOpam'>From Opam</a>
+   </li>
+  </ul>
+
+ </li>
+ <li><a href='#Usage'>Usage</a>
+  <ul>
+   <li><a href='#Initialization'>Initialization</a>
+   </li>
+   <li><a href='#WorkflowScripts'>Workflow Scripts</a>
+   </li>
+   <li><a href='#Ketrew'>Ketrew</a>
+   </li>
+  </ul>
+
+ </li>
+ <li><a href='#License'>License</a>
+ </li>
+ <li><a href='#Documentation'>Documentation</a>
+ </li>
+ <li><a href='#Authors'>Authors</a>
+ </li>
+</ul>
+<p>Ketrew is:</p>
+<ul>
+ <li>an OCaml library providing an EDSL API to define complex and convoluted
+workflows (interdependent steps/programs using a lot of data, with many
+parameter variations, running on different <em>hosts</em> with various schedulers).</li>
+ <li>an engine taking care of orchestrating the run of those workflows, 
+and keeping track everything that succeeds, fails, or gets lost.</li>
+</ul>
+
+<p>This documentation is available at <a href='http://hammerlab.github.io/ketrew/'>http://hammerlab.github.io/ketrew/</a>,
+the source is at <a href='https://github.com/hammerlab/ketrew/'>https://github.com/hammerlab/ketrew/</a>.</p>
+<p>This is <strong>Work in Progress</strong>, not ready general for use.
+<a href='https://travis-ci.org/hammerlab/ketrew'><img src='https://travis-ci.org/hammerlab/ketrew.svg?branch=master' alt='Build Status' /></a></p>
+<h2 id="BuildInstall">Build &amp; Install</h2>
+<h3 id="FromOpam">From Opam</h3>
+<p>If you have <code>opam</code> up and running:</p>
+<pre><code>opam remote add smondet git@github.com:smondet/dev-opam-repo
+opam install ketrew</code></pre>
+<h2 id="Usage">Usage</h2>
+<h3 id="Initialization">Initialization</h3>
+<p>To create a configuration file, run:</p>
+<pre><code>ketrew init</code></pre>
+<p>This creates <code>$HOME/.ketrew/configuration.toml</code> (see <code>ketrew init --help</code> to
+choose another path, and see the <a href='configuration_file.html'>documentation</a>
+on the configuration file to tweak it).</p>
+<h3 id="WorkflowScripts">Workflow Scripts</h3>
+<p>A workflow script is an OCaml file (script, compiled, or even inside the
+toplevel).</p>
+<p>One can add functions that create and <code>run</code> workflows:</p>
+<pre class='ocaml'><code class='ocaml'><span class="kw">let</span><span class="text"> </span><span class="id">run_command_with_lsf</span><span class="text"> </span><span class="id">cmd</span><span class="text"> =
+  </span><span class="kw">let</span><span class="text"> </span><span class="kw">open</span><span class="text"> </span><span class="kw2">Ketrew</span><span class="text">.</span><span class="kw2">EDSL</span><span class="text"> </span><span class="kw">in</span><span class="text">
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">host</span><span class="text"> = 
+    </span><span class="id">parse_host</span><span class="text"> </span><span class="string">&quot;ssh://user42@MyLSFCluster/home/user42/ketrew-playground/?shell=bash&quot;</span><span class="text"> </span><span class="kw">in</span><span class="text">
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">queue</span><span class="text"> = </span><span class="string">&quot;normalpeople&quot;</span><span class="text"> </span><span class="kw">in</span><span class="text">
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">program</span><span class="text"> = </span><span class="kw2">Program</span><span class="text">.</span><span class="id">sh</span><span class="text"> </span><span class="id">cmd</span><span class="text"> </span><span class="kw">in</span><span class="text">
+  </span><span class="id">run</span><span class="text"> (
+    </span><span class="id">target</span><span class="text"> </span><span class="string">&quot;run_command_with_lsf&quot;</span><span class="text">
+      </span><span class="kw4">~make</span><span class="text">:(</span><span class="id">lsf</span><span class="text"> </span><span class="kw4">~queue</span><span class="text"> </span><span class="kw4">~wall_limit</span><span class="text">:</span><span class="string">&quot;1:30&quot;</span><span class="text"> </span><span class="kw4">~processors</span><span class="text">:(`</span><span class="kw2">Min_max</span><span class="text"> (</span><span class="numeric">1</span><span class="text">,</span><span class="numeric">1</span><span class="text">)) </span><span class="kw4">~host</span><span class="text"> </span><span class="id">program</span><span class="text">)
+  )
+
+</span><span class="kw">let</span><span class="text"> () = </span><span class="comment">(* Extremely basic main of the workflow script *)</span><span class="text">
+  </span><span class="id">run_command_with_lsf</span><span class="text"> </span><span class="kw2">Sys</span><span class="text">.</span><span class="id">argv</span><span class="text">.(</span><span class="numeric">1</span><span class="text">)</span></code></pre>
+<p>then one should be able to add and activate mini-workflow with:</p>
+<pre><code>&lt;script.ml&gt; &quot;&lt;some shell command to run on the cluster&gt;&quot;</code></pre>
+<p>See the file <code>src/test/cli.ml</code> for more examples (<em>work-in-progress</em>),
+and the <a href='api/Ketrew_edsl.html'>documentation of the EDSL API</a>.</p>
+<h3 id="Ketrew">Ketrew</h3>
+<p>Ketrew is driven from the command-line client.  See:</p>
+<pre><code>ketrew --help</code></pre>
+<p>To display the current status:</p>
+<pre><code>ketrew status</code></pre>
+<p>To run as many steps as possible until a “fix-point” is reached:</p>
+<pre><code>ketrew run fix</code></pre>
+<p>To kill running jobs use</p>
+<pre><code>ketrew kill &lt;target-ID&gt;</code></pre>
+<p>or do an interactive murder:</p>
+<pre><code>ketrew kill --interactive</code></pre>
+<p>Once targets are dead, one can “archive” them, i.e. put them in a less-visible
+list.</p>
+<pre><code>ketrew archive [--interactive] [&lt;target-ID&gt;]*</code></pre>
+<p>See also <code>ketrew interact</code> or <code>ketrew explore</code> for fun
+<em>one-key-based</em> navigation.</p>
+<h2 id="License">License</h2>
+<p>It&#39;s <a href='http://www.apache.org/licenses/LICENSE-2.0'>Apache 2.0</a>.</p>
+<h2 id="Documentation">Documentation</h2>
+<p>More documents:</p>
+<ul>
+ <li><a href='configuration_file.html'>configuration file</a></li>
+ <li><a href='development.html'>development</a></li>
+ <li><a href='http_api.html'>http api</a></li>
+ <li><a href='api/index.html'>ocaml-doc for the API</a> (<a href='modules.svg'>modules overview (SVG)</a>)</li>
+</ul>
+
+<h2 id="Authors">Authors</h2>
+<ul>
+ <li><a href='http://seb.mondet.org'>Sebastien Mondet</a> (<code>seb@mondet.org</code>)</li>
+</ul>
+
+</div></body><html>
