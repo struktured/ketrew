@@ -10,11 +10,81 @@
   <body><div class="container">
   <h1>Ketrew: configuration_file</h1>
   <h2>Contents</h2>
-<p>One can always test their configuration with:</p>
-<pre><code>ketrew print-configuration</code></pre>
+<ul>
+ <li><a href='#TheFormat'>The Format</a>
+  <ul>
+   <li><a href='#TheclientSection'>The <code>client</code> Section</a>
+   </li>
+   <li><a href='#ThedatabaseSection'>The <code>database</code> Section</a>
+   </li>
+   <li><a href='#TheserverSection'>The <code>server</code> Section</a>
+   </li>
+   <li><a href='#ThepluginsSection'>The <code>plugins</code> Section</a>
+   </li>
+  </ul>
+
+ </li>
+ <li><a href='#Example'>Example</a>
+ </li>
+ <li><a href='#PrintTheConfiguration'>Print The Configuration</a>
+ </li>
+</ul>
+<h2 id="TheFormat">The Format</h2>
 <p>The general format used to the configuration file is
-<a href='https://github.com/toml-lang/toml'>Toml</a>.
-Here is a complete and commented example:</p>
+<a href='https://github.com/toml-lang/toml'>Toml</a>.</p>
+<p>Top-level options:</p>
+<ul>
+ <li><code>debug-level</code>: integer specifying the amount of verbose messages: <code>0</code>: none,
+<code>1</code>: verbose, <code>2</code>: very verbose.</li>
+ <li><code>turn-unix-ssh-failure-into-target-failure</code>: boolean; if <code>false</code> (default) an
+SSH connection problem will not make targets fail, if <code>true</code> it will.</li>
+ <li><code>host-timeout-upper-bound</code>: float (seconds, default: <code>60.</code>); every
+connection/command time-out will be <code>≤ upper-bound</code>.</li>
+</ul>
+
+<h3 id="TheclientSection">The <code>client</code> Section</h3>
+<p>This optional table configures the client-side/command-line application:</p>
+<ul>
+ <li><code>color</code>: boolean (default <code>true</code>); tell Ketrew to display <em>f-ANSI</em> colors.</li>
+</ul>
+
+<h3 id="ThedatabaseSection">The <code>database</code> Section</h3>
+<p>Configure Ketrew&#39;s persistence (mandatory section):</p>
+<ul>
+ <li><code>path</code>: the path to the database file; it&#39;s a
+<a href='http://en.wikipedia.org/wiki/Dbm'>Dbmᵂ</a> database for now, this parameter is
+mandatory.</li>
+ <li><code>state-key</code>: the name of the key to the “root of the tree”; if more than one
+application are using the same database, this can be useful to avoid conflicts
+(“normal” users should need to set this).</li>
+</ul>
+
+<h3 id="TheserverSection">The <code>server</code> Section</h3>
+<p>This optional section configures the HTTP server:</p>
+<ul>
+ <li><code>certificate</code>: path to the SSL certificate (<em>mandatory</em>).</li>
+ <li><code>private-key</code>: path to the SSL private-key (<em>mandatory</em>).</li>
+ <li><code>port</code>: port to listen on (<em>mandatory</em>).</li>
+ <li><code>authorized-tokens-path</code>: path to the file giving in an SSH <code>authorized_keys</code>
+style, to authentication tokens that the server accepts (<em>mandatory-ish</em> since
+authentication-less server-side is not implemented so far).</li>
+ <li><code>command-pipe-path</code>: if set this asks the server to listen on a named pipe
+for control commands (<em>recommended</em>).</li>
+ <li><code>daemonize</code>: if <code>true</code>, ask the server to detach from current terminal.</li>
+ <li><code>log-path</code>: if set, ask the server to redirect logs to this path (if not set
+logs go to <code>/dev/null</code>).</li>
+</ul>
+
+<h3 id="ThepluginsSection">The <code>plugins</code> Section</h3>
+<p>This optional section asks Ketrew to dynamically load plugins:</p>
+<ul>
+ <li><code>ocamlfind</code>: a package name or a list of package names to find with <code>Findlib</code>
+and to load.</li>
+ <li><code>compiled</code>: a path or a list of paths to load.</li>
+</ul>
+
+<h2 id="Example">Example</h2>
+<p>Here is a complete and commented example:</p>
 <pre class='toml'><code class='toml'># Ketrew configuration file
 
 # How much noise do you want on your terminal:
@@ -41,5 +111,24 @@ host-timeout-upper-bound = 120
   path = &quot;/path/to/some/file&quot;
   # What is the &#39;master-key&#39; of the state inside the database
   # (normal users should not change that):
-  state-key = &quot;some-string&quot;</code></pre>
+  state-key = &quot;some-string&quot;
+
+[server]
+  certificate = &quot;/etc/ketrew/cert.pem&quot;
+  private-key = &quot;/etc/ketrew/key.pem&quot;
+  port = 8443
+  authorized-tokens-path = &quot;/etc/ketrew/authorized-tokens&quot;
+  return-error-messages = true
+  log-path = &quot;/var/log/ketrew/server.log&quot;
+  daemonize = true
+  command-pipe-path = &quot;/var/run/ketrew/command.pipe&quot;
+
+[plugins]
+  ocamlfind =[&quot;lwt.unix&quot;, &quot;lwt.react&quot;]
+  compiled = &quot;_build/some_plugin/some_plugin.cmxs&quot;</code></pre>
+<h2 id="PrintTheConfiguration">Print The Configuration</h2>
+<p>One can always test their configuration with:</p>
+<pre><code>ketrew print-configuration
+
+</code></pre>
 </div></body><html>

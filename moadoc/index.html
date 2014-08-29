@@ -58,7 +58,7 @@ opam install ketrew</code></pre>
 <h3 id="Initialization">Initialization</h3>
 <p>To create a configuration file, run:</p>
 <pre><code>ketrew init</code></pre>
-<p>This creates <code>$HOME/.ketrew/configuration.toml</code> (see <code>ketrew init --help</code> to
+<p>This creates <code>$HOME/.ketrew/configuration.toml</code> (see <a href='ketrew_init_help.html'><code>ketrew init --help</code></a> to
 choose another path, and see the <a href='configuration_file.html'>documentation</a>
 on the configuration file to tweak it).</p>
 <h3 id="WorkflowScripts">Workflow Scripts</h3>
@@ -83,21 +83,24 @@ toplevel).</p>
 <p>See the file <a href='test_cli.html'><code>src/test/cli.ml</code></a> for more examples (<em>work-in-progress</em>),
 and the <a href='api/Ketrew_edsl.html'>documentation of the EDSL API</a>.</p>
 <h3 id="Ketrew">Ketrew</h3>
-<p>Ketrew is driven from the command-line client.  See:</p>
-<pre><code>ketrew --help</code></pre>
-<p>To display the current status:</p>
-<pre><code>ketrew status</code></pre>
-<p>To run as many steps as possible until a “fix-point” is reached:</p>
-<pre><code>ketrew run fix</code></pre>
-<p>To kill running jobs use</p>
-<pre><code>ketrew kill &lt;target-ID&gt;</code></pre>
-<p>or do an interactive murder:</p>
-<pre><code>ketrew kill --interactive</code></pre>
-<p>Once targets are dead, one can “archive” them, i.e. put them in a less-visible
-list.</p>
-<pre><code>ketrew archive [--interactive] [&lt;target-ID&gt;]*</code></pre>
-<p>See also <code>ketrew interact</code> or <code>ketrew explore</code> for fun
+<p>Ketrew is driven from the command-line client.  See first:
+<a href='ketrew_--help_help.html'><code>ketrew --help</code></a>; then:</p>
+<ul>
+ <li>To display the current status: <a href='ketrew_status_help.html'><code>ketrew status</code></a>.</li>
+ <li>To run as many steps as possible until a “fix-point” is reached:
+<code>ketrew run fix</code> (see <a href='ketrew_run-engine_help.html'><code>ketrew run-engine --help</code></a>).</li>
+ <li>To kill running jobs use <a href='ketrew_kill_help.html'><code>ketrew kill</code></a> + the target Identifier,<br />
+or do an interactive murder: <code>ketrew kill --interactive</code></li>
+ <li>Once targets are dead, one can “archive” them, i.e. put them in a
+less-visible list: <a href='ketrew_archive_help.html'><code>ketrew archive --help</code></a>.</li>
+</ul>
+
+<p>See also <a href='ketrew_interact_help.html'><code>ketrew interact</code></a> or <a href='ketrew_explore_help.html'><code>ketrew explore</code></a> for fun
 <em>one-key-based</em> navigation.</p>
+<p>Ketrew can try to be clever about killing an archiving;
+see <a href='ketrew_autoclean_help.html'><code>ketrew autoclean --help</code></a>.</p>
+<p>There is an HTTP API (work in progress); with the commands
+<a href='ketrew_start-server_help.html'><code>ketrew start-server</code></a> and <a href='ketrew_stop-server_help.html'><code>ketrew stop-server</code></a>.</p>
 <h2 id="License">License</h2>
 <p>It&#39;s <a href='http://www.apache.org/licenses/LICENSE-2.0'>Apache 2.0</a>.</p>
 <h2 id="Documentation">Documentation</h2>
