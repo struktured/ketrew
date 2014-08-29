@@ -32,6 +32,8 @@
    </li>
    <li><a href='#ThecliTest'>The <code>cli</code> Test</a>
    </li>
+   <li><a href='#GeneratingaTestEnvironment'>Generating a Test Environment</a>
+   </li>
   </ul>
 
  </li>
@@ -54,6 +56,8 @@ parse <a href='http://www.ietf.org/rfc/rfc3986.txt'>RFC-3986</a>-compliant URIs
  <li><code>atdgen/atd</code>: definition of serialization formats (used with <code>Yojson</code>).</li>
  <li><code>toml</code>: config-file parsing</li>
  <li><code>dbm</code>: unix key-value database</li>
+ <li><code>cohttp.lwt</code>, <code>ssl</code>, and <code>conduit</code>: HTTP server and client</li>
+ <li><code>findlib</code> + <code>dynlink</code>: dynamic loading of plugins </li>
 </ul>
 
 <p>and uses the <code>ocp-build</code> build system.</p>
@@ -77,7 +81,8 @@ opam pin add -k path ketrew .</code></pre>
 <a href='http://zoggy.github.io/higlo/'>higlo</a>,
 and Graphviz&#39;s <code>dot</code>:</p>
 <pre><code>please.sh doc</code></pre>
-<p>and check-out <code>_doc/index.html</code>.</p>
+<p>and check-out <code>_doc/&lt;branch&gt;/index.html</code> (unless branch is <code>master</code>, then
+<code>_doc/index.html</code>).</p>
 <h3 id="RunaToplevel">Run a Toplevel</h3>
 <p>One can start an ocaml-toplevel (<code>ocaml</code> or <code>utop</code>) with Ketrew loaded-in:</p>
 <pre><code>./please.sh top</code></pre>
@@ -92,23 +97,20 @@ an SSH host for which the user running the test does not need password.
 The test will run some commands on that host and create files and directories
 in its <code>/tmp</code> directory.</p>
 <h3 id="ThecliTest">The <code>cli</code> Test</h3>
-<p>There is also a more interactive test: <code>src/test/cli.ml</code> which provides
-workflows to be created from the command line. In order to not impact a
-potential “global” installation of Ketrew it uses <code>/tmp/ketrew_cli_test_db</code> as
-database.</p>
-<p>Hence to interact with the workflows, use a config-file like this:</p>
-<pre class='toml'><code class='toml'># Ketrew configuration file
+<p>There is also a more interactive test:
+<a href='test_cli.html'><code>src/test/cli.ml</code> </a> which provides
+workflows to be created from the command line.</p>
+<h3 id="GeneratingaTestEnvironment">Generating a Test Environment</h3>
+<p>In order to not impact a potential “global” installation of Ketrew, one can
+use:</p>
+<pre><code>./please.sh test-env</code></pre>
+<pre class='goodresult'><code class='goodresult'>Using package lwt.react add findlin-plugin
+Compiling the Dummy-plugin and its user
 
-debug-level = 2
-
-[client]
-  color = true
-
-[database]
-  path = &quot;/tmp/ketrew_cli_test_db&quot;</code></pre>
-<p>and force its usage with the option <code>-C</code> of the client or (the
-<code>KETREW_CONFIGURATION</code> environment variable).
-For example, with the following bash-aliases:</p>
-<pre><code>alias cli=&#39;KETREW_CONFIGURATION=cli-test.toml _obuild/ketrew-app/ketrew-app.asm&#39;
-alias CT=&#39;_obuild/ketrew-cli-test/ketrew-cli-test.asm&#39;</code></pre>
+Creating cert-key pair: _obuild/test-cert.pem, _obuild/test-key.pem
+Creating _obuild/test-config-file.toml
+Creating _obuild/test-authorized-tokens
+Creating _obuild/test.env</code></pre>
+<p>then sourcing <code>_obuild/test.env</code> will give a few aliases to run the tests (like
+<code>kttest</code>, <code>ktapp</code>, etc. see inside the file).</p>
 </div></body><html>

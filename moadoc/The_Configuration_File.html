@@ -36,8 +36,11 @@
 <ul>
  <li><code>debug-level</code>: integer specifying the amount of verbose messages: <code>0</code>: none,
 <code>1</code>: verbose, <code>2</code>: very verbose.</li>
- <li><code>turn-unix-ssh-failure-into-target-failure</code>: boolean; if <code>false</code> (default) an
-SSH connection problem will not make targets fail, if <code>true</code> it will.</li>
+ <li><code>turn-unix-ssh-failure-into-target-failure</code>: boolean;
+when an SSH or system call fails it may not mean that the command in your
+workflow is wrong (could be an SSH configuration or tunneling problem), by
+default (i.e. <code>false</code>), Ketrew tries to be clever and does not make targets
+fail. To change this behavior put the option to <code>true</code>.</li>
  <li><code>host-timeout-upper-bound</code>: float (seconds, default: <code>60.</code>); every
 connection/command time-out will be <code>≤ upper-bound</code>.</li>
 </ul>
@@ -73,6 +76,9 @@ for control commands (<em>recommended</em>).</li>
  <li><code>daemonize</code>: if <code>true</code>, ask the server to detach from current terminal.</li>
  <li><code>log-path</code>: if set, ask the server to redirect logs to this path (if not set
 logs go to <code>/dev/null</code>).</li>
+ <li><code>return-error-messages</code>: if <code>true</code>, the server will return real error
+messages (in the <em>body</em> of the response) to the client; if <code>false</code> (the
+default), any kind of error will result in the same uninformative message.</li>
 </ul>
 
 <h3 id="ThepluginsSection">The <code>plugins</code> Section</h3>
@@ -84,21 +90,13 @@ and to load.</li>
 </ul>
 
 <h2 id="Example">Example</h2>
-<p>Here is a complete and commented example:</p>
-<pre class='toml'><code class='toml'># Ketrew configuration file
-
-# How much noise do you want on your terminal:
+<p>Here is a somewhat complete example:</p>
+<pre class='toml'><code class='toml'># How much noise do you want on your terminal:
 debug-level = 2
 
-# When an SSH or system call fails it may not mean that the command in your
-# workflow is wrong (could be an SSH config or tunneling problem), by default,
-# Ketrew tries to be clever and does not make targets fail. To change this
-# behavior put the following option to `true`:
 turn-unix-ssh-failure-into-target-failure = false
 
-# Unless explicitly told, all SSH/system calls are bounded by a timeout.  A
-# given Host can have a specific timeout, but Ketrew has an upper-bound of all
-# timeouts allowed  (default 60 seconds) here is how to set it:
+# Unless explicitly told, all SSH/system calls are bounded by a timeout.
 host-timeout-upper-bound = 120
 
 [client]
@@ -109,8 +107,7 @@ host-timeout-upper-bound = 120
 [database]
   # The path to the database (mandatory):
   path = &quot;/path/to/some/file&quot;
-  # What is the &#39;master-key&#39; of the state inside the database
-  # (normal users should not change that):
+  # Normal users should not change that:
   state-key = &quot;some-string&quot;
 
 [server]

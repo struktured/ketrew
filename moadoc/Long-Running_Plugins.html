@@ -28,13 +28,13 @@
 <code>`Long_running (name, serialized_state)</code>;</li>
  <li>register themselves with the function:
 <code>Ketrew_state.register_long_running_plugin</code>
-(see <a href='api/Ketrew_state.html'><code>src/lib/ketrew_state.mli</code></a>).</li>
+(see the interface of <a href='api/Ketrew_state.html'><code>Ketrew_state</code></a>).</li>
 </ul>
 
 <h2 id="Examples">Examples</h2>
 <p>There are (for now) two long-running methods in the library, see
-<a href='api/Ketrew_lsf.html'><code>src/lib/ketrew_lsf.mli</code></a> and
-<a href='api/Ketrew_daemonize.html'><code>src/lib/ketrew_daemonize.mli</code></a>.</p>
+<a href='api/Ketrew_lsf.html'><code>Ketrew_lsf</code></a> and
+<a href='api/Ketrew_daemonize.html'><code>Ketrew_daemonize</code></a>.</p>
 <p>And the tests contain a “dynamically linked plugin” that uses the
 implementation of <code>Ketrew_daemonize</code> and adds a (stupid) custom runtime-query:</p>
 <ul>
