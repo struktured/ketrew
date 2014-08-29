@@ -75,6 +75,9 @@ $tmp_dir/new_ketrew_app print-configuration</code></pre>
     * Plugins:
         * OCamlfind package: &quot;lwt.react&quot;
         * OCamlfind package: &quot;lwt.unix&quot;
-    Server: Authorized tokens: Some &quot;/tmp/tokens&quot;
-        Listen: TLS:4242 (Certificate: somecert.pemKey: somekey.pem)Return-error-messages: false</code></pre>
+    Server:
+        Authorized tokens: Some &quot;/tmp/tokens&quot;
+        Listen: TLS:4242 (Certificate: &quot;somecert.pem&quot;,
+            Key: &quot;somekey.pem&quot;)
+        Return-error-messages: false</code></pre>
 </div></body><html>
