@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="http://cdn.jsdelivr.net/bootstrap/3.1.1/css/bootstrap.min.css" type="text/css">
+  <link rel="stylesheet" href="http://cdn.jsdelivr.net/bootstrap/3.1.1/css/bootstrap-theme.min.css" type="text/css">
+  <link rel="stylesheet" href="code_style.css" type="text/css">
+  <meta charset="utf-8">
+  <title>Ketrew: Long-Running Plugins</title>
+</head>
+  <body><div class="container">
+  <h1>Ketrew: Long-Running Plugins</h1>
+  <h2>Contents</h2>
+<ul>
+ <li><a href='#Implementation'>Implementation</a>
+ </li>
+ <li><a href='#Examples'>Examples</a>
+ </li>
+ <li><a href='#Alternative'>Alternative</a>
+ </li>
+</ul>
+<h2 id="Implementation">Implementation</h2>
+<p>The long-running plugins <em>must</em>:</p>
+<ul>
+ <li>implement a module satisfying the <code>LONG_RUNNING</code> interface defined in
+<a href='api/Ketrew_long_running.html'><code>src/lib/ketrew_long_running.ml</code></a>
+(with a <strong>unique</strong> <code>name</code>);</li>
+ <li>provide a way to create values like
+<code>`Long_running (name, serialized_state)</code>;</li>
+ <li>register themselves with the function:
+<code>Ketrew_state.register_long_running_plugin</code>
+(see <a href='api/Ketrew_state.html'><code>src/lib/ketrew_state.mli</code></a>).</li>
+</ul>
+
+<h2 id="Examples">Examples</h2>
+<p>There are (for now) two long-running methods in the library, see
+<a href='api/Ketrew_lsf.html'><code>src/lib/ketrew_lsf.mli</code></a> and
+<a href='api/Ketrew_daemonize.html'><code>src/lib/ketrew_daemonize.mli</code></a>.</p>
+<p>And the tests contain a “dynamically linked plugin” that uses the
+implementation of <code>Ketrew_daemonize</code> and adds a (stupid) custom runtime-query:</p>
+<ul>
+ <li>Implementation of the plugin:
+<a href='test_dummy_plugin.html'><code>src/test/dummy_plugin.ml</code></a>.</li>
+ <li>Workflow script that uses the plugin:
+<a href='test_dummy_plugin_user.html'><code>src/test/dummy_plugin_user.ml</code></a>.</li>
+</ul>
+
+<h2 id="Alternative">Alternative</h2>
+<p>Dynamic linking can be annoying: some libraries do not install <code>.cmxs</code> files,
+some architectures do not support native dynlink, … Hopefully there is an
+alternative, one can link plugins statically with <code>src/app/mail.ml</code> (or another
+version of that), see the
+<a href='Alternative_CLI_Application.html'>documentation</a>.</p>
+</div></body><html>

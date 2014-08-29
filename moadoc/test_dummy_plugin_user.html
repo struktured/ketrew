@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="http://cdn.jsdelivr.net/bootstrap/3.1.1/css/bootstrap.min.css" type="text/css">
+  <link rel="stylesheet" href="http://cdn.jsdelivr.net/bootstrap/3.1.1/css/bootstrap-theme.min.css" type="text/css">
+  <link rel="stylesheet" href="code_style.css" type="text/css">
+  <meta charset="utf-8">
+  <title>Ketrew: test dummy plugin user</title>
+</head>
+  <body><div class="container">
+  <h1>Ketrew: test dummy plugin user</h1>
+  <h2>Contents</h2>
+<pre class='ocaml'><code class='ocaml'><span class="text">
+</span></code></pre>
+<p>This is a workflow script using <code>Dummy_plugin</code> to create a (local) target.</p>
+<pre class='ocaml'><code class='ocaml'><span class="kw">open</span><span class="text"> </span><span class="kw2">Printf</span><span class="text">
+</span><span class="kw">let</span><span class="text"> () =
+  </span><span class="kw">let</span><span class="text"> </span><span class="kw">open</span><span class="text"> </span><span class="kw2">Ketrew</span><span class="text">.</span><span class="kw2">EDSL</span><span class="text"> </span><span class="kw">in</span><span class="text">
+  </span><span class="id">run</span><span class="text"> (
+    </span><span class="id">target</span><span class="text"> (</span><span class="id">sprintf</span><span class="text"> </span><span class="string">&quot;%S with dummy-plugin&quot;</span><span class="text"> </span><span class="kw2">Sys</span><span class="text">.</span><span class="id">argv</span><span class="text">.(</span><span class="numeric">1</span><span class="text">))
+      </span><span class="kw4">~make</span><span class="text">:(</span><span class="kw2">Dummy_plugin</span><span class="text">.</span><span class="id">create</span><span class="text">
+               </span><span class="kw4">~host</span><span class="text">:(</span><span class="id">parse_host</span><span class="text"> </span><span class="string">&quot;/tmp&quot;</span><span class="text">)
+               (</span><span class="kw2">Program</span><span class="text">.</span><span class="id">sh</span><span class="text"> </span><span class="kw2">Sys</span><span class="text">.</span><span class="id">argv</span><span class="text">.(</span><span class="numeric">1</span><span class="text">)))
+  )</span></code></pre>
+</div></body><html>
