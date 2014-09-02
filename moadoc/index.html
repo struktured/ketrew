@@ -9,6 +9,8 @@
 </head>
   <body><div class="container">
   <h1>Ketrew: Home</h1>
+  <div class="row">
+  <div class="col-md-3">
   <h2>Contents</h2>
 <ul>
  <li><a href='#BuildInstall'>Build &amp; Install</a>
@@ -29,14 +31,25 @@
   </ul>
 
  </li>
- <li><a href='#License'>License</a>
+ <li><a href='#WheretoGoNext'>Where to Go Next</a>
  </li>
- <li><a href='#Documentation'>Documentation</a>
+ <li><a href='#License'>License</a>
  </li>
  <li><a href='#Authors'>Authors</a>
  </li>
 </ul>
-<p>Ketrew is:</p>
+<h2>Menu</h2>
+<ul>
+ <li><a href='./index.html'>Home</a></li>
+ <li><a href='Alternative_CLI_Application.html'>Alternative CLI Application</a></li>
+ <li><a href='Developer_Documentation.html'>Developer Documentation</a></li>
+ <li><a href='Long-Running_Plugins.html'>Long-Running Plugins</a></li>
+ <li><a href='The_Configuration_File.html'>The Configuration File</a></li>
+ <li><a href='The_HTTP_API.html'>The HTTP API</a></li>
+ <li><a href='api/index.html'>Generated Documentaiton For The API</a> (<a href='modules.svg'>Modules Overview (SVG)</a>)</li>
+</ul>
+</div><div class="col-md-9">
+<p><strong>Ketrew</strong> is:</p>
 <ul>
  <li>an OCaml library providing an EDSL API to define complex and convoluted
 workflows (interdependent steps/programs using a lot of data, with many
@@ -101,22 +114,36 @@ less-visible list: <a href='ketrew_archive_help.html'><code>ketrew archive --hel
 see <a href='ketrew_autoclean_help.html'><code>ketrew autoclean --help</code></a>.</p>
 <p>There is an HTTP API (work in progress); with the commands
 <a href='ketrew_start-server_help.html'><code>ketrew start-server</code></a> and <a href='ketrew_stop-server_help.html'><code>ketrew stop-server</code></a>.</p>
-<h2 id="License">License</h2>
-<p>It&#39;s <a href='http://www.apache.org/licenses/LICENSE-2.0'>Apache 2.0</a>.</p>
-<h2 id="Documentation">Documentation</h2>
-<p>More documents:</p>
+<h2 id="WheretoGoNext">Where to Go Next</h2>
+<p>From here:</p>
 <ul>
- <li><a href='Alternative_CLI_Application.html'>Alternative CLI Application</a></li>
- <li><a href='Developer_Documentation.html'>Developer Documentation</a></li>
- <li><a href='Long-Running_Plugins.html'>Long-Running Plugins</a></li>
- <li><a href='The_Configuration_File.html'>The Configuration File</a></li>
- <li><a href='The_HTTP_API.html'>The HTTP API</a></li>
- <li><a href='api/index.html'>Generated Documentaiton For The API</a> (<a href='modules.svg'>Modules Overview (SVG)</a>)</li>
+ <li>To write workflows for Ketrew,
+see <a href='test_cli.html'><code>src/test/cli.ml</code></a> for examples
+and the <a href='api/Ketrew_edsl.html'>documentation of the EDSL API</a>.</li>
+ <li>To configure Ketrew use the configuration file
+<a href='The_Configuration_File.html'>documentation</a>.</li>
+ <li>You may want to “extend” Ketrew with new ways of running “long-running&quot;
+computations:  see the documentation on
+<a href='Long-Running_Plugins.html'>plugins</a>,
+and the examples in the library:
+like <a href='api/Ketrew_lsf.html'><code>Ketrew_lsf</code></a> or in the tests:
+<a href='test_dummy_plugin.html'><code>src/test/dummy_plugin.ml</code></a>.</li>
+ <li>You may want to extend Ketrew, or preconfigure it, <em>without</em> configuration
+files or dynamically loaded libraries: just
+<a href='Alternative_CLI_Application.html'>create</a> your own comand-line app.</li>
+ <li>You may want to try out the <a href='The_HTTP_API.html'>HTTP API</a>
+(<em>work in progress</em>).</li>
+ <li>If you want to help or simply to understand Ketrew
+see the <a href='Developer_Documentation.html'>development</a>
+documentation, and have a look at the modules
+like <a href='api/Ketrew_state.html'><code>Ketrew_state</code></a>.</li>
 </ul>
 
+<h2 id="License">License</h2>
+<p>It&#39;s <a href='http://www.apache.org/licenses/LICENSE-2.0'>Apache 2.0</a>.</p>
 <h2 id="Authors">Authors</h2>
 <ul>
  <li><a href='http://seb.mondet.org'>Sebastien Mondet</a> (<code>seb@mondet.org</code>)</li>
 </ul>
 
-</div></body><html>
+</div></div></div></body><html>
