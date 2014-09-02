@@ -9,6 +9,8 @@
 </head>
   <body><div class="container">
   <h1>Ketrew: Home</h1>
+  <div class="row">
+  <div class="col-md-3">
   <h2>Contents</h2>
 <ul>
  <li><a href='#BuildInstall'>Build &amp; Install</a>
@@ -26,19 +28,28 @@
    </li>
    <li><a href='#Ketrew'>Ketrew</a>
    </li>
-   <li><a href='#TheConfigurationFile'>The Configuration File</a>
-   </li>
   </ul>
 
+ </li>
+ <li><a href='#WheretoGoNext'>Where to Go Next</a>
  </li>
  <li><a href='#License'>License</a>
  </li>
  <li><a href='#Authors'>Authors</a>
  </li>
- <li><a href='#Development'>Development</a>
- </li>
 </ul>
-<p>Ketrew is:</p>
+<h2>Menu</h2>
+<ul>
+ <li><a href='./index.html'>Home</a></li>
+ <li><a href='Alternative_CLI_Application.html'>Alternative CLI Application</a></li>
+ <li><a href='Developer_Documentation.html'>Developer Documentation</a></li>
+ <li><a href='Long-Running_Plugins.html'>Long-Running Plugins</a></li>
+ <li><a href='The_Configuration_File.html'>The Configuration File</a></li>
+ <li><a href='The_HTTP_API.html'>The HTTP API</a></li>
+ <li><a href='api/index.html'>Generated Documentaiton For The API</a> (<a href='modules.svg'>Modules Overview (SVG)</a>)</li>
+</ul>
+</div><div class="col-md-9">
+<p><strong>Ketrew</strong> is:</p>
 <ul>
  <li>an OCaml library providing an EDSL API to define complex and convoluted
 workflows (interdependent steps/programs using a lot of data, with many
@@ -60,8 +71,9 @@ opam install ketrew</code></pre>
 <h3 id="Initialization">Initialization</h3>
 <p>To create a configuration file, run:</p>
 <pre><code>ketrew init</code></pre>
-<p>This creates <code>$HOME/.ketrew/client.toml</code> (see <code>ketrew init --help</code> to
-choose another path).</p>
+<p>This creates <code>$HOME/.ketrew/configuration.toml</code> (see <a href='ketrew_init_help.html'><code>ketrew init --help</code></a> to
+choose another path, and see the <a href='The_Configuration_File.html'>documentation</a>
+on the configuration file to tweak it).</p>
 <h3 id="WorkflowScripts">Workflow Scripts</h3>
 <p>A workflow script is an OCaml file (script, compiled, or even inside the
 toplevel).</p>
@@ -81,57 +93,52 @@ toplevel).</p>
   </span><span class="id">run_command_with_lsf</span><span class="text"> </span><span class="kw2">Sys</span><span class="text">.</span><span class="id">argv</span><span class="text">.(</span><span class="numeric">1</span><span class="text">)</span></code></pre>
 <p>then one should be able to add and activate mini-workflow with:</p>
 <pre><code>&lt;script.ml&gt; &quot;&lt;some shell command to run on the cluster&gt;&quot;</code></pre>
-<p>See the file <code>src/test/cli.ml</code> for more examples (<em>work-in-progress</em>),
+<p>See the file <a href='test_cli.html'><code>src/test/cli.ml</code></a> for more examples (<em>work-in-progress</em>),
 and the <a href='api/Ketrew_edsl.html'>documentation of the EDSL API</a>.</p>
 <h3 id="Ketrew">Ketrew</h3>
-<p>Ketrew is driven from the command-line client.  See:</p>
-<pre><code>ketrew --help</code></pre>
-<p>To display the current status:</p>
-<pre><code>ketrew status</code></pre>
-<p>To run as many steps as possible until a “fix-point” is reached:</p>
-<pre><code>ketrew run fix</code></pre>
-<p>To kill running jobs use</p>
-<pre><code>ketrew kill &lt;target-ID&gt;</code></pre>
-<p>or do an interactive murder:</p>
-<pre><code>ketrew kill --interactive</code></pre>
-<p>Once targets are dead, one can “archive” them, i.e. put them in a less-visible
-list.</p>
-<pre><code>ketrew archive [--interactive] [&lt;target-ID&gt;]*</code></pre>
-<p>See also <code>ketrew interact</code> or <code>ketrew explore</code> for fun
+<p>Ketrew is driven from the command-line client.  See first:
+<a href='ketrew_--help_help.html'><code>ketrew --help</code></a>; then:</p>
+<ul>
+ <li>To display the current status: <a href='ketrew_status_help.html'><code>ketrew status</code></a>.</li>
+ <li>To run as many steps as possible until a “fix-point” is reached:
+<code>ketrew run fix</code> (see <a href='ketrew_run-engine_help.html'><code>ketrew run-engine --help</code></a>).</li>
+ <li>To kill running jobs use <a href='ketrew_kill_help.html'><code>ketrew kill</code></a> + the target Identifier,<br />
+or do an interactive murder: <code>ketrew kill --interactive</code></li>
+ <li>Once targets are dead, one can “archive” them, i.e. put them in a
+less-visible list: <a href='ketrew_archive_help.html'><code>ketrew archive --help</code></a>.</li>
+</ul>
+
+<p>See also <a href='ketrew_interact_help.html'><code>ketrew interact</code></a> or <a href='ketrew_explore_help.html'><code>ketrew explore</code></a> for fun
 <em>one-key-based</em> navigation.</p>
-<h3 id="TheConfigurationFile">The Configuration File</h3>
-<p>The general format used to the configuration file is
-<a href='https://github.com/toml-lang/toml'>Toml</a>.
-Here is a complete and commented example:</p>
-<pre class='toml'><code class='toml'># Ketrew configuration file
+<p>Ketrew can try to be clever about killing an archiving;
+see <a href='ketrew_autoclean_help.html'><code>ketrew autoclean --help</code></a>.</p>
+<p>There is an HTTP API (work in progress); with the commands
+<a href='ketrew_start-server_help.html'><code>ketrew start-server</code></a> and <a href='ketrew_stop-server_help.html'><code>ketrew stop-server</code></a>.</p>
+<h2 id="WheretoGoNext">Where to Go Next</h2>
+<p>From here:</p>
+<ul>
+ <li>To write workflows for Ketrew,
+see <a href='test_cli.html'><code>src/test/cli.ml</code></a> for examples
+and the <a href='api/Ketrew_edsl.html'>documentation of the EDSL API</a>.</li>
+ <li>To configure Ketrew use the configuration file
+<a href='The_Configuration_File.html'>documentation</a>.</li>
+ <li>You may want to “extend” Ketrew with new ways of running “long-running&quot;
+computations:  see the documentation on
+<a href='Long-Running_Plugins.html'>plugins</a>,
+and the examples in the library:
+like <a href='api/Ketrew_lsf.html'><code>Ketrew_lsf</code></a> or in the tests:
+<a href='test_dummy_plugin.html'><code>src/test/dummy_plugin.ml</code></a>.</li>
+ <li>You may want to extend Ketrew, or preconfigure it, <em>without</em> configuration
+files or dynamically loaded libraries: just
+<a href='Alternative_CLI_Application.html'>create</a> your own comand-line app.</li>
+ <li>You may want to try out the <a href='The_HTTP_API.html'>HTTP API</a>
+(<em>work in progress</em>).</li>
+ <li>If you want to help or simply to understand Ketrew
+see the <a href='Developer_Documentation.html'>development</a>
+documentation, and have a look at the modules
+like <a href='api/Ketrew_state.html'><code>Ketrew_state</code></a>.</li>
+</ul>
 
-# How much noise do you want on your terminal:
-debug-level = 2
-
-# When an SSH or system call fails it may not mean that the command in your
-# workflow is wrong (could be an SSH config or tunneling problem), by default,
-# Ketrew tries to be clever and does not make targets fail. To change this
-# behavior put the following option to `true`:
-turn-unix-ssh-failure-into-target-failure = false
-
-# Unless explicitly told, all SSH/system calls are bounded by a timeout.  A
-# given Host can have a specific timeout, but Ketrew has an upper-bound of all
-# timeouts allowed  (default 60 seconds) here is how to set it:
-host-timeout-upper-bound = 120
-
-[client]
-  # One can remove the colors in the output of the client with:
-  color = false
-
-
-[database]
-  # The path to the database (mandatory):
-  path = &quot;/path/to/some/file&quot;
-  # What is the &#39;master-key&#39; of the state inside the database
-  # (normal users should not change that):
-  state-key = &quot;some-string&quot;</code></pre>
-<p>One can test their configuration with:</p>
-<pre><code>ketrew print-configuration</code></pre>
 <h2 id="License">License</h2>
 <p>It&#39;s <a href='http://www.apache.org/licenses/LICENSE-2.0'>Apache 2.0</a>.</p>
 <h2 id="Authors">Authors</h2>
@@ -139,6 +146,4 @@ host-timeout-upper-bound = 120
  <li><a href='http://seb.mondet.org'>Sebastien Mondet</a> (<code>seb@mondet.org</code>)</li>
 </ul>
 
-<h2 id="Development">Development</h2>
-<p>See the <a href='development.html'>development documentation</a>.</p>
-</div></body><html>
+</div></div></div></body><html>

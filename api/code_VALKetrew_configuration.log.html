@@ -42,7 +42,15 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;<span class="string">"Debug-level:&nbsp;"</span>&nbsp;%&nbsp;i&nbsp;t.debug_level;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;<span class="string">"Client&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;(<span class="keyword">if</span>&nbsp;t.with_color&nbsp;<span class="keyword">then</span>&nbsp;<span class="string">"with"</span>&nbsp;<span class="keyword">else</span>&nbsp;<span class="string">"without"</span>)&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;colors"</span>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;<span class="string">"Timeout-upper-bound:&nbsp;"</span>&nbsp;%&nbsp;f&nbsp;t.host_timeout_upper_bound&nbsp;%&nbsp;s&nbsp;<span class="string">" seconds"</span>;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;<span class="string">"Server:&nbsp;"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;<span class="string">"Plugins:&nbsp;"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">match</span>&nbsp;t.plugins&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"None"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;more&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;n&nbsp;%&nbsp;indent&nbsp;(separate&nbsp;n&nbsp;(<span class="constructor">List</span>.map&nbsp;more&nbsp;~f:(<span class="keyword">function</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Compiled</span>&nbsp;path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"*&nbsp;Compiled:&nbsp;"</span>&nbsp;%&nbsp;quote&nbsp;path<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">OCamlfind</span>&nbsp;pack&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"*&nbsp;OCamlfind&nbsp;package:&nbsp;"</span>&nbsp;%&nbsp;quote&nbsp;pack<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)))&nbsp;%&nbsp;n<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;s&nbsp;<span class="string">"Server:&nbsp;"</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;(<span class="keyword">match</span>&nbsp;t.server&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"Not&nbsp;configured"</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;srv&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;n&nbsp;%&nbsp;indent&nbsp;(<br>

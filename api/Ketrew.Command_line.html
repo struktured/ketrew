@@ -43,8 +43,16 @@
 
 <pre><span class="keyword">module</span> Command_line: <code class="type">Ketrew_command_line</code></pre><hr width="100%">
 
-<pre><span id="VALrun_main"><span class="keyword">val</span> <a href="code_VALKetrew_command_line.run_main.html">run_main</a></span> : <code class="type">?plugins:(string * (module Ketrew_long_running.LONG_RUNNING)) list -><br>       ?argv:string array -><br>       ?override_configuration:<a href="Ketrew_configuration.html#TYPEt">Ketrew_configuration.t</a> -> unit -> [ `Never_returns ]</code></pre><div class="info ">
+<pre><span id="VALrun_main"><span class="keyword">val</span> <a href="code_VALKetrew_command_line.run_main.html">run_main</a></span> : <code class="type">?argv:string array -><br>       ?override_configuration:<a href="Ketrew_configuration.html#TYPEt">Ketrew_configuration.t</a> -> unit -> [ `Never_returns ]</code></pre><div class="info ">
 The “main” function for the application, it will <code class="code">exit n</code> with <code class="code">n = 0</code> if
-    succeed or <code class="code">n &gt; 0</code> if fails.<br>
+    succeed or <code class="code">n &gt; 0</code> if an error occurs.
+<p>
+<ul>
+<li><code class="code">argv</code>: one can provide an array of arguments to be used instead of
+    <code class="code"><span class="constructor">Sys</span>.argv</code>.</li>
+<li><code class="code">override_configuration</code>: providing a custom configuration will prevent
+    Ketrew from looking up a configuration file.</li>
+</ul>
+<br>
 </div>
 </body></html>
