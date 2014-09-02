@@ -53,17 +53,15 @@
 <span class="keyword">module</span>&nbsp;<span class="constructor">User_command</span>&nbsp;=&nbsp;<span class="constructor">Ketrew_user_command</span><br>
 <span class="keyword">module</span>&nbsp;<span class="constructor">Configuration</span>&nbsp;=&nbsp;<span class="constructor">Ketrew_configuration</span><br>
 <br>
+</code><table><tr><td></td><td><span class="comment">(** Display errors, and return an exit code (integer). *)</span></td></tr></table><code class="code"><br>
 <span class="keyword">module</span>&nbsp;<span class="constructor">Return_code</span>&nbsp;=&nbsp;<span class="keyword">struct</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;user_todo_failure&nbsp;=&nbsp;2<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;not_implemented&nbsp;=&nbsp;3<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;cmdliner_error&nbsp;=&nbsp;4<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ketew_error&nbsp;=&nbsp;5<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;wrong_command&nbsp;=&nbsp;6<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;cmdliner_error&nbsp;=&nbsp;3<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ketrew_error&nbsp;=&nbsp;5<br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;of_error&nbsp;=&nbsp;<span class="keyword">function</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Error:&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;(<span class="constructor">Error</span>.to_string&nbsp;e)&nbsp;@&nbsp;error);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;ketew_error<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ketrew_error<br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;transform_error&nbsp;=&nbsp;<span class="keyword">function</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ok</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;()<br>
@@ -71,7 +69,17 @@
 <br>
 <span class="keyword">end</span><br>
 <br>
+</code><table><tr><td></td><td><span class="comment">(** Transform complex Ketrew values into display-friendly <code class="code"><span class="constructor">Log</span>.t</code> values. *)</span></td></tr></table><code class="code"><br>
 <span class="keyword">module</span>&nbsp;<span class="constructor">Document</span>&nbsp;=&nbsp;<span class="keyword">struct</span><br>
+<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;log_list&nbsp;~empty&nbsp;l&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;empty_log&nbsp;=&nbsp;empty&nbsp;<span class="keyword">in</span>&nbsp;</code><table><tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td><span class="comment">(** renaming because of <code class="code"><span class="constructor">Log</span>.empty</code> *)</span></td></tr></table><code class="code"><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">open</span>&nbsp;<span class="constructor">Log</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;if_empty&nbsp;=&nbsp;sp&nbsp;%&nbsp;empty_log&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;l&nbsp;<span class="keyword">with</span>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;if_empty<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;more&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;n&nbsp;%&nbsp;indent&nbsp;(separate&nbsp;n&nbsp;(<span class="constructor">List</span>.map&nbsp;more&nbsp;~f:(<span class="keyword">fun</span>&nbsp;item&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"-&nbsp;"</span>&nbsp;%&nbsp;item)))<br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;build_process&nbsp;~state&nbsp;?(with_details=<span class="keyword">false</span>)&nbsp;&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">open</span>&nbsp;<span class="constructor">Log</span>&nbsp;<span class="keyword">in</span><br>
@@ -138,6 +146,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;]<br>
 <span class="keyword">end</span><br>
 <br>
+</code><table><tr><td></td><td><span class="comment">(** Keyboard interaction functions (build “menus”, ask questions, etc.) *)</span></td></tr></table><code class="code"><br>
 <span class="keyword">module</span>&nbsp;<span class="constructor">Interaction</span>&nbsp;=&nbsp;<span class="keyword">struct</span><br>
 <br>
 &nbsp;&nbsp;</code><table><tr><td>&nbsp;&nbsp;</td><td><span class="comment">(** <code class="code">with_cbreak f</code> calls with the terminal in “get key” mode. 
@@ -301,6 +310,9 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keywordsign">`</span><span class="constructor">Go</span>&nbsp;(<span class="constructor">Target</span>.id&nbsp;target))))<br>
 <br>
 <span class="keyword">end</span><br>
+<br>
+</code><table><tr><td></td><td><span class="comment">(** The function behind the <code class="code">ketrew status</code> sub-command (and the equivalent
+    command in <code class="code">ketrew interactive</code>). *)</span></td></tr></table><code class="code"><br>
 <span class="keyword">let</span>&nbsp;display_status&nbsp;~state&nbsp;&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">begin</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"display_info&nbsp;!"</span>&nbsp;@&nbsp;verbose);<br>
@@ -374,15 +386,8 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
 &nbsp;&nbsp;<span class="keyword">end</span><br>
 <br>
-<span class="keyword">let</span>&nbsp;log_list&nbsp;~empty&nbsp;l&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;empty_log&nbsp;=&nbsp;empty&nbsp;<span class="keyword">in</span>&nbsp;<span class="comment">(*&nbsp;renaming&nbsp;because&nbsp;og&nbsp;Log.empty&nbsp;*)</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">open</span>&nbsp;<span class="constructor">Log</span>&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;if_empty&nbsp;=&nbsp;sp&nbsp;%&nbsp;empty_log&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;l&nbsp;<span class="keyword">with</span>&nbsp;<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;if_empty<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;more&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;n&nbsp;%&nbsp;indent&nbsp;(separate&nbsp;n&nbsp;(<span class="constructor">List</span>.map&nbsp;more&nbsp;~f:(<span class="keyword">fun</span>&nbsp;item&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"-&nbsp;"</span>&nbsp;%&nbsp;item)))<br>
-<br>
+</code><table><tr><td></td><td><span class="comment">(** The function behind the <code class="code">ketrew run &lt;how&gt;</code> sub-command (and the equivalent
+    command in <code class="code">ketrew interactive</code>). *)</span></td></tr></table><code class="code"><br>
 <span class="keyword">let</span>&nbsp;run_state&nbsp;~state&nbsp;~max_sleep&nbsp;~how&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;log_happening&nbsp;~what_happened&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">open</span>&nbsp;<span class="constructor">Log</span>&nbsp;<span class="keyword">in</span><br>
@@ -401,7 +406,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;more&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;i&nbsp;more&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;steps&nbsp;were&nbsp;executed"</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(step_sentence&nbsp;%&nbsp;s&nbsp;<span class="string">":"</span>&nbsp;&nbsp;%<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log_list&nbsp;~empty:(s&nbsp;<span class="string">"Nothing&nbsp;happened"</span>)&nbsp;happening_list<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Document</span>.log_list&nbsp;~empty:(s&nbsp;<span class="string">"Nothing&nbsp;happened"</span>)&nbsp;happening_list<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;normal);&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;()<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
@@ -486,6 +491,8 @@
 &nbsp;&nbsp;&nbsp;&nbsp;fail&nbsp;(<span class="keywordsign">`</span><span class="constructor">Wrong_command_line</span>&nbsp;sl)<br>
 &nbsp;&nbsp;<span class="keyword">end</span><br>
 <br>
+</code><table><tr><td></td><td><span class="comment">(** Kill targets (command line, <code class="code"><span class="string">"--interactive"</span></code>, or within 
+    <code class="code">ketrew interactive</code>. *)</span></td></tr></table><code class="code"><br>
 <span class="keyword">let</span>&nbsp;kill&nbsp;~state&nbsp;~interactive&nbsp;ids&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">if</span>&nbsp;interactive&nbsp;<span class="keyword">then</span><br>
@@ -528,6 +535,8 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;()<br>
 &nbsp;&nbsp;<span class="keyword">end</span><br>
 <br>
+</code><table><tr><td></td><td><span class="comment">(** Archive targets (command line, <code class="code"><span class="string">"--interactive"</span></code>, or within 
+    <code class="code">ketrew interactive</code>. *)</span></td></tr></table><code class="code"><br>
 <span class="keyword">let</span>&nbsp;archive&nbsp;~state&nbsp;~interactive&nbsp;ids&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">if</span>&nbsp;interactive&nbsp;<span class="keyword">then</span><br>
@@ -551,6 +560,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;()<br>
 &nbsp;&nbsp;<span class="keyword">end</span><br>
 <br>
+</code><table><tr><td></td><td><span class="comment">(** Kill and archive targets that are done or useless. *)</span></td></tr></table><code class="code"><br>
 <span class="keyword">let</span>&nbsp;autoclean&nbsp;~state&nbsp;~how_much&nbsp;~interactive&nbsp;()&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">G</span>&nbsp;=&nbsp;<span class="constructor">Ketrew_state</span>.<span class="constructor">Target_graph</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">G</span>.get_current&nbsp;~state<br>
@@ -620,6 +630,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;archive&nbsp;~state&nbsp;~interactive:<span class="keyword">false</span>&nbsp;(<span class="constructor">List</span>.map&nbsp;to_archive&nbsp;~f:<span class="constructor">Ketrew_target</span>.id)<br>
 &nbsp;&nbsp;<span class="keyword">end</span><br>
 <br>
+</code><table><tr><td></td><td><span class="comment">(** The “Target Explorer™“ *)</span></td></tr></table><code class="code"><br>
 <span class="keyword">module</span>&nbsp;<span class="constructor">Explorer</span>&nbsp;=&nbsp;<span class="keyword">struct</span><br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;exploration_state&nbsp;=&nbsp;{<br>
 &nbsp;&nbsp;&nbsp;&nbsp;build_process_details:&nbsp;bool;<br>
@@ -965,6 +976,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
 <span class="keyword">end</span><br>
 <br>
+</code><table><tr><td></td><td><span class="comment">(** The function behind <code class="code">ketrew interact</code>. *)</span></td></tr></table><code class="code"><br>
 <span class="keyword">let</span>&nbsp;interact&nbsp;~state&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;main_loop&nbsp;()&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Interaction</span>.(<br>
@@ -1014,6 +1026,7 @@
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;main_loop&nbsp;()<br>
 <br>
+</code><table><tr><td></td><td><span class="comment">(** One <code class="code"><span class="constructor">Cmdliner</span></code> hack found in Opam codebase to create command aliases. *)</span></td></tr></table><code class="code"><br>
 <span class="keyword">let</span>&nbsp;make_command_alias&nbsp;cmd&nbsp;?(options=<span class="string">""</span>)&nbsp;name&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">open</span>&nbsp;<span class="constructor">Cmdliner</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;term,&nbsp;info&nbsp;=&nbsp;cmd&nbsp;<span class="keyword">in</span><br>
@@ -1028,7 +1041,8 @@
 &nbsp;&nbsp;]&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;(term,&nbsp;<span class="constructor">Term</span>.info&nbsp;name&nbsp;~docs:<span class="string">"COMMAND&nbsp;ALIASES"</span>&nbsp;~doc&nbsp;~man)<br>
 <br>
-<span class="keyword">let</span>&nbsp;cmdliner_main&nbsp;?override_configuration&nbsp;?argv&nbsp;?additional_term&nbsp;()&nbsp;=<br>
+</code><table><tr><td></td><td><span class="comment">(** The configuration of the command line, using the <code class="code"><span class="constructor">Cmdliner</span></code> library. *)</span></td></tr></table><code class="code"><br>
+<span class="keyword">let</span>&nbsp;cmdliner_main&nbsp;?override_configuration&nbsp;?argv&nbsp;?(additional_commands=[])&nbsp;()&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">open</span>&nbsp;<span class="constructor">Cmdliner</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;version&nbsp;=&nbsp;<span class="constructor">Ketrew_metadata</span>.version&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;sub_command&nbsp;~info&nbsp;~term&nbsp;=&nbsp;(term,&nbsp;info)&nbsp;<span class="keyword">in</span><br>
@@ -1238,14 +1252,15 @@
 &nbsp;&nbsp;&nbsp;&nbsp;sub_command<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~term:<span class="constructor">Term</span>.(ret&nbsp;(pure&nbsp;(<span class="keywordsign">`</span><span class="constructor">Help</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Plain</span>,&nbsp;<span class="constructor">None</span>))))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~info:(<span class="constructor">Term</span>.info&nbsp;<span class="string">"ketrew"</span>&nbsp;~version&nbsp;~doc&nbsp;~man)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;cmds&nbsp;=&nbsp;[<br>
-&nbsp;&nbsp;&nbsp;&nbsp;init_cmd;&nbsp;status_cmd;&nbsp;run_cmd;&nbsp;kill_cmd;&nbsp;archive_cmd;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;interact_cmd;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;explore_cmd;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;autoclean_command;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;start_server_cmd;&nbsp;stop_server_cmd;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;print_conf_cmd;&nbsp;make_command_alias&nbsp;print_conf_cmd&nbsp;<span class="string">"pc"</span>;<br>
-&nbsp;&nbsp;]&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;cmds&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;additional_commands&nbsp;@&nbsp;[<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;init_cmd;&nbsp;status_cmd;&nbsp;run_cmd;&nbsp;kill_cmd;&nbsp;archive_cmd;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;interact_cmd;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;explore_cmd;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;autoclean_command;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;start_server_cmd;&nbsp;stop_server_cmd;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print_conf_cmd;&nbsp;make_command_alias&nbsp;print_conf_cmd&nbsp;<span class="string">"pc"</span>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;]&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Term</span>.eval_choice&nbsp;?argv&nbsp;default_cmd&nbsp;cmds&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ok</span>&nbsp;f&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;f<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;exit&nbsp;<span class="constructor">Return_code</span>.cmdliner_error<br>
