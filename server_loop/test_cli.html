@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="http://cdn.jsdelivr.net/bootstrap/3.1.1/css/bootstrap.min.css" type="text/css">
+  <link rel="stylesheet" href="http://cdn.jsdelivr.net/bootstrap/3.1.1/css/bootstrap-theme.min.css" type="text/css">
+  <link rel="stylesheet" href="code_style.css" type="text/css">
+  <meta charset="utf-8">
+  <title>Ketrew: test cli</title>
+</head>
+  <body><div class="container">
+  <h1>Ketrew: test cli</h1>
+  <div class="row">
+  <div class="col-md-3">
+  <h2>Contents</h2>
+<ul>
+ <li><a href='#CommandLineTest'>Command Line Test</a>
+ </li>
+ <li><a href='#Workflows'>Workflows</a>
+  <ul>
+   <li><a href='#ExampleFromTheREADME'>Example From The README</a>
+   </li>
+   <li><a href='#DaemonizeWithNohupSetsid'>Daemonize With Nohup/Setsid</a>
+   </li>
+   <li><a href='#DaemonizeWithThePythonHack'>Daemonize With “The Python Hack”</a>
+   </li>
+   <li><a href='#WebsiteBuildingWorkfow'>Website Building Workfow</a>
+   </li>
+   <li><a href='#ExampleBackupWorkflow'>Example “Backup” Workflow</a>
+   </li>
+   <li><a href='#BuildKetrewOnaVagrantVM'>Build Ketrew On a Vagrant VM</a>
+   </li>
+  </ul>
+
+ </li>
+ <li><a href='#MainOftheModule'>“Main” Of the Module</a>
+ </li>
+</ul>
+<h2>Menu</h2>
+<ul>
+ <li><a href='./index.html'>Home</a></li>
+ <li><a href='Alternative_CLI_Application.html'>Alternative CLI Application</a></li>
+ <li><a href='Developer_Documentation.html'>Developer Documentation</a></li>
+ <li><a href='Long-Running_Plugins.html'>Long-Running Plugins</a></li>
+ <li><a href='The_Configuration_File.html'>The Configuration File</a></li>
+ <li><a href='The_HTTP_API.html'>The HTTP API</a></li>
+ <li><a href='api/index.html'>Generated Documentaiton For The API</a> (<a href='modules.svg'>Modules Overview (SVG)</a>)</li>
+</ul>
+</div><div class="col-md-9">
+<pre class='ocaml'><code class='ocaml'><span class="text">
+</span></code></pre>
+<h2 id="CommandLineTest">Command Line Test</h2>
+<p>This “test” provides a few user defined targets. It gets compiled to a command
+line application that submits targets to Ketrew.</p>
+<pre class='ocaml'><code class='ocaml'><span class="text">
+</span><span class="comment">(**************************************************************************)</span><span class="text">
+</span><span class="comment">(*  Copyright 2014, Sebastien Mondet &lt;seb@mondet.org&gt;                     *)</span><span class="text">
+</span><span class="comment">(*                                                                        *)</span><span class="text">
+</span><span class="comment">(*  Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);       *)</span><span class="text">
+</span><span class="comment">(*  you may not use this file except in compliance with the License.      *)</span><span class="text">
+</span><span class="comment">(*  You may obtain a copy of the License at                               *)</span><span class="text">
+</span><span class="comment">(*                                                                        *)</span><span class="text">
+</span><span class="comment">(*      http://www.apache.org/licenses/LICENSE-2.0                        *)</span><span class="text">
+</span><span class="comment">(*                                                                        *)</span><span class="text">
+</span><span class="comment">(*  Unless required by applicable law or agreed to in writing, software   *)</span><span class="text">
+</span><span class="comment">(*  distributed under the License is distributed on an &quot;AS IS&quot; BASIS,     *)</span><span class="text">
+</span><span class="comment">(*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or       *)</span><span class="text">
+</span><span class="comment">(*  implied.  See the License for the specific language governing         *)</span><span class="text">
+</span><span class="comment">(*  permissions and limitations under the License.                        *)</span><span class="text">
+</span><span class="comment">(**************************************************************************)</span><span class="text">
+
+</span><span class="kw">open</span><span class="text"> </span><span class="kw2">Printf</span><span class="text">
+</span><span class="kw">module</span><span class="text"> </span><span class="kw2">List</span><span class="text"> = </span><span class="kw2">ListLabels</span><span class="text">
+</span><span class="kw">let</span><span class="text"> </span><span class="id">say</span><span class="text"> </span><span class="id">fmt</span><span class="text"> = </span><span class="id">ksprintf</span><span class="text"> (</span><span class="kw">fun</span><span class="text"> </span><span class="id">s</span><span class="text"> -&gt; </span><span class="id">printf</span><span class="text"> </span><span class="string">&quot;%s\n%!&quot;</span><span class="text"> </span><span class="id">s</span><span class="text">) </span><span class="id">fmt</span><span class="text">
+
+
+</span></code></pre>
+<h2 id="Workflows">Workflows</h2>
+<h3 id="ExampleFromTheREADME">Example From The README</h3>
+<p>The third workflow is a parametrized version of the example in the
+<code>README.md</code> file (<code>host</code> and <code>queue</code> come from the command line).</p>
+<pre class='ocaml'><code class='ocaml'><span class="kw">let</span><span class="text"> </span><span class="id">run_command_with_lsf</span><span class="text"> </span><span class="kw4">~host</span><span class="text"> </span><span class="kw4">~queue</span><span class="text"> </span><span class="id">cmd</span><span class="text"> =
+  </span><span class="kw">let</span><span class="text"> </span><span class="kw">open</span><span class="text"> </span><span class="kw2">Ketrew</span><span class="text">.</span><span class="kw2">EDSL</span><span class="text"> </span><span class="kw">in</span><span class="text">
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">host</span><span class="text"> = </span><span class="id">parse_host</span><span class="text"> </span><span class="id">host</span><span class="text"> </span><span class="kw">in</span><span class="text">
+  </span><span class="id">run</span><span class="text"> (
+    </span><span class="id">target</span><span class="text"> </span><span class="string">&quot;run_command_with_lsf&quot;</span><span class="text">
+      </span><span class="kw4">~make</span><span class="text">:(</span><span class="id">lsf</span><span class="text"> (</span><span class="kw2">Program</span><span class="text">.</span><span class="id">sh</span><span class="text"> </span><span class="id">cmd</span><span class="text">)
+               </span><span class="kw4">~queue</span><span class="text"> </span><span class="kw4">~wall_limit</span><span class="text">:</span><span class="string">&quot;1:30&quot;</span><span class="text"> </span><span class="kw4">~processors</span><span class="text">:(`</span><span class="kw2">Min_max</span><span class="text"> (</span><span class="numeric">1</span><span class="text">,</span><span class="numeric">1</span><span class="text">)) </span><span class="kw4">~host</span><span class="text">)
+  )
+
+</span></code></pre>
+<h3 id="DaemonizeWithNohupSetsid">Daemonize With Nohup/Setsid</h3>
+<p>The fourth workflow is like <code>run_command_with_lsf</code> but uses
+<code>daemonize</code> with the “nohup-setsid hack” instead of the batch scheduler.</p>
+<pre class='ocaml'><code class='ocaml'><span class="kw">let</span><span class="text"> </span><span class="id">run_command_with_nohup</span><span class="text"> </span><span class="kw4">~host</span><span class="text"> </span><span class="id">cmd</span><span class="text"> =
+  </span><span class="kw">let</span><span class="text"> </span><span class="kw">open</span><span class="text"> </span><span class="kw2">Ketrew</span><span class="text">.</span><span class="kw2">EDSL</span><span class="text"> </span><span class="kw">in</span><span class="text">
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">host</span><span class="text"> = </span><span class="id">parse_host</span><span class="text"> </span><span class="id">host</span><span class="text"> </span><span class="kw">in</span><span class="text">
+  </span><span class="id">run</span><span class="text"> (
+    </span><span class="id">target</span><span class="text"> (</span><span class="id">sprintf</span><span class="text"> </span><span class="string">&quot;NhSs: %S&quot;</span><span class="text"> </span><span class="id">cmd</span><span class="text">)
+      </span><span class="kw4">~make</span><span class="text">:(</span><span class="id">daemonize</span><span class="text"> </span><span class="kw4">~using</span><span class="text">:`</span><span class="kw2">Nohup_setsid</span><span class="text">  (</span><span class="kw2">Program</span><span class="text">.</span><span class="id">sh</span><span class="text"> </span><span class="id">cmd</span><span class="text">) </span><span class="kw4">~host</span><span class="text">)
+  )
+
+</span></code></pre>
+<h3 id="DaemonizeWithThePythonHack">Daemonize With “The Python Hack”</h3>
+<p>The fifth workflow is like <code>run_command_with_nohup</code> but uses
+the “python daemon hack”.</p>
+<pre class='ocaml'><code class='ocaml'><span class="kw">let</span><span class="text"> </span><span class="id">run_command_with_python_hack</span><span class="text"> </span><span class="kw4">~host</span><span class="text"> </span><span class="id">cmd</span><span class="text"> =
+  </span><span class="kw">let</span><span class="text"> </span><span class="kw">open</span><span class="text"> </span><span class="kw2">Ketrew</span><span class="text">.</span><span class="kw2">EDSL</span><span class="text"> </span><span class="kw">in</span><span class="text">
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">host</span><span class="text"> = </span><span class="id">parse_host</span><span class="text"> </span><span class="id">host</span><span class="text"> </span><span class="kw">in</span><span class="text">
+  </span><span class="id">run</span><span class="text"> (
+    </span><span class="id">target</span><span class="text"> (</span><span class="id">sprintf</span><span class="text"> </span><span class="string">&quot;Pyd: %S&quot;</span><span class="text"> </span><span class="id">cmd</span><span class="text">)
+      </span><span class="kw4">~make</span><span class="text">:(</span><span class="id">daemonize</span><span class="text"> </span><span class="kw4">~using</span><span class="text">:`</span><span class="kw2">Python_daemon</span><span class="text"> (</span><span class="kw2">Program</span><span class="text">.</span><span class="id">sh</span><span class="text"> </span><span class="id">cmd</span><span class="text">) </span><span class="kw4">~host</span><span class="text">)
+  )
+
+</span></code></pre>
+<h3 id="WebsiteBuildingWorkfow">Website Building Workfow</h3>
+<p>A first workflow that used to be simple but got pretty complex with time:</p>
+<ul>
+ <li>take a list of branch names (<code>[]</code> meaning “default branch”)</li>
+ <li>clone the repository in a temporary locations</li>
+ <li><em>for each branch:</em> checkout the branch, and build the documentation</li>
+ <li>checkout the <code>gh-pages</code> branch</li>
+ <li>put <code>_doc/</code> at the top-level</li>
+ <li>commit and push back to the **current repository</li>
+</ul>
+
+<p>The workflow can also fail in many ways (e.g. Git commit forbidden because of
+nothing is new) which show ketrew&#39;s handling of errors in dependencies.</p>
+<pre class='ocaml'><code class='ocaml'><span class="kw">let</span><span class="text"> </span><span class="id">deploy_website</span><span class="text"> </span><span class="id">branches</span><span class="text"> =
+  </span><span class="kw">let</span><span class="text"> </span><span class="kw">open</span><span class="text"> </span><span class="kw2">Ketrew</span><span class="text">.</span><span class="kw2">EDSL</span><span class="text"> </span><span class="kw">in</span><span class="text">
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">host</span><span class="text"> = (</span><span class="id">parse_host</span><span class="text"> </span><span class="string">&quot;/tmp&quot;</span><span class="text">) </span><span class="kw">in</span><span class="text">
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">local_deamonize</span><span class="text"> = </span><span class="id">daemonize</span><span class="text"> </span><span class="kw4">~host</span><span class="text"> </span><span class="kw4">~using</span><span class="text">:`</span><span class="kw2">Python_daemon</span><span class="text"> </span><span class="kw">in</span><span class="text">
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">current_path</span><span class="text"> = </span><span class="kw2">Sys</span><span class="text">.</span><span class="id">getenv</span><span class="text"> </span><span class="string">&quot;PWD&quot;</span><span class="text"> </span><span class="kw">in</span><span class="text">
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">dest_path</span><span class="text"> =
+    </span><span class="id">sprintf</span><span class="text"> </span><span class="string">&quot;/tmp/deploy_website_%s&quot;</span><span class="text"> (</span><span class="kw2">Ketrew_pervasives</span><span class="text">.</span><span class="kw2">Unique_id</span><span class="text">.</span><span class="id">create</span><span class="text"> ())
+  </span><span class="kw">in</span><span class="text">
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">clone_repo</span><span class="text"> =
+    </span><span class="kw">let</span><span class="text"> </span><span class="id">readme</span><span class="text"> = </span><span class="id">file</span><span class="text"> (</span><span class="id">sprintf</span><span class="text"> </span><span class="string">&quot;%s/ketrew/README.md&quot;</span><span class="text"> </span><span class="id">dest_path</span><span class="text">) </span><span class="kw">in</span><span class="text">
+    </span><span class="id">target</span><span class="text"> (</span><span class="id">sprintf</span><span class="text"> </span><span class="string">&quot;Clone to %s&quot;</span><span class="text"> </span><span class="id">dest_path</span><span class="text">)
+      </span><span class="kw4">~done_when</span><span class="text">:(</span><span class="id">readme</span><span class="text"> </span><span class="kw1">#</span><span class="id">exists</span><span class="text">)
+      </span><span class="kw4">~make</span><span class="text">:(</span><span class="id">local_deamonize</span><span class="text">
+               </span><span class="kw2">Program</span><span class="text">.(
+                 </span><span class="id">shf</span><span class="text"> </span><span class="string">&quot;mkdir -p %s&quot;</span><span class="text"> </span><span class="id">dest_path</span><span class="text">
+                 &amp;&amp; </span><span class="id">shf</span><span class="text"> </span><span class="string">&quot;cd %s&quot;</span><span class="text"> </span><span class="id">dest_path</span><span class="text">
+                 &amp;&amp; </span><span class="id">shf</span><span class="text"> </span><span class="string">&quot;git clone %s&quot;</span><span class="text"> </span><span class="id">current_path</span><span class="text">))
+  </span><span class="kw">in</span><span class="text">
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">in_cloned_repo</span><span class="text"> = </span><span class="kw2">Program</span><span class="text">.</span><span class="id">shf</span><span class="text"> </span><span class="string">&quot;cd %s/ketrew&quot;</span><span class="text"> </span><span class="id">dest_path</span><span class="text"> </span><span class="kw">in</span><span class="text">
+  </span><span class="comment">(* A function that creates a target that checks-out a given git branch
+     (and actively verifies that it was successful) *)</span><span class="text">
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">check_out</span><span class="text"> </span><span class="kw4">~dependencies</span><span class="text"> </span><span class="id">branch</span><span class="text"> =
+    </span><span class="id">target</span><span class="text"> (</span><span class="id">sprintf</span><span class="text"> </span><span class="string">&quot;Check out %s&quot;</span><span class="text"> </span><span class="id">branch</span><span class="text">)
+      </span><span class="kw4">~dependencies</span><span class="text">:(</span><span class="id">clone_repo</span><span class="text"> :: </span><span class="id">dependencies</span><span class="text">)
+      </span><span class="kw4">~make</span><span class="text">:(</span><span class="id">local_deamonize</span><span class="text">
+              </span><span class="kw2">Program</span><span class="text">.(</span><span class="id">in_cloned_repo</span><span class="text"> &amp;&amp;
+                       </span><span class="id">shf</span><span class="text"> </span><span class="string">&quot;git checkout %s || git checkout -t origin/%s&quot;</span><span class="text">
+                         </span><span class="id">branch</span><span class="text"> </span><span class="id">branch</span><span class="text">
+                       &amp;&amp; </span><span class="id">shf</span><span class="text"> </span><span class="string">&quot;[ \&quot;`git symbolic-ref --short HEAD`\&quot; = \&quot;%s\&quot; ]&quot;</span><span class="text"> </span><span class="id">branch</span><span class="text">
+                      ))
+  </span><span class="kw">in</span><span class="text">
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">build_doc_prgram</span><span class="text"> =
+    </span><span class="kw2">Program</span><span class="text">.(
+      </span><span class="id">in_cloned_repo</span><span class="text"> &amp;&amp; </span><span class="id">sh</span><span class="text"> </span><span class="string">&quot;bash ./please.sh clean build doc&quot;</span><span class="text">) </span><span class="kw">in</span><span class="text">
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">make_doc</span><span class="text"> =
+    </span><span class="kw1">match</span><span class="text"> </span><span class="id">branches</span><span class="text"> </span><span class="kw1">with</span><span class="text">
+    | [] -&gt;
+      </span><span class="id">target</span><span class="text"> </span><span class="string">&quot;Make documentation (default branch)&quot;</span><span class="text"> 
+        </span><span class="kw4">~dependencies</span><span class="text">:[</span><span class="id">clone_repo</span><span class="text">]
+        </span><span class="kw4">~make</span><span class="text">:(</span><span class="id">local_deamonize</span><span class="text"> </span><span class="id">build_doc_prgram</span><span class="text">)
+    | </span><span class="id">more</span><span class="text"> -&gt; 
+      </span><span class="comment">(* we build a chain of targets depending on each other:
+         clone_repo -&gt; check_out branch1 -&gt; build_doc -&gt;
+         -&gt; check_out branch2 -&gt; build_doc -&gt; ...
+         -&gt; check_out last_branch -&gt; build_doc
+      *)</span><span class="text">
+      </span><span class="kw2">List</span><span class="text">.</span><span class="id">fold_left</span><span class="text"> </span><span class="kw4">~init</span><span class="text">:</span><span class="id">clone_repo</span><span class="text"> </span><span class="id">more</span><span class="text"> </span><span class="kw4">~f</span><span class="text">:(</span><span class="kw">fun</span><span class="text"> </span><span class="id">previous_dep</span><span class="text"> </span><span class="id">branch</span><span class="text"> -&gt;
+          </span><span class="kw">let</span><span class="text"> </span><span class="id">co</span><span class="text"> = </span><span class="id">check_out</span><span class="text"> </span><span class="kw4">~dependencies</span><span class="text">:[</span><span class="id">previous_dep</span><span class="text">] </span><span class="id">branch</span><span class="text"> </span><span class="kw">in</span><span class="text">
+          </span><span class="id">target</span><span class="text"> (</span><span class="id">sprintf</span><span class="text"> </span><span class="string">&quot;Make documentation (branch %s)&quot;</span><span class="text"> </span><span class="id">branch</span><span class="text">)
+            </span><span class="kw4">~dependencies</span><span class="text">:[</span><span class="id">co</span><span class="text">]
+            </span><span class="kw4">~make</span><span class="text">:(</span><span class="id">local_deamonize</span><span class="text"> </span><span class="id">build_doc_prgram</span><span class="text">))
+  </span><span class="kw">in</span><span class="text">
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">check_out_gh_pages</span><span class="text"> =
+    </span><span class="comment">(* first target with dependencies: the two previous ones *)</span><span class="text">
+    </span><span class="id">check_out</span><span class="text"> </span><span class="kw4">~dependencies</span><span class="text">:[</span><span class="id">make_doc</span><span class="text">] </span><span class="string">&quot;gh-pages&quot;</span><span class="text"> </span><span class="kw">in</span><span class="text">
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">move_website</span><span class="text"> =
+    </span><span class="id">target</span><span class="text"> </span><span class="string">&quot;Move _doc/&quot;</span><span class="text"> </span><span class="kw4">~dependencies</span><span class="text">:[</span><span class="id">check_out_gh_pages</span><span class="text">]
+      </span><span class="kw4">~make</span><span class="text">:(</span><span class="id">local_deamonize</span><span class="text"> 
+               </span><span class="kw2">Program</span><span class="text">.(</span><span class="id">in_cloned_repo</span><span class="text"> &amp;&amp; </span><span class="id">sh</span><span class="text"> </span><span class="string">&quot;rsync -a _doc/ .&quot;</span><span class="text">)) </span><span class="kw">in</span><span class="text">
+  </span><span class="comment">(* if there is nothing to commit, `git commit -a` will return 1, 
+     so we use `ancestor` (without dependencies) as a fallback.
+     But `ancestor` will also be run in case of success. *)</span><span class="text">
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">ancestor</span><span class="text"> </span><span class="kw4">~dependencies</span><span class="text"> </span><span class="id">status</span><span class="text"> =
+    </span><span class="id">target</span><span class="text"> (</span><span class="id">sprintf</span><span class="text"> </span><span class="string">&quot;Common ancestor: %s&quot;</span><span class="text"> </span><span class="id">status</span><span class="text">) </span><span class="kw4">~dependencies</span><span class="text">
+      </span><span class="kw4">~make</span><span class="text">:(</span><span class="id">local_deamonize</span><span class="text">
+               </span><span class="kw2">Program</span><span class="text">.(
+                 </span><span class="id">shf</span><span class="text"> </span><span class="string">&quot;echo 'Status: %S'&quot;</span><span class="text"> </span><span class="id">status</span><span class="text">
+                 &amp;&amp; </span><span class="id">chain</span><span class="text">
+                   (</span><span class="kw2">List</span><span class="text">.</span><span class="id">map</span><span class="text"> </span><span class="id">branches</span><span class="text"> </span><span class="kw4">~f</span><span class="text">:(</span><span class="kw">function</span><span class="text">
+                      | </span><span class="string">&quot;master&quot;</span><span class="text"> -&gt;
+                        </span><span class="id">shf</span><span class="text"> </span><span class="string">&quot;echo 'See file://%s/ketrew/index.html'&quot;</span><span class="text"> </span><span class="id">dest_path</span><span class="text">
+                      | </span><span class="id">br</span><span class="text"> -&gt;
+                        </span><span class="id">shf</span><span class="text"> </span><span class="string">&quot;echo 'See file://%s/ketrew/%s/index.html'&quot;</span><span class="text">
+                          </span><span class="id">dest_path</span><span class="text"> </span><span class="id">br</span><span class="text">)
+                   )))
+  </span><span class="kw">in</span><span class="text">
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">commit_website</span><span class="text"> =
+    </span><span class="id">target</span><span class="text"> </span><span class="string">&quot;Commit&quot;</span><span class="text"> </span><span class="kw4">~dependencies</span><span class="text">:[</span><span class="id">move_website</span><span class="text">]
+      </span><span class="kw4">~make</span><span class="text">:(</span><span class="id">local_deamonize</span><span class="text">
+               </span><span class="kw2">Program</span><span class="text">.(
+                 </span><span class="id">in_cloned_repo</span><span class="text">
+                 &amp;&amp; </span><span class="id">shf</span><span class="text"> </span><span class="string">&quot;git add api *.html *.svg %s &quot;</span><span class="text">
+                   (</span><span class="kw2">String</span><span class="text">.</span><span class="id">concat</span><span class="text"> </span><span class="string">&quot; &quot;</span><span class="text"> (</span><span class="kw2">List</span><span class="text">.</span><span class="id">filter</span><span class="text"> </span><span class="kw4">~f</span><span class="text">:((&lt;&gt;) </span><span class="string">&quot;master&quot;</span><span class="text">) </span><span class="id">branches</span><span class="text">))
+                 &amp;&amp; </span><span class="id">sh</span><span class="text"> </span><span class="string">&quot;git commit -a -m 'update website'&quot;</span><span class="text">
+                 &amp;&amp; </span><span class="id">shf</span><span class="text"> </span><span class="string">&quot;git push origin gh-pages&quot;</span><span class="text">
+               ))
+      </span><span class="kw4">~if_fails_activate</span><span class="text">:[</span><span class="id">ancestor</span><span class="text"> </span><span class="string">&quot;Failed&quot;</span><span class="text"> </span><span class="kw4">~dependencies</span><span class="text">:[]]
+  </span><span class="kw">in</span><span class="text">
+  </span><span class="comment">(* `run` will activate the target `ancestor` and then `commit_website`, and
+     add all their (transitive) dependencies to the system.  *)</span><span class="text">
+  </span><span class="id">run</span><span class="text"> (</span><span class="id">ancestor</span><span class="text"> </span><span class="string">&quot;Success&quot;</span><span class="text"> </span><span class="kw4">~dependencies</span><span class="text">:[</span><span class="id">commit_website</span><span class="text">])
+
+</span></code></pre>
+<h3 id="ExampleBackupWorkflow">Example “Backup” Workflow</h3>
+<p>This second target could the beginning of a “backup” workflow.</p>
+<p>Take a directory, make a tar.gz, save its MD5 sum, and if <code>gpg</code> is <code>true</code>,
+call <code>gpg -c</code> and delete the tar.gz.</p>
+<p>The passphrase for GPG must be in a file <code>~/.backup_passphrase</code> as</p>
+<pre class='shell'><code class='shell'>export BACKUP_PASSPHRASE=&quot;some passsphraaase&quot;</code></pre>
+<pre class='ocaml'><code class='ocaml'><span class="kw">let</span><span class="text"> </span><span class="id">make_targz_on_host</span><span class="text"> ?(</span><span class="id">gpg</span><span class="text">=</span><span class="constant">true</span><span class="text">) ?</span><span class="id">dest_prefix</span><span class="text"> </span><span class="kw4">~host</span><span class="text"> </span><span class="kw4">~dir</span><span class="text"> () =
+  </span><span class="kw">let</span><span class="text"> </span><span class="kw">open</span><span class="text"> </span><span class="kw2">Ketrew</span><span class="text">.</span><span class="kw2">EDSL</span><span class="text"> </span><span class="kw">in</span><span class="text">
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">dest_base</span><span class="text"> =
+    </span><span class="kw1">match</span><span class="text"> </span><span class="id">dest_prefix</span><span class="text"> </span><span class="kw1">with</span><span class="text">
+    | </span><span class="kw2">Some</span><span class="text"> </span><span class="id">s</span><span class="text"> -&gt; </span><span class="id">s</span><span class="text">
+    | </span><span class="kw2">None</span><span class="text"> -&gt; </span><span class="id">sprintf</span><span class="text">  </span><span class="string">&quot;/tmp/backup_from_ketrew_cli&quot;</span><span class="text">
+  </span><span class="kw">in</span><span class="text">
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">destination</span><span class="text"> </span><span class="id">ext</span><span class="text"> =
+    </span><span class="comment">(* `destination` creates “volume-artifacts” for a given file
+       extension. *)</span><span class="text">
+    </span><span class="id">file</span><span class="text"> </span><span class="kw4">~host</span><span class="text"> (</span><span class="id">sprintf</span><span class="text"> </span><span class="string">&quot;%s.%s&quot;</span><span class="text"> </span><span class="id">dest_base</span><span class="text"> </span><span class="id">ext</span><span class="text">)
+  </span><span class="kw">in</span><span class="text">
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">targz</span><span class="text"> = </span><span class="id">destination</span><span class="text"> </span><span class="string">&quot;tar.gz&quot;</span><span class="text"> </span><span class="kw">in</span><span class="text">
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">make_targz</span><span class="text"> =
+    </span><span class="id">target</span><span class="text"> </span><span class="kw4">~done_when</span><span class="text">:</span><span class="id">targz</span><span class="kw1">#</span><span class="id">exists</span><span class="text"> </span><span class="string">&quot;make-tar.gz&quot;</span><span class="text"> </span><span class="kw4">~dependencies</span><span class="text">:[]
+      </span><span class="kw4">~make</span><span class="text">:(</span><span class="id">daemonize</span><span class="text"> </span><span class="kw4">~host</span><span class="text">
+               (</span><span class="kw2">Program</span><span class="text">.</span><span class="id">shf</span><span class="text">  </span><span class="string">&quot;tar cfz '%s' '%s'&quot;</span><span class="text"> </span><span class="id">targz</span><span class="kw1">#</span><span class="id">path</span><span class="text"> </span><span class="id">dir</span><span class="text">))
+      </span><span class="comment">(* A first target using `daemonize`
+        see [nohup(1)](http://linux.die.net/man/1/nohup)
+        and [setsid(1)](http://linux.die.net/man/1/setsid). *)</span><span class="text">
+  </span><span class="kw">in</span><span class="text">
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">md5</span><span class="text"> = </span><span class="id">destination</span><span class="text"> </span><span class="string">&quot;md5&quot;</span><span class="text"> </span><span class="kw">in</span><span class="text">
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">md5_targz</span><span class="text"> =
+    </span><span class="id">target</span><span class="text"> </span><span class="kw4">~done_when</span><span class="text">:</span><span class="id">md5</span><span class="kw1">#</span><span class="id">exists</span><span class="text"> </span><span class="string">&quot;make-md5-of-tar.gz&quot;</span><span class="text"> </span><span class="kw4">~dependencies</span><span class="text">:[</span><span class="id">make_targz</span><span class="text">]
+      </span><span class="kw4">~make</span><span class="text">:(</span><span class="id">daemonize</span><span class="text"> </span><span class="kw4">~host</span><span class="text">
+               </span><span class="kw2">Program</span><span class="text">.(</span><span class="id">shf</span><span class="text"> </span><span class="string">&quot;md5sum '%s' &gt; '%s'&quot;</span><span class="text"> </span><span class="id">targz</span><span class="kw1">#</span><span class="id">path</span><span class="text"> </span><span class="id">md5</span><span class="kw1">#</span><span class="id">path</span><span class="text">))
+  </span><span class="kw">in</span><span class="text">
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">gpg</span><span class="text"> = </span><span class="comment">(* `gpg` is a list of targets, `[]` or `[gpg-c, rm-tar.gz]` *)</span><span class="text">
+    </span><span class="kw1">match</span><span class="text"> </span><span class="id">gpg</span><span class="text"> </span><span class="kw1">with</span><span class="text">
+    | </span><span class="constant">false</span><span class="text"> -&gt; []
+    | </span><span class="constant">true</span><span class="text"> -&gt;
+      </span><span class="kw">let</span><span class="text"> </span><span class="id">gpg_file</span><span class="text"> = </span><span class="id">destination</span><span class="text"> </span><span class="string">&quot;gpg&quot;</span><span class="text"> </span><span class="kw">in</span><span class="text">
+      </span><span class="kw">let</span><span class="text"> </span><span class="id">make_it</span><span class="text"> =
+        </span><span class="id">target</span><span class="text"> </span><span class="string">&quot;make-gpg-of-tar.gz&quot;</span><span class="text"> </span><span class="kw4">~done_when</span><span class="text">:</span><span class="id">gpg_file</span><span class="kw1">#</span><span class="id">exists</span><span class="text"> </span><span class="kw4">~dependencies</span><span class="text">:[</span><span class="id">make_targz</span><span class="text">]
+          </span><span class="kw4">~make</span><span class="text">:(</span><span class="id">daemonize</span><span class="text"> </span><span class="kw4">~host</span><span class="text">
+                   </span><span class="kw2">Program</span><span class="text">.(
+                     </span><span class="id">sh</span><span class="text"> </span><span class="string">&quot;. ~/.backup_passphrase&quot;</span><span class="text">
+                     &amp;&amp; </span><span class="id">shf</span><span class="text"> </span><span class="string">&quot;gpg -c --passphrase $BACKUP_PASSPHRASE -o '%s' '%s'&quot;</span><span class="text">
+                              </span><span class="id">gpg_file</span><span class="kw1">#</span><span class="id">path</span><span class="text"> </span><span class="id">targz</span><span class="kw1">#</span><span class="id">path</span><span class="text">)) </span><span class="kw">in</span><span class="text">
+      </span><span class="kw">let</span><span class="text"> </span><span class="id">clean_up</span><span class="text"> =
+        </span><span class="id">target</span><span class="text"> </span><span class="string">&quot;rm-tar.gz&quot;</span><span class="text"> </span><span class="kw4">~dependencies</span><span class="text">:[</span><span class="id">make_it</span><span class="text">]
+          </span><span class="kw4">~make</span><span class="text">:(</span><span class="id">daemonize</span><span class="text"> </span><span class="kw4">~host</span><span class="text"> (</span><span class="kw2">Program</span><span class="text">.</span><span class="id">shf</span><span class="text"> </span><span class="string">&quot;rm -f '%s'&quot;</span><span class="text"> </span><span class="id">targz</span><span class="kw1">#</span><span class="id">path</span><span class="text"> )) </span><span class="kw">in</span><span class="text">
+      [</span><span class="id">make_it</span><span class="text">; </span><span class="id">clean_up</span><span class="text">]
+  </span><span class="kw">in</span><span class="text">
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">common_ancestor</span><span class="text"> =
+    </span><span class="comment">(* A Target that does nothing, but is used as root of the dependency tree. *)</span><span class="text">
+    </span><span class="id">target</span><span class="text"> </span><span class="string">&quot;make-targz common ancestor&quot;</span><span class="text">
+      </span><span class="kw4">~dependencies</span><span class="text">:(</span><span class="id">gpg</span><span class="text"> @ [</span><span class="id">make_targz</span><span class="text">; </span><span class="id">md5_targz</span><span class="text">])
+  </span><span class="kw">in</span><span class="text">
+  </span><span class="comment">(* By running the common-ancestor we pull and activate all the targets to do. *)</span><span class="text">
+  </span><span class="id">run</span><span class="text"> </span><span class="id">common_ancestor</span></code></pre>
+<h3 id="BuildKetrewOnaVagrantVM">Build Ketrew On a Vagrant VM</h3>
+<p>This function builds a workflows depedending on the input command:</p>
+<ul>
+ <li><code>prepare</code> → prepare a vagrant VM, ready to SSH to</li>
+ <li><code>go</code> → build Ketrew on the on vagrant VM</li>
+ <li><code>clean</code> → shutdown and delete the VM</li>
+</ul>
+
+<pre class='ocaml'><code class='ocaml'><span class="kw">let</span><span class="text"> </span><span class="id">run_ketrew_on_vagrant</span><span class="text"> </span><span class="id">what_to_do</span><span class="text"> =
+  </span><span class="kw">let</span><span class="text"> </span><span class="kw">open</span><span class="text"> </span><span class="kw2">Ketrew</span><span class="text">.</span><span class="kw2">EDSL</span><span class="text"> </span><span class="kw">in</span><span class="text">
+  </span><span class="kw">let</span><span class="text"> (//) = </span><span class="kw2">Filename</span><span class="text">.</span><span class="id">concat</span><span class="text"> </span><span class="kw">in</span><span class="text">
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">tmp_dir</span><span class="text"> =  </span><span class="kw2">Sys</span><span class="text">.</span><span class="id">getenv</span><span class="text"> </span><span class="string">&quot;HOME&quot;</span><span class="text">  // </span><span class="string">&quot;tmp/ketrew_vagrant&quot;</span><span class="text"> </span><span class="kw">in</span><span class="text">
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">vagrant_tmp</span><span class="text"> = </span><span class="id">tmp_dir</span><span class="text"> // </span><span class="string">&quot;vagr_vm&quot;</span><span class="text"> </span><span class="kw">in</span><span class="text">
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">vagrant_host</span><span class="text"> = </span><span class="id">parse_host</span><span class="text"> (</span><span class="id">tmp_dir</span><span class="text"> // </span><span class="string">&quot;playground&quot;</span><span class="text">) </span><span class="kw">in</span><span class="text">
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">do_on_vagrant_host</span><span class="text"> </span><span class="id">p</span><span class="text"> =
+    </span><span class="id">daemonize</span><span class="text"> </span><span class="kw4">~using</span><span class="text">:`</span><span class="kw2">Python_daemon</span><span class="text"> </span><span class="kw4">~host</span><span class="text">:</span><span class="id">vagrant_host</span><span class="text"> </span><span class="id">p</span><span class="text"> </span><span class="kw">in</span><span class="text">
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">ssh_config</span><span class="text"> = </span><span class="id">file</span><span class="text"> </span><span class="kw4">~host</span><span class="text">:</span><span class="id">vagrant_host</span><span class="text"> (</span><span class="id">tmp_dir</span><span class="text"> // </span><span class="string">&quot;ssh_config&quot;</span><span class="text">) </span><span class="kw">in</span><span class="text">
+  </span><span class="kw1">match</span><span class="text"> </span><span class="id">what_to_do</span><span class="text"> </span><span class="kw1">with</span><span class="text">
+  | `</span><span class="kw2">Prepare</span><span class="text"> -&gt;
+    </span><span class="kw">let</span><span class="text"> </span><span class="id">init</span><span class="text"> =
+      </span><span class="id">file_target</span><span class="text"> </span><span class="kw4">~name</span><span class="text">:</span><span class="string">&quot;init-vagrant&quot;</span><span class="text"> (</span><span class="id">vagrant_tmp</span><span class="text"> // </span><span class="string">&quot;Vagrantfile&quot;</span><span class="text">)
+        </span><span class="kw4">~host</span><span class="text">:</span><span class="id">vagrant_host</span><span class="text"> 
+        </span><span class="kw4">~make</span><span class="text">:(</span><span class="id">do_on_vagrant_host</span><span class="text"> </span><span class="kw2">Program</span><span class="text">.(
+            </span><span class="id">exec</span><span class="text"> [</span><span class="string">&quot;mkdir&quot;</span><span class="text">; </span><span class="string">&quot;-p&quot;</span><span class="text">; </span><span class="id">vagrant_tmp</span><span class="text">]
+            &amp;&amp; </span><span class="id">exec</span><span class="text"> [</span><span class="string">&quot;cd&quot;</span><span class="text">; </span><span class="id">vagrant_tmp</span><span class="text">]
+            &amp;&amp; </span><span class="id">exec</span><span class="text"> [</span><span class="string">&quot;vagrant&quot;</span><span class="text">; </span><span class="string">&quot;init&quot;</span><span class="text">; </span><span class="string">&quot;hashicorp/precise64&quot;</span><span class="text">]
+          ))
+    </span><span class="kw">in</span><span class="text">
+    </span><span class="kw">let</span><span class="text"> </span><span class="id">running</span><span class="text"> =
+      </span><span class="id">target</span><span class="text"> </span><span class="string">&quot;vagrant-up&quot;</span><span class="text">
+        </span><span class="kw4">~dependencies</span><span class="text">:[</span><span class="id">init</span><span class="text">]
+        </span><span class="kw4">~make</span><span class="text">:(</span><span class="id">do_on_vagrant_host</span><span class="text"> </span><span class="kw2">Program</span><span class="text">.(
+            </span><span class="id">exec</span><span class="text"> [</span><span class="string">&quot;cd&quot;</span><span class="text">; </span><span class="id">vagrant_tmp</span><span class="text">]
+            &amp;&amp; </span><span class="id">exec</span><span class="text"> [</span><span class="string">&quot;vagrant&quot;</span><span class="text">; </span><span class="string">&quot;up&quot;</span><span class="text">]))
+    </span><span class="kw">in</span><span class="text">
+    </span><span class="kw">let</span><span class="text"> </span><span class="id">make_ssh_config</span><span class="text"> =
+      </span><span class="id">target</span><span class="text"> </span><span class="comment">(* not a `file_target`, because we want this file regenerated 
+                every time *)</span><span class="text">
+        </span><span class="string">&quot;vagrant-ssh-config&quot;</span><span class="text"> </span><span class="kw4">~dependencies</span><span class="text">:[</span><span class="id">running</span><span class="text">]
+        </span><span class="kw4">~make</span><span class="text">:(</span><span class="id">do_on_vagrant_host</span><span class="text"> </span><span class="kw2">Program</span><span class="text">.(
+            </span><span class="id">exec</span><span class="text"> [</span><span class="string">&quot;cd&quot;</span><span class="text">; </span><span class="id">vagrant_tmp</span><span class="text">]
+            &amp;&amp; </span><span class="id">shf</span><span class="text"> </span><span class="string">&quot;vagrant ssh-config --host Vagrew &gt; %s&quot;</span><span class="text"> </span><span class="id">ssh_config</span><span class="kw1">#</span><span class="id">path</span><span class="text">))
+    </span><span class="kw">in</span><span class="text">
+    </span><span class="id">make_ssh_config</span><span class="text">
+  | `</span><span class="kw2">Go</span><span class="text"> -&gt;
+    </span><span class="kw">let</span><span class="text"> </span><span class="id">vagrant_box</span><span class="text"> =
+      </span><span class="kw">let</span><span class="text"> </span><span class="kw">open</span><span class="text"> </span><span class="kw2">Ketrew</span><span class="text"> </span><span class="kw">in</span><span class="text">
+      </span><span class="kw2">Host</span><span class="text">.</span><span class="id">ssh</span><span class="text"> </span><span class="kw4">~add_ssh_options</span><span class="text">:[</span><span class="string">&quot;-F&quot;</span><span class="text">; </span><span class="id">ssh_config</span><span class="kw1">#</span><span class="id">path</span><span class="text">]
+        </span><span class="kw4">~playground</span><span class="text">:(</span><span class="kw2">Path</span><span class="text">.</span><span class="id">absolute_directory_exn</span><span class="text"> </span><span class="string">&quot;/tmp/KT/&quot;</span><span class="text">) </span><span class="string">&quot;Vagrew&quot;</span><span class="text">
+    </span><span class="kw">in</span><span class="text">
+    </span><span class="kw">let</span><span class="text"> </span><span class="id">do_on_vagrant_box</span><span class="text"> </span><span class="id">p</span><span class="text"> =
+      </span><span class="id">daemonize</span><span class="text"> </span><span class="kw4">~using</span><span class="text">:`</span><span class="kw2">Nohup_setsid</span><span class="text"> </span><span class="kw4">~host</span><span class="text">:</span><span class="id">vagrant_box</span><span class="text"> </span><span class="id">p</span><span class="text"> </span><span class="kw">in</span><span class="text">
+    </span><span class="kw">let</span><span class="text"> </span><span class="id">get_c_dependencies</span><span class="text"> =
+      </span><span class="id">target</span><span class="text"> </span><span class="string">&quot;apt-get-c-deps&quot;</span><span class="text">
+        </span><span class="kw4">~dependencies</span><span class="text">:[]
+        </span><span class="kw4">~make</span><span class="text">:(</span><span class="id">do_on_vagrant_box</span><span class="text"> </span><span class="kw2">Program</span><span class="text">.(
+            </span><span class="id">sh</span><span class="text"> </span><span class="string">&quot;echo GO&quot;</span><span class="text">
+            &amp;&amp; </span><span class="id">sh</span><span class="text"> </span><span class="string">&quot;sudo apt-get update&quot;</span><span class="text">
+            &amp;&amp; </span><span class="id">sh</span><span class="text"> </span><span class="string">&quot;sudo apt-get install -y m4 build-essential libgdbm-dev&quot;</span><span class="text">
+          ))
+    </span><span class="kw">in</span><span class="text">
+    </span><span class="kw">let</span><span class="text"> </span><span class="id">get_opam</span><span class="text"> =
+      </span><span class="id">file_target</span><span class="text"> </span><span class="kw4">~name</span><span class="text">:</span><span class="string">&quot;apt-get-opam&quot;</span><span class="text">
+        </span><span class="kw4">~host</span><span class="text">:</span><span class="id">vagrant_box</span><span class="text"> </span><span class="string">&quot;/usr/bin/opam&quot;</span><span class="text">
+        </span><span class="kw4">~dependencies</span><span class="text">:[</span><span class="id">get_c_dependencies</span><span class="text">]
+        </span><span class="comment">(* `get_opam` does not really depend on `get_c_dependencies` but
+           `apt-get` does not work in parallel, so we need to make things
+           sequential. *)</span><span class="text">
+        </span><span class="kw4">~make</span><span class="text">:(</span><span class="id">do_on_vagrant_box</span><span class="text"> </span><span class="kw2">Program</span><span class="text">.(
+            </span><span class="id">sh</span><span class="text"> </span><span class="string">&quot;echo GO&quot;</span><span class="text">
+            &amp;&amp; </span><span class="id">sh</span><span class="text"> </span><span class="string">&quot;sudo apt-get update&quot;</span><span class="text">
+            &amp;&amp; </span><span class="id">sh</span><span class="text"> </span><span class="string">&quot;sudo apt-get install -y python-software-properties&quot;</span><span class="text">
+          &amp;&amp; </span><span class="id">sh</span><span class="text"> </span><span class="string">&quot;sudo add-apt-repository -y ppa:avsm/ocaml41+opam11&quot;</span><span class="text">
+          &amp;&amp; </span><span class="id">sh</span><span class="text"> </span><span class="string">&quot;sudo apt-get update -qq&quot;</span><span class="text">
+          &amp;&amp; </span><span class="id">sh</span><span class="text"> </span><span class="string">&quot;sudo apt-get install -qq ocaml ocaml-native-compilers camlp4-extra aspcud opam&quot;</span><span class="text">
+        ))
+    </span><span class="kw">in</span><span class="text">
+    </span><span class="kw">let</span><span class="text"> </span><span class="id">init_opam</span><span class="text"> =
+      </span><span class="id">file_target</span><span class="text"> </span><span class="kw4">~name</span><span class="text">:</span><span class="string">&quot;init-opam&quot;</span><span class="text">
+        </span><span class="string">&quot;/home/vagrant/.opam/opam-init/init.sh&quot;</span><span class="text">
+        </span><span class="kw4">~dependencies</span><span class="text">:[</span><span class="id">get_opam</span><span class="text">]
+        </span><span class="kw4">~host</span><span class="text">:</span><span class="id">vagrant_box</span><span class="text">
+        </span><span class="kw4">~make</span><span class="text">:(</span><span class="id">do_on_vagrant_box</span><span class="text"> </span><span class="kw2">Program</span><span class="text">.( </span><span class="id">sh</span><span class="text"> </span><span class="string">&quot;opam init&quot;</span><span class="text">))
+    </span><span class="kw">in</span><span class="text">
+    </span><span class="kw">let</span><span class="text"> </span><span class="id">install_ketrew</span><span class="text"> </span><span class="id">compiler</span><span class="text"> =
+      </span><span class="id">file_target</span><span class="text"> </span><span class="kw4">~name</span><span class="text">:</span><span class="string">&quot;opam-install-ketrew&quot;</span><span class="text">
+        </span><span class="kw4">~dependencies</span><span class="text">:[</span><span class="id">init_opam</span><span class="text">; </span><span class="id">get_c_dependencies</span><span class="text">]
+        </span><span class="kw4">~host</span><span class="text">:</span><span class="id">vagrant_box</span><span class="text">
+        (</span><span class="id">sprintf</span><span class="text"> </span><span class="string">&quot;/home/vagrant/.opam/%s/bin/ketrew&quot;</span><span class="text"> </span><span class="id">compiler</span><span class="text">)
+        </span><span class="kw4">~make</span><span class="text">:(</span><span class="id">do_on_vagrant_box</span><span class="text"> </span><span class="kw2">Program</span><span class="text">.(
+            </span><span class="id">shf</span><span class="text"> </span><span class="string">&quot;opam switch %s&quot;</span><span class="text"> </span><span class="id">compiler</span><span class="text">
+            &amp;&amp; </span><span class="id">sh</span><span class="text"> </span><span class="string">&quot;opam remote add smondet https://github.com/smondet/dev-opam-repo.git || echo smondet_remote_already_there&quot;</span><span class="text">
+            &amp;&amp; </span><span class="id">sh</span><span class="text"> </span><span class="string">&quot;opam remove ocamlfind || echo ocamlfind_not_installed&quot;</span><span class="text">
+            &amp;&amp; </span><span class="id">sh</span><span class="text"> </span><span class="string">&quot;opam pin ketrew https://github.com/smondet/ketrew/ || echo ketrew_already_pinned&quot;</span><span class="text">
+            &amp;&amp; </span><span class="id">sh</span><span class="text"> </span><span class="string">&quot;opam install -y ketrew&quot;</span><span class="text">
+          ))
+    </span><span class="kw">in</span><span class="text">
+    </span><span class="id">install_ketrew</span><span class="text"> </span><span class="string">&quot;system&quot;</span><span class="text">
+  | `</span><span class="kw2">Clean</span><span class="text"> -&gt;
+    </span><span class="kw">let</span><span class="text"> </span><span class="id">kill</span><span class="text"> =
+      </span><span class="id">target</span><span class="text"> </span><span class="string">&quot;kill-vagrant&quot;</span><span class="text">
+        </span><span class="kw4">~make</span><span class="text">:(</span><span class="id">do_on_vagrant_host</span><span class="text"> </span><span class="kw2">Program</span><span class="text">.(
+            </span><span class="id">exec</span><span class="text"> [</span><span class="string">&quot;cd&quot;</span><span class="text">; </span><span class="id">vagrant_tmp</span><span class="text">]
+            &amp;&amp; </span><span class="id">exec</span><span class="text"> [</span><span class="string">&quot;vagrant&quot;</span><span class="text">; </span><span class="string">&quot;destroy&quot;</span><span class="text">; </span><span class="string">&quot;-f&quot;</span><span class="text">]
+          ))
+    </span><span class="kw">in</span><span class="text">
+    </span><span class="kw">let</span><span class="text"> </span><span class="id">rm_temp</span><span class="text"> =
+      </span><span class="id">target</span><span class="text"> </span><span class="string">&quot;rm-temp&quot;</span><span class="text">
+        </span><span class="kw4">~dependencies</span><span class="text">:[</span><span class="id">kill</span><span class="text">]
+        </span><span class="kw4">~make</span><span class="text">:(</span><span class="id">do_on_vagrant_host</span><span class="text"> </span><span class="kw2">Program</span><span class="text">.(</span><span class="id">exec</span><span class="text"> [</span><span class="string">&quot;rm&quot;</span><span class="text">; </span><span class="string">&quot;-fr&quot;</span><span class="text">; </span><span class="id">vagrant_tmp</span><span class="text">]))
+    </span><span class="kw">in</span><span class="text">
+    </span><span class="id">rm_temp</span><span class="text">
+
+</span></code></pre>
+<h2 id="MainOftheModule">“Main” Of the Module</h2>
+<p>Command line parsing for this multi-workflow script.</p>
+<p>Here it is kept very basic but one may use usual OCaml tools
+(<code>Arg</code> module, or <code>Cmdliner</code> -- which is already linked-in with Ketrew).</p>
+<pre class='ocaml'><code class='ocaml'><span class="kw">let</span><span class="text"> () =
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">argl</span><span class="text"> = </span><span class="kw2">Array</span><span class="text">.</span><span class="id">to_list</span><span class="text"> </span><span class="kw2">Sys</span><span class="text">.</span><span class="id">argv</span><span class="text"> </span><span class="kw">in</span><span class="text">
+  </span><span class="kw1">match</span><span class="text"> </span><span class="kw2">List</span><span class="text">.</span><span class="id">tl</span><span class="text"> </span><span class="id">argl</span><span class="text"> </span><span class="kw1">with</span><span class="text">
+  | </span><span class="string">&quot;website&quot;</span><span class="text"> :: </span><span class="id">more_args</span><span class="text"> -&gt;
+    </span><span class="id">say</span><span class="text"> </span><span class="string">&quot;Deploying website for %s&quot;</span><span class="text">
+      (</span><span class="kw1">match</span><span class="text"> </span><span class="id">more_args</span><span class="text"> </span><span class="kw1">with</span><span class="text">
+       | [] -&gt; </span><span class="string">&quot;The current branch&quot;</span><span class="text">
+       | </span><span class="numeric">_</span><span class="text"> -&gt; </span><span class="string">&quot;branches: &quot;</span><span class="text"> ^ </span><span class="kw2">String</span><span class="text">.</span><span class="id">concat</span><span class="text"> </span><span class="string">&quot;, &quot;</span><span class="text"> </span><span class="id">more_args</span><span class="text">);
+    </span><span class="id">deploy_website</span><span class="text"> </span><span class="id">more_args</span><span class="text">
+  | </span><span class="string">&quot;tgz&quot;</span><span class="text"> :: </span><span class="id">more_args</span><span class="text"> -&gt;
+    </span><span class="kw1">begin</span><span class="text"> </span><span class="kw1">match</span><span class="text"> </span><span class="id">more_args</span><span class="text"> </span><span class="kw1">with</span><span class="text">
+    | </span><span class="id">host_uri</span><span class="text"> :: </span><span class="id">dir</span><span class="text"> :: [] -&gt;
+      </span><span class="id">make_targz_on_host</span><span class="text"> </span><span class="kw4">~host</span><span class="text">:(</span><span class="kw2">Ketrew</span><span class="text">.</span><span class="kw2">EDSL</span><span class="text">.</span><span class="id">parse_host</span><span class="text"> </span><span class="id">host_uri</span><span class="text">) </span><span class="kw4">~dir</span><span class="text"> ()
+    | </span><span class="id">host</span><span class="text"> :: </span><span class="id">dir</span><span class="text"> :: </span><span class="id">dest_prefix</span><span class="text"> :: [] -&gt;
+      </span><span class="id">make_targz_on_host</span><span class="text"> </span><span class="kw4">~dest_prefix</span><span class="text"> </span><span class="kw4">~host</span><span class="text">:(</span><span class="kw2">Ketrew</span><span class="text">.</span><span class="kw2">EDSL</span><span class="text">.</span><span class="id">parse_host</span><span class="text"> </span><span class="id">host</span><span class="text">) </span><span class="kw4">~dir</span><span class="text"> ()
+    | </span><span class="id">host</span><span class="text"> :: </span><span class="id">dir</span><span class="text"> :: </span><span class="id">dest_prefix</span><span class="text"> :: </span><span class="string">&quot;with-gpg&quot;</span><span class="text"> :: []  -&gt;
+      </span><span class="id">make_targz_on_host</span><span class="text"> </span><span class="kw4">~gpg</span><span class="text">:</span><span class="constant">true</span><span class="text"> </span><span class="kw4">~dest_prefix</span><span class="text"> </span><span class="kw4">~host</span><span class="text">:(</span><span class="kw2">Ketrew</span><span class="text">.</span><span class="kw2">EDSL</span><span class="text">.</span><span class="id">parse_host</span><span class="text"> </span><span class="id">host</span><span class="text">) </span><span class="kw4">~dir</span><span class="text"> ()
+    | </span><span class="id">other</span><span class="text"> -&gt;
+      </span><span class="id">say</span><span class="text"> </span><span class="string">&quot;usage: %s tgz &lt;host&gt; &lt;dir&gt; [dest-prefix] [\&quot;with-gpg\&quot;]&quot;</span><span class="text"> </span><span class="kw2">Sys</span><span class="text">.</span><span class="id">argv</span><span class="text">.(</span><span class="numeric">0</span><span class="text">);
+      </span><span class="id">failwith</span><span class="text"> </span><span class="string">&quot;Wrong command line&quot;</span><span class="text">
+    </span><span class="kw1">end</span><span class="text">
+  | </span><span class="string">&quot;lsf&quot;</span><span class="text"> :: </span><span class="id">more</span><span class="text"> -&gt;
+    </span><span class="kw1">begin</span><span class="text"> </span><span class="kw1">match</span><span class="text"> </span><span class="id">more</span><span class="text"> </span><span class="kw1">with</span><span class="text">
+    | </span><span class="id">host</span><span class="text"> :: </span><span class="id">queue</span><span class="text"> :: </span><span class="id">cmd</span><span class="text"> :: [] -&gt;
+      </span><span class="id">run_command_with_lsf</span><span class="text"> </span><span class="kw4">~host</span><span class="text"> </span><span class="kw4">~queue</span><span class="text"> </span><span class="id">cmd</span><span class="text">
+    | </span><span class="id">other</span><span class="text"> -&gt;
+      </span><span class="id">say</span><span class="text"> </span><span class="string">&quot;usage: %s lsf &lt;host&gt; &lt;queue&gt; &lt;cmd&gt;&quot;</span><span class="text"> </span><span class="kw2">Sys</span><span class="text">.</span><span class="id">argv</span><span class="text">.(</span><span class="numeric">0</span><span class="text">);
+      </span><span class="id">failwith</span><span class="text"> </span><span class="string">&quot;Wrong command line&quot;</span><span class="text">
+    </span><span class="kw1">end</span><span class="text">
+  | </span><span class="string">&quot;nohup-setsid&quot;</span><span class="text"> :: </span><span class="id">more</span><span class="text">
+  | </span><span class="string">&quot;nhss&quot;</span><span class="text"> :: </span><span class="id">more</span><span class="text"> -&gt;
+    </span><span class="kw1">begin</span><span class="text"> </span><span class="kw1">match</span><span class="text"> </span><span class="id">more</span><span class="text"> </span><span class="kw1">with</span><span class="text">
+    | </span><span class="id">host</span><span class="text"> :: </span><span class="id">cmd</span><span class="text"> :: [] -&gt; </span><span class="id">run_command_with_nohup</span><span class="text"> </span><span class="kw4">~host</span><span class="text"> </span><span class="id">cmd</span><span class="text">
+    | </span><span class="id">other</span><span class="text"> -&gt;
+      </span><span class="id">say</span><span class="text"> </span><span class="string">&quot;usage: %s nhss &lt;host&gt; &lt;cmd&gt;&quot;</span><span class="text"> </span><span class="kw2">Sys</span><span class="text">.</span><span class="id">argv</span><span class="text">.(</span><span class="numeric">0</span><span class="text">);
+      </span><span class="id">failwith</span><span class="text"> </span><span class="string">&quot;Wrong command line&quot;</span><span class="text">
+    </span><span class="kw1">end</span><span class="text">
+  | </span><span class="string">&quot;python-daemon&quot;</span><span class="text"> :: </span><span class="id">more</span><span class="text">
+  | </span><span class="string">&quot;pyd&quot;</span><span class="text"> :: </span><span class="id">more</span><span class="text"> -&gt;
+    </span><span class="kw1">begin</span><span class="text"> </span><span class="kw1">match</span><span class="text"> </span><span class="id">more</span><span class="text"> </span><span class="kw1">with</span><span class="text">
+    | </span><span class="id">host</span><span class="text"> :: </span><span class="id">cmd</span><span class="text"> :: [] -&gt; </span><span class="id">run_command_with_python_hack</span><span class="text"> </span><span class="kw4">~host</span><span class="text"> </span><span class="id">cmd</span><span class="text">
+    | </span><span class="id">other</span><span class="text"> -&gt;
+      </span><span class="id">say</span><span class="text"> </span><span class="string">&quot;usage: %s pyd &lt;host&gt; &lt;cmd&gt;&quot;</span><span class="text"> </span><span class="kw2">Sys</span><span class="text">.</span><span class="id">argv</span><span class="text">.(</span><span class="numeric">0</span><span class="text">);
+      </span><span class="id">failwith</span><span class="text"> </span><span class="string">&quot;Wrong command line&quot;</span><span class="text"> </span><span class="kw1">end</span><span class="text">
+  | </span><span class="string">&quot;CI&quot;</span><span class="text"> :: </span><span class="id">more</span><span class="text"> -&gt;
+    </span><span class="kw1">begin</span><span class="text"> </span><span class="kw1">match</span><span class="text"> </span><span class="id">more</span><span class="text"> </span><span class="kw1">with</span><span class="text">
+    | </span><span class="string">&quot;prepare&quot;</span><span class="text"> :: [] -&gt;
+      </span><span class="kw2">Ketrew</span><span class="text">.</span><span class="kw2">EDSL</span><span class="text">.</span><span class="id">run</span><span class="text"> (</span><span class="id">run_ketrew_on_vagrant</span><span class="text"> `</span><span class="kw2">Prepare</span><span class="text">)
+    | </span><span class="string">&quot;go&quot;</span><span class="text"> :: [] -&gt;
+      </span><span class="kw2">Ketrew</span><span class="text">.</span><span class="kw2">EDSL</span><span class="text">.</span><span class="id">run</span><span class="text"> (</span><span class="id">run_ketrew_on_vagrant</span><span class="text"> `</span><span class="kw2">Go</span><span class="text">)
+    | </span><span class="string">&quot;clean&quot;</span><span class="text"> :: [] -&gt;
+      </span><span class="kw2">Ketrew</span><span class="text">.</span><span class="kw2">EDSL</span><span class="text">.</span><span class="id">run</span><span class="text"> (</span><span class="id">run_ketrew_on_vagrant</span><span class="text"> `</span><span class="kw2">Clean</span><span class="text">)
+    | </span><span class="id">other</span><span class="text"> -&gt;
+      </span><span class="id">say</span><span class="text"> </span><span class="string">&quot;usage: %s CI {prepare,go,clean}&quot;</span><span class="text"> </span><span class="kw2">Sys</span><span class="text">.</span><span class="id">argv</span><span class="text">.(</span><span class="numeric">0</span><span class="text">);
+      </span><span class="id">failwith</span><span class="text"> </span><span class="string">&quot;Wrong command line&quot;</span><span class="text">
+    </span><span class="kw1">end</span><span class="text">
+  | </span><span class="id">args</span><span class="text"> -&gt;
+    </span><span class="id">say</span><span class="text"> </span><span class="string">&quot;usage: %s [website|tgz|lsf|nhss|pyd|CI] ...&quot;</span><span class="text"> </span><span class="kw2">Sys</span><span class="text">.</span><span class="id">argv</span><span class="text">.(</span><span class="numeric">0</span><span class="text">);
+    </span><span class="id">say</span><span class="text"> </span><span class="string">&quot;Don't know what to do with %s&quot;</span><span class="text"> (</span><span class="kw2">String</span><span class="text">.</span><span class="id">concat</span><span class="text"> </span><span class="string">&quot;, &quot;</span><span class="text"> </span><span class="id">args</span><span class="text">);
+    </span><span class="id">failwith</span><span class="text"> </span><span class="string">&quot;Wrong command line&quot;</span><span class="text">
+
+</span></code></pre>
+</div></div></div></body><html>
