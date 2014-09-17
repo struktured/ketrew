@@ -41,5 +41,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Http_client</span>.create&nbsp;c<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;client&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;(<span class="keywordsign">`</span><span class="constructor">Http_client</span>&nbsp;client)<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Server</span>&nbsp;c&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;fail&nbsp;(<span class="keywordsign">`</span><span class="constructor">Wrong_configuration</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Found</span>&nbsp;<span class="string">"server"</span>,&nbsp;<span class="keywordsign">`</span><span class="constructor">Expected</span>&nbsp;<span class="string">"client/standalone"</span>))</code></body></html>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Server</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Standalone</span>.create&nbsp;(<span class="constructor">Ketrew_configuration</span>.standalone_of_server&nbsp;s)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;standalone&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;(<span class="keywordsign">`</span><span class="constructor">Standalone</span>&nbsp;standalone)</code></body></html>

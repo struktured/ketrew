@@ -178,7 +178,7 @@
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;menu_item&nbsp;?char&nbsp;?(log=<span class="constructor">Log</span>.empty)&nbsp;v&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;(char,&nbsp;log,&nbsp;v)<br>
 <br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;menu&nbsp;?(max_per_page=10)&nbsp;?(always_there=[])&nbsp;~sentence&nbsp;items&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;menu&nbsp;?(max_per_page=15)&nbsp;?(always_there=[])&nbsp;~sentence&nbsp;items&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;let&nbsp;item_number&nbsp;=&nbsp;List.length&nbsp;items&nbsp;in&nbsp;*)</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;items_splitted&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;split_number&nbsp;=&nbsp;max_per_page&nbsp;-&nbsp;(<span class="constructor">List</span>.length&nbsp;always_there)&nbsp;<span class="keyword">in</span><br>
@@ -255,15 +255,21 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;)<br>
 <br>
+&nbsp;&nbsp;</code><table><tr><td>&nbsp;&nbsp;</td><td><span class="comment">(** Sort a list of targets from the most recent to the oldest 
+      (using the unique IDs which is hackish …). *)</span></td></tr></table><code class="code"><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;sort_target_list&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.sort&nbsp;~cmp:(<span class="keyword">fun</span>&nbsp;ta&nbsp;tb&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;compare&nbsp;(<span class="constructor">Target</span>.id&nbsp;tb)&nbsp;(<span class="constructor">Target</span>.id&nbsp;ta))<br>
+<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;build_sublist_of_targets&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~client&nbsp;~list_name&nbsp;~all_log&nbsp;~go_verb&nbsp;~filter&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_client</span>.current_targets&nbsp;client<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;|&nbsp;<span class="constructor">List</span>.filter&nbsp;~f:(<span class="keyword">fun</span>&nbsp;target&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;filter&nbsp;target)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;|&nbsp;sort_target_list<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;all_targets&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;to_process&nbsp;=&nbsp;ref&nbsp;[]&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;all_valid_targets&nbsp;()&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.filter&nbsp;all_targets&nbsp;~f:(<span class="keyword">fun</span>&nbsp;target&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;filter&nbsp;target&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">&amp;&amp;</span>&nbsp;not&nbsp;(<span class="constructor">List</span>.exists&nbsp;!to_process&nbsp;~f:(<span class="keyword">fun</span>&nbsp;id&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;id&nbsp;=&nbsp;<span class="constructor">Target</span>.id&nbsp;target)))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;not&nbsp;(<span class="constructor">List</span>.exists&nbsp;!to_process&nbsp;~f:(<span class="keyword">fun</span>&nbsp;id&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;id&nbsp;=&nbsp;<span class="constructor">Target</span>.id&nbsp;target)))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;target_menu&nbsp;()&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.map&nbsp;(all_valid_targets&nbsp;())&nbsp;~f:(<span class="keyword">fun</span>&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span><br>
@@ -300,14 +306,11 @@
 &nbsp;&nbsp;&nbsp;&nbsp;loop&nbsp;()<br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;make_target_menu&nbsp;~targets&nbsp;?(filter_target=<span class="keyword">fun</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">true</span>)&nbsp;()&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.filter_map&nbsp;targets&nbsp;~f:(<span class="keyword">fun</span>&nbsp;target&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;filter_target&nbsp;target&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keyword">false</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keyword">true</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Some</span>&nbsp;(<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;menu_item&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~log:<span class="constructor">Log</span>.(format_target_for_menu&nbsp;target)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keywordsign">`</span><span class="constructor">Go</span>&nbsp;(<span class="constructor">Target</span>.id&nbsp;target))))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.filter&nbsp;targets&nbsp;~f:filter_target<br>
+&nbsp;&nbsp;&nbsp;&nbsp;|&gt;&nbsp;sort_target_list<br>
+&nbsp;&nbsp;&nbsp;&nbsp;|&gt;&nbsp;<span class="constructor">List</span>.map&nbsp;~f:(<span class="keyword">fun</span>&nbsp;target&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;menu_item&nbsp;~log:<span class="constructor">Log</span>.(format_target_for_menu&nbsp;target)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keywordsign">`</span><span class="constructor">Go</span>&nbsp;(<span class="constructor">Target</span>.id&nbsp;target)))<br>
 <br>
 <span class="keyword">end</span><br>
 <br>
@@ -628,6 +631,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Interaction</span>.([<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;menu_item&nbsp;~char:<span class="string">'Q'</span>&nbsp;~log:<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Quit&nbsp;explorer"</span>)&nbsp;<span class="keywordsign">`</span><span class="constructor">Quit</span>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;menu_item&nbsp;~char:<span class="string">'q'</span>&nbsp;~log:<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Cancel/Go-back"</span>)&nbsp;<span class="keywordsign">`</span><span class="constructor">Cancel</span>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;menu_item&nbsp;~char:<span class="string">'R'</span>&nbsp;~log:<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Reload"</span>)&nbsp;<span class="keywordsign">`</span><span class="constructor">Reload</span>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;])<br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;filter&nbsp;~log&nbsp;~char&nbsp;f&nbsp;=<br>
@@ -862,6 +866,9 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;add_info&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;target_status&nbsp;~client&nbsp;~viewer&nbsp;?add_info&nbsp;exploration_state&nbsp;target<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Reload</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_client</span>.get_target&nbsp;client&nbsp;(<span class="constructor">Ketrew_target</span>.id&nbsp;target)&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;chosen&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;target_status&nbsp;~client&nbsp;~viewer&nbsp;exploration_state&nbsp;chosen<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Cancel</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Quit</span>&nbsp;<span class="keyword">as</span>&nbsp;up&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;up<br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;explore&nbsp;~client&nbsp;exploration_state_stack&nbsp;=<br>
@@ -878,6 +885,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">function</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Cancel</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;go_back&nbsp;~client&nbsp;history&nbsp;<span class="comment">(*&nbsp;go&nbsp;back&nbsp;in&nbsp;history&nbsp;*)</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Quit</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Reload</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;explore&nbsp;~client&nbsp;exploration_state_stack<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Set_with_archived</span>&nbsp;b&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;explore&nbsp;~client&nbsp;({one&nbsp;<span class="keyword">with</span>&nbsp;show_archived&nbsp;=&nbsp;b&nbsp;}&nbsp;::&nbsp;history)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Filter</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
@@ -892,6 +900,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">function</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Cancel</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;go_back&nbsp;~client&nbsp;history<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Quit</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Reload</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;explore&nbsp;~client&nbsp;exploration_state_stack<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Show_make</span>&nbsp;build_process_details&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;explore&nbsp;~client&nbsp;({&nbsp;one&nbsp;<span class="keyword">with</span>&nbsp;build_process_details&nbsp;}&nbsp;&nbsp;::&nbsp;history)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Show_condition</span>&nbsp;condition_details&nbsp;<span class="keywordsign">-&gt;</span><br>
@@ -935,11 +944,22 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;view_json&nbsp;~client&nbsp;chosen&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;explore&nbsp;~client&nbsp;(one&nbsp;::&nbsp;history)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Follow_dependencies</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Follow_fallbacks</span>&nbsp;<span class="keyword">as</span>&nbsp;follow&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;target_ids&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;target_ids&nbsp;t&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;follow&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Follow_fallbacks</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;chosen.<span class="constructor">Target</span>.if_fails_activate<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Follow_dependencies</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;chosen.<span class="constructor">Target</span>.dependencies&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;pick_a_target_from_list&nbsp;~client&nbsp;target_ids<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Follow_fallbacks</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t.<span class="constructor">Target</span>.if_fails_activate<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Follow_dependencies</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t.<span class="constructor">Target</span>.dependencies&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;next_target&nbsp;ids&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;pick_a_target_from_list&nbsp;~client&nbsp;ids<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Cancel</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;<span class="keywordsign">`</span><span class="constructor">Cancel</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Quit</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;<span class="keywordsign">`</span><span class="constructor">Quit</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Reload</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_client</span>.get_target&nbsp;client&nbsp;chosen_id&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;chosen&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;next_target&nbsp;(target_ids&nbsp;chosen)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Go</span>&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;(<span class="keywordsign">`</span><span class="constructor">Go</span>&nbsp;t)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;next_target&nbsp;(target_ids&nbsp;chosen)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">function</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Cancel</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;go_back&nbsp;~client&nbsp;(one&nbsp;::&nbsp;history)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Quit</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;()<br>
