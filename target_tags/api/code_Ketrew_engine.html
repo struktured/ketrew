@@ -340,6 +340,11 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
 &nbsp;&nbsp;<span class="keyword">end</span><br>
 <br>
+<span class="keyword">let</span>&nbsp;add_targets&nbsp;t&nbsp;tlist&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">Deferred_list</span>.while_sequential&nbsp;tlist&nbsp;~f:(add_target&nbsp;t)<br>
+&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;_&nbsp;&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;return&nbsp;()<br>
+<br>
 <span class="keyword">let</span>&nbsp;archived_targets&nbsp;t&nbsp;=<br>
 &nbsp;&nbsp;database&nbsp;t&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;db&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;get_persistent&nbsp;t&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;persistent&nbsp;<span class="keywordsign">-&gt;</span><br>

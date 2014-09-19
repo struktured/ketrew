@@ -256,7 +256,7 @@
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;t&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Standalone</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">open</span>&nbsp;<span class="constructor">Standalone</span>&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Deferred_list</span>.while_sequential&nbsp;tlist&nbsp;~f:(<span class="constructor">Ketrew_engine</span>.add_target&nbsp;s.engine)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_engine</span>.add_targets&nbsp;s.engine&nbsp;tlist<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;()<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Http_client</span>&nbsp;c&nbsp;<span class="keywordsign">-&gt;</span><br>

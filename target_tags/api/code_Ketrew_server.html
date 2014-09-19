@@ -297,9 +297,9 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;<span class="string">"wrong-format:&nbsp;expecting&nbsp;Json&nbsp;list"</span>)<br>
 &nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;targets&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Adding&nbsp;"</span>&nbsp;%&nbsp;i&nbsp;(<span class="constructor">List</span>.length&nbsp;targets)&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;targets"</span>&nbsp;@&nbsp;normal);<br>
+&nbsp;&nbsp;<span class="constructor">Ketrew_engine</span>.add_targets&nbsp;server_state.state&nbsp;targets<br>
+&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;<span class="constructor">Deferred_list</span>.while_sequential&nbsp;targets&nbsp;~f:(<span class="keyword">fun</span>&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_engine</span>.add_target&nbsp;server_state.state&nbsp;t<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;original_id&nbsp;=&nbsp;<span class="constructor">Ketrew_target</span>.id&nbsp;t&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_engine</span>.get_target&nbsp;server_state.state&nbsp;original_id<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;freshen&nbsp;<span class="keywordsign">-&gt;</span><br>
