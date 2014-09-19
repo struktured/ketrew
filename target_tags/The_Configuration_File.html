@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="http://cdn.jsdelivr.net/bootstrap/3.1.1/css/bootstrap.min.css" type="text/css">
+  <link rel="stylesheet" href="http://cdn.jsdelivr.net/bootstrap/3.1.1/css/bootstrap-theme.min.css" type="text/css">
+  <link rel="stylesheet" href="code_style.css" type="text/css">
+  <meta charset="utf-8">
+  <title>Ketrew: The Configuration File</title>
+</head>
+  <body><div class="container">
+  <h1>Ketrew: The Configuration File</h1>
+  <div class="row">
+  <div class="col-md-3">
+  <h2>Contents</h2>
+<ul>
+ <li><a href='#TheFormat'>The Format</a>
+  <ul>
+   <li><a href='#TheclientSection'>The <code>client</code> Section</a>
+   </li>
+   <li><a href='#ThedatabaseSection'>The <code>database</code> Section</a>
+   </li>
+   <li><a href='#TheserverSection'>The <code>server</code> Section</a>
+   </li>
+   <li><a href='#ThepluginsSection'>The <code>plugins</code> Section</a>
+   </li>
+  </ul>
+
+ </li>
+ <li><a href='#Example'>Example</a>
+ </li>
+ <li><a href='#PrintTheConfiguration'>Print The Configuration</a>
+ </li>
+</ul>
+<h2>Menu</h2>
+<ul>
+ <li><a href='./index.html'>Home</a></li>
+ <li><a href='Alternative_CLI_Application.html'>Alternative CLI Application</a></li>
+ <li><a href='Developer_Documentation.html'>Developer Documentation</a></li>
+ <li><a href='Long-Running_Plugins.html'>Long-Running Plugins</a></li>
+ <li><a href='The_Configuration_File.html'>The Configuration File</a></li>
+ <li><a href='The_HTTP_API.html'>The HTTP API</a></li>
+ <li><a href='api/index.html'>Generated Documentaiton For The API</a> (<a href='modules.svg'>Modules Overview (SVG)</a>)</li>
+</ul>
+</div><div class="col-md-9">
+<h2 id="TheFormat">The Format</h2>
+<p>The general format used to the configuration file is
+<a href='https://github.com/toml-lang/toml'>Toml</a>.</p>
+<p>Top-level options:</p>
+<ul>
+ <li><code>debug-level</code>: integer specifying the amount of verbose messages: <code>0</code>: none,
+<code>1</code>: verbose, <code>2</code>: very verbose.</li>
+ <li><code>turn-unix-ssh-failure-into-target-failure</code>: boolean;
+when an SSH or system call fails it may not mean that the command in your
+workflow is wrong (could be an SSH configuration or tunneling problem), by
+default (i.e. <code>false</code>), Ketrew tries to be clever and does not make targets
+fail. To change this behavior put the option to <code>true</code>.</li>
+ <li><code>host-timeout-upper-bound</code>: float (seconds, default: <code>60.</code>); every
+connection/command time-out will be <code>≤ upper-bound</code>.</li>
+</ul>
+
+<h3 id="TheclientSection">The <code>client</code> Section</h3>
+<p>This optional table configures the client-side/command-line application:</p>
+<ul>
+ <li><code>color</code>: boolean (default <code>true</code>); tell Ketrew to display <em>f-ANSI</em> colors.</li>
+</ul>
+
+<h3 id="ThedatabaseSection">The <code>database</code> Section</h3>
+<p>Configure Ketrew&#39;s persistence (mandatory section):</p>
+<ul>
+ <li><code>path</code>: the path to the database file; it&#39;s a
+<a href='http://en.wikipedia.org/wiki/Dbm'>Dbmᵂ</a> database for now, this parameter is
+mandatory.</li>
+ <li><code>state-key</code>: the name of the key to the “root of the tree”; if more than one
+application are using the same database, this can be useful to avoid conflicts
+(“normal” users should need to set this).</li>
+</ul>
+
+<h3 id="TheserverSection">The <code>server</code> Section</h3>
+<p>This optional section configures the HTTP server:</p>
+<ul>
+ <li><code>certificate</code>: path to the SSL certificate (<em>mandatory</em>).</li>
+ <li><code>private-key</code>: path to the SSL private-key (<em>mandatory</em>).</li>
+ <li><code>port</code>: port to listen on (<em>mandatory</em>).</li>
+ <li><code>authorized-tokens-path</code>: path to the file giving in an SSH <code>authorized_keys</code>
+style, to authentication tokens that the server accepts (<em>mandatory-ish</em> since
+authentication-less server-side is not implemented so far).</li>
+ <li><code>command-pipe-path</code>: if set this asks the server to listen on a named pipe
+for control commands (<em>recommended</em>).</li>
+ <li><code>daemonize</code>: if <code>true</code>, ask the server to detach from current terminal.</li>
+ <li><code>log-path</code>: if set, ask the server to redirect logs to this path (if not set
+logs go to <code>/dev/null</code>).</li>
+ <li><code>return-error-messages</code>: if <code>true</code>, the server will return real error
+messages (in the <em>body</em> of the response) to the client; if <code>false</code> (the
+default), any kind of error will result in the same uninformative message.</li>
+</ul>
+
+<h3 id="ThepluginsSection">The <code>plugins</code> Section</h3>
+<p>This optional section asks Ketrew to dynamically load plugins:</p>
+<ul>
+ <li><code>ocamlfind</code>: a package name or a list of package names to find with <code>Findlib</code>
+and to load.</li>
+ <li><code>compiled</code>: a path or a list of paths to load.</li>
+</ul>
+
+<h2 id="Example">Example</h2>
+<p>Here is a somewhat complete example:</p>
+<pre class='toml'><code class='toml'># How much noise do you want on your terminal:
+debug-level = 2
+
+turn-unix-ssh-failure-into-target-failure = false
+
+# Unless explicitly told, all SSH/system calls are bounded by a timeout.
+host-timeout-upper-bound = 120
+
+[client]
+  # One can remove the colors in the output of the client with:
+  color = false
+
+
+[database]
+  # The path to the database (mandatory):
+  path = &quot;/path/to/some/file&quot;
+  # Normal users should not change that:
+  state-key = &quot;some-string&quot;
+
+[server]
+  certificate = &quot;/etc/ketrew/cert.pem&quot;
+  private-key = &quot;/etc/ketrew/key.pem&quot;
+  port = 8443
+  authorized-tokens-path = &quot;/etc/ketrew/authorized-tokens&quot;
+  return-error-messages = true
+  log-path = &quot;/var/log/ketrew/server.log&quot;
+  daemonize = true
+  command-pipe-path = &quot;/var/run/ketrew/command.pipe&quot;
+
+[plugins]
+  ocamlfind =[&quot;lwt.unix&quot;, &quot;lwt.react&quot;]
+  compiled = &quot;_build/some_plugin/some_plugin.cmxs&quot;</code></pre>
+<h2 id="PrintTheConfiguration">Print The Configuration</h2>
+<p>One can always test their configuration with:</p>
+<pre><code>ketrew print-configuration
+
+</code></pre>
+</div></div></div></body><html>
