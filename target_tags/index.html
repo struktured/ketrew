@@ -26,7 +26,9 @@
    </li>
    <li><a href='#WorkflowScripts'>Workflow Scripts</a>
    </li>
-   <li><a href='#Ketrew'>Ketrew</a>
+   <li><a href='#StandaloneKetrew'>Standalone Ketrew</a>
+   </li>
+   <li><a href='#ClientServerMode'>Client-Server Mode</a>
    </li>
   </ul>
 
@@ -55,7 +57,8 @@
 workflows (interdependent steps/programs using a lot of data, with many
 parameter variations, running on different <em>hosts</em> with various schedulers).</li>
  <li>an engine taking care of orchestrating the run of those workflows, 
-and keeping track everything that succeeds, fails, or gets lost.</li>
+and keeping track everything that succeeds, fails, or gets lost.
+Ketrew can be a standalone application, or use a client-server architecture.</li>
 </ul>
 
 <p>This documentation is available at <a href='http://hammerlab.github.io/ketrew/'>http://hammerlab.github.io/ketrew/</a>,
@@ -95,9 +98,10 @@ toplevel).</p>
 <pre><code>&lt;script.ml&gt; &quot;&lt;some shell command to run on the cluster&gt;&quot;</code></pre>
 <p>See the file <a href='test_cli.html'><code>src/test/cli.ml</code></a> for more examples (<em>work-in-progress</em>),
 and the <a href='api/Ketrew_edsl.html'>documentation of the EDSL API</a>.</p>
-<h3 id="Ketrew">Ketrew</h3>
-<p>Ketrew is driven from the command-line client.  See first:
-<a href='ketrew_--help_help.html'><code>ketrew --help</code></a>; then:</p>
+<h3 id="StandaloneKetrew">Standalone Ketrew</h3>
+<p>The default for Ketrew is to run in “Standalone” mode.
+From the command-line client, one can both query and run the engine.  See
+first: <a href='ketrew_--help_help.html'><code>ketrew --help</code></a>; then:</p>
 <ul>
  <li>To display the current status: <a href='ketrew_status_help.html'><code>ketrew status</code></a>.</li>
  <li>To run as many steps as possible until a “fix-point” is reached:
@@ -112,8 +116,11 @@ less-visible list: <a href='ketrew_archive_help.html'><code>ketrew archive --hel
 <em>one-key-based</em> navigation.</p>
 <p>Ketrew can try to be clever about killing an archiving;
 see <a href='ketrew_autoclean_help.html'><code>ketrew autoclean --help</code></a>.</p>
-<p>There is an HTTP API (work in progress); with the commands
-<a href='ketrew_start-server_help.html'><code>ketrew start-server</code></a> and <a href='ketrew_stop-server_help.html'><code>ketrew stop-server</code></a>.</p>
+<h3 id="ClientServerMode">Client-Server Mode</h3>
+<p>In this mode, the Ketrew engine runs a proper server which is
+accessed over an HTTP API.</p>
+<p>See the commands <a href='ketrew_start-server_help.html'><code>ketrew start-server</code></a> and <a href='ketrew_stop-server_help.html'><code>ketrew stop-server</code></a>.</p>
+<p>The client works in the same way as in “Standalone” mode.</p>
 <h2 id="WheretoGoNext">Where to Go Next</h2>
 <p>From here:</p>
 <ul>
@@ -131,12 +138,12 @@ like <a href='api/Ketrew_lsf.html'><code>Ketrew_lsf</code></a> or in the tests:
  <li>You may want to extend Ketrew, or preconfigure it, <em>without</em> configuration
 files or dynamically loaded libraries: just
 <a href='Alternative_CLI_Application.html'>create</a> your own comand-line app.</li>
- <li>You may want to try out the <a href='The_HTTP_API.html'>HTTP API</a>
-(<em>work in progress</em>).</li>
+ <li>You may want to call out directly yo the <a href='The_HTTP_API.html'>HTTP API</a>
+(i.e. without the client).</li>
  <li>If you want to help or simply to understand Ketrew
 see the <a href='Developer_Documentation.html'>development</a>
 documentation, and have a look at the modules
-like <a href='api/Ketrew_state.html'><code>Ketrew_state</code></a>.</li>
+like <a href='api/Ketrew_engine.html'><code>Ketrew_engine</code></a>.</li>
 </ul>
 
 <h2 id="License">License</h2>
