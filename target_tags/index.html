@@ -20,11 +20,18 @@
   </ul>
 
  </li>
+ <li><a href='#TheEDSL'>The EDSL</a>
+  <ul>
+   <li><a href='#Overview'>Overview</a>
+   </li>
+   <li><a href='#SmallExample'>Small Example</a>
+   </li>
+  </ul>
+
+ </li>
  <li><a href='#Usage'>Usage</a>
   <ul>
    <li><a href='#Initialization'>Initialization</a>
-   </li>
-   <li><a href='#WorkflowScripts'>Workflow Scripts</a>
    </li>
    <li><a href='#StandaloneKetrew'>Standalone Ketrew</a>
    </li>
@@ -70,17 +77,24 @@ the source is at <a href='https://github.com/hammerlab/ketrew/'>https://github.c
 <p>If you have <code>opam</code> up and running:</p>
 <pre><code>opam remote add smondet git@github.com:smondet/dev-opam-repo
 opam install ketrew</code></pre>
-<h2 id="Usage">Usage</h2>
-<h3 id="Initialization">Initialization</h3>
-<p>To create a configuration file, run:</p>
-<pre><code>ketrew init</code></pre>
-<p>This creates <code>$HOME/.ketrew/configuration.toml</code> (see <a href='ketrew_init_help.html'><code>ketrew init --help</code></a> to
-choose another path, and see the <a href='The_Configuration_File.html'>documentation</a>
-on the configuration file to tweak it).</p>
-<h3 id="WorkflowScripts">Workflow Scripts</h3>
-<p>A workflow script is an OCaml file (script, compiled, or even inside the
-toplevel).</p>
-<p>One can add functions that create and <code>run</code> workflows:</p>
+<p>Then you need at runtime <code>ssh</code> and <code>git</code> in the <code>$PATH</code>.</p>
+<h2 id="TheEDSL">The EDSL</h2>
+<h3 id="Overview">Overview</h3>
+<p>The EDSL is an OCaml library where all the functions are used to build a
+workflow data-structure <em>except</em> one: <code>Ketrew.EDSL.run</code> which is used to submit
+workflows to the engine.</p>
+<p>A workflow is a Graph of “<strong>targets</strong>”.</p>
+<p>The links between targets are “dependencies” (targets that need to be ensured or
+run before a target can start) or “fallback-dependencies” (targets that will be
+activated if the target fails).</p>
+<p>Any OCaml program can use the EDSL (script, compiled, or even inside the
+toplevel), see the <a href='api/Ketrew_edsl.html'>documentation of the EDSL API</a>.</p>
+<p><small><blockquote>Please, also feel free to
+<a href='https://github.com/hammerlab/ketrew/issues'>propose</a>
+better names for things in the API.</blockquote></small></p>
+<h3 id="SmallExample">Small Example</h3>
+<p>This example is a “single-target” workflow that runs an arbitrary shell command on an
+LSF-based cluster:</p>
 <pre class='ocaml'><code class='ocaml'><span class="kw">let</span><span class="text"> </span><span class="id">run_command_with_lsf</span><span class="text"> </span><span class="id">cmd</span><span class="text"> =
   </span><span class="kw">let</span><span class="text"> </span><span class="kw">open</span><span class="text"> </span><span class="kw2">Ketrew</span><span class="text">.</span><span class="kw2">EDSL</span><span class="text"> </span><span class="kw">in</span><span class="text">
   </span><span class="kw">let</span><span class="text"> </span><span class="id">host</span><span class="text"> = 
@@ -94,10 +108,20 @@ toplevel).</p>
 
 </span><span class="kw">let</span><span class="text"> () = </span><span class="comment">(* Extremely basic main of the workflow script *)</span><span class="text">
   </span><span class="id">run_command_with_lsf</span><span class="text"> </span><span class="kw2">Sys</span><span class="text">.</span><span class="id">argv</span><span class="text">.(</span><span class="numeric">1</span><span class="text">)</span></code></pre>
-<p>then one should be able to add and activate mini-workflow with:</p>
+<p>If Ketrew is initialized, one should be able to add and activate
+the mini-workflow with:</p>
 <pre><code>&lt;script.ml&gt; &quot;&lt;some shell command to run on the cluster&gt;&quot;</code></pre>
-<p>See the file <a href='test_cli.html'><code>src/test/cli.ml</code></a> for more examples (<em>work-in-progress</em>),
-and the <a href='api/Ketrew_edsl.html'>documentation of the EDSL API</a>.</p>
+<p>See the file <a href='test_cli.html'><code>src/test/cli.ml</code></a> for more examples
+(<em>work-in-progress</em>).</p>
+<h2 id="Usage">Usage</h2>
+<h3 id="Initialization">Initialization</h3>
+<p>To create a configuration file, run:</p>
+<pre><code>ketrew init</code></pre>
+<p>This creates <code>$HOME/.ketrew/configuration.toml</code> (see <a href='ketrew_init_help.html'><code>ketrew init --help</code></a> to
+choose another path).</p>
+<p>By default this configures Ketrew in <strong>Standalone</strong> mode;
+See the <a href='The_Configuration_File.html'>documentation</a>
+on the configuration file to tweak it.</p>
 <h3 id="StandaloneKetrew">Standalone Ketrew</h3>
 <p>The default for Ketrew is to run in “Standalone” mode.
 From the command-line client, one can both query and run the engine.  See
