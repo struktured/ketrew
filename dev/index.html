@@ -87,8 +87,8 @@ workflow data-structure <em>except</em> one: <code>Ketrew.EDSL.run</code> which 
 workflows to the engine.</p>
 <p>A workflow is a Graph of “<strong>targets</strong>”.</p>
 <p>The links between targets are “dependencies” (targets that need to be ensured or
-run before a target can start) or “fallback-dependencies” (targets that will be
-activated if the target fails).</p>
+run before a target can start) or “fallbacks” (targets that will be activated
+if the target fails).</p>
 <p>Any OCaml program can use the EDSL (script, compiled, or even inside the
 toplevel), see the <a href='api/Ketrew_edsl.html'>documentation of the EDSL API</a>.</p>
 <p><small><blockquote>Please, also feel free to
@@ -204,8 +204,8 @@ like <a href='api/Ketrew_lsf.html'><code>Ketrew_lsf</code></a> or in the tests:
  <li>You may want to extend Ketrew, or preconfigure it, <em>without</em> configuration
 files or dynamically loaded libraries: just
 <a href='Alternative_CLI_Application.html'>create</a> your own comand-line app.</li>
- <li>You may want to call out directly yo the <a href='The_HTTP_API.html'>HTTP API</a>
-(i.e. without the client).</li>
+ <li>You may want to call out directly to the <a href='The_HTTP_API.html'>HTTP API</a>
+(i.e. without <code>ketrew</code> as a client).</li>
  <li>If you want to help or simply to understand Ketrew
 see the <a href='Developer_Documentation.html'>development</a>
 documentation, and have a look at the modules
