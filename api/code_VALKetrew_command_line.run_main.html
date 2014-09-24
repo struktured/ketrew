@@ -30,9 +30,9 @@
 <link title="Ketrew_user_command" rel="Chapter" href="Ketrew_user_command.html"><title>Ketrew API : Ketrew_command_line.run_main</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;run_main&nbsp;?argv&nbsp;?override_configuration&nbsp;()&nbsp;=<br>
+<code class="code"><span class="keyword">let</span>&nbsp;run_main&nbsp;?argv&nbsp;?override_configuration&nbsp;?additional_commands&nbsp;()&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Lwt_main</span>.run&nbsp;(<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cmdliner_main&nbsp;?argv&nbsp;?override_configuration&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cmdliner_main&nbsp;?argv&nbsp;?override_configuration&nbsp;?additional_commands&nbsp;()<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&lt;&nbsp;<span class="constructor">Return_code</span>.transform_error<br>
 &nbsp;&nbsp;&nbsp;&nbsp;)&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ok</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;exit&nbsp;0<br>

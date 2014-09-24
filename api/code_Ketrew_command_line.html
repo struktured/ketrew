@@ -855,7 +855,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;menu&nbsp;~sentence&nbsp;~always_there&nbsp;additional<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">function</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Set_viewer</span>&nbsp;viewer&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;target_status&nbsp;~state&nbsp;~viewer&nbsp;~add_info&nbsp;exploration_state&nbsp;target<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;target_status&nbsp;~state&nbsp;~viewer&nbsp;exploration_state&nbsp;target<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Call</span>&nbsp;(key,&nbsp;log)&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Calling&nbsp;query&nbsp;"</span>&nbsp;%&nbsp;sf&nbsp;<span class="string">"%S"</span>&nbsp;key&nbsp;%&nbsp;n<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;s&nbsp;<span class="string">"Press&nbsp;"</span>&nbsp;%&nbsp;bold_red&nbsp;(s&nbsp;<span class="string">"'K'"</span>)&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;for&nbsp;cancelling"</span><br>
@@ -1253,7 +1253,14 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~term:<span class="constructor">Term</span>.(ret&nbsp;(pure&nbsp;(<span class="keywordsign">`</span><span class="constructor">Help</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Plain</span>,&nbsp;<span class="constructor">None</span>))))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~info:(<span class="constructor">Term</span>.info&nbsp;<span class="string">"ketrew"</span>&nbsp;~version&nbsp;~doc&nbsp;~man)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;cmds&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;additional_commands&nbsp;@&nbsp;[<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.map&nbsp;additional_commands<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~f:(<span class="keyword">fun</span>&nbsp;(t,&nbsp;i)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">open</span>&nbsp;<span class="constructor">Term</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pure&nbsp;(<span class="keyword">fun</span>&nbsp;res&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;res&nbsp;&gt;&gt;&lt;&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ok</span>&nbsp;o&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;o<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fail&nbsp;(<span class="keywordsign">`</span><span class="constructor">Failure</span>&nbsp;s))&nbsp;$&nbsp;t,&nbsp;i)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;[<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;init_cmd;&nbsp;status_cmd;&nbsp;run_cmd;&nbsp;kill_cmd;&nbsp;archive_cmd;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;interact_cmd;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;explore_cmd;<br>
@@ -1267,9 +1274,9 @@
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Version</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Help</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;exit&nbsp;0<br>
 <br>
 <br>
-<span class="keyword">let</span>&nbsp;run_main&nbsp;?argv&nbsp;?override_configuration&nbsp;()&nbsp;=<br>
+<span class="keyword">let</span>&nbsp;run_main&nbsp;?argv&nbsp;?override_configuration&nbsp;?additional_commands&nbsp;()&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Lwt_main</span>.run&nbsp;(<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cmdliner_main&nbsp;?argv&nbsp;?override_configuration&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cmdliner_main&nbsp;?argv&nbsp;?override_configuration&nbsp;?additional_commands&nbsp;()<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&lt;&nbsp;<span class="constructor">Return_code</span>.transform_error<br>
 &nbsp;&nbsp;&nbsp;&nbsp;)&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ok</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;exit&nbsp;0<br>

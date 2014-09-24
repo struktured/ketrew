@@ -43,9 +43,30 @@
     </span><span class="kw4">~server</span><span class="text"> ()
 
 </span></code></pre>
+<h2 id="ACmdlinerCommandToAdd">A Cmdliner Command To Add</h2>
+<p>This just shows how to add one or more sub-commands to the command-line
+interface:</p>
+<pre class='ocaml'><code class='ocaml'><span class="kw">let</span><span class="text"> </span><span class="id">additional_cmdliner_command</span><span class="text"> =
+  </span><span class="kw">let</span><span class="text"> </span><span class="kw">open</span><span class="text"> </span><span class="kw2">Ketrew_pervasives</span><span class="text"> </span><span class="kw">in</span><span class="text">
+  </span><span class="kw">let</span><span class="text"> </span><span class="kw">open</span><span class="text"> </span><span class="kw2">Cmdliner</span><span class="text"> </span><span class="kw">in</span><span class="text">
+  </span><span class="kw">let</span><span class="text"> </span><span class="kw">open</span><span class="text"> </span><span class="kw2">Term</span><span class="text"> </span><span class="kw">in</span><span class="text">
+  </span><span class="kw">let</span><span class="text"> </span><span class="id">term</span><span class="text"> =
+    </span><span class="id">pure</span><span class="text"> (</span><span class="kw">fun</span><span class="text"> </span><span class="id">stuff_to_say</span><span class="text"> -&gt;
+        </span><span class="kw2">Log</span><span class="text">.(</span><span class="id">s</span><span class="text"> </span><span class="string">&quot;From custom-main: &quot;</span><span class="text"> % </span><span class="kw2">OCaml</span><span class="text">.</span><span class="kw3">list</span><span class="text"> </span><span class="id">quote</span><span class="text"> </span><span class="id">stuff_to_say</span><span class="text"> @ </span><span class="id">normal</span><span class="text">);
+        </span><span class="id">return</span><span class="text"> ())
+    $ </span><span class="kw2">Arg</span><span class="text">.(</span><span class="id">non_empty</span><span class="text"> @@ </span><span class="id">pos_all</span><span class="text"> </span><span class="kw3">string</span><span class="text"> [] @@
+           </span><span class="id">info</span><span class="text"> [] </span><span class="kw4">~docv</span><span class="text">:</span><span class="string">&quot;STUFF-TO-SAY&quot;</span><span class="text"> 
+             </span><span class="kw4">~doc</span><span class="text">:</span><span class="string">&quot;Tell Ketrew to say $(docv)&quot;</span><span class="text">) 
+  </span><span class="kw">in</span><span class="text">
+  (</span><span class="id">term</span><span class="text">, </span><span class="id">info</span><span class="text"> </span><span class="string">&quot;say-stuff&quot;</span><span class="text"> </span><span class="kw4">~doc</span><span class="text">:</span><span class="string">&quot;Say stuff&quot;</span><span class="text">)
+
+
+</span></code></pre>
 <h2 id="StartTheApplication">Start The Application</h2>
 <p>Calling <code>Ketrew.Command_line.run_main</code>
 just like <code>src/app/main.ml</code> but preconfigured:</p>
 <pre class='ocaml'><code class='ocaml'><span class="kw">let</span><span class="text"> `</span><span class="kw2">Never_returns</span><span class="text"> =
-  </span><span class="kw2">Ketrew</span><span class="text">.</span><span class="kw2">Command_line</span><span class="text">.</span><span class="id">run_main</span><span class="text"> </span><span class="kw4">~override_configuration</span><span class="text"> ()</span></code></pre>
+  </span><span class="kw2">Ketrew</span><span class="text">.</span><span class="kw2">Command_line</span><span class="text">.</span><span class="id">run_main</span><span class="text">
+    </span><span class="kw4">~additional_commands</span><span class="text">:[</span><span class="id">additional_cmdliner_command</span><span class="text">]
+    </span><span class="kw4">~override_configuration</span><span class="text"> ()</span></code></pre>
 </div></div></div></body><html>
