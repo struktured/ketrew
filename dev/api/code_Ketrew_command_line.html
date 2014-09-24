@@ -318,85 +318,32 @@
 <br>
 <span class="keyword">end</span><br>
 <br>
+<span class="keyword">let</span>&nbsp;get_status&nbsp;~client&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">Ketrew_client</span>.current_targets&nbsp;client<br>
+&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;targets&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;return&nbsp;(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold&nbsp;targets&nbsp;~init:(<span class="keywordsign">`</span><span class="constructor">Running</span>&nbsp;0,&nbsp;<span class="keywordsign">`</span><span class="constructor">Created</span>&nbsp;0,&nbsp;<span class="keywordsign">`</span><span class="constructor">Activated</span>&nbsp;0)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~f:(<span class="keyword">fun</span>&nbsp;((<span class="keywordsign">`</span><span class="constructor">Running</span>&nbsp;r,&nbsp;<span class="keywordsign">`</span><span class="constructor">Created</span>&nbsp;c,&nbsp;<span class="keywordsign">`</span><span class="constructor">Activated</span>&nbsp;a)&nbsp;<span class="keyword">as</span>&nbsp;prev)&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">open</span>&nbsp;<span class="constructor">Target</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;t.history&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Dead</span>&nbsp;_&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;prev<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Successful</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;prev<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Activated</span>&nbsp;_&nbsp;&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Running</span>&nbsp;r,&nbsp;<span class="keywordsign">`</span><span class="constructor">Created</span>&nbsp;c,&nbsp;<span class="keywordsign">`</span><span class="constructor">Activated</span>&nbsp;(a&nbsp;+&nbsp;1))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Created</span>&nbsp;_&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Running</span>&nbsp;r,&nbsp;<span class="keywordsign">`</span><span class="constructor">Created</span>&nbsp;(c&nbsp;+&nbsp;1),&nbsp;<span class="keywordsign">`</span><span class="constructor">Activated</span>&nbsp;a)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Running</span>&nbsp;(_,&nbsp;_)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Running</span>&nbsp;(r&nbsp;+&nbsp;1),&nbsp;<span class="keywordsign">`</span><span class="constructor">Created</span>&nbsp;c,&nbsp;<span class="keywordsign">`</span><span class="constructor">Activated</span>&nbsp;a))<br>
+&nbsp;&nbsp;)<br>
+<br>
 </code><table><tr><td></td><td><span class="comment">(** The function behind the <code class="code">ketrew status</code> sub-command (and the equivalent
     command in <code class="code">ketrew interactive</code>). *)</span></td></tr></table><code class="code"><br>
 <span class="keyword">let</span>&nbsp;display_status&nbsp;~client&nbsp;&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">begin</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"display_info&nbsp;!"</span>&nbsp;@&nbsp;verbose);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_client</span>.current_targets&nbsp;client<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;targets&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Running</span>&nbsp;rr,&nbsp;<span class="keywordsign">`</span><span class="constructor">Created</span>&nbsp;cc,&nbsp;<span class="keywordsign">`</span><span class="constructor">Activated</span>&nbsp;aa&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold&nbsp;targets&nbsp;~init:(<span class="keywordsign">`</span><span class="constructor">Running</span>&nbsp;0,&nbsp;<span class="keywordsign">`</span><span class="constructor">Created</span>&nbsp;0,&nbsp;<span class="keywordsign">`</span><span class="constructor">Activated</span>&nbsp;0)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~f:(<span class="keyword">fun</span>&nbsp;((<span class="keywordsign">`</span><span class="constructor">Running</span>&nbsp;r,&nbsp;<span class="keywordsign">`</span><span class="constructor">Created</span>&nbsp;c,&nbsp;<span class="keywordsign">`</span><span class="constructor">Activated</span>&nbsp;a)&nbsp;<span class="keyword">as</span>&nbsp;prev)&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">open</span>&nbsp;<span class="constructor">Target</span>&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;t.history&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Dead</span>&nbsp;_&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;prev<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Successful</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;prev<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Activated</span>&nbsp;_&nbsp;&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Running</span>&nbsp;r,&nbsp;<span class="keywordsign">`</span><span class="constructor">Created</span>&nbsp;c,&nbsp;<span class="keywordsign">`</span><span class="constructor">Activated</span>&nbsp;(a&nbsp;+&nbsp;1))<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Created</span>&nbsp;_&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Running</span>&nbsp;r,&nbsp;<span class="keywordsign">`</span><span class="constructor">Created</span>&nbsp;(c&nbsp;+&nbsp;1),&nbsp;<span class="keywordsign">`</span><span class="constructor">Activated</span>&nbsp;a)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Running</span>&nbsp;(_,&nbsp;_)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Running</span>&nbsp;(r&nbsp;+&nbsp;1),&nbsp;<span class="keywordsign">`</span><span class="constructor">Created</span>&nbsp;c,&nbsp;<span class="keywordsign">`</span><span class="constructor">Activated</span>&nbsp;a))<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Current&nbsp;targets:&nbsp;"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;i&nbsp;rr&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;Running,&nbsp;"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;i&nbsp;aa&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;Activated,&nbsp;"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;i&nbsp;cc&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;Created."</span>&nbsp;%n<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;normal);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;()<br>
-&nbsp;&nbsp;<span class="keyword">end</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*<br>
-&nbsp;&nbsp;&nbsp;&nbsp;begin&nbsp;match<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Configuration.server_configuration&nbsp;(Ketrew_client.configuration&nbsp;client)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;with<br>
-&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Some&nbsp;server_config&nbsp;-&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;local_server_uri&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;match&nbsp;Configuration.listen_to&nbsp;server_config&nbsp;with<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;`Tls&nbsp;(_,&nbsp;_,&nbsp;port)&nbsp;-&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Uri.make&nbsp;~scheme:"https"&nbsp;~host:"127.0.0.1"&nbsp;~path:"/hello"&nbsp;()&nbsp;~port&nbsp;in<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Log.(s&nbsp;"Trying&nbsp;GET&nbsp;on&nbsp;"&nbsp;%&nbsp;uri&nbsp;local_server_uri&nbsp;@&nbsp;verbose);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.with_timeout&nbsp;5.&nbsp;~f:(fun&nbsp;()&nbsp;-&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wrap_deferred&nbsp;~on_exn:(fun&nbsp;e&nbsp;-&gt;&nbsp;`Client&nbsp;(`Get_exn&nbsp;e))&nbsp;(fun&nbsp;()&nbsp;-&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Cohttp_lwt_unix.Client.get&nbsp;local_server_uri))<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&lt;&nbsp;function<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;`Ok&nbsp;(response,&nbsp;body)&nbsp;-&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Log.(s&nbsp;"Response:&nbsp;"<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;sexp&nbsp;Cohttp.Response.sexp_of_t&nbsp;response&nbsp;@&nbsp;verbose);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin&nbsp;match&nbsp;Cohttp.Response.status&nbsp;response&nbsp;with<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;`OK&nbsp;-&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Log.(s&nbsp;"The&nbsp;Server&nbsp;seems&nbsp;to&nbsp;be&nbsp;doing&nbsp;well&nbsp;on&nbsp;"<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;uri&nbsp;local_server_uri&nbsp;@&nbsp;normal);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;other&nbsp;-&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Log.(s&nbsp;"There&nbsp;is&nbsp;a&nbsp;server&nbsp;at&nbsp;"&nbsp;%&nbsp;uri&nbsp;local_server_uri<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%s&nbsp;"&nbsp;but&nbsp;it&nbsp;did&nbsp;not&nbsp;reply&nbsp;`OK`:&nbsp;"<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;sexp&nbsp;Cohttp.Response.sexp_of_t&nbsp;response&nbsp;@&nbsp;warning);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;`Error&nbsp;(`Client&nbsp;(`Get_exn<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Unix.Unix_error&nbsp;(Unix.ECONNREFUSED,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"connect",&nbsp;""))))&nbsp;-&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Log.(s&nbsp;"No&nbsp;server&nbsp;seems&nbsp;to&nbsp;be&nbsp;listening&nbsp;at&nbsp;"&nbsp;%&nbsp;uri&nbsp;local_server_uri<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;warning);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;`Error&nbsp;(`System&nbsp;(`With_timeout&nbsp;t,&nbsp;`Exn&nbsp;except))&nbsp;-&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Log.(s&nbsp;"Could&nbsp;not&nbsp;perform&nbsp;a&nbsp;GET&nbsp;request&nbsp;because&nbsp;Timeout&nbsp;failed!&nbsp;"<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%s&nbsp;"Exn:&nbsp;"&nbsp;%&nbsp;exn&nbsp;except&nbsp;@&nbsp;error);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;`Error&nbsp;(`Timeout&nbsp;_)&nbsp;-&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Log.(s&nbsp;"Could&nbsp;not&nbsp;perform&nbsp;a&nbsp;GET&nbsp;request&nbsp;at&nbsp;"&nbsp;%&nbsp;uri&nbsp;local_server_uri<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;s&nbsp;"&nbsp;the&nbsp;operation&nbsp;timeouted,&nbsp;some&nbsp;server&nbsp;must&nbsp;be&nbsp;listenting\<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;on&nbsp;the&nbsp;port&nbsp;but&nbsp;it&nbsp;does&nbsp;not&nbsp;sound&nbsp;like&nbsp;Ketrew"<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;error);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;`Error&nbsp;(`Client&nbsp;(`Get_exn&nbsp;other_exn))&nbsp;-&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Log.(s&nbsp;"Could&nbsp;not&nbsp;perform&nbsp;a&nbsp;GET&nbsp;request&nbsp;at&nbsp;"&nbsp;%&nbsp;uri&nbsp;local_server_uri<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%s&nbsp;"&nbsp;exception:&nbsp;"&nbsp;%&nbsp;exn&nbsp;other_exn&nbsp;@&nbsp;error);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end<br>
-&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;None&nbsp;-&gt;&nbsp;Log.(s&nbsp;"No&nbsp;local&nbsp;server&nbsp;configured."&nbsp;@&nbsp;normal);&nbsp;return&nbsp;()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;end<br>
-&nbsp;&nbsp;end<br>
-*)</span><br>
+&nbsp;&nbsp;get_status&nbsp;~client<br>
+&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Running</span>&nbsp;rr,&nbsp;<span class="keywordsign">`</span><span class="constructor">Created</span>&nbsp;cc,&nbsp;<span class="keywordsign">`</span><span class="constructor">Activated</span>&nbsp;aa)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Current&nbsp;targets:&nbsp;"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;i&nbsp;rr&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;Running,&nbsp;"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;i&nbsp;aa&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;Activated,&nbsp;"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;i&nbsp;cc&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;Created."</span>&nbsp;%n<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;normal);<br>
+&nbsp;&nbsp;return&nbsp;()<br>
 <br>
 </code><table><tr><td></td><td><span class="comment">(** The function behind the <code class="code">ketrew run &lt;how&gt;</code> sub-command (and the equivalent
     command in <code class="code">ketrew interactive</code>). *)</span></td></tr></table><code class="code"><br>
@@ -435,35 +382,52 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_engine</span>.fix_point&nbsp;state<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Steps</span>&nbsp;step_count,&nbsp;what_happened)&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log_happening&nbsp;~what_happened:<span class="constructor">List</span>.(rev&nbsp;what_happened)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[<span class="string">"loop"</span>]&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;keep_going&nbsp;=&nbsp;ref&nbsp;<span class="keyword">true</span>&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;traffic_light&nbsp;=&nbsp;<span class="constructor">Light</span>.create&nbsp;()&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"loop"</span>&nbsp;::&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;block,&nbsp;should_keep_going,&nbsp;stop_it&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;keep_going&nbsp;=&nbsp;ref&nbsp;<span class="keyword">true</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;traffic_light&nbsp;=&nbsp;<span class="constructor">Light</span>.create&nbsp;()&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Light</span>.try_to_pass&nbsp;traffic_light),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;!keep_going),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;keep_going&nbsp;:=&nbsp;<span class="keyword">false</span>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Light</span>.green&nbsp;traffic_light&nbsp;)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;loop&nbsp;previous_sleep&nbsp;happenings&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_engine</span>.fix_point&nbsp;state<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Steps</span>&nbsp;step_count,&nbsp;what_happened)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Getting&nbsp;new&nbsp;status"</span>&nbsp;@&nbsp;verbose);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;new_happenings&nbsp;=&nbsp;what_happened&nbsp;@&nbsp;happenings&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;seconds&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;what_happened&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[]&nbsp;<span class="keywordsign">|</span>&nbsp;[[]]&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;min&nbsp;(previous_sleep&nbsp;*.&nbsp;2.)&nbsp;max_sleep<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;something&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;2.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Sleeping&nbsp;"</span>&nbsp;%&nbsp;f&nbsp;seconds&nbsp;%&nbsp;s&nbsp;<span class="string">" s"</span>&nbsp;@&nbsp;very_verbose);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log_happening&nbsp;~what_happened:what_happened<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="constructor">Deferred_list</span>.pick_and_cancel&nbsp;[<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">System</span>.sleep&nbsp;seconds;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Light</span>.try_to_pass&nbsp;traffic_light;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]&nbsp;&gt;&gt;&lt;&nbsp;<span class="keyword">function</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ok</span>&nbsp;()&nbsp;<span class="keyword">when</span>&nbsp;!keep_going&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;loop&nbsp;seconds&nbsp;new_happenings<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ok</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log_happening&nbsp;~what_happened:(<span class="constructor">List</span>.rev&nbsp;new_happenings)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"System.Sleep&nbsp;Error!!"</span>&nbsp;&nbsp;@&nbsp;error);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fail&nbsp;(<span class="keywordsign">`</span><span class="constructor">Failure</span>&nbsp;<span class="string">"System.sleep"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get_status&nbsp;~client<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Running</span>&nbsp;rr,&nbsp;<span class="keywordsign">`</span><span class="constructor">Created</span>&nbsp;cc,&nbsp;<span class="keywordsign">`</span><span class="constructor">Activated</span>&nbsp;aa)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">match</span>&nbsp;rr,&nbsp;&nbsp;aa&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;0,&nbsp;0&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Nothing&nbsp;left&nbsp;to&nbsp;do"</span>&nbsp;@&nbsp;verbose);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stop_it&nbsp;();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log_happening&nbsp;~what_happened:(<span class="constructor">List</span>.rev&nbsp;new_happenings)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_,&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;seconds&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;what_happened&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[]&nbsp;<span class="keywordsign">|</span>&nbsp;[[]]&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;min&nbsp;(previous_sleep&nbsp;*.&nbsp;2.)&nbsp;max_sleep<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;something&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;2.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Sleeping&nbsp;"</span>&nbsp;%&nbsp;f&nbsp;seconds&nbsp;%&nbsp;s&nbsp;<span class="string">" s"</span>&nbsp;@&nbsp;very_verbose);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log_happening&nbsp;~what_happened:what_happened<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="constructor">Deferred_list</span>.pick_and_cancel&nbsp;[<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">System</span>.sleep&nbsp;seconds;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;block&nbsp;();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]&nbsp;&gt;&gt;&lt;&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ok</span>&nbsp;()&nbsp;<span class="keyword">when</span>&nbsp;should_keep_going&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;loop&nbsp;seconds&nbsp;new_happenings<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ok</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log_happening&nbsp;~what_happened:(<span class="constructor">List</span>.rev&nbsp;new_happenings)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"System.Sleep&nbsp;Error!!"</span>&nbsp;&nbsp;@&nbsp;error);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fail&nbsp;(<span class="keywordsign">`</span><span class="constructor">Failure</span>&nbsp;<span class="string">"System.sleep"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Deferred_list</span>.for_concurrent&nbsp;~f:(<span class="keyword">fun</span>&nbsp;x&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;x)&nbsp;[<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Deferred_list</span>.pick_and_cancel&nbsp;[<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;loop&nbsp;2.&nbsp;[]&nbsp;<span class="keyword">end</span>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;kbd_loop&nbsp;()&nbsp;=<br>
@@ -471,22 +435,13 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Interaction</span>.get_key&nbsp;()<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">function</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">'q'</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">'Q'</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;keep_going&nbsp;:=&nbsp;<span class="keyword">false</span>;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Light</span>.green&nbsp;traffic_light;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stop_it&nbsp;();<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;()<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;kbd_loop&nbsp;()<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;kbd_loop&nbsp;()<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;((_&nbsp;:&nbsp;unit&nbsp;list),&nbsp;errors)&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">match</span>&nbsp;errors&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;some&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Errors:&nbsp;"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;<span class="constructor">OCaml</span>.list&nbsp;(<span class="keyword">fun</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;(<span class="constructor">Error</span>.to_string&nbsp;e))&nbsp;some&nbsp;@&nbsp;error);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fail&nbsp;(<span class="keywordsign">`</span><span class="constructor">Failure</span>&nbsp;<span class="string">"run"</span>)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;sl&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Unknown&nbsp;client-running&nbsp;command:&nbsp;"</span>&nbsp;%&nbsp;<span class="constructor">OCaml</span>.list&nbsp;(sf&nbsp;<span class="string">"%S"</span>)&nbsp;sl<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;error);<br>
