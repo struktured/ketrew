@@ -153,11 +153,22 @@
 </code><table><tr><td></td><td><span class="comment">(** Keyboard interaction functions (build “menus”, ask questions, etc.) *)</span></td></tr></table><code class="code"><br>
 <span class="keyword">module</span>&nbsp;<span class="constructor">Interaction</span>&nbsp;=&nbsp;<span class="keyword">struct</span><br>
 <br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;initialized&nbsp;=&nbsp;ref&nbsp;<span class="keyword">false</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;init&nbsp;()&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;not&nbsp;!initialized&nbsp;<span class="keyword">then</span>&nbsp;(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">open</span>&nbsp;<span class="constructor">Unix</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;term_init&nbsp;=&nbsp;tcgetattr&nbsp;stdin&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;at_exit&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;tcsetattr&nbsp;stdin&nbsp;<span class="constructor">TCSADRAIN</span>&nbsp;term_init);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;initialized&nbsp;:=&nbsp;<span class="keyword">true</span>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;)<br>
+<br>
 &nbsp;&nbsp;</code><table><tr><td>&nbsp;&nbsp;</td><td><span class="comment">(** <code class="code">with_cbreak f</code> calls with the terminal in “get key” mode.
          It comes from
          http://pleac.sourceforge.net/pleac_ocaml/userinterfaces.html
   *)</span></td></tr></table><code class="code"><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;with_cbreak&nbsp;(f:&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(_,&nbsp;_)&nbsp;t)&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;init&nbsp;();<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">open</span>&nbsp;<span class="constructor">Lwt_unix</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Lwt</span>.(tcgetattr&nbsp;stdin<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;term_init&nbsp;<span class="keywordsign">-&gt;</span><br>
@@ -165,7 +176,6 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;term_cbreak&nbsp;=&nbsp;{&nbsp;term_init&nbsp;<span class="keyword">with</span>&nbsp;c_icanon&nbsp;=&nbsp;<span class="keyword">false</span>;&nbsp;c_echo&nbsp;=&nbsp;<span class="keyword">false</span>&nbsp;}&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tcsetattr&nbsp;stdin&nbsp;<span class="constructor">TCSANOW</span>&nbsp;term_cbreak<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;at_exit&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Lwt_main</span>.run&nbsp;(go_back_to_normal&nbsp;()));<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;catch&nbsp;f&nbsp;(<span class="keyword">fun</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"with_cbreak&nbsp;exn:&nbsp;"</span>&nbsp;%&nbsp;exn&nbsp;e&nbsp;@&nbsp;warning);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;(<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Failure</span>&nbsp;<span class="string">"with_cbreak"</span>)))<br>
@@ -979,11 +989,15 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;menu&nbsp;~sentence:<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Main&nbsp;menu"</span>)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~always_there:[menu_item&nbsp;~char:<span class="string">'q'</span>&nbsp;~log:<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Quit"</span>)&nbsp;<span class="keywordsign">`</span><span class="constructor">Quit</span>]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;menu_item&nbsp;~char:<span class="string">'s'</span>&nbsp;~log:<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Display&nbsp;current&nbsp;status(es)"</span>)&nbsp;<span class="keywordsign">`</span><span class="constructor">Status</span>;&nbsp;]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;menu_item&nbsp;~char:<span class="string">'s'</span>&nbsp;~log:<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Display&nbsp;current&nbsp;status"</span>)&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keywordsign">`</span><span class="constructor">Status</span>&nbsp;<span class="constructor">None</span>);&nbsp;]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;(<span class="keyword">if</span>&nbsp;can_run_stuff&nbsp;<span class="keyword">then</span>&nbsp;[<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;menu_item&nbsp;~char:<span class="string">'r'</span>&nbsp;~log:<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Run&nbsp;fix-point"</span>)&nbsp;(<span class="keywordsign">`</span><span class="constructor">Run</span>&nbsp;[<span class="string">"fix"</span>]);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;menu_item&nbsp;~char:<span class="string">'l'</span>&nbsp;~log:<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Run&nbsp;loop"</span>)&nbsp;(<span class="keywordsign">`</span><span class="constructor">Run</span>&nbsp;[<span class="string">"loop"</span>]);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]&nbsp;<span class="keyword">else</span>&nbsp;[])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]&nbsp;<span class="keyword">else</span>&nbsp;[<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;menu_item&nbsp;~char:<span class="string">'l'</span>&nbsp;~log:<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Loop&nbsp;displaying&nbsp;the&nbsp;status"</span>)&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keywordsign">`</span><span class="constructor">Status</span>&nbsp;(<span class="constructor">Some</span>&nbsp;2.));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;])<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;[<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;menu_item&nbsp;~char:<span class="string">'k'</span>&nbsp;~log:<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Kill&nbsp;targets"</span>)&nbsp;<span class="keywordsign">`</span><span class="constructor">Kill</span>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;menu_item&nbsp;~char:<span class="string">'a'</span>&nbsp;~log:<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Archive&nbsp;targets"</span>)&nbsp;<span class="keywordsign">`</span><span class="constructor">Archive</span>;<br>
@@ -999,8 +1013,8 @@
 &nbsp;&nbsp;&nbsp;&nbsp;)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">function</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Quit</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Status</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;display_status&nbsp;~client&nbsp;~loop:<span class="constructor">None</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Status</span>&nbsp;loop&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;display_status&nbsp;~client&nbsp;~loop<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;main_loop&nbsp;()<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Kill</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
