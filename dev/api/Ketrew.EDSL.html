@@ -34,6 +34,7 @@
 <link title="Ketrew_target" rel="Chapter" href="Ketrew_target.html">
 <link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html"><link title="Hosts" rel="Section" href="#3_Hosts">
 <link title="Build Programs" rel="Section" href="#3_BuildPrograms">
+<link title="Conditions " rel="Section" href="#3_Conditions">
 <link title="Artifacts" rel="Section" href="#3_Artifacts">
 <link title="Targets" rel="Section" href="#3_Targets">
 <link title="Workflows" rel="Section" href="#3_Workflows">
@@ -56,52 +57,16 @@ This is a more stable EDSL/API for end-users to make workflows and deal with
 <br>
 <h3 id="3_Hosts">Hosts</h3><br>
 
-<pre><span id="TYPEhost"><span class="keyword">type</span> <code class="type"></code>host</span> = <code class="type"><a href="Ketrew_host.html#TYPEt">Ketrew_host.t</a></code> </pre>
-<div class="info ">
-Alias for the host type.<br>
-</div>
-
-
-<pre><span id="VALparse_host"><span class="keyword">val</span> <a href="code_VALKetrew_edsl.parse_host.html">parse_host</a></span> : <code class="type">string -> <a href="Ketrew_edsl.html#TYPEhost">host</a></code></pre><div class="info ">
-Parse an URI string into a host.
-<p>
-
-    For example:
-    <code class="code"><span class="string">"ssh://user@SomeHost:42/tmp/pg?shell=bash,-l,--init-file,bouh,-c&amp;timeout=42&amp;ssh-option=-K"</span></code>
-<p>
-<ul>
-<li><code class="code"><span class="string">"ssh:"</span></code> means to connect with SSH (if a hostname is defined this is the
-    default and only way).</li>
-<li><code class="code"><span class="string">"user"</span></code> is the user to connect as.</li>
-<li><code class="code"><span class="string">"SomeHost"</span></code> is the hostname, if the “host-connection” part of the URI is
-    not provided, “localhost” will be assumed (and SSH won't be used).</li>
-<li><code class="code"><span class="string">"42"</span></code> is the port.</li>
-<li><code class="code"><span class="string">"/tmp/pg"</span></code> is the “playground”; a directory where the Ketrew-engine will
-    create temporary and monitoring files.</li>
-<li><code class="code"><span class="string">"shell=bash,-l,--init-file,bouh,-c"</span></code> the option <code class="code">shell</code> define the
-    shell, and the options, to use on the host.</li>
-<li><code class="code"><span class="string">"timeout=42.5"</span></code> is the execution timeout, an optional float setting the
-    maximal duration Ketrew will wait for SSH commands to return.</li>
-<li><code class="code"><span class="string">"ssh-option=-K"</span></code> are options to pass to the SSH client.</li>
-</ul>
-
-    See also <a href="Ketrew_host.html#VALof_uri"><code class="code"><span class="constructor">Ketrew_host</span>.of_uri</code></a>.<br>
-</div>
-
-<pre><span id="VALhost_cmdliner_term"><span class="keyword">val</span> <a href="code_VALKetrew_edsl.host_cmdliner_term.html">host_cmdliner_term</a></span> : <code class="type">?doc:string -><br>       [ `Flag of string list | `Required of int ] -> <a href="Ketrew_host.html#TYPEt">Ketrew_host.t</a> Cmdliner.Term.t</code></pre><div class="info ">
-Cmdliner term which creates a host argument or flag.
-    <code class="code"><span class="keywordsign">`</span><span class="constructor">Required</span> n</code> will be an anonymous argument at position <code class="code">n</code>; 
-    <code class="code"><span class="keywordsign">`</span><span class="constructor">Flag</span> [<span class="string">"option-name"</span>; <span class="string">"O"</span>]</code> will create an optional
-    flag <code class="code"><span class="string">"--option-name"</span></code> (aliased to <code class="code"><span class="string">"-O"</span></code>) whose default value is
-    the host <code class="code"><span class="string">"/tmp/"</span></code> (i.e. Localhost with <code class="code"><span class="string">"/tmp"</span></code> as “playground”).<br>
-</div>
-<br>
+<pre><span class="keyword">module</span> <a href="Ketrew_edsl.Host.html">Host</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_edsl.Host.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><br>
 <h3 id="3_BuildPrograms">Build Programs</h3><br>
 
 <pre><span class="keyword">module</span> <a href="Ketrew_edsl.Program.html">Program</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_edsl.Program.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info">
 Build “things to run”, i.e.
 </div>
 <br>
+<h3 id="3_Conditions">Conditions </h3><br>
+
+<pre><span class="keyword">module</span> <a href="Ketrew_edsl.Condition.html">Condition</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_edsl.Condition.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><br>
 <h3 id="3_Artifacts">Artifacts</h3><br>
 
 <pre><span id="TYPEuser_artifact"><span class="keyword">class type</span> <a href="Ketrew_edsl.user_artifact-c.html">user_artifact</a></span> = <code class="code"><span class="keyword">object</span></code> <a href="Ketrew_edsl.user_artifact-c.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info">
@@ -129,23 +94,23 @@ Targets are the nodes in the workflow arborescence (see also
 Create a new target.<br>
 </div>
 
-<pre><span id="VALfile_target"><span class="keyword">val</span> <a href="code_VALKetrew_edsl.file_target.html">file_target</a></span> : <code class="type">?dependencies:<a href="Ketrew_edsl.user_target-c.html">user_target</a> list -><br>       ?make:<a href="Ketrew_target.Build_process.html#TYPEt">Ketrew_target.Build_process.t</a> -><br>       ?metadata:<a href="Ketrew_artifact.Value.html#TYPEt">Ketrew_artifact.Value.t</a> -><br>       ?name:string -><br>       ?host:<a href="Ketrew_edsl.html#TYPEhost">host</a> -><br>       ?equivalence:<a href="Ketrew_target.Equivalence.html#TYPEt">Ketrew_target.Equivalence.t</a> -><br>       ?if_fails_activate:<a href="Ketrew_edsl.user_target-c.html">user_target</a> list -><br>       ?tags:string list -> string -> <a href="Ketrew_edsl.user_target-c.html">user_target</a></code></pre><div class="info ">
+<pre><span id="VALfile_target"><span class="keyword">val</span> <a href="code_VALKetrew_edsl.file_target.html">file_target</a></span> : <code class="type">?dependencies:<a href="Ketrew_edsl.user_target-c.html">user_target</a> list -><br>       ?make:<a href="Ketrew_target.Build_process.html#TYPEt">Ketrew_target.Build_process.t</a> -><br>       ?metadata:<a href="Ketrew_artifact.Value.html#TYPEt">Ketrew_artifact.Value.t</a> -><br>       ?name:string -><br>       ?host:<a href="Ketrew_edsl.Host.html#TYPEt">Host.t</a> -><br>       ?equivalence:<a href="Ketrew_target.Equivalence.html#TYPEt">Ketrew_target.Equivalence.t</a> -><br>       ?if_fails_activate:<a href="Ketrew_edsl.user_target-c.html">user_target</a> list -><br>       ?tags:string list -> string -> <a href="Ketrew_edsl.user_target-c.html">user_target</a></code></pre><div class="info ">
 Create a file <a href="Ketrew_edsl.user_artifact-c.html"><code class="code"><span class="constructor">Ketrew_edsl</span>.user_artifact</code></a> and the <a href="Ketrew_edsl.user_target-c.html"><code class="code"><span class="constructor">Ketrew_edsl</span>.user_target</code></a> that produces it.<br>
 </div>
 
-<pre><span id="VALdaemonize"><span class="keyword">val</span> <a href="code_VALKetrew_edsl.daemonize.html">daemonize</a></span> : <code class="type">?starting_timeout:float -><br>       ?using:[ `Nohup_setsid | `Python_daemon ] -><br>       ?host:<a href="Ketrew_host.html#TYPEt">Ketrew_host.t</a> -> <a href="Ketrew_edsl.Program.html#TYPEt">Program.t</a> -> <a href="Ketrew_target.Build_process.html#TYPEt">Ketrew_target.Build_process.t</a></code></pre><div class="info ">
+<pre><span id="VALdaemonize"><span class="keyword">val</span> <a href="code_VALKetrew_edsl.daemonize.html">daemonize</a></span> : <code class="type">?starting_timeout:float -><br>       ?using:[ `Nohup_setsid | `Python_daemon ] -><br>       ?host:<a href="Ketrew_edsl.Host.html#TYPEt">Host.t</a> -><br>       <a href="Ketrew_edsl.Program.html#TYPEt">Program.t</a> -> <a href="Ketrew_target.Build_process.html#TYPEt">Ketrew_target.Build_process.t</a></code></pre><div class="info ">
 Create a “daemonize” build process.<br>
 </div>
 
-<pre><span id="VALdirect_execution"><span class="keyword">val</span> <a href="code_VALKetrew_edsl.direct_execution.html">direct_execution</a></span> : <code class="type">?host:<a href="Ketrew_host.html#TYPEt">Ketrew_host.t</a> -> <a href="Ketrew_edsl.Program.html#TYPEt">Program.t</a> -> <a href="Ketrew_target.Build_process.html#TYPEt">Ketrew_target.Build_process.t</a></code></pre><div class="info ">
+<pre><span id="VALdirect_execution"><span class="keyword">val</span> <a href="code_VALKetrew_edsl.direct_execution.html">direct_execution</a></span> : <code class="type">?host:<a href="Ketrew_edsl.Host.html#TYPEt">Host.t</a> -><br>       <a href="Ketrew_edsl.Program.html#TYPEt">Program.t</a> -> <a href="Ketrew_target.Build_process.html#TYPEt">Ketrew_target.Build_process.t</a></code></pre><div class="info ">
 Create a direct process (not “long-running”).<br>
 </div>
 
-<pre><span id="VALdirect_shell_command"><span class="keyword">val</span> <a href="code_VALKetrew_edsl.direct_shell_command.html">direct_shell_command</a></span> : <code class="type">?host:<a href="Ketrew_host.html#TYPEt">Ketrew_host.t</a> -> string -> <a href="Ketrew_target.Build_process.html#TYPEt">Ketrew_target.Build_process.t</a></code></pre><div class="info ">
+<pre><span id="VALdirect_shell_command"><span class="keyword">val</span> <a href="code_VALKetrew_edsl.direct_shell_command.html">direct_shell_command</a></span> : <code class="type">?host:<a href="Ketrew_edsl.Host.html#TYPEt">Host.t</a> -> string -> <a href="Ketrew_target.Build_process.html#TYPEt">Ketrew_target.Build_process.t</a></code></pre><div class="info ">
 Shortcut for <code class="code">direct_execution ?host <span class="constructor">Program</span>.(sh cmd)</code>.<br>
 </div>
 
-<pre><span id="VALlsf"><span class="keyword">val</span> <a href="code_VALKetrew_edsl.lsf.html">lsf</a></span> : <code class="type">?host:<a href="Ketrew_host.html#TYPEt">Ketrew_host.t</a> -><br>       ?queue:string -><br>       ?name:string -><br>       ?wall_limit:string -><br>       ?processors:[ `Min of int | `Min_max of int * int ] -><br>       <a href="Ketrew_edsl.Program.html#TYPEt">Program.t</a> -> <a href="Ketrew_target.Build_process.html#TYPEt">Ketrew_target.Build_process.t</a></code></pre><div class="info ">
+<pre><span id="VALlsf"><span class="keyword">val</span> <a href="code_VALKetrew_edsl.lsf.html">lsf</a></span> : <code class="type">?host:<a href="Ketrew_edsl.Host.html#TYPEt">Host.t</a> -><br>       ?queue:string -><br>       ?name:string -><br>       ?wall_limit:string -><br>       ?processors:[ `Min of int | `Min_max of int * int ] -><br>       <a href="Ketrew_edsl.Program.html#TYPEt">Program.t</a> -> <a href="Ketrew_target.Build_process.html#TYPEt">Ketrew_target.Build_process.t</a></code></pre><div class="info ">
 Create an “LSF” build process.<br>
 </div>
 <br>

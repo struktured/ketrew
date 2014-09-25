@@ -13,7 +13,7 @@ let () =
   run (
     target (sprintf "%S with dummy-plugin" Sys.argv.(1))
       ~make:(Dummy_plugin.create
-               ~host:(parse_host "/tmp")
+               ~host:(Host.parse "/tmp")
                (Program.sh Sys.argv.(1)))
   )
 ```

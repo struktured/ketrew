@@ -32,7 +32,7 @@
   </span><span class="id">run</span><span class="text"> (
     </span><span class="id">target</span><span class="text"> (</span><span class="id">sprintf</span><span class="text"> </span><span class="string">&quot;%S with dummy-plugin&quot;</span><span class="text"> </span><span class="kw2">Sys</span><span class="text">.</span><span class="id">argv</span><span class="text">.(</span><span class="numeric">1</span><span class="text">))
       </span><span class="kw4">~make</span><span class="text">:(</span><span class="kw2">Dummy_plugin</span><span class="text">.</span><span class="id">create</span><span class="text">
-               </span><span class="kw4">~host</span><span class="text">:(</span><span class="id">parse_host</span><span class="text"> </span><span class="string">&quot;/tmp&quot;</span><span class="text">)
+               </span><span class="kw4">~host</span><span class="text">:(</span><span class="kw2">Host</span><span class="text">.</span><span class="id">parse</span><span class="text"> </span><span class="string">&quot;/tmp&quot;</span><span class="text">)
                (</span><span class="kw2">Program</span><span class="text">.</span><span class="id">sh</span><span class="text"> </span><span class="kw2">Sys</span><span class="text">.</span><span class="id">argv</span><span class="text">.(</span><span class="numeric">1</span><span class="text">)))
   )</span></code></pre>
 </div></div></div></body><html>

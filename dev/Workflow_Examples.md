@@ -47,7 +47,7 @@ It actually calls `run` directly itself.
 ```ocaml
 let run_command_with_lsf ~host ~queue cmd =
   let open Ketrew.EDSL in
-  let host = parse_host host in
+  let host = Host.parse host in
   run (
     target "run_command_with_lsf"
       ~make:(lsf (Program.sh cmd)
@@ -64,7 +64,7 @@ This function is like `run_command_with_lsf` but uses
 ```ocaml
 let run_command_with_nohup ~host cmd =
   let open Ketrew.EDSL in
-  let host = parse_host host in
+  let host = Host.parse host in
   run (
     target (sprintf "NhSs: %S" cmd)
       ~make:(daemonize ~using:`Nohup_setsid  (Program.sh cmd) ~host)
@@ -82,7 +82,7 @@ the “python daemon hack” instead.
 ```ocaml
 let run_command_with_python_hack ~host cmd =
   let open Ketrew.EDSL in
-  let host = parse_host host in
+  let host = Host.parse host in
   run (
     target (sprintf "Pyd: %S" cmd)
       ~make:(daemonize ~using:`Python_daemon (Program.sh cmd) ~host)
@@ -106,7 +106,7 @@ This function runs a workflow with no less than 2 nodes!
 ```ocaml
 let run_2_commands_with_python_hack ~host cmd1 cmd2 =
   let open Ketrew.EDSL in
-  let host = parse_host host in
+  let host = Host.parse host in
   let target1 =
     target (sprintf "Pyd: %S" cmd1)
       ~make:(daemonize ~using:`Python_daemon (Program.sh cmd1) ~host)
@@ -141,7 +141,7 @@ if the first target is not ensured by the build-process it runs.
 ```ocaml
 let fail_because_of_condition ~host =
   let open Ketrew.EDSL in
-  let host = parse_host host in
+  let host = Host.parse host in
   let make_target ~cmd =
     target ~make:(daemonize ~using:`Python_daemon Program.(sh cmd) ~host)
   in
@@ -192,7 +192,7 @@ nothing is new) which show ketrew's handling of errors in dependencies.
 ```ocaml
 let deploy_website branches =
   let open Ketrew.EDSL in
-  let host = (parse_host "/tmp") in
+  let host = (Host.parse "/tmp") in
   let local_deamonize = daemonize ~host ~using:`Python_daemon in
   let current_path = Sys.getenv "PWD" in
   let dest_path =
@@ -370,7 +370,7 @@ let run_ketrew_on_vagrant what_to_do =
   let (//) = Filename.concat in
   let tmp_dir =  Sys.getenv "HOME"  // "tmp/ketrew_vagrant" in
   let vagrant_tmp = tmp_dir // "vagr_vm" in
-  let vagrant_host = parse_host (tmp_dir // "playground") in
+  let vagrant_host = Host.parse (tmp_dir // "playground") in
   let do_on_vagrant_host p =
     daemonize ~using:`Python_daemon ~host:vagrant_host p in
   let ssh_config = file ~host:vagrant_host (tmp_dir // "ssh_config") in
@@ -492,11 +492,11 @@ let () =
   | "tgz" :: more_args ->
     begin match more_args with
     | host_uri :: dir :: [] ->
-      make_targz_on_host ~host:(Ketrew.EDSL.parse_host host_uri) ~dir ()
+      make_targz_on_host ~host:(Ketrew.EDSL.Host.parse host_uri) ~dir ()
     | host :: dir :: dest_prefix :: [] ->
-      make_targz_on_host ~dest_prefix ~host:(Ketrew.EDSL.parse_host host) ~dir ()
+      make_targz_on_host ~dest_prefix ~host:(Ketrew.EDSL.Host.parse host) ~dir ()
     | host :: dir :: dest_prefix :: "with-gpg" :: []  ->
-      make_targz_on_host ~gpg:true ~dest_prefix ~host:(Ketrew.EDSL.parse_host host) ~dir ()
+      make_targz_on_host ~gpg:true ~dest_prefix ~host:(Ketrew.EDSL.Host.parse host) ~dir ()
     | other ->
       say "usage: %s tgz <host> <dir> [dest-prefix] [\"with-gpg\"]" Sys.argv.(0);
       failwith "Wrong command line"

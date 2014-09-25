@@ -103,9 +103,9 @@ better names for things in the API.</blockquote></small></p>
 </span><span class="kw">let</span><span class="text"> </span><span class="id">run_command_with_lsf</span><span class="text"> </span><span class="id">cmd</span><span class="text"> =
   </span><span class="kw">let</span><span class="text"> </span><span class="kw">module</span><span class="text"> </span><span class="kw2">KEDSL</span><span class="text"> = </span><span class="kw2">Ketrew</span><span class="text">.</span><span class="kw2">EDSL</span><span class="text"> </span><span class="kw">in</span><span class="text">
   </span><span class="kw">let</span><span class="text"> </span><span class="id">host</span><span class="text"> =
-    </span><span class="comment">(* `parse_host` takes an URI and creates a “Host” datastructue: a place to
+    </span><span class="comment">(* `Host.parse` takes an URI and creates a “Host” datastructue: a place to
         run stuff.  *)</span><span class="text">
-    </span><span class="kw2">KEDSL</span><span class="text">.</span><span class="id">parse_host</span><span class="text">
+    </span><span class="kw2">KEDSL</span><span class="text">.</span><span class="kw2">Host</span><span class="text">.</span><span class="id">parse</span><span class="text">
       </span><span class="string">&quot;ssh://user42@MyLSFCluster/home/user42/ketrew-playground/?shell=bash&quot;</span><span class="text">
     </span><span class="comment">(* This one is an SSH host, named `MyLSFCluster`.
        The directory `/home/user42/ketrew-playground/` will be used by Ketrew
