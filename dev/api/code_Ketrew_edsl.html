@@ -123,6 +123,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;render:&nbsp;<span class="constructor">Ketrew_target</span>.t<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;dependencies:&nbsp;user_target&nbsp;list<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;if_fails_activate:&nbsp;user_target&nbsp;list<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;success_triggers:&nbsp;user_target&nbsp;list<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;metadata:&nbsp;<span class="constructor">Ketrew_artifact</span>.<span class="constructor">Value</span>.t<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;product:&nbsp;user_artifact<br>
 &nbsp;&nbsp;<span class="keyword">end</span><br>
@@ -132,6 +133,7 @@
 &nbsp;&nbsp;?(active&nbsp;=&nbsp;<span class="keyword">false</span>)<br>
 &nbsp;&nbsp;?(dependencies&nbsp;=&nbsp;[])<br>
 &nbsp;&nbsp;?(if_fails_activate&nbsp;=&nbsp;[])<br>
+&nbsp;&nbsp;?(success_triggers&nbsp;=&nbsp;[])<br>
 &nbsp;&nbsp;?(name:&nbsp;string&nbsp;option)<br>
 &nbsp;&nbsp;?(make:&nbsp;<span class="constructor">Target</span>.<span class="constructor">Build_process</span>.t&nbsp;=&nbsp;<span class="constructor">Target</span>.<span class="constructor">Build_process</span>.nop)<br>
 &nbsp;&nbsp;?done_when<br>
@@ -151,6 +153,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;id&nbsp;=&nbsp;id<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;dependencies&nbsp;=&nbsp;dependencies<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;if_fails_activate&nbsp;=&nbsp;if_fails_activate<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;success_triggers&nbsp;=&nbsp;success_triggers<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;activate&nbsp;=&nbsp;active&nbsp;&lt;-&nbsp;<span class="keyword">true</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;is_active&nbsp;=&nbsp;active<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;metadata&nbsp;=&nbsp;metadata<br>
@@ -160,6 +163,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~id:self<span class="keywordsign">#</span>id<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~dependencies:(<span class="constructor">List</span>.map&nbsp;dependencies&nbsp;~f:(<span class="keyword">fun</span>&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t<span class="keywordsign">#</span>id))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~if_fails_activate:(<span class="constructor">List</span>.map&nbsp;if_fails_activate&nbsp;~f:(<span class="keyword">fun</span>&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t<span class="keywordsign">#</span>id))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~success_triggers:(<span class="constructor">List</span>.map&nbsp;success_triggers&nbsp;~f:(<span class="keyword">fun</span>&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t<span class="keywordsign">#</span>id))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~name:self<span class="keywordsign">#</span>name&nbsp;?condition:done_when<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?equivalence&nbsp;?tags<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~make&nbsp;()<br>
@@ -170,24 +174,24 @@
 &nbsp;&nbsp;<span class="keyword">end</span><br>
 <br>
 <span class="keyword">let</span>&nbsp;target&nbsp;?active&nbsp;?dependencies&nbsp;?make&nbsp;?done_when&nbsp;?metadata&nbsp;?product<br>
-&nbsp;&nbsp;&nbsp;&nbsp;?equivalence&nbsp;?if_fails_activate&nbsp;?tags&nbsp;name&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?equivalence&nbsp;?if_fails_activate&nbsp;?success_triggers&nbsp;?tags&nbsp;name&nbsp;=<br>
 &nbsp;&nbsp;user_target_internal<br>
-&nbsp;&nbsp;&nbsp;&nbsp;?equivalence&nbsp;?if_fails_activate&nbsp;?tags<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?equivalence&nbsp;?if_fails_activate&nbsp;?tags&nbsp;?success_triggers<br>
 &nbsp;&nbsp;&nbsp;&nbsp;?active&nbsp;?dependencies&nbsp;~name&nbsp;?make&nbsp;?metadata&nbsp;?done_when&nbsp;?product&nbsp;()<br>
 <br>
 <span class="keyword">let</span>&nbsp;file_target&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;?dependencies&nbsp;?make&nbsp;?metadata&nbsp;?name&nbsp;?host&nbsp;?equivalence&nbsp;?if_fails_activate<br>
-&nbsp;&nbsp;&nbsp;&nbsp;?tags&nbsp;path&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?success_triggers&nbsp;?tags&nbsp;path&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;product&nbsp;=&nbsp;file&nbsp;?host&nbsp;path&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;<span class="constructor">Option</span>.value&nbsp;name&nbsp;~default:(<span class="string">"Make:"</span>&nbsp;^&nbsp;path)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;target&nbsp;~product&nbsp;?equivalence&nbsp;?if_fails_activate&nbsp;?tags<br>
+&nbsp;&nbsp;target&nbsp;~product&nbsp;?equivalence&nbsp;?if_fails_activate&nbsp;?tags&nbsp;?success_triggers<br>
 &nbsp;&nbsp;&nbsp;&nbsp;~done_when:product<span class="keywordsign">#</span>exists&nbsp;?dependencies&nbsp;?make&nbsp;?metadata&nbsp;name<br>
 <br>
 <span class="comment">(*<br>
 &nbsp;&nbsp;Run&nbsp;a&nbsp;workflow:<br>
 <br>
 &nbsp;&nbsp;&nbsp;-&nbsp;make&nbsp;sure&nbsp;the&nbsp;run&nbsp;target&nbsp;is&nbsp;active,<br>
-&nbsp;&nbsp;&nbsp;-&nbsp;render&nbsp;all&nbsp;the&nbsp;depdendencies/fallbacks,<br>
+&nbsp;&nbsp;&nbsp;-&nbsp;render&nbsp;all&nbsp;the&nbsp;depdendencies/fallbacks/success-triggers,<br>
 *)</span><br>
 <span class="keyword">let</span>&nbsp;user_command_list&nbsp;t&nbsp;=<br>
 &nbsp;&nbsp;t<span class="keywordsign">#</span>activate;<br>
@@ -195,6 +199,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;t<span class="keywordsign">#</span>render&nbsp;::&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.concat_map&nbsp;t<span class="keywordsign">#</span>dependencies&nbsp;~f:go_through_deps<br>
 &nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;<span class="constructor">List</span>.concat_map&nbsp;t<span class="keywordsign">#</span>if_fails_activate&nbsp;~f:go_through_deps<br>
+&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;<span class="constructor">List</span>.concat_map&nbsp;t<span class="keywordsign">#</span>success_triggers&nbsp;~f:go_through_deps<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;targets&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;(go_through_deps&nbsp;t)<br>
@@ -251,6 +256,7 @@
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;<span class="constructor">Ketrew_target</span>.<span class="constructor">Condition</span>.t<br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(<span class="keywordsign">&amp;&amp;</span>)&nbsp;a&nbsp;b&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">And</span>&nbsp;[a;&nbsp;b]<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;chain_and&nbsp;l&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">And</span>&nbsp;l<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;never&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">False</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;program&nbsp;?(returns=0)&nbsp;?host&nbsp;p&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">Command_returns</span>&nbsp;(<span class="constructor">Ketrew_target</span>.<span class="constructor">Command</span>.program&nbsp;?host&nbsp;p,&nbsp;returns)<br>

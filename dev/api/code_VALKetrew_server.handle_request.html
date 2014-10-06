@@ -40,9 +40,11 @@
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"/target-call-query"</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;target_call_query_service&nbsp;~server_state&nbsp;~body&nbsp;req<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"/add-targets"</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;add_targets_service&nbsp;&nbsp;~server_state&nbsp;~body&nbsp;req<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"/kill-targets"</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;kill_or_archive_targets_service&nbsp;<span class="keywordsign">`</span><span class="constructor">Kill</span>&nbsp;&nbsp;~server_state&nbsp;~body&nbsp;req<br>
+&nbsp;&nbsp;&nbsp;&nbsp;action_on_ids_service&nbsp;<span class="keywordsign">`</span><span class="constructor">Kill</span>&nbsp;&nbsp;~server_state&nbsp;~body&nbsp;req<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"/archive-targets"</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;kill_or_archive_targets_service&nbsp;<span class="keywordsign">`</span><span class="constructor">Archive</span>&nbsp;&nbsp;~server_state&nbsp;~body&nbsp;req<br>
+&nbsp;&nbsp;&nbsp;&nbsp;action_on_ids_service&nbsp;<span class="keywordsign">`</span><span class="constructor">Archive</span>&nbsp;&nbsp;~server_state&nbsp;~body&nbsp;req<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"/restart-targets"</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;action_on_ids_service&nbsp;<span class="keywordsign">`</span><span class="constructor">Restart</span>&nbsp;&nbsp;~server_state&nbsp;~body&nbsp;req<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"/cleanable-targets"</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;list_cleanable_targets&nbsp;~server_state&nbsp;~body&nbsp;req<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;other&nbsp;<span class="keywordsign">-&gt;</span><br>

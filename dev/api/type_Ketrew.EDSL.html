@@ -62,6 +62,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">sig</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;<span class="constructor">Ketrew_target</span>.<span class="constructor">Condition</span>.t<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;(&nbsp;<span class="keywordsign">&amp;&amp;</span>&nbsp;)&nbsp;:&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;chain_and&nbsp;:&nbsp;t&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;never&nbsp;:&nbsp;t<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;program&nbsp;:&nbsp;?returns:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?host:<span class="constructor">Ketrew_host</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Program</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
@@ -84,6 +85,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;name&nbsp;:&nbsp;string<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;product&nbsp;:&nbsp;user_artifact<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;render&nbsp;:&nbsp;<span class="constructor">Ketrew_target</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;success_triggers&nbsp;:&nbsp;user_target&nbsp;list<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;target&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;?active:bool&nbsp;<span class="keywordsign">-&gt;</span><br>
@@ -94,6 +96,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;?product:user_artifact&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?equivalence:<span class="constructor">Ketrew_target</span>.<span class="constructor">Equivalence</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?if_fails_activate:user_target&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?success_triggers:user_target&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?tags:string&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;user_target<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;file_target&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;?dependencies:user_target&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span><br>
@@ -103,6 +106,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;?host:<span class="constructor">Host</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?equivalence:<span class="constructor">Ketrew_target</span>.<span class="constructor">Equivalence</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?if_fails_activate:user_target&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?success_triggers:user_target&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?tags:string&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;user_target<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;daemonize&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;?starting_timeout:float&nbsp;<span class="keywordsign">-&gt;</span><br>

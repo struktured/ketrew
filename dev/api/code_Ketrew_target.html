@@ -138,13 +138,15 @@
 <br>
 <span class="keyword">let</span>&nbsp;create<br>
 &nbsp;&nbsp;&nbsp;&nbsp;?id&nbsp;?name&nbsp;?(persistance=<span class="keywordsign">`</span><span class="constructor">Input_data</span>)&nbsp;?(metadata=<span class="constructor">Artifact</span>.<span class="constructor">Value</span>.unit)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;?(dependencies=[])&nbsp;?(if_fails_activate=[])&nbsp;?(make=<span class="constructor">Build_process</span>.nop)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?(dependencies=[])&nbsp;?(if_fails_activate=[])&nbsp;?(success_triggers=[])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?(make=<span class="constructor">Build_process</span>.nop)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;?condition&nbsp;?(equivalence=<span class="keywordsign">`</span><span class="constructor">Same_active_condition</span>)&nbsp;?(tags=[])<br>
 &nbsp;&nbsp;&nbsp;&nbsp;()&nbsp;=&nbsp;<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;history&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">Created</span>&nbsp;<span class="constructor">Time</span>.(now&nbsp;())&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;id&nbsp;=&nbsp;<span class="constructor">Option</span>.value&nbsp;id&nbsp;~default:(<span class="constructor">Unique_id</span>.create&nbsp;())&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;{&nbsp;id;&nbsp;name&nbsp;=&nbsp;<span class="constructor">Option</span>.value&nbsp;name&nbsp;~default:id;&nbsp;persistance;&nbsp;metadata;&nbsp;tags;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;dependencies;&nbsp;make;&nbsp;condition;&nbsp;history;&nbsp;equivalence;&nbsp;if_fails_activate&nbsp;}<br>
+&nbsp;&nbsp;{&nbsp;id;&nbsp;name&nbsp;=&nbsp;<span class="constructor">Option</span>.value&nbsp;name&nbsp;~default:id;&nbsp;persistance;&nbsp;metadata;&nbsp;tags;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;log&nbsp;=&nbsp;[];&nbsp;dependencies;&nbsp;make;&nbsp;condition;&nbsp;history;&nbsp;equivalence;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if_fails_activate;&nbsp;success_triggers;&nbsp;}<br>
 <br>
 <span class="keyword">let</span>&nbsp;is_equivalent&nbsp;t&nbsp;ext&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;t.equivalence&nbsp;<span class="keyword">with</span><br>
@@ -208,10 +210,12 @@
 <br>
 <span class="keyword">let</span>&nbsp;active&nbsp;?id<br>
 &nbsp;&nbsp;&nbsp;&nbsp;?name&nbsp;?persistance&nbsp;?metadata<br>
-&nbsp;&nbsp;&nbsp;&nbsp;?dependencies&nbsp;?if_fails_activate&nbsp;?make&nbsp;?condition&nbsp;?equivalence&nbsp;?tags<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?dependencies&nbsp;?if_fails_activate&nbsp;?success_triggers&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?make&nbsp;?condition&nbsp;?equivalence&nbsp;?tags<br>
 &nbsp;&nbsp;&nbsp;&nbsp;()&nbsp;=&nbsp;<br>
 &nbsp;&nbsp;activate_exn&nbsp;~by:<span class="keywordsign">`</span><span class="constructor">User</span>&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;(create&nbsp;?id&nbsp;?if_fails_activate&nbsp;?name&nbsp;?persistance&nbsp;?metadata&nbsp;?condition&nbsp;?tags<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(create&nbsp;?id&nbsp;?if_fails_activate&nbsp;?success_triggers&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?name&nbsp;?persistance&nbsp;?metadata&nbsp;?condition&nbsp;?tags<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?equivalence&nbsp;?dependencies&nbsp;?make&nbsp;())<br>
 <br>
 <span class="keyword">let</span>&nbsp;reactivate&nbsp;<br>
@@ -320,6 +324,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Activated</span>&nbsp;(_,&nbsp;_,&nbsp;<span class="keywordsign">`</span><span class="constructor">User</span>)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">true</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Activated</span>&nbsp;(_,&nbsp;_,&nbsp;<span class="keywordsign">`</span><span class="constructor">Dependency</span>)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">false</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Activated</span>&nbsp;(_,&nbsp;_,&nbsp;<span class="keywordsign">`</span><span class="constructor">Fallback</span>)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">false</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Activated</span>&nbsp;(_,&nbsp;_,&nbsp;<span class="keywordsign">`</span><span class="constructor">Success_trigger</span>)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">false</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Running</span>&nbsp;(_,&nbsp;prev)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;go_through_history&nbsp;(prev&nbsp;:&gt;&nbsp;<span class="constructor">Workflow_state</span>.t)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Successful</span>&nbsp;(_,&nbsp;prev,&nbsp;_)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;go_through_history&nbsp;(prev&nbsp;:&gt;&nbsp;<span class="constructor">Workflow_state</span>.t)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Dead</span>&nbsp;(_,&nbsp;prev,&nbsp;_)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;go_through_history&nbsp;(prev&nbsp;:&gt;&nbsp;<span class="constructor">Workflow_state</span>.t)<br>

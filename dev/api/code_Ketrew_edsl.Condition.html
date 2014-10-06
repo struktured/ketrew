@@ -36,6 +36,7 @@
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;<span class="constructor">Ketrew_target</span>.<span class="constructor">Condition</span>.t<br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(<span class="keywordsign">&amp;&amp;</span>)&nbsp;a&nbsp;b&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">And</span>&nbsp;[a;&nbsp;b]<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;chain_and&nbsp;l&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">And</span>&nbsp;l<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;never&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">False</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;program&nbsp;?(returns=0)&nbsp;?host&nbsp;p&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">Command_returns</span>&nbsp;(<span class="constructor">Ketrew_target</span>.<span class="constructor">Command</span>.program&nbsp;?host&nbsp;p,&nbsp;returns)<br>

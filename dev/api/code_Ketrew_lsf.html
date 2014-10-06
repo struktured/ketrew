@@ -79,7 +79,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">Created</span>&nbsp;{host;&nbsp;program;&nbsp;queue;&nbsp;name;&nbsp;wall_limit;&nbsp;processors}<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&gt;&nbsp;serialize)<br>
 <br>
-<span class="keyword">let</span>&nbsp;log&nbsp;=&nbsp;<br>
+<span class="keyword">let</span>&nbsp;log&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">open</span>&nbsp;<span class="constructor">Log</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">function</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Created</span>&nbsp;c&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[<br>
@@ -103,7 +103,7 @@
 &nbsp;&nbsp;<span class="constructor">Path</span>.(concat&nbsp;playground&nbsp;(relative_file_exn&nbsp;<span class="string">"monitored_script"</span>))<br>
 <br>
 <span class="keyword">let</span>&nbsp;parse_bsub_output&nbsp;s&nbsp;=<br>
-&nbsp;&nbsp;<span class="comment">(*&nbsp;Output&nbsp;looks&nbsp;like&nbsp;<br>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;Output&nbsp;looks&nbsp;like<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Job&nbsp;&lt;1386656&gt;&nbsp;is&nbsp;submitted&nbsp;to&nbsp;queue&nbsp;&lt;queuename&gt;.<br>
 &nbsp;&nbsp;According&nbsp;to<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;http://www.vub.ac.be/BFUCC/LSF/bsub.1.html<br>
@@ -135,7 +135,7 @@
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Created</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fail&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"not&nbsp;running"</span>)<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Running</span>&nbsp;rp&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">match</span>&nbsp;item&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"log"</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"log"</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;log_file&nbsp;=&nbsp;<span class="constructor">Ketrew_monitored_script</span>.log_file&nbsp;rp.script&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Host</span>.grab_file_or_log&nbsp;rp.created.host&nbsp;log_file<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"stdout"</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
@@ -164,7 +164,7 @@
 <span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Created</span>&nbsp;created&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Host</span>.get_fresh_playground&nbsp;created.host&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;fail_fatal&nbsp;(fmt&nbsp;&nbsp;<span class="string">"Host&nbsp;%s:&nbsp;Missing&nbsp;playground"</span>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;fail_fatal&nbsp;(fmt&nbsp;&nbsp;<span class="string">"Host&nbsp;%s:&nbsp;Missing&nbsp;playground"</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Host</span>.to_string_hum&nbsp;created.host))<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;playground&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;script&nbsp;=&nbsp;<span class="constructor">Ketrew_monitored_script</span>.create&nbsp;~playground&nbsp;created.program&nbsp;<span class="keyword">in</span><br>
@@ -214,24 +214,30 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ssh</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Unix</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fail&nbsp;(<span class="keywordsign">`</span><span class="constructor">Recoverable</span>&nbsp;(<span class="constructor">Error</span>.to_string&nbsp;e))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Execution</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fail_fatal&nbsp;(<span class="constructor">Error</span>.to_string&nbsp;e)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">IO</span>&nbsp;_&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">System</span>&nbsp;_&nbsp;<span class="keyword">as</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">IO</span>&nbsp;_&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">System</span>&nbsp;_&nbsp;<span class="keyword">as</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fail_fatal&nbsp;(<span class="constructor">Error</span>.to_string&nbsp;e)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
 &nbsp;&nbsp;<span class="keyword">end</span><br>
 <br>
 <span class="keyword">let</span>&nbsp;get_lsf_job_status&nbsp;host&nbsp;lsf_id&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;cmd&nbsp;=&nbsp;fmt&nbsp;<span class="string">"bjobs&nbsp;-o&nbsp;'jobid&nbsp;stat&nbsp;delimiter=\"@\"'&nbsp;-noheader&nbsp;%d"</span>&nbsp;lsf_id&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;cmd&nbsp;=&nbsp;fmt&nbsp;<span class="string">"bjobs&nbsp;-l&nbsp;%d"</span>&nbsp;lsf_id&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">Host</span>.get_shell_command_output&nbsp;host&nbsp;cmd<br>
 &nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;(stdout,&nbsp;stderr)&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Cmd:&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;cmd&nbsp;%n&nbsp;%&nbsp;s&nbsp;<span class="string">"Out:&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;stdout&nbsp;%n<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;s&nbsp;<span class="string">"Err:&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;stderr&nbsp;@&nbsp;verbose);<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;status&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">String</span>.split&nbsp;stdout&nbsp;~on:(<span class="keywordsign">`</span><span class="constructor">Character</span>&nbsp;<span class="string">'@'</span>)&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[jobid;&nbsp;status_string]&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(<span class="keyword">if</span>&nbsp;<span class="constructor">Int</span>.of_string&nbsp;jobid&nbsp;&lt;&gt;&nbsp;<span class="constructor">Some</span>&nbsp;lsf_id&nbsp;&nbsp;<span class="keyword">then</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;<span class="string">"Job&nbsp;ID&nbsp;different&nbsp;from&nbsp;the&nbsp;one&nbsp;expected:&nbsp;"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;sf&nbsp;<span class="string">"%S"</span>&nbsp;jobid&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;≠&nbsp;"</span>&nbsp;%&nbsp;i&nbsp;lsf_id&nbsp;@&nbsp;warning);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">String</span>.strip&nbsp;status_string&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;sanitized&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">String</span>.split&nbsp;~on:(<span class="keywordsign">`</span><span class="constructor">Character</span>&nbsp;<span class="string">'\n'</span>)&nbsp;stdout<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&gt;&nbsp;<span class="constructor">List</span>.map&nbsp;~f:(<span class="constructor">String</span>.strip&nbsp;~on:<span class="keywordsign">`</span><span class="constructor">Left</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&gt;&nbsp;<span class="constructor">String</span>.concat&nbsp;~sep:<span class="string">""</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;re&nbsp;=&nbsp;<span class="constructor">Re_posix</span>.compile_pat&nbsp;<span class="string">"Status&nbsp;&lt;([A-Z]+)&gt;"</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;subs&nbsp;=&nbsp;<span class="constructor">Re</span>.(exec&nbsp;re&nbsp;sanitized&nbsp;|&gt;&nbsp;get_all)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;<span class="constructor">Some</span>&nbsp;(<span class="constructor">Array</span>.get&nbsp;subs&nbsp;1)&nbsp;<span class="keyword">with</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ketrew_status&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;status&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">match</span>&nbsp;s&nbsp;<span class="keyword">with</span>&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"PEND"</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"UNKWN"</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"RUN"</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Running</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"DONE"</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Done</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"USUSP"</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"PSUSP"</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"SSUSP"</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"EXIT"</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"ZOMBI"</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Failed</span><br>
@@ -240,12 +246,11 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;error);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">Failed</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;other&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"LSF:&nbsp;cannot&nbsp;parse&nbsp;status:&nbsp;"</span>&nbsp;%&nbsp;<span class="constructor">OCaml</span>.list&nbsp;(sf&nbsp;<span class="string">"%S"</span>)&nbsp;other<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;error);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"LSF:&nbsp;cannot&nbsp;parse&nbsp;status:&nbsp;"</span>&nbsp;%&nbsp;quote&nbsp;stdout&nbsp;@&nbsp;error);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">Failed</span><br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;return&nbsp;status<br>
+&nbsp;&nbsp;return&nbsp;ketrew_status<br>
 <br>
 <span class="keyword">let</span>&nbsp;update&nbsp;=&nbsp;<span class="keyword">function</span><br>
 <span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Created</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fail_fatal&nbsp;<span class="string">"not&nbsp;running"</span><br>
@@ -291,7 +296,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">IO</span>&nbsp;_&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">System</span>&nbsp;_&nbsp;<span class="keyword">as</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fail_fatal&nbsp;(<span class="constructor">Error</span>.to_string&nbsp;e)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
 &nbsp;&nbsp;<span class="keyword">end</span><br>
-&nbsp;&nbsp;<br>
+<br>
 <span class="keyword">let</span>&nbsp;kill&nbsp;run_parameters&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">begin</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;run_parameters&nbsp;<span class="keyword">with</span><br>

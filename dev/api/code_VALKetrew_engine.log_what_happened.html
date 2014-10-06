@@ -34,11 +34,13 @@
 <code class="code"><span class="keyword">let</span>&nbsp;log_what_happened&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">open</span>&nbsp;<span class="constructor">Log</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"Error&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;e<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Target_activated</span>&nbsp;(id,&nbsp;by)&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;<span class="string">"Target&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;id&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;activated:&nbsp;"</span>&nbsp;%<br>
 &nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">match</span>&nbsp;by&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Dependency</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"Dependency"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Fallback</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"Fallback"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Fallback</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"Fallback"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Success_trigger</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"Success-trigger"</span>)<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Target_succeeded</span>&nbsp;(id,&nbsp;how)&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;<span class="string">"Target&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;id&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;succeeded:&nbsp;"</span>&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;(<span class="keyword">match</span>&nbsp;how&nbsp;<span class="keyword">with</span><br>
@@ -49,6 +51,8 @@
 &nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;<span class="string">"Target&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;id&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;started&nbsp;"</span>&nbsp;%&nbsp;parens&nbsp;(s&nbsp;plugin_name)<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Target_archived</span>&nbsp;id&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;<span class="string">"Target&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;id&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;was&nbsp;archived&nbsp;"</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Target_created</span>&nbsp;id&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;<span class="string">"Target&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;id&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;was&nbsp;created&nbsp;"</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Target_died</span>&nbsp;(id,&nbsp;how)&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;<span class="string">"Target&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;id&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;died:&nbsp;"</span>&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;(<span class="keyword">match</span>&nbsp;how&nbsp;<span class="keyword">with</span><br>

@@ -158,6 +158,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;what&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Kill_targets</span>&nbsp;i&nbsp;<span class="keyword">as</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;i,&nbsp;e,&nbsp;<span class="string">"/kill-targets"</span>&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Archive_targets</span>&nbsp;i&nbsp;<span class="keyword">as</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;i,&nbsp;e,&nbsp;<span class="string">"/archive-targets"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Restart_targets</span>&nbsp;i&nbsp;<span class="keyword">as</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;i,&nbsp;e,&nbsp;<span class="string">"/restart-targets"</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;json&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">List</span>&nbsp;(<span class="constructor">List</span>.map&nbsp;ids&nbsp;(<span class="keyword">fun</span>&nbsp;id&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">String</span>&nbsp;id))&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;call_json&nbsp;t&nbsp;~path&nbsp;~meta_meth:(<span class="keywordsign">`</span><span class="constructor">Post_json</span>&nbsp;json)<br>
@@ -170,6 +171,7 @@
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;kill&nbsp;t&nbsp;id_list&nbsp;=&nbsp;kill_or_archive&nbsp;t&nbsp;(<span class="keywordsign">`</span><span class="constructor">Kill_targets</span>&nbsp;id_list)<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;archive&nbsp;t&nbsp;id_list&nbsp;=&nbsp;kill_or_archive&nbsp;t&nbsp;(<span class="keywordsign">`</span><span class="constructor">Archive_targets</span>&nbsp;id_list)<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;restart&nbsp;t&nbsp;id_list&nbsp;=&nbsp;kill_or_archive&nbsp;t&nbsp;(<span class="keywordsign">`</span><span class="constructor">Restart_targets</span>&nbsp;id_list)<br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;call_query&nbsp;t&nbsp;~target&nbsp;query&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;id&nbsp;=&nbsp;<span class="constructor">Ketrew_target</span>.id&nbsp;target&nbsp;<span class="keyword">in</span><br>
@@ -340,13 +342,14 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Client</span>&nbsp;e)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fail&nbsp;(<span class="constructor">Ketrew_error</span>.log_client_error&nbsp;e)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
 <br>
-<span class="keyword">let</span>&nbsp;restart_target&nbsp;t&nbsp;~target&nbsp;=<br>
+<span class="keyword">let</span>&nbsp;restart_target&nbsp;t&nbsp;ids&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;t&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Standalone</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">open</span>&nbsp;<span class="constructor">Standalone</span>&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_engine</span>.restart_target&nbsp;s.engine&nbsp;target<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Deferred_list</span>.while_sequential&nbsp;ids&nbsp;(<span class="constructor">Ketrew_engine</span>.restart_target&nbsp;s.engine)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;|&nbsp;<span class="constructor">List</span>.concat<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Http_client</span>&nbsp;c&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;fail&nbsp;(<span class="keywordsign">`</span><span class="constructor">Failure</span>&nbsp;<span class="string">"restart_target&nbsp;not&nbsp;implemented"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Http_client</span>.restart&nbsp;c&nbsp;ids<br>
 <br>
 <span class="keyword">let</span>&nbsp;get_local_engine&nbsp;=&nbsp;<span class="keyword">function</span><br>
 <span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Standalone</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(<span class="constructor">Some</span>&nbsp;s.<span class="constructor">Standalone</span>.engine)<br>

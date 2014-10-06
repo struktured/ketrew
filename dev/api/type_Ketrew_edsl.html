@@ -69,6 +69,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;(&nbsp;<span class="keywordsign">&amp;&amp;</span>&nbsp;)&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_edsl</span>.<span class="constructor">Condition</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_edsl</span>.<span class="constructor">Condition</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_edsl</span>.<span class="constructor">Condition</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;chain_and&nbsp;:&nbsp;<span class="constructor">Ketrew_edsl</span>.<span class="constructor">Condition</span>.t&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_edsl</span>.<span class="constructor">Condition</span>.t<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;never&nbsp;:&nbsp;<span class="constructor">Ketrew_edsl</span>.<span class="constructor">Condition</span>.t<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;program&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?returns:int&nbsp;<span class="keywordsign">-&gt;</span><br>
@@ -94,6 +95,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;name&nbsp;:&nbsp;string<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;product&nbsp;:&nbsp;<span class="constructor">Ketrew_edsl</span>.user_artifact<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;render&nbsp;:&nbsp;<span class="constructor">Ketrew_target</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;success_triggers&nbsp;:&nbsp;<span class="constructor">Ketrew_edsl</span>.user_target&nbsp;list<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;target&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;?active:bool&nbsp;<span class="keywordsign">-&gt;</span><br>
@@ -104,6 +106,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;?product:<span class="constructor">Ketrew_edsl</span>.user_artifact&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?equivalence:<span class="constructor">Ketrew_target</span>.<span class="constructor">Equivalence</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?if_fails_activate:<span class="constructor">Ketrew_edsl</span>.user_target&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?success_triggers:<span class="constructor">Ketrew_edsl</span>.user_target&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?tags:string&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_edsl</span>.user_target<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;file_target&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;?dependencies:<span class="constructor">Ketrew_edsl</span>.user_target&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span><br>
@@ -113,6 +116,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;?host:<span class="constructor">Ketrew_edsl</span>.<span class="constructor">Host</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?equivalence:<span class="constructor">Ketrew_target</span>.<span class="constructor">Equivalence</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?if_fails_activate:<span class="constructor">Ketrew_edsl</span>.user_target&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?success_triggers:<span class="constructor">Ketrew_edsl</span>.user_target&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?tags:string&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_edsl</span>.user_target<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;daemonize&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;?starting_timeout:float&nbsp;<span class="keywordsign">-&gt;</span><br>

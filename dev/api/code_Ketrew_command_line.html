@@ -131,6 +131,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Input_data</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"Input-data"</span>);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"Dependencies"</span>,&nbsp;<span class="constructor">OCaml</span>.list&nbsp;s&nbsp;t.dependencies;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"Fallbacks"</span>,&nbsp;<span class="constructor">OCaml</span>.list&nbsp;s&nbsp;t.if_fails_activate;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"On&nbsp;Success&nbsp;trigger"</span>,&nbsp;<span class="constructor">OCaml</span>.list&nbsp;s&nbsp;t.success_triggers;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"Metadata"</span>,&nbsp;<span class="constructor">Artifact</span>.<span class="constructor">Value</span>.log&nbsp;t.metadata;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"Build-process"</span>,<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;build_process&nbsp;&nbsp;?with_details:build_process_details&nbsp;t.make;<br>
@@ -147,6 +148,9 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Created</span>&nbsp;_&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"Created"</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Running</span>&nbsp;(rb,&nbsp;_)&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;<span class="string">"Running&nbsp;"</span>&nbsp;%&nbsp;parens&nbsp;(s&nbsp;rb.plugin_name));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"Additional&nbsp;Log"</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">OCaml</span>.list&nbsp;(<span class="keyword">fun</span>&nbsp;(time,&nbsp;msg)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;brakets&nbsp;(<span class="constructor">Time</span>.log&nbsp;time)&nbsp;%&nbsp;s&nbsp;<span class="string">":&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;msg)&nbsp;t.log;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;]<br>
 <span class="keyword">end</span><br>
 <br>
@@ -741,20 +745,19 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;boolean_item&nbsp;~value:es.condition_details&nbsp;~char:<span class="string">'c'</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~to_false:(<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Hide&nbsp;condition&nbsp;details"</span>),&nbsp;<span class="keywordsign">`</span><span class="constructor">Show_condition</span>&nbsp;<span class="keyword">false</span>)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~to_true:(<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Show&nbsp;condition&nbsp;details"</span>),&nbsp;<span class="keywordsign">`</span><span class="constructor">Show_condition</span>&nbsp;<span class="keyword">true</span>)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;menu_item_of_id_list&nbsp;~char&nbsp;~log&nbsp;~result&nbsp;ids&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;ids&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;some&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[menu_item&nbsp;~char&nbsp;~log&nbsp;result]&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;follow_deps_item&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;target.<span class="constructor">Target</span>.dependencies&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;some&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[menu_item&nbsp;~char:<span class="string">'d'</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~log:<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Follow&nbsp;a&nbsp;dependency"</span>)&nbsp;<span class="keywordsign">`</span><span class="constructor">Follow_dependencies</span>]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;menu_item_of_id_list&nbsp;~char:<span class="string">'d'</span>&nbsp;~log:<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Follow&nbsp;a&nbsp;dependency"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~result:<span class="keywordsign">`</span><span class="constructor">Follow_dependencies</span>&nbsp;target.<span class="constructor">Target</span>.dependencies&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;follow_fbacks_item&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;target.<span class="constructor">Target</span>.if_fails_activate&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;some&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[menu_item&nbsp;~char:<span class="string">'f'</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~log:<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Follow&nbsp;a&nbsp;fallback"</span>)&nbsp;<span class="keywordsign">`</span><span class="constructor">Follow_fallbacks</span>]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;menu_item_of_id_list&nbsp;~char:<span class="string">'f'</span>&nbsp;~log:<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Follow&nbsp;a&nbsp;fallback"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~result:<span class="keywordsign">`</span><span class="constructor">Follow_fallbacks</span>&nbsp;target.<span class="constructor">Target</span>.if_fails_activate&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;follow_success_triggers_item&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;menu_item_of_id_list&nbsp;~char:<span class="string">'t'</span>&nbsp;~log:<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Follow&nbsp;a&nbsp;success-trigger"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~result:<span class="keywordsign">`</span><span class="constructor">Follow_success_triggers</span>&nbsp;target.<span class="constructor">Target</span>.success_triggers&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;restart_item&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;<span class="constructor">Target</span>.<span class="constructor">Is</span>.finished&nbsp;target<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">then</span>&nbsp;[menu_item&nbsp;~char:<span class="string">'r'</span>&nbsp;~log:<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Restart&nbsp;(clone&nbsp;&amp;&nbsp;activate)"</span>)<br>
@@ -766,6 +769,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;condition_details_item<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;follow_deps_item<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;follow_fbacks_item<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;follow_success_triggers_item<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;kill_item<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;archive_item<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;restart_item<br>
@@ -790,6 +794,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">match</span>&nbsp;why&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">User</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"user"</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Dependency</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"dependency"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Success_trigger</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"success-trigger"</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Fallback</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"fallback"</span>)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Running</span>&nbsp;({<span class="constructor">Target</span>.plugin_name;&nbsp;run_parameters;&nbsp;run_history},&nbsp;act)&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log_of_status&nbsp;(act&nbsp;:&gt;&nbsp;<span class="constructor">Target</span>.workflow_state)&nbsp;%&nbsp;n<br>
@@ -938,22 +943,23 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;warning);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;explore&nbsp;~client&nbsp;(one&nbsp;::&nbsp;history)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Restart</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_client</span>.restart_target&nbsp;client&nbsp;~target:chosen<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;(this_target,&nbsp;new_upper_dag)&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"New&nbsp;Targets:"</span>&nbsp;%&nbsp;n<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;indent&nbsp;(<span class="constructor">Interaction</span>.format_target_for_menu&nbsp;this_target)&nbsp;%&nbsp;n<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;s&nbsp;<span class="string">"and&nbsp;its&nbsp;reverse&nbsp;dependencies:"</span>&nbsp;%&nbsp;n<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;indent&nbsp;(separate&nbsp;n&nbsp;(<span class="constructor">List</span>.map&nbsp;new_upper_dag<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~f:<span class="constructor">Interaction</span>.format_target_for_menu))<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;normal);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_client</span>.restart_target&nbsp;client&nbsp;[<span class="constructor">Ketrew_target</span>.id&nbsp;chosen]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;what_happened&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Restart&nbsp;of&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;(<span class="constructor">Target</span>.name&nbsp;chosen)&nbsp;%&nbsp;n<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;(separate&nbsp;n<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">List</span>.map&nbsp;~f:<span class="constructor">Ketrew_engine</span>.log_what_happened&nbsp;what_happened)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&gt;&nbsp;indent)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;warning);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;explore&nbsp;~client&nbsp;(one&nbsp;::&nbsp;history)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">View_json</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;view_json&nbsp;~client&nbsp;chosen&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;explore&nbsp;~client&nbsp;(one&nbsp;::&nbsp;history)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Follow_dependencies</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Follow_fallbacks</span>&nbsp;<span class="keyword">as</span>&nbsp;follow&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Follow_dependencies</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Follow_fallbacks</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Follow_success_triggers</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">as</span>&nbsp;follow&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;target_ids&nbsp;t&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;follow&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Follow_fallbacks</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t.<span class="constructor">Target</span>.if_fails_activate<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Follow_success_triggers</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t.<span class="constructor">Target</span>.success_triggers<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Follow_dependencies</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t.<span class="constructor">Target</span>.dependencies&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;next_target&nbsp;ids&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;pick_a_target_from_list&nbsp;~client&nbsp;ids<br>
@@ -1087,12 +1093,13 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">P</span>&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"See&nbsp;$(b,$(mname)&nbsp;%s&nbsp;--help)&nbsp;for&nbsp;details."</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;orig);<br>
 &nbsp;&nbsp;]&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;(term,&nbsp;<span class="constructor">Term</span>.info&nbsp;name&nbsp;~docs:<span class="string">"COMMAND&nbsp;ALIASES"</span>&nbsp;~doc&nbsp;~man)<br>
+&nbsp;&nbsp;(term,&nbsp;<span class="constructor">Term</span>.info&nbsp;name&nbsp;~docs:<span class="string">"SOME&nbsp;COMMAND&nbsp;ALIASES"</span>&nbsp;~doc&nbsp;~man)<br>
 <br>
 </code><table><tr><td></td><td><span class="comment">(** The configuration of the command line, using the <code class="code"><span class="constructor">Cmdliner</span></code> library. *)</span></td></tr></table><code class="code"><br>
 <span class="keyword">let</span>&nbsp;cmdliner_main&nbsp;?override_configuration&nbsp;?argv&nbsp;?(additional_commands=[])&nbsp;()&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">open</span>&nbsp;<span class="constructor">Cmdliner</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;version&nbsp;=&nbsp;<span class="constructor">Ketrew_metadata</span>.version&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;common_options_section&nbsp;=&nbsp;<span class="string">"COMMON&nbsp;OPTIONS"</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;sub_command&nbsp;~info&nbsp;~term&nbsp;=&nbsp;(term,&nbsp;info)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;config_file_argument&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;default&nbsp;=<br>
@@ -1102,7 +1109,8 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;docv&nbsp;=&nbsp;<span class="string">"FILE"</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;doc&nbsp;=&nbsp;<span class="string">"Use&nbsp;$(docv)&nbsp;as&nbsp;configuration&nbsp;file&nbsp;(can&nbsp;be&nbsp;overriden&nbsp;also&nbsp;with&nbsp;`$KETREW_CONFIGURATION`)."</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Arg</span>.(value&nbsp;<span class="keywordsign">&amp;</span>&nbsp;opt&nbsp;string&nbsp;default<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">&amp;</span>&nbsp;info&nbsp;[<span class="string">"C"</span>;&nbsp;<span class="string">"configuration-file"</span>]&nbsp;~docv&nbsp;~doc)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">&amp;</span>&nbsp;info&nbsp;[<span class="string">"C"</span>;&nbsp;<span class="string">"configuration-file"</span>]&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~docs:common_options_section&nbsp;~docv&nbsp;~doc)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;init_cmd&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;sub_command<br>
@@ -1173,8 +1181,8 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~info:(<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;man&nbsp;=&nbsp;[<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">S</span>&nbsp;<span class="string">"The&nbsp;HOW&nbsp;argument"</span>;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">P</span>&nbsp;<span class="string">"The&nbsp;following&nbsp;“run”&nbsp;methods&nbsp;are&nbsp;available:"</span>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">S</span>&nbsp;<span class="string">"THE&nbsp;HOW&nbsp;ARGUMENT"</span>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">P</span>&nbsp;<span class="string">"The&nbsp;following&nbsp;$(i,“run”)&nbsp;methods&nbsp;are&nbsp;available:"</span>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">I</span>&nbsp;(<span class="string">"`step`"</span>,&nbsp;<span class="string">"run&nbsp;one&nbsp;single&nbsp;step"</span>);&nbsp;<span class="keywordsign">`</span><span class="constructor">Noblank</span>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">I</span>&nbsp;(<span class="string">"`fix`"</span>,&nbsp;<span class="string">"run&nbsp;&nbsp;steps&nbsp;until&nbsp;nothing&nbsp;new&nbsp;happens"</span>);&nbsp;<span class="keywordsign">`</span><span class="constructor">Noblank</span>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">I</span>&nbsp;(<span class="string">"`loop`"</span>,&nbsp;<span class="string">"loop&nbsp;`fix`&nbsp;until&nbsp;pressing&nbsp;'q'&nbsp;(there&nbsp;is&nbsp;a&nbsp;timed-wait&nbsp;starting&nbsp;at&nbsp;2&nbsp;seconds&nbsp;until&nbsp;`--max-sleep`)"</span>)<br>
@@ -1327,7 +1335,13 @@
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;default_cmd&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;doc&nbsp;=&nbsp;<span class="string">"A&nbsp;Workflow&nbsp;Engine&nbsp;for&nbsp;Complex&nbsp;Experimental&nbsp;Workflows"</span>&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;man&nbsp;=&nbsp;[]&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;man&nbsp;=&nbsp;[<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">S</span>&nbsp;<span class="string">"AUTHORS"</span>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">P</span>&nbsp;<span class="string">"Sebastien&nbsp;Mondet&nbsp;&lt;seb@mondet.org&gt;"</span>;&nbsp;<span class="keywordsign">`</span><span class="constructor">Noblank</span>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">S</span>&nbsp;<span class="string">"BUGS"</span>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">P</span>&nbsp;<span class="string">"Browse&nbsp;and&nbsp;report&nbsp;new&nbsp;issues&nbsp;at"</span>;&nbsp;<span class="keywordsign">`</span><span class="constructor">Noblank</span>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">P</span>&nbsp;<span class="string">"&lt;https://github.com/hammerlab/ketrew&gt;."</span>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;]&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;sub_command<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~term:<span class="constructor">Term</span>.(ret&nbsp;(pure&nbsp;(<span class="keywordsign">`</span><span class="constructor">Help</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Plain</span>,&nbsp;<span class="constructor">None</span>))))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~info:(<span class="constructor">Term</span>.info&nbsp;<span class="string">"ketrew"</span>&nbsp;~version&nbsp;~doc&nbsp;~man)&nbsp;<span class="keyword">in</span><br>

@@ -65,6 +65,8 @@ Process a transaction, which can be <code class="code"><span class="keywordsign"
     if one of the checks in the <code class="code">action</code> failed.
 </div>
 </td></tr>
+<tr><td><a href="Ketrew_server.html#VALaction_on_ids_service">action_on_ids_service</a> [<a href="Ketrew_server.html">Ketrew_server</a>]</td>
+<td></td></tr>
 <tr><td><a href="Ketrew_target.html#VALactivate_exn">activate_exn</a> [<a href="Ketrew_target.html">Ketrew_target</a>]</td>
 <td><div class="info">
 Get an activated target out of a “submitted” one, 
@@ -155,6 +157,8 @@ Call a query on a target.
 Chain a list of programs like with <code class="code"><span class="keywordsign">&amp;&amp;</span></code>.
 </div>
 </td></tr>
+<tr><td><a href="Ketrew_edsl.Condition.html#VALchain_and">chain_and</a> [<a href="Ketrew_edsl.Condition.html">Ketrew_edsl.Condition</a>]</td>
+<td></td></tr>
 <tr><td><a href="Ketrew_server.html#VALcheck_that_it_is_a_get">check_that_it_is_a_get</a> [<a href="Ketrew_server.html">Ketrew_server</a>]</td>
 <td><div class="info">
 Fail if the request is not a <code class="code"><span class="keywordsign">`</span><span class="constructor">GET</span></code>.
@@ -290,6 +294,11 @@ Tell whether the server should detach.
 Create a “daemonize” build process.
 </div>
 </td></tr>
+<tr><td><a href="Ketrew_engine.html#VALdatabase">database</a> [<a href="Ketrew_engine.html">Ketrew_engine</a>]</td>
+<td><div class="info">
+Get the database handle managed by the engine.
+</div>
+</td></tr>
 <tr><td><a href="Ketrew_configuration.html#VALdatabase_parameters">database_parameters</a> [<a href="Ketrew_configuration.html">Ketrew_configuration</a>]</td>
 <td><div class="info">
 Get the database parameters.
@@ -371,6 +380,8 @@ Check existence of a list of files/directories.
 </div>
 </td></tr>
 <tr><td align="left"><br>E</td></tr>
+<tr><td><a href="Ketrew_engine.Measure.html#VALend_of_request">end_of_request</a> [<a href="Ketrew_engine.Measure.html">Ketrew_engine.Measure</a>]</td>
+<td></td></tr>
 <tr><td><a href="Ketrew_configuration.html#VALengine">engine</a> [<a href="Ketrew_configuration.html">Ketrew_configuration</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ketrew_server.Authentication.html#VALensure_can">ensure_can</a> [<a href="Ketrew_server.Authentication.html">Ketrew_server.Authentication</a>]</td>
@@ -444,6 +455,8 @@ Create a file <a href="Ketrew_edsl.user_artifact-c.html"><code class="code"><spa
 Run <a href="Ketrew_engine.html#VALstep"><code class="code"><span class="constructor">Ketrew_engine</span>.step</code></a> many times until nothing happens or nothing “new” happens.
 </div>
 </td></tr>
+<tr><td><a href="Ketrew_engine.Measurements.html#VALflush">flush</a> [<a href="Ketrew_engine.Measurements.html">Ketrew_engine.Measurements</a>]</td>
+<td></td></tr>
 <tr><td><a href="Ketrew_pervasives.html#VALfmt">fmt</a> [<a href="Ketrew_pervasives.html">Ketrew_pervasives</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ketrew_server.html#VALformat_parameter">format_parameter</a> [<a href="Ketrew_server.html">Ketrew_server</a>]</td>
@@ -566,6 +579,8 @@ Get a target's id.
 </td></tr>
 <tr><td><a href="Ketrew_pervasives.Log.html#VALif_color">if_color</a> [<a href="Ketrew_pervasives.Log.html">Ketrew_pervasives.Log</a>]</td>
 <td></td></tr>
+<tr><td><a href="Ketrew_engine.Measure.html#VALincomming_request">incomming_request</a> [<a href="Ketrew_engine.Measure.html">Ketrew_engine.Measure</a>]</td>
+<td></td></tr>
 <tr><td><a href="Ketrew_pervasives.html#VALinvalid_argument_exn">invalid_argument_exn</a> [<a href="Ketrew_pervasives.html">Ketrew_pervasives</a>]</td>
 <td><div class="info">
 Function that have a documented, easy to check contract, can raise
@@ -616,8 +631,6 @@ Get dead target out of an activated  or running one,
 </div>
 </td></tr>
 <tr><td><a href="Ketrew_client.Http_client.html#VALkill_or_archive">kill_or_archive</a> [<a href="Ketrew_client.Http_client.html">Ketrew_client.Http_client</a>]</td>
-<td></td></tr>
-<tr><td><a href="Ketrew_server.html#VALkill_or_archive_targets_service">kill_or_archive_targets_service</a> [<a href="Ketrew_server.html">Ketrew_server</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ketrew_target.Is.html#VALkillable">killable</a> [<a href="Ketrew_target.Is.html">Ketrew_target.Is</a>]</td>
 <td></td></tr>
@@ -895,6 +908,8 @@ Create a relative to a file, raises <code class="code"><span class="constructor"
 <td></td></tr>
 <tr><td><a href="Ketrew_server.html#VALreload_authorized_tokens">reload_authorized_tokens</a> [<a href="Ketrew_server.html">Ketrew_server</a>]</td>
 <td></td></tr>
+<tr><td><a href="Ketrew_client.Http_client.html#VALrestart">restart</a> [<a href="Ketrew_client.Http_client.html">Ketrew_client.Http_client</a>]</td>
+<td></td></tr>
 <tr><td><a href="Ketrew_client.html#VALrestart_target">restart_target</a> [<a href="Ketrew_client.html">Ketrew_client</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ketrew_engine.html#VALrestart_target">restart_target</a> [<a href="Ketrew_engine.html">Ketrew_engine</a>]</td>
@@ -1070,6 +1085,8 @@ Do like <a href="Ketrew_unix_process.html#VALexec"><code class="code"><span clas
 <tr><td><a href="Ketrew_target.Is.html#VALsuccessful">successful</a> [<a href="Ketrew_target.Is.html">Ketrew_target.Is</a>]</td>
 <td></td></tr>
 <tr><td align="left"><br>T</td></tr>
+<tr><td><a href="Ketrew_engine.Measure.html#VALtag">tag</a> [<a href="Ketrew_engine.Measure.html">Ketrew_engine.Measure</a>]</td>
+<td></td></tr>
 <tr><td><a href="Ketrew_edsl.html#VALtarget">target</a> [<a href="Ketrew_edsl.html">Ketrew_edsl</a>]</td>
 <td><div class="info">
 Create a new target.

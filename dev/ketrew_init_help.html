@@ -1,5 +1,5 @@
 <!-- Creator     : groff version 1.19.2 -->
-<!-- CreationDate: Thu Sep 25 14:28:28 2014 -->
+<!-- CreationDate: Mon Oct  6 11:57:52 2014 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -47,7 +47,18 @@ init</b> [<i>OPTION</i>]...</p>
 
 
 
-<p style="margin-left:11%; margin-top: 1em"><b>&minus;&minus;help</b>[=<i>FMT</i>]
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;C</b>
+<i>FILE</i>,
+<b>&minus;&minus;configuration&minus;file</b>=<i>FILE</i>
+<br>
+(absent=_test_env/server&minus;config&minus;file.toml)</p>
+
+<p style="margin-left:17%;">Use <i>FILE</i> as
+configuration file (can be overriden also with
+&lsquo;KETREW_CONFIGURATION&lsquo;).</p>
+
+
+<p style="margin-left:11%;"><b>&minus;&minus;help</b>[=<i>FMT</i>]
 (default=pager)</p>
 
 <p style="margin-left:17%;">Show this help in format
@@ -63,19 +74,7 @@ init</b> [<i>OPTION</i>]...</p>
 
 
 
-<p style="margin-left:11%; margin-top: 1em"><b>&minus;C</b>
-<i>FILE</i>,
-<b>&minus;&minus;configuration&minus;file</b>=<i>FILE</i>
-<br>
-
-(absent=_test_env/standalone&minus;config&minus;file.toml)</p>
-
-<p style="margin-left:17%;">Use <i>FILE</i> as
-configuration file (can be overriden also with
-&lsquo;KETREW_CONFIGURATION&lsquo;).</p>
-
-
-<p style="margin-left:11%;"><b>&minus;&minus;database</b>=<i>FILE</i>
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;&minus;database</b>=<i>FILE</i>
 (absent=/Users/sebastienmondet/.ketrew/database)</p>
 
 <p style="margin-left:17%;">Use <i>FILE</i> as

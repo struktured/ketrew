@@ -33,8 +33,8 @@
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;file_target&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;?dependencies&nbsp;?make&nbsp;?metadata&nbsp;?name&nbsp;?host&nbsp;?equivalence&nbsp;?if_fails_activate<br>
-&nbsp;&nbsp;&nbsp;&nbsp;?tags&nbsp;path&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?success_triggers&nbsp;?tags&nbsp;path&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;product&nbsp;=&nbsp;file&nbsp;?host&nbsp;path&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;<span class="constructor">Option</span>.value&nbsp;name&nbsp;~default:(<span class="string">"Make:"</span>&nbsp;^&nbsp;path)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;target&nbsp;~product&nbsp;?equivalence&nbsp;?if_fails_activate&nbsp;?tags<br>
+&nbsp;&nbsp;target&nbsp;~product&nbsp;?equivalence&nbsp;?if_fails_activate&nbsp;?tags&nbsp;?success_triggers<br>
 &nbsp;&nbsp;&nbsp;&nbsp;~done_when:product<span class="keywordsign">#</span>exists&nbsp;?dependencies&nbsp;?make&nbsp;?metadata&nbsp;name</code></body></html>

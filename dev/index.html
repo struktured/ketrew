@@ -55,6 +55,7 @@
  <li><a href='Alternative_CLI_Application.html'>Alternative CLI Application</a></li>
  <li><a href='Developer_Documentation.html'>Developer Documentation</a></li>
  <li><a href='Long-Running_Plugins.html'>Long-Running Plugins</a></li>
+ <li><a href='Server_Commands.html'>Server Commands</a></li>
  <li><a href='The_Configuration_File.html'>The Configuration File</a></li>
  <li><a href='The_HTTP_API.html'>The HTTP API</a></li>
  <li><a href='api/index.html'>Generated Documentaiton For The API</a> (<a href='modules.svg'>Modules Overview (SVG)</a>)</li>
@@ -86,14 +87,21 @@ opam install ketrew</code></pre>
 workflow data-structure <em>except</em> one: <code>Ketrew.EDSL.run</code> which is used to submit
 workflows to the engine.</p>
 <p>A workflow is a Graph of “<strong>targets</strong>”.</p>
-<p>The links between targets are “dependencies” (targets that need to be ensured or
-run before a target can start) or “fallbacks” (targets that will be activated
-if the target fails).</p>
+<p>There are 3 kinds of links between targets:</p>
+<ul>
+ <li><em>dependencies:</em> targets that need to be ensured or
+run before a target can start,</li>
+ <li><em>fallbacks:</em> targets that will be activated
+if the target fails, and</li>
+ <li><em>success-triggers:</em> targets that will be activated only <em>after</em> a target
+succeeds.</li>
+</ul>
+
 <p>Any OCaml program can use the EDSL (script, compiled, or even inside the
 toplevel), see the <a href='api/Ketrew_edsl.html'>documentation of the EDSL API</a>.</p>
 <p><small><blockquote>Please, also feel free to
 <a href='https://github.com/hammerlab/ketrew/issues'>propose</a>
-better names for things in the API.</blockquote></small></p>
+better names for values and arguments in the API.</blockquote></small></p>
 <h3 id="Example">Example</h3>
 <p>This example is a “single-target” workflow that runs an arbitrary shell command on an
 <a href='http://en.wikipedia.org/wiki/Platform_LSF'>LSF-based</a> cluster:</p>
@@ -204,6 +212,9 @@ like <a href='api/Ketrew_lsf.html'><code>Ketrew_lsf</code></a> or in the tests:
  <li>You may want to extend Ketrew, or preconfigure it, <em>without</em> configuration
 files or dynamically loaded libraries: just
 <a href='Alternative_CLI_Application.html'>create</a> your own comand-line app.</li>
+ <li>If you are using Ketrew in server mode, you may want to know about the
+<a href='Server_Commands.html'>commands</a> that the server can understand as it
+listens on a Unix-pipe.</li>
  <li>You may want to call out directly to the <a href='The_HTTP_API.html'>HTTP API</a>
 (i.e. without <code>ketrew</code> as a client).</li>
  <li>If you want to help or simply to understand Ketrew

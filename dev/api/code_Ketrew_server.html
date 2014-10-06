@@ -50,6 +50,12 @@
 <br>
 <span class="keyword">open</span>&nbsp;<span class="constructor">Ketrew_pervasives</span><br>
 <br>
+<br>
+</code><table><tr><td></td><td><span class="comment">(** To use SSL we need to apply the server Cohhtp functor ourselves. *)</span></td></tr></table><code class="code"><br>
+<span class="keyword">module</span>&nbsp;<span class="constructor">Cohttp_server_core</span>&nbsp;=&nbsp;<span class="constructor">Cohttp_lwt</span>.<span class="constructor">Make_server</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Cohttp_lwt_unix_io</span>)(<span class="constructor">Cohttp_lwt_unix</span>.<span class="constructor">Request</span>)(<span class="constructor">Cohttp_lwt_unix</span>.<span class="constructor">Response</span>)(<span class="constructor">Cohttp_lwt_unix_net</span>)<br>
+<br>
+<br>
 </code><table><tr><td></td><td><span class="comment">(** A common error that simply means “invalid argument”. *)</span></td></tr></table><code class="code"><br>
 <span class="keyword">let</span>&nbsp;wrong_request&nbsp;short&nbsp;long&nbsp;=&nbsp;fail&nbsp;(<span class="keywordsign">`</span><span class="constructor">Wrong_http_request</span>&nbsp;(short,&nbsp;long))<br>
 <br>
@@ -107,7 +113,7 @@
 <br>
 <span class="keyword">end</span><br>
 <br>
-</code><table><tr><td></td><td><span class="comment">(** THe state maintained by the HTTP server. *)</span></td></tr></table><code class="code"><br>
+</code><table><tr><td></td><td><span class="comment">(** The state maintained by the HTTP server. *)</span></td></tr></table><code class="code"><br>
 <span class="keyword">module</span>&nbsp;<span class="constructor">Server_state</span>&nbsp;=&nbsp;<span class="keyword">struct</span><br>
 <br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;{<br>
@@ -121,16 +127,11 @@
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;create&nbsp;~state&nbsp;~authentication&nbsp;~authentication_file&nbsp;server_configuration&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;loop_traffic_light&nbsp;=&nbsp;<span class="constructor">Light</span>.create&nbsp;()&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;{state;&nbsp;authentication;&nbsp;authentication_file;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;server_configuration;&nbsp;loop_traffic_light}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;server_configuration;&nbsp;loop_traffic_light;}<br>
+<br>
 <br>
 <span class="keyword">end</span><br>
 <span class="keyword">open</span>&nbsp;<span class="constructor">Server_state</span><br>
-<br>
-</code><table><tr><td></td><td><span class="comment">(** To use SSL we need to apply the server Cohhtp functor ourselves. *)</span></td></tr></table><code class="code"><br>
-<span class="keyword">module</span>&nbsp;<span class="constructor">Cohttp_server_core</span>&nbsp;=&nbsp;<span class="constructor">Cohttp_lwt</span>.<span class="constructor">Make_server</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Cohttp_lwt_unix_io</span>)(<span class="constructor">Cohttp_lwt_unix</span>.<span class="constructor">Request</span>)(<span class="constructor">Cohttp_lwt_unix</span>.<span class="constructor">Response</span>)(<span class="constructor">Cohttp_lwt_unix_net</span>)<br>
-<br>
-<br>
 <br>
 <span class="keyword">type</span>&nbsp;answer&nbsp;=&nbsp;[<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Unit</span><br>
@@ -309,7 +310,7 @@
 &nbsp;&nbsp;<span class="constructor">Light</span>.green&nbsp;server_state.loop_traffic_light;<br>
 &nbsp;&nbsp;return&nbsp;(<span class="keywordsign">`</span><span class="constructor">Json</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">List</span>&nbsp;ids))<br>
 <br>
-<span class="keyword">let</span>&nbsp;kill_or_archive_targets_service:&nbsp;[<span class="keywordsign">`</span><span class="constructor">Kill</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Archive</span>]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;_&nbsp;service&nbsp;=&nbsp;<br>
+<span class="keyword">let</span>&nbsp;action_on_ids_service:&nbsp;[<span class="keywordsign">`</span><span class="constructor">Kill</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Archive</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Restart</span>]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;_&nbsp;service&nbsp;=&nbsp;<br>
 &nbsp;&nbsp;<span class="keyword">fun</span>&nbsp;what_to_do&nbsp;~server_state&nbsp;~body&nbsp;req&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;get_post_body&nbsp;req&nbsp;~body&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;body&nbsp;<span class="keywordsign">-&gt;</span><br>
@@ -327,6 +328,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">match</span>&nbsp;what_to_do&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Kill</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_engine</span>.kill&nbsp;server_state.state&nbsp;id<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Archive</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_engine</span>.archive_target&nbsp;server_state.state&nbsp;id<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Restart</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_engine</span>.restart_target&nbsp;server_state.state&nbsp;id<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span>)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;|&nbsp;<span class="constructor">List</span>.concat<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;happenings&nbsp;<span class="keywordsign">-&gt;</span><br>
@@ -368,9 +370,11 @@
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"/target-call-query"</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;target_call_query_service&nbsp;~server_state&nbsp;~body&nbsp;req<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"/add-targets"</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;add_targets_service&nbsp;&nbsp;~server_state&nbsp;~body&nbsp;req<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"/kill-targets"</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;kill_or_archive_targets_service&nbsp;<span class="keywordsign">`</span><span class="constructor">Kill</span>&nbsp;&nbsp;~server_state&nbsp;~body&nbsp;req<br>
+&nbsp;&nbsp;&nbsp;&nbsp;action_on_ids_service&nbsp;<span class="keywordsign">`</span><span class="constructor">Kill</span>&nbsp;&nbsp;~server_state&nbsp;~body&nbsp;req<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"/archive-targets"</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;kill_or_archive_targets_service&nbsp;<span class="keywordsign">`</span><span class="constructor">Archive</span>&nbsp;&nbsp;~server_state&nbsp;~body&nbsp;req<br>
+&nbsp;&nbsp;&nbsp;&nbsp;action_on_ids_service&nbsp;<span class="keywordsign">`</span><span class="constructor">Archive</span>&nbsp;&nbsp;~server_state&nbsp;~body&nbsp;req<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"/restart-targets"</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;action_on_ids_service&nbsp;<span class="keywordsign">`</span><span class="constructor">Restart</span>&nbsp;&nbsp;~server_state&nbsp;~body&nbsp;req<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"/cleanable-targets"</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;list_cleanable_targets&nbsp;~server_state&nbsp;~body&nbsp;req<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;other&nbsp;<span class="keywordsign">-&gt;</span><br>
@@ -431,6 +435,21 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;read_loop&nbsp;~error_count&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;tag&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">String</span>.sub&nbsp;tag&nbsp;~index:0&nbsp;&nbsp;~length:3&nbsp;=&nbsp;<span class="constructor">Some</span>&nbsp;<span class="string">"tag"</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;length&nbsp;=&nbsp;<span class="constructor">String</span>.length&nbsp;tag&nbsp;-&nbsp;3&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_engine</span>.<span class="constructor">Measure</span>.tag&nbsp;server_state.state<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">String</span>.sub_exn&nbsp;tag&nbsp;~index:3&nbsp;~length);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;read_loop&nbsp;~error_count&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"flush-measurements"</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_engine</span>.<span class="constructor">Measurements</span>.flush&nbsp;server_state.state<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;result&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">match</span>&nbsp;result&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ok</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;read_loop&nbsp;~error_count&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Could&nbsp;not&nbsp;flush&nbsp;the&nbsp;measurements:&nbsp;"</span>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;s&nbsp;(<span class="constructor">Ketrew_error</span>.to_string&nbsp;e)&nbsp;@&nbsp;error);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;&nbsp;other&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Cannot&nbsp;understand&nbsp;command:&nbsp;"</span>&nbsp;%&nbsp;<span class="constructor">OCaml</span>.string&nbsp;other&nbsp;@&nbsp;error);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;read_loop&nbsp;~error_count&nbsp;())<br>
@@ -515,10 +534,12 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">Key_file_path</span>&nbsp;keyfile)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;`No_password,&nbsp;`Port&nbsp;port)&nbsp;in&nbsp;*)</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;sockaddr&nbsp;=&nbsp;<span class="constructor">Lwt_unix</span>.(<span class="constructor">ADDR_INET</span>&nbsp;(<span class="constructor">Unix</span>.inet_addr_any,&nbsp;port))&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;callback&nbsp;conn_id&nbsp;req&nbsp;body&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"HTTP&nbsp;callback"</span>&nbsp;@&nbsp;verbose);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;handle_request&nbsp;~server_state&nbsp;~body&nbsp;req&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;callback&nbsp;connection_id&nbsp;request&nbsp;body&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_engine</span>.<span class="constructor">Measure</span>.incomming_request<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;server_state.state&nbsp;~connection_id&nbsp;~request;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;handle_request&nbsp;~server_state&nbsp;~body&nbsp;request&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;high_level_answer&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">match</span>&nbsp;high_level_answer&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ok</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Unit</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Cohttp_lwt_unix</span>.<span class="constructor">Server</span>.respond_string&nbsp;~status:<span class="keywordsign">`</span><span class="constructor">OK</span>&nbsp;&nbsp;~body:<span class="string">""</span>&nbsp;()<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ok</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Json_raw</span>&nbsp;body)&nbsp;<span class="keywordsign">-&gt;</span><br>
@@ -534,6 +555,11 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">then</span>&nbsp;<span class="string">"Error:&nbsp;"</span>&nbsp;^&nbsp;(<span class="constructor">Ketrew_error</span>.to_string&nbsp;e)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span>&nbsp;<span class="string">"Undisclosed&nbsp;server&nbsp;error"</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Cohttp_lwt_unix</span>.<span class="constructor">Server</span>.respond_string&nbsp;~status:<span class="keywordsign">`</span><span class="constructor">Not_found</span>&nbsp;&nbsp;~body&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;cohttp_answer&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_engine</span>.<span class="constructor">Measure</span>.end_of_request<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;server_state.state&nbsp;~connection_id&nbsp;~request;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;cohttp_answer<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;conn_closed&nbsp;conn_id&nbsp;()&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(sf&nbsp;<span class="string">"conn&nbsp;%S&nbsp;closed"</span>&nbsp;(<span class="constructor">Cohttp</span>.<span class="constructor">Connection</span>.to_string&nbsp;conn_id)&nbsp;<br>

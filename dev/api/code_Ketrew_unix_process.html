@@ -66,10 +66,15 @@
 <span class="keyword">end</span><br>
 <br>
 <span class="keyword">let</span>&nbsp;exec&nbsp;?(bin=<span class="string">""</span>)&nbsp;argl&nbsp;=<br>
-&nbsp;&nbsp;wrap_deferred&nbsp;~on_exn:(<span class="keyword">fun</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Process</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Exec</span>&nbsp;(bin,&nbsp;argl),&nbsp;<span class="keywordsign">`</span><span class="constructor">Exn</span>&nbsp;e))<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;command&nbsp;=&nbsp;(bin,&nbsp;<span class="constructor">Array</span>.of_list&nbsp;argl)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;process&nbsp;=&nbsp;<span class="constructor">Lwt_process</span>.open_process_full&nbsp;command&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;wrap_deferred&nbsp;~on_exn:(<span class="keyword">fun</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Tarminating&nbsp;process:&nbsp;"</span>&nbsp;%&nbsp;parens&nbsp;(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;quote&nbsp;bin&nbsp;%&nbsp;s&nbsp;<span class="string">",&nbsp;"</span>&nbsp;%&nbsp;<span class="constructor">OCaml</span>.list&nbsp;quote&nbsp;argl)&nbsp;@&nbsp;verbose);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;process<span class="keywordsign">#</span>terminate;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Lwt</span>.ignore_result&nbsp;process<span class="keywordsign">#</span>close;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">Process</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Exec</span>&nbsp;(bin,&nbsp;argl),&nbsp;<span class="keywordsign">`</span><span class="constructor">Exn</span>&nbsp;e))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Lwt</span>.(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;command&nbsp;=&nbsp;(bin,&nbsp;<span class="constructor">Array</span>.of_list&nbsp;argl)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;process&nbsp;=&nbsp;<span class="constructor">Lwt_process</span>.open_process_full&nbsp;command&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Lwt_list</span>.map_p&nbsp;<span class="constructor">Lwt_io</span>.read<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[process<span class="keywordsign">#</span>stdout;&nbsp;process<span class="keywordsign">#</span>stderr;&nbsp;]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;output_2list&nbsp;<span class="keywordsign">-&gt;</span><br>

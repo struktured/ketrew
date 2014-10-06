@@ -102,16 +102,66 @@
 <br>
 <span class="keyword">end</span><br>
 <br>
+<span class="keyword">module</span>&nbsp;<span class="constructor">Measurement_collection</span>&nbsp;=&nbsp;<span class="keyword">struct</span><br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;item&nbsp;=&nbsp;<span class="constructor">Ketrew_gen_base_v0</span>.<span class="constructor">Measurement_item</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;<span class="constructor">Ketrew_gen_base_v0</span>.<span class="constructor">Measurement_collection</span>.t&nbsp;ref<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;item&nbsp;content&nbsp;=&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">open</span>&nbsp;<span class="constructor">Ketrew_gen_base_v0</span>.<span class="constructor">Measurement_item</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;time&nbsp;=&nbsp;<span class="constructor">Time</span>.(now&nbsp;());&nbsp;content}<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;create&nbsp;()&nbsp;=&nbsp;ref&nbsp;[item&nbsp;<span class="keywordsign">`</span><span class="constructor">Creation</span>]<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;add&nbsp;collection&nbsp;log&nbsp;=&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;collection&nbsp;:=&nbsp;item&nbsp;log&nbsp;::&nbsp;!collection<br>
+<br>
+&nbsp;&nbsp;<span class="keyword">include</span>&nbsp;<span class="constructor">Json</span>.<span class="constructor">Make_serialization</span>(<span class="constructor">Ketrew_gen_base_v0</span>.<span class="constructor">Measurement_collection</span>)<br>
+<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;flush&nbsp;collection&nbsp;db&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;action&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;key&nbsp;=&nbsp;<span class="constructor">Unique_id</span>.create&nbsp;()&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;value&nbsp;=&nbsp;serialize&nbsp;!collection&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_database</span>.(set&nbsp;~collection:<span class="string">"measurements"</span>&nbsp;~key&nbsp;value)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="constructor">Ketrew_database</span>.act&nbsp;db&nbsp;~action<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Done</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;collection&nbsp;:=&nbsp;&nbsp;[item&nbsp;<span class="keywordsign">`</span><span class="constructor">Creation</span>];&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Not_done</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fail&nbsp;(<span class="keywordsign">`</span><span class="constructor">Database_unavailable</span>&nbsp;<span class="string">"measurements"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;load_all&nbsp;db&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_database</span>.get_all&nbsp;db&nbsp;~collection:<span class="string">"measurements"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;all_strings&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Deferred_list</span>.while_sequential&nbsp;all_strings&nbsp;(<span class="keyword">fun</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;return&nbsp;(deserialize_exn&nbsp;s)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fail&nbsp;(<span class="keywordsign">`</span><span class="constructor">Deserialization</span>&nbsp;(e,&nbsp;s)))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;|&nbsp;<span class="constructor">List</span>.concat<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;collection&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;collection<br>
+<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;make_http_request&nbsp;connection_id&nbsp;request&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;connection_id&nbsp;=&nbsp;<span class="constructor">Cohttp</span>.<span class="constructor">Connection</span>.to_string&nbsp;connection_id&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;meth&nbsp;=&nbsp;<span class="constructor">Cohttp</span>.<span class="constructor">Request</span>.meth&nbsp;request&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Cohttp</span>.<span class="constructor">Request</span>.uri&nbsp;request&nbsp;|&gt;&nbsp;<span class="constructor">Uri</span>.to_string&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="constructor">Ketrew_gen_base_v0</span>.<span class="constructor">Http_request</span>.&nbsp;connection_id;&nbsp;&nbsp;meth;&nbsp;uri}<br>
+<br>
+<span class="keyword">end</span><br>
+<br>
+<br>
 <span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;{<br>
 &nbsp;&nbsp;<span class="keyword">mutable</span>&nbsp;database_handle:&nbsp;<span class="constructor">Database</span>.t&nbsp;option;<br>
 &nbsp;&nbsp;configuration:&nbsp;<span class="constructor">Configuration</span>.engine;<br>
+&nbsp;&nbsp;measurements:&nbsp;<span class="constructor">Measurement_collection</span>.t;<br>
 }<br>
 <span class="keyword">let</span>&nbsp;create&nbsp;configuration&nbsp;=<br>
-&nbsp;&nbsp;return&nbsp;{database_handle&nbsp;=&nbsp;<span class="constructor">None</span>;&nbsp;configuration;}<br>
+&nbsp;&nbsp;return&nbsp;{database_handle&nbsp;=&nbsp;<span class="constructor">None</span>;&nbsp;configuration;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;measurements&nbsp;=&nbsp;<span class="constructor">Measurement_collection</span>.create&nbsp;()}<br>
 <br>
 <span class="keyword">let</span>&nbsp;release&nbsp;t&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;t.database_handle&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Database</span>.close&nbsp;s<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Measurement_collection</span>.flush&nbsp;t.measurements&nbsp;s<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Database</span>.close&nbsp;s<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;()<br>
 <br>
 <span class="keyword">let</span>&nbsp;load&nbsp;~configuration&nbsp;=<br>
@@ -139,6 +189,7 @@
 &nbsp;&nbsp;<span class="keyword">end</span><br>
 <br>
 <span class="keyword">let</span>&nbsp;configuration&nbsp;t&nbsp;=&nbsp;t.configuration<br>
+<br>
 <br>
 <span class="keyword">let</span>&nbsp;not_implemented&nbsp;msg&nbsp;=&nbsp;<br>
 &nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Going&nbsp;through&nbsp;not&nbsp;implemented&nbsp;stuff:&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;msg&nbsp;@&nbsp;verbose);<br>
@@ -325,8 +376,8 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~f:(<span class="keyword">fun</span>&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Target</span>.<span class="constructor">Is</span>.(created&nbsp;t&nbsp;<span class="keywordsign">||</span>&nbsp;activated&nbsp;t&nbsp;<span class="keywordsign">||</span>&nbsp;running&nbsp;t)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">&amp;&amp;</span>&nbsp;<span class="constructor">Target</span>.is_equivalent&nbsp;target&nbsp;t)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Targets&nbsp;"</span>&nbsp;%&nbsp;<span class="constructor">Target</span>.log&nbsp;target&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;is&nbsp;"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;(<span class="keyword">match</span>&nbsp;targets&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(<span class="constructor">Target</span>.log&nbsp;target&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;is&nbsp;"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;(<span class="keyword">match</span>&nbsp;equivalences&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"pretty&nbsp;fresh"</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;more&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;<span class="string">"&nbsp;equivalent&nbsp;to&nbsp;"</span>&nbsp;%&nbsp;<span class="constructor">OCaml</span>.list&nbsp;<span class="constructor">Target</span>.log&nbsp;equivalences)<br>
@@ -447,6 +498,9 @@
 &nbsp;&nbsp;<span class="constructor">Deferred_list</span>.while_sequential&nbsp;target.<span class="constructor">Target</span>.if_fails_activate&nbsp;~f:(<span class="keyword">fun</span>&nbsp;tid&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get_target&nbsp;t&nbsp;tid<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;trgt&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;Here&nbsp;two&nbsp;targets&nbsp;with&nbsp;the&nbsp;same&nbsp;fallback&nbsp;could&nbsp;activate&nbsp;the&nbsp;same&nbsp;target<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;concurrently,&nbsp;we&nbsp;don't&nbsp;care,&nbsp;target&nbsp;activation&nbsp;just&nbsp;means<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“change&nbsp;the&nbsp;state&nbsp;in&nbsp;the&nbsp;DB”.&nbsp;*)</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">match</span>&nbsp;trgt.<span class="constructor">Target</span>.history&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Created</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;newdep&nbsp;=&nbsp;<span class="constructor">Target</span>.(activate_exn&nbsp;trgt&nbsp;~by:<span class="keywordsign">`</span><span class="constructor">Fallback</span>)&nbsp;<span class="keyword">in</span><br>
@@ -458,6 +512,24 @@
 &nbsp;&nbsp;&gt;&gt;|&nbsp;<span class="constructor">List</span>.filter_opt<br>
 &nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;happens&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;return&nbsp;(<span class="keywordsign">`</span><span class="constructor">Target_died</span>&nbsp;(<span class="constructor">Target</span>.id&nbsp;target,&nbsp;reason)&nbsp;::&nbsp;happens)<br>
+<br>
+<span class="keyword">let</span>&nbsp;make_target_succeed&nbsp;t&nbsp;target&nbsp;~why&nbsp;~artifact&nbsp;=<br>
+&nbsp;&nbsp;add_or_update_target&nbsp;t&nbsp;<span class="constructor">Target</span>.(make_succeed_exn&nbsp;target&nbsp;artifact)<br>
+&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;<span class="constructor">Deferred_list</span>.while_sequential&nbsp;target.<span class="constructor">Target</span>.success_triggers&nbsp;~f:(<span class="keyword">fun</span>&nbsp;tid&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get_target&nbsp;t&nbsp;tid<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;trgt&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">match</span>&nbsp;trgt.<span class="constructor">Target</span>.history&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Created</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;newdep&nbsp;=&nbsp;<span class="constructor">Target</span>.(activate_exn&nbsp;trgt&nbsp;~by:<span class="keywordsign">`</span><span class="constructor">Success_trigger</span>)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;add_or_update_target&nbsp;t&nbsp;newdep<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;(<span class="constructor">Some</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Target_activated</span>&nbsp;(tid,&nbsp;<span class="keywordsign">`</span><span class="constructor">Success_trigger</span>)))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;other&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;<span class="constructor">None</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span>)<br>
+&nbsp;&nbsp;&gt;&gt;|&nbsp;<span class="constructor">List</span>.filter_opt<br>
+&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;happens&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;return&nbsp;(<span class="keywordsign">`</span><span class="constructor">Target_succeeded</span>&nbsp;(<span class="constructor">Target</span>.id&nbsp;target,&nbsp;why)&nbsp;::&nbsp;happens)<br>
 <br>
 <span class="keyword">let</span>&nbsp;with_plugin_or_kill_target&nbsp;t&nbsp;~target&nbsp;~plugin_name&nbsp;f&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Ketrew_plugin</span>.find_plugin&nbsp;plugin_name&nbsp;<span class="keyword">with</span><br>
@@ -472,6 +544,11 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;e&nbsp;=&nbsp;<span class="constructor">Host</span>.<span class="constructor">Error</span>.log&nbsp;error&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"SSH&nbsp;failed,&nbsp;but&nbsp;not&nbsp;killing&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;(<span class="constructor">Target</span>.id&nbsp;target)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;sp&nbsp;%&nbsp;e&nbsp;@&nbsp;warning);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;add_or_update_target&nbsp;t&nbsp;<span class="constructor">Target</span>.({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;target&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;log&nbsp;=&nbsp;(<span class="constructor">Time</span>.now&nbsp;(),&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fmt&nbsp;<span class="string">"Non&nbsp;fatal&nbsp;error:&nbsp;%s"</span>&nbsp;(<span class="constructor">Log</span>.to_long_string&nbsp;e))&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;::&nbsp;target.log&nbsp;})<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;[]<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;make_target_die&nbsp;t&nbsp;~target&nbsp;~reason:<span class="keywordsign">`</span><span class="constructor">Process_failure</span><br>
@@ -486,6 +563,11 @@
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Fatal</span>&nbsp;str,&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;make_target_die&nbsp;t&nbsp;~target&nbsp;~reason:(make_error&nbsp;plugin_name&nbsp;str)<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Recoverable</span>&nbsp;str,&nbsp;<span class="keyword">false</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;add_or_update_target&nbsp;t&nbsp;<span class="constructor">Target</span>.({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;target&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;log&nbsp;=&nbsp;(<span class="constructor">Time</span>.now&nbsp;(),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fmt&nbsp;<span class="string">"Non&nbsp;fatal&nbsp;long-running&nbsp;error:&nbsp;%s"</span>&nbsp;str)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;::&nbsp;target.log&nbsp;})<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Recoverable&nbsp;error:&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;str&nbsp;@&nbsp;warning);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;[]<br>
 <br>
@@ -502,9 +584,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Option</span>.value_map&nbsp;~default:<span class="string">"None-condition"</span>&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~f:<span class="constructor">Target</span>.<span class="constructor">Condition</span>.to_string_hum&nbsp;target.<span class="constructor">Target</span>.condition))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keyword">true</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;add_or_update_target&nbsp;t&nbsp;<span class="constructor">Target</span>.(make_succeed_exn&nbsp;target&nbsp;a)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;[<span class="keywordsign">`</span><span class="constructor">Target_succeeded</span>&nbsp;(<span class="constructor">Target</span>.id&nbsp;target,&nbsp;<span class="keywordsign">`</span><span class="constructor">Artifact_literal</span>)]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;make_target_succeed&nbsp;t&nbsp;target&nbsp;~why:<span class="keywordsign">`</span><span class="constructor">Artifact_literal</span>&nbsp;~artifact:a<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Direct_command</span>&nbsp;cmd&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="constructor">Target</span>.<span class="constructor">Command</span>.run&nbsp;cmd<br>
@@ -520,9 +600,8 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Option</span>.value_map&nbsp;~default:<span class="string">"None-condition"</span>&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~f:<span class="constructor">Condition</span>.to_string_hum&nbsp;target.condition))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keyword">true</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;add_or_update_target&nbsp;t&nbsp;<span class="constructor">Target</span>.(make_succeed_exn&nbsp;target&nbsp;(<span class="keywordsign">`</span><span class="constructor">Value</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Unit</span>))<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;[<span class="keywordsign">`</span><span class="constructor">Target_succeeded</span>&nbsp;(<span class="constructor">Target</span>.id&nbsp;target,&nbsp;<span class="keywordsign">`</span><span class="constructor">Process_success</span>)]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;make_target_succeed&nbsp;t&nbsp;target&nbsp;~artifact:(<span class="keywordsign">`</span><span class="constructor">Value</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Unit</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~why:<span class="keywordsign">`</span><span class="constructor">Process_success</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Host</span>&nbsp;error)&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;host_error_to_potential_target_failure&nbsp;~target&nbsp;~error&nbsp;t<br>
@@ -580,11 +659,10 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keyword">true</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;run_parameters&nbsp;=&nbsp;<span class="constructor">Long_running</span>.serialize&nbsp;run_parameters&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;result_type&nbsp;must&nbsp;be&nbsp;a&nbsp;Volume:&nbsp;*)</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;add_or_update_target&nbsp;t&nbsp;<span class="constructor">Target</span>.(<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;update_running_exn&nbsp;target&nbsp;~run_parameters<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&gt;&nbsp;<span class="keyword">fun</span>&nbsp;trgt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;&nbsp;make_succeed_exn&nbsp;trgt&nbsp;(<span class="keywordsign">`</span><span class="constructor">Value</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Unit</span>))<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;[<span class="keywordsign">`</span><span class="constructor">Target_succeeded</span>&nbsp;(<span class="constructor">Target</span>.id&nbsp;target,&nbsp;<span class="keywordsign">`</span><span class="constructor">Process_success</span>)]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;make_target_succeed&nbsp;t&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Target</span>.update_running_exn&nbsp;target&nbsp;~run_parameters)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~artifact:(<span class="keywordsign">`</span><span class="constructor">Value</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Unit</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~why:<span class="keywordsign">`</span><span class="constructor">Process_success</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ok</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Failed</span>&nbsp;(run_parameters,&nbsp;msg))&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;run_parameters&nbsp;=&nbsp;<span class="constructor">Long_running</span>.serialize&nbsp;run_parameters&nbsp;<span class="keyword">in</span><br>
@@ -604,11 +682,13 @@
 <span class="keyword">let</span>&nbsp;log_what_happened&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">open</span>&nbsp;<span class="constructor">Log</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"Error&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;e<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Target_activated</span>&nbsp;(id,&nbsp;by)&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;<span class="string">"Target&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;id&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;activated:&nbsp;"</span>&nbsp;%<br>
 &nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">match</span>&nbsp;by&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Dependency</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"Dependency"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Fallback</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"Fallback"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Fallback</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"Fallback"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Success_trigger</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"Success-trigger"</span>)<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Target_succeeded</span>&nbsp;(id,&nbsp;how)&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;<span class="string">"Target&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;id&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;succeeded:&nbsp;"</span>&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;(<span class="keyword">match</span>&nbsp;how&nbsp;<span class="keyword">with</span><br>
@@ -619,6 +699,8 @@
 &nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;<span class="string">"Target&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;id&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;started&nbsp;"</span>&nbsp;%&nbsp;parens&nbsp;(s&nbsp;plugin_name)<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Target_archived</span>&nbsp;id&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;<span class="string">"Target&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;id&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;was&nbsp;archived&nbsp;"</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Target_created</span>&nbsp;id&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;<span class="string">"Target&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;id&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;was&nbsp;created&nbsp;"</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Target_died</span>&nbsp;(id,&nbsp;how)&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;<span class="string">"Target&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;id&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;died:&nbsp;"</span>&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;(<span class="keyword">match</span>&nbsp;how&nbsp;<span class="keyword">with</span><br>
@@ -636,13 +718,14 @@
 &nbsp;&nbsp;<span class="keyword">begin</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;current_targets&nbsp;t&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;targets&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;database&nbsp;t&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;db&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Deferred_list</span>.while_sequential&nbsp;targets&nbsp;~f:(<span class="keyword">fun</span>&nbsp;target&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Deferred_list</span>.for_concurrent&nbsp;targets&nbsp;~f:(<span class="keyword">fun</span>&nbsp;target&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;Log.(s&nbsp;"Engine.step&nbsp;dealing&nbsp;with&nbsp;"&nbsp;%&nbsp;Target.log&nbsp;target&nbsp;@&nbsp;verbose);&nbsp;*)</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;target.<span class="constructor">Target</span>.history&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Created</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="comment">(*&nbsp;nothing&nbsp;to&nbsp;do&nbsp;*)</span>&nbsp;return&nbsp;[]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Activated</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="constructor">Target</span>.should_start&nbsp;target<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">function</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keyword">true</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&lt;&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ok</span>&nbsp;<span class="keyword">true</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_check_and_activate_dependencies&nbsp;~t&nbsp;target.<span class="constructor">Target</span>.dependencies<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;(what_now,&nbsp;happenings)&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">match</span>&nbsp;what_now&nbsp;<span class="keyword">with</span><br>
@@ -656,18 +739,29 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;(happened&nbsp;@&nbsp;happenings)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Wait</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;happenings<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keyword">false</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;add_or_update_target&nbsp;t<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Target</span>.(make_succeed_exn&nbsp;target&nbsp;(<span class="keywordsign">`</span><span class="constructor">Value</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Unit</span>))<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;[<span class="keywordsign">`</span><span class="constructor">Target_succeeded</span>&nbsp;(<span class="constructor">Target</span>.id&nbsp;target,&nbsp;<span class="keywordsign">`</span><span class="constructor">Artifact_ready</span>)]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ok</span>&nbsp;<span class="keyword">false</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;make_target_succeed&nbsp;t&nbsp;&nbsp;target<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~artifact:(<span class="keywordsign">`</span><span class="constructor">Value</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Unit</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~why:<span class="keywordsign">`</span><span class="constructor">Artifact_ready</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Volume</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">No_size</span>&nbsp;log))&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;make_target_die&nbsp;t&nbsp;~target&nbsp;~reason:(<span class="keywordsign">`</span><span class="constructor">Process_failure</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~explanation:<span class="constructor">Log</span>.(to_long_string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(s&nbsp;<span class="string">"No-size&nbsp;for&nbsp;volume,&nbsp;"</span>&nbsp;%&nbsp;log))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;happened&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;happened<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">Host</span>&nbsp;error)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;host_error_to_potential_target_failure&nbsp;~target&nbsp;~error&nbsp;t<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;start&nbsp;or&nbsp;run&nbsp;*)</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Running</span>&nbsp;(bookkeeping,&nbsp;_)&nbsp;&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_update_status&nbsp;t&nbsp;~target&nbsp;~bookkeeping<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Dead</span>&nbsp;_&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Successful</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;[])<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;|&nbsp;<span class="constructor">List</span>.concat<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;what_happened&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;(what_happened,&nbsp;errors)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;what_happened&nbsp;=&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.map&nbsp;errors&nbsp;~f:(<span class="keyword">fun</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;(<span class="constructor">Ketrew_error</span>.to_string&nbsp;e))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;<span class="constructor">List</span>.concat&nbsp;&nbsp;what_happened<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&gt;&nbsp;<span class="constructor">List</span>.dedup<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Step:&nbsp;"</span>&nbsp;%&nbsp;<span class="constructor">OCaml</span>.list&nbsp;log_what_happened&nbsp;what_happened&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;very_verbose);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;what_happened<br>
@@ -726,45 +820,38 @@
 &nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;[]<br>
 &nbsp;&nbsp;<span class="keyword">end</span><br>
 <br>
-<span class="keyword">let</span>&nbsp;restart_target&nbsp;~engine&nbsp;target&nbsp;=<br>
+<span class="keyword">let</span>&nbsp;restart_target&nbsp;engine&nbsp;target_id&nbsp;=<br>
 &nbsp;&nbsp;current_targets&nbsp;engine<br>
 &nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;targets&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;id_translation&nbsp;=&nbsp;ref&nbsp;[]&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;get_target&nbsp;engine&nbsp;target_id<br>
+&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;target&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;new_target&nbsp;trgt&nbsp;&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;with_name&nbsp;=&nbsp;<span class="string">"Re:"</span>&nbsp;^&nbsp;<span class="constructor">Target</span>.name&nbsp;trgt&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;re&nbsp;=&nbsp;<span class="constructor">Target</span>.reactivate&nbsp;~with_name&nbsp;trgt&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;id_translation&nbsp;:=&nbsp;(<span class="constructor">Target</span>.id&nbsp;trgt,&nbsp;<span class="constructor">Target</span>.id&nbsp;re)&nbsp;::&nbsp;!id_translation;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;re<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;get_reverse_dependencies&nbsp;trgt&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.filter&nbsp;targets&nbsp;~f:(<span class="keyword">fun</span>&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.exists&nbsp;t.<span class="constructor">Target</span>.dependencies&nbsp;~f:(<span class="keyword">fun</span>&nbsp;dep&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Target</span>.id&nbsp;trgt&nbsp;=&nbsp;dep))<br>
-&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;explore_upper_dag&nbsp;trgt&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;reverse_dependencies&nbsp;=&nbsp;get_reverse_dependencies&nbsp;trgt&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"reverse_dependencies&nbsp;of&nbsp;"</span>&nbsp;%&nbsp;<span class="constructor">Target</span>.log&nbsp;trgt&nbsp;%&nbsp;s&nbsp;<span class="string">":&nbsp;"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;<span class="constructor">OCaml</span>.list&nbsp;<span class="constructor">Target</span>.log&nbsp;reverse_dependencies&nbsp;@&nbsp;very_verbose);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;trgt&nbsp;::&nbsp;reverse_dependencies<br>
-&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;<span class="constructor">List</span>.concat_map&nbsp;~f:explore_upper_dag&nbsp;reverse_dependencies<br>
-&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;this_new_target&nbsp;=&nbsp;new_target&nbsp;target&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;upper_dag&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;its_reverse_deps&nbsp;=&nbsp;get_reverse_dependencies&nbsp;target&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.dedup&nbsp;~compare:(<span class="keyword">fun</span>&nbsp;ta&nbsp;tb&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Target</span>.(<span class="constructor">String</span>.compare&nbsp;(id&nbsp;ta)&nbsp;(id&nbsp;tb)))<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">List</span>.concat_map&nbsp;~f:explore_upper_dag&nbsp;its_reverse_deps)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;|&gt;&nbsp;<span class="constructor">List</span>.map&nbsp;~f:new_target<br>
-&nbsp;&nbsp;&nbsp;&nbsp;|&gt;&nbsp;<span class="constructor">List</span>.map&nbsp;~f:(<span class="keyword">fun</span>&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">open</span>&nbsp;<span class="constructor">Target</span>&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;t&nbsp;<span class="keyword">with</span>&nbsp;dependencies&nbsp;=&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.map&nbsp;t.dependencies&nbsp;~f:(<span class="keyword">fun</span>&nbsp;dep&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.find&nbsp;!id_translation&nbsp;(<span class="keyword">fun</span>&nbsp;(a,&nbsp;_)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;a&nbsp;=&nbsp;dep)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;(_,&nbsp;new_id)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;new_id<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;dep)&nbsp;})<br>
-&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;add_targets&nbsp;engine&nbsp;(this_new_target&nbsp;::&nbsp;upper_dag)<br>
+&nbsp;&nbsp;add_targets&nbsp;engine&nbsp;[this_new_target]<br>
 &nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;return&nbsp;(this_new_target,&nbsp;upper_dag)<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;id&nbsp;=&nbsp;<span class="constructor">Target</span>.id&nbsp;this_new_target&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;return&nbsp;([<span class="keywordsign">`</span><span class="constructor">Target_created</span>&nbsp;id;&nbsp;<span class="keywordsign">`</span><span class="constructor">Target_activated</span>&nbsp;(id,&nbsp;<span class="keywordsign">`</span><span class="constructor">Dependency</span>)]:&nbsp;happening&nbsp;list)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<br>
+<span class="keyword">module</span>&nbsp;<span class="constructor">Measure</span>&nbsp;=&nbsp;<span class="keyword">struct</span><br>
+&nbsp;&nbsp;<span class="keyword">open</span>&nbsp;<span class="constructor">Measurement_collection</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;incomming_request&nbsp;t&nbsp;~connection_id&nbsp;~request&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;add&nbsp;t.measurements&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keywordsign">`</span><span class="constructor">Incoming_request</span>&nbsp;(make_http_request&nbsp;connection_id&nbsp;request))<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;end_of_request&nbsp;t&nbsp;~connection_id&nbsp;~request&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;add&nbsp;t.measurements<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keywordsign">`</span><span class="constructor">End_of_request</span>&nbsp;(make_http_request&nbsp;connection_id&nbsp;request))<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;tag&nbsp;t&nbsp;s&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;add&nbsp;t.measurements&nbsp;(<span class="keywordsign">`</span><span class="constructor">Tag</span>&nbsp;s)<br>
+<span class="keyword">end</span><br>
+<span class="keyword">module</span>&nbsp;<span class="constructor">Measurements</span>&nbsp;=&nbsp;<span class="keyword">struct</span><br>
+<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;flush&nbsp;t&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;database&nbsp;t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;db&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Measurement_collection</span>.flush&nbsp;t.measurements&nbsp;db<br>
+<span class="keyword">end</span><br>
 </code></body></html>
