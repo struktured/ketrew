@@ -1,18 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <link rel="stylesheet" href="http://cdn.jsdelivr.net/bootstrap/3.1.1/css/bootstrap.min.css" type="text/css">
-  <link rel="stylesheet" href="http://cdn.jsdelivr.net/bootstrap/3.1.1/css/bootstrap-theme.min.css" type="text/css">
-  <link rel="stylesheet" href="code_style.css" type="text/css">
-  <meta charset="utf-8">
-  <title>Ketrew: Alternative CLI Application</title>
-</head>
-  <body><div class="container">
-  <h1>Ketrew: Alternative CLI Application</h1>
-  <div class="row">
-  <div class="col-md-3">
-  <h2>Contents</h2>
-<ul>
+ <!DOCTYPE html> <html> <head><link rel="stylesheet" href="https://cdn.rawgit.com/hammerlab/ketrew/2d1c430cca52caa71e363a765ff8775a6ae14ba9/src/doc/code_style.css" type="text/css">
+<link rel="stylesheet" href="http://cdn.jsdelivr.net/bootstrap/3.1.1/css/bootstrap.min.css" type="text/css">
+<link rel="stylesheet" href="http://cdn.jsdelivr.net/bootstrap/3.1.1/css/bootstrap-theme.min.css" type="text/css"><meta charset="utf-8"><title>Ketrew: Alternative CLI Application</title></head><body><div class="container"><h1>Ketrew: Alternative CLI Application</h1><div class="row">
+<div class="col-md-3">
+<h2>Contents</h2><ul>
  <li><a href='#Plugins'>Plugins</a>
  </li>
  <li><a href='#Configuration'>Configuration</a>
@@ -20,18 +10,23 @@
  <li><a href='#CommandLineSubcommands'>Command Line “Sub-commands”</a>
  </li>
 </ul>
-<h2>Menu</h2>
-<ul>
- <li><a href='./index.html'>Home</a></li>
+<h2>Menu</h2><ul>
+ <li><a href='index.html'>Home</a></li>
  <li><a href='Alternative_CLI_Application.html'>Alternative CLI Application</a></li>
  <li><a href='Developer_Documentation.html'>Developer Documentation</a></li>
  <li><a href='Long-Running_Plugins.html'>Long-Running Plugins</a></li>
  <li><a href='Server_Commands.html'>Server Commands</a></li>
  <li><a href='The_Configuration_File.html'>The Configuration File</a></li>
  <li><a href='The_HTTP_API.html'>The HTTP API</a></li>
- <li><a href='api/index.html'>Generated Documentaiton For The API</a> (<a href='modules.svg'>Modules Overview (SVG)</a>)</li>
+ <li><a href='dummy_plugin.html'>Plugin Example</a></li>
+ <li><a href='dummy_plugin_user.html'>Plugin-Usage Example</a></li>
+ <li><a href='integration.html'>Integration Test</a></li>
+ <li><a href='main.html'>Main Test</a></li>
+ <li><a href='preconfigured_main.html'>Preconfigured Main Example</a></li>
+ <li><a href='Workflow_Examples.html'>Workflow Examples</a></li>
+ <li><a href='./api/index.html'>API Documentation</a></li>
 </ul>
-</div><div class="col-md-9">
+</div><div class="col-md-9"><h1 id="AvoidingDynlinkandConfigFiles">Avoiding Dynlink and Config Files</h1>
 <p>One may not want to use a configuration file (because lacking a file-system or
 so) and/or dynamic linking of plugins (because dynamic-linking can be
 problematic).</p>
@@ -56,11 +51,11 @@ $tmp_dir/my_workflow &quot;du -sh $HOME&quot;</code></pre>
 <pre><code>$tmp_dir/new_ketrew_app interact</code></pre>
 <p>(choose the target, <code>&#39;s&#39;</code> for “show-status”, <code>&#39;1&#39;</code> for “display date”).</p>
 <h2 id="Configuration">Configuration</h2>
-<p>The function <code>Ketrew_command_line.run_main</code> can take an <code>~override_configuration</code> parameter, which can be created with
+<p>The function <a href='api/Ketrew_command_line.html#VALrun_main' title='Ketrew_command_line.run_main'><code>Ketrew_command_line.run_main</code></a> can take an <code>~override_configuration</code> parameter, which can be created with
 <code>Ketrew_configuration.{create,create_server}</code>
 (c.f. 
-<a href='api/Ketrew_command_line.html'><code>Ketrew_command_line</code></a> and
-<a href='api/Ketrew_configuration.html'><code>Ketrew_configuration</code></a>).</p>
+<a href='api/Ketrew_command_line.html'><a href='api/Ketrew_command_line.html' title='Ketrew_command_line'><code>Ketrew_command_line</code></a></a> and
+<a href='api/Ketrew_configuration.html'><a href='api/Ketrew_configuration.html' title='Ketrew_configuration'><code>Ketrew_configuration</code></a></a>).</p>
 <p>See the example in
 <a href='preconfigured_main.html'><code>src/test/preconfigured_main.ml</code></a>, here is how
 to compile it:</p>

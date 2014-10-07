@@ -1,34 +1,39 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <link rel="stylesheet" href="http://cdn.jsdelivr.net/bootstrap/3.1.1/css/bootstrap.min.css" type="text/css">
-  <link rel="stylesheet" href="http://cdn.jsdelivr.net/bootstrap/3.1.1/css/bootstrap-theme.min.css" type="text/css">
-  <link rel="stylesheet" href="code_style.css" type="text/css">
-  <meta charset="utf-8">
-  <title>Ketrew: preconfigured main</title>
-</head>
-  <body><div class="container">
-  <h1>Ketrew: preconfigured main</h1>
-  <div class="row">
-  <div class="col-md-3">
-  <h2>Contents</h2>
-<h2>Menu</h2>
-<ul>
- <li><a href='./index.html'>Home</a></li>
+ <!DOCTYPE html> <html> <head><link rel="stylesheet" href="https://cdn.rawgit.com/hammerlab/ketrew/2d1c430cca52caa71e363a765ff8775a6ae14ba9/src/doc/code_style.css" type="text/css">
+<link rel="stylesheet" href="http://cdn.jsdelivr.net/bootstrap/3.1.1/css/bootstrap.min.css" type="text/css">
+<link rel="stylesheet" href="http://cdn.jsdelivr.net/bootstrap/3.1.1/css/bootstrap-theme.min.css" type="text/css"><meta charset="utf-8"><title>Ketrew: Preconfigured Main Example</title></head><body><div class="container"><h1>Ketrew: Preconfigured Main Example</h1><div class="row">
+<div class="col-md-3">
+<h2>Contents</h2><ul>
+ <li><a href='#CreateTheConfiguration'>Create The Configuration</a>
+ </li>
+ <li><a href='#ACmdlinerCommandToAdd'>A Cmdliner Command To Add</a>
+ </li>
+ <li><a href='#StartTheApplication'>Start The Application</a>
+ </li>
+</ul>
+<h2>Menu</h2><ul>
+ <li><a href='index.html'>Home</a></li>
  <li><a href='Alternative_CLI_Application.html'>Alternative CLI Application</a></li>
  <li><a href='Developer_Documentation.html'>Developer Documentation</a></li>
  <li><a href='Long-Running_Plugins.html'>Long-Running Plugins</a></li>
  <li><a href='Server_Commands.html'>Server Commands</a></li>
  <li><a href='The_Configuration_File.html'>The Configuration File</a></li>
  <li><a href='The_HTTP_API.html'>The HTTP API</a></li>
- <li><a href='api/index.html'>Generated Documentaiton For The API</a> (<a href='modules.svg'>Modules Overview (SVG)</a>)</li>
+ <li><a href='dummy_plugin.html'>Plugin Example</a></li>
+ <li><a href='dummy_plugin_user.html'>Plugin-Usage Example</a></li>
+ <li><a href='integration.html'>Integration Test</a></li>
+ <li><a href='main.html'>Main Test</a></li>
+ <li><a href='preconfigured_main.html'>Preconfigured Main Example</a></li>
+ <li><a href='Workflow_Examples.html'>Workflow Examples</a></li>
+ <li><a href='./api/index.html'>API Documentation</a></li>
 </ul>
 </div><div class="col-md-9">
-<pre class='ocaml'><code class='ocaml'><span class="text">
-</span></code></pre>
+
+<h1 id="PreconfiguredMainKetrewCLIApp">Preconfigured Main Ketrew CLI App</h1>
 <h2 id="CreateTheConfiguration">Create The Configuration</h2>
 <p>Overriding the configuration from a main file:</p>
-<pre class='ocaml'><code class='ocaml'><span class="kw">let</span><span class="text"> </span><span class="id">override_configuration</span><span class="text"> =
+
+<pre><span class="text">
+</span><span class="kw">let</span><span class="text"> </span><span class="id">override_configuration</span><span class="text"> =
   </span><span class="kw">let</span><span class="text"> </span><span class="kw">open</span><span class="text"> </span><span class="kw2">Ketrew_configuration</span><span class="text"> </span><span class="kw">in</span><span class="text">
   </span><span class="kw">let</span><span class="text"> </span><span class="id">engine</span><span class="text"> =
     </span><span class="id">engine</span><span class="text"> </span><span class="kw4">~database_parameters</span><span class="text">:</span><span class="string">&quot;/tmp/somepath&quot;</span><span class="text"> ()
@@ -44,11 +49,14 @@
     </span><span class="kw4">~debug_level</span><span class="text">:</span><span class="numeric">42</span><span class="text">
     </span><span class="kw4">~plugins</span><span class="text">:[`</span><span class="kw2">OCamlfind</span><span class="text"> </span><span class="string">&quot;lwt.react&quot;</span><span class="text">; `</span><span class="kw2">OCamlfind</span><span class="text"> </span><span class="string">&quot;lwt.unix&quot;</span><span class="text"> ]
 
-</span></code></pre>
+</span></pre>
+
 <h2 id="ACmdlinerCommandToAdd">A Cmdliner Command To Add</h2>
 <p>This just shows how to add one or more sub-commands to the command-line
 interface:</p>
-<pre class='ocaml'><code class='ocaml'><span class="kw">let</span><span class="text"> </span><span class="id">additional_cmdliner_command</span><span class="text"> =
+
+<pre><span class="text">
+</span><span class="kw">let</span><span class="text"> </span><span class="id">additional_cmdliner_command</span><span class="text"> =
   </span><span class="kw">let</span><span class="text"> </span><span class="kw">open</span><span class="text"> </span><span class="kw2">Ketrew_pervasives</span><span class="text"> </span><span class="kw">in</span><span class="text">
   </span><span class="kw">let</span><span class="text"> </span><span class="kw">open</span><span class="text"> </span><span class="kw2">Cmdliner</span><span class="text"> </span><span class="kw">in</span><span class="text">
   </span><span class="kw">let</span><span class="text"> </span><span class="kw">open</span><span class="text"> </span><span class="kw2">Term</span><span class="text"> </span><span class="kw">in</span><span class="text">
@@ -63,12 +71,15 @@ interface:</p>
   (</span><span class="id">term</span><span class="text">, </span><span class="id">info</span><span class="text"> </span><span class="string">&quot;say-stuff&quot;</span><span class="text"> </span><span class="kw4">~doc</span><span class="text">:</span><span class="string">&quot;Say stuff&quot;</span><span class="text">)
 
 
-</span></code></pre>
+</span></pre>
+
 <h2 id="StartTheApplication">Start The Application</h2>
-<p>Calling <code>Ketrew.Command_line.run_main</code>
+<p>Calling <a href='api/Ketrew.Command_line.html#VALrun_main' title='Ketrew.Command_line.run_main'><code>Ketrew.Command_line.run_main</code></a>
 just like <code>src/app/main.ml</code> but preconfigured:</p>
-<pre class='ocaml'><code class='ocaml'><span class="kw">let</span><span class="text"> `</span><span class="kw2">Never_returns</span><span class="text"> =
+
+<pre><span class="text">
+</span><span class="kw">let</span><span class="text"> `</span><span class="kw2">Never_returns</span><span class="text"> =
   </span><span class="kw2">Ketrew</span><span class="text">.</span><span class="kw2">Command_line</span><span class="text">.</span><span class="id">run_main</span><span class="text">
     </span><span class="kw4">~additional_commands</span><span class="text">:[</span><span class="id">additional_cmdliner_command</span><span class="text">]
-    </span><span class="kw4">~override_configuration</span><span class="text"> ()</span></code></pre>
-</div></div></div></body><html>
+    </span><span class="kw4">~override_configuration</span><span class="text"> ()
+</span></pre></div></div></div></body><html>

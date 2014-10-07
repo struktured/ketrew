@@ -1,18 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <link rel="stylesheet" href="http://cdn.jsdelivr.net/bootstrap/3.1.1/css/bootstrap.min.css" type="text/css">
-  <link rel="stylesheet" href="http://cdn.jsdelivr.net/bootstrap/3.1.1/css/bootstrap-theme.min.css" type="text/css">
-  <link rel="stylesheet" href="code_style.css" type="text/css">
-  <meta charset="utf-8">
-  <title>Ketrew: Workflow Examples</title>
-</head>
-  <body><div class="container">
-  <h1>Ketrew: Workflow Examples</h1>
-  <div class="row">
-  <div class="col-md-3">
-  <h2>Contents</h2>
-<ul>
+ <!DOCTYPE html> <html> <head><link rel="stylesheet" href="https://cdn.rawgit.com/hammerlab/ketrew/2d1c430cca52caa71e363a765ff8775a6ae14ba9/src/doc/code_style.css" type="text/css">
+<link rel="stylesheet" href="http://cdn.jsdelivr.net/bootstrap/3.1.1/css/bootstrap.min.css" type="text/css">
+<link rel="stylesheet" href="http://cdn.jsdelivr.net/bootstrap/3.1.1/css/bootstrap-theme.min.css" type="text/css"><meta charset="utf-8"><title>Ketrew: Workflow Examples</title></head><body><div class="container"><h1>Ketrew: Workflow Examples</h1><div class="row">
+<div class="col-md-3">
+<h2>Contents</h2><ul>
  <li><a href='#WorkflowExamples'>Workflow Examples</a>
  </li>
  <li><a href='#Workflows'>Workflows</a>
@@ -39,20 +29,24 @@
  <li><a href='#MainOftheModule'>“Main” Of the Module</a>
  </li>
 </ul>
-<h2>Menu</h2>
-<ul>
- <li><a href='./index.html'>Home</a></li>
+<h2>Menu</h2><ul>
+ <li><a href='index.html'>Home</a></li>
  <li><a href='Alternative_CLI_Application.html'>Alternative CLI Application</a></li>
  <li><a href='Developer_Documentation.html'>Developer Documentation</a></li>
  <li><a href='Long-Running_Plugins.html'>Long-Running Plugins</a></li>
  <li><a href='Server_Commands.html'>Server Commands</a></li>
  <li><a href='The_Configuration_File.html'>The Configuration File</a></li>
  <li><a href='The_HTTP_API.html'>The HTTP API</a></li>
- <li><a href='api/index.html'>Generated Documentaiton For The API</a> (<a href='modules.svg'>Modules Overview (SVG)</a>)</li>
+ <li><a href='dummy_plugin.html'>Plugin Example</a></li>
+ <li><a href='dummy_plugin_user.html'>Plugin-Usage Example</a></li>
+ <li><a href='integration.html'>Integration Test</a></li>
+ <li><a href='main.html'>Main Test</a></li>
+ <li><a href='preconfigured_main.html'>Preconfigured Main Example</a></li>
+ <li><a href='Workflow_Examples.html'>Workflow Examples</a></li>
+ <li><a href='./api/index.html'>API Documentation</a></li>
 </ul>
 </div><div class="col-md-9">
-<pre class='ocaml'><code class='ocaml'><span class="text">
-</span></code></pre>
+
 <h2 id="WorkflowExamples">Workflow Examples</h2>
 <p>This “test” provides a few functions that create increasingly complex workflows.
 It gets compiled to a command line application that submits the workflows to
@@ -72,15 +66,21 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
 implied.  See the License for the specific language governing
 permissions and limitations under the License.</code></pre>
 <p>And some preliminary OCaml settings:</p>
-<pre class='ocaml'><code class='ocaml'><span class="kw">open</span><span class="text"> </span><span class="kw2">Printf</span><span class="text">
+
+<pre><span class="text">
+</span><span class="kw">open</span><span class="text"> </span><span class="kw2">Printf</span><span class="text">
 </span><span class="kw">module</span><span class="text"> </span><span class="kw2">List</span><span class="text"> = </span><span class="kw2">ListLabels</span><span class="text">
-</span><span class="kw">let</span><span class="text"> </span><span class="id">say</span><span class="text"> </span><span class="id">fmt</span><span class="text"> = </span><span class="id">ksprintf</span><span class="text"> (</span><span class="kw">fun</span><span class="text"> </span><span class="id">s</span><span class="text"> -&gt; </span><span class="id">printf</span><span class="text"> </span><span class="string">&quot;%s\n%!&quot;</span><span class="text"> </span><span class="id">s</span><span class="text">) </span><span class="id">fmt</span></code></pre>
+</span><span class="kw">let</span><span class="text"> </span><span class="id">say</span><span class="text"> </span><span class="id">fmt</span><span class="text"> = </span><span class="id">ksprintf</span><span class="text"> (</span><span class="kw">fun</span><span class="text"> </span><span class="id">s</span><span class="text"> -&gt; </span><span class="id">printf</span><span class="text"> </span><span class="string">&quot;%s\n%!&quot;</span><span class="text"> </span><span class="id">s</span><span class="text">) </span><span class="id">fmt</span><span class="text">
+</span></pre>
+
 <h2 id="Workflows">Workflows</h2>
 <h3 id="ExampleFromTheREADME">Example From The README</h3>
 <p>This function is a more “parametrized” version of the example in the
-<code>README.md</code> file (<code>host</code> and <code>queue</code> come from the command line).
+<a href='api/README.html#VALmd' title='README.md'><code>README.md</code></a> file (<a href='api/html#VALhost' title='host'><code>host</code></a> and <a href='api/html#VALqueue' title='queue'><code>queue</code></a> come from the command line).
 It actually calls <code>run</code> directly itself.</p>
-<pre class='ocaml'><code class='ocaml'><span class="kw">let</span><span class="text"> </span><span class="id">run_command_with_lsf</span><span class="text"> </span><span class="kw4">~host</span><span class="text"> </span><span class="kw4">~queue</span><span class="text"> </span><span class="id">cmd</span><span class="text"> =
+
+<pre><span class="text">
+</span><span class="kw">let</span><span class="text"> </span><span class="id">run_command_with_lsf</span><span class="text"> </span><span class="kw4">~host</span><span class="text"> </span><span class="kw4">~queue</span><span class="text"> </span><span class="id">cmd</span><span class="text"> =
   </span><span class="kw">let</span><span class="text"> </span><span class="kw">open</span><span class="text"> </span><span class="kw2">Ketrew</span><span class="text">.</span><span class="kw2">EDSL</span><span class="text"> </span><span class="kw">in</span><span class="text">
   </span><span class="kw">let</span><span class="text"> </span><span class="id">host</span><span class="text"> = </span><span class="kw2">Host</span><span class="text">.</span><span class="id">parse</span><span class="text"> </span><span class="id">host</span><span class="text"> </span><span class="kw">in</span><span class="text">
   </span><span class="id">run</span><span class="text"> (
@@ -89,40 +89,51 @@ It actually calls <code>run</code> directly itself.</p>
                </span><span class="kw4">~queue</span><span class="text"> </span><span class="kw4">~wall_limit</span><span class="text">:</span><span class="string">&quot;1:30&quot;</span><span class="text"> </span><span class="kw4">~processors</span><span class="text">:(`</span><span class="kw2">Min_max</span><span class="text"> (</span><span class="numeric">1</span><span class="text">,</span><span class="numeric">1</span><span class="text">)) </span><span class="kw4">~host</span><span class="text">)
   )
 
-</span></code></pre>
+</span></pre>
+
 <h3 id="DaemonizeWithNohupSetsid">Daemonize With Nohup/Setsid</h3>
-<p>This function is like <code>run_command_with_lsf</code> but uses
-<code>daemonize</code> with the “nohup-setsid hack” instead of the batch scheduler.</p>
-<pre class='ocaml'><code class='ocaml'><span class="kw">let</span><span class="text"> </span><span class="id">run_command_with_nohup</span><span class="text"> </span><span class="kw4">~host</span><span class="text"> </span><span class="id">cmd</span><span class="text"> =
+<p>This function is like <a href='api/html#VALrun_command_with_lsf' title='run_command_with_lsf'><code>run_command_with_lsf</code></a> but uses
+<a href='api/html#VALdaemonize' title='daemonize'><code>daemonize</code></a> with the “nohup-setsid hack” instead of the batch scheduler.</p>
+
+<pre><span class="text">
+</span><span class="kw">let</span><span class="text"> </span><span class="id">run_command_with_nohup</span><span class="text"> </span><span class="kw4">~host</span><span class="text"> </span><span class="id">cmd</span><span class="text"> =
   </span><span class="kw">let</span><span class="text"> </span><span class="kw">open</span><span class="text"> </span><span class="kw2">Ketrew</span><span class="text">.</span><span class="kw2">EDSL</span><span class="text"> </span><span class="kw">in</span><span class="text">
   </span><span class="kw">let</span><span class="text"> </span><span class="id">host</span><span class="text"> = </span><span class="kw2">Host</span><span class="text">.</span><span class="id">parse</span><span class="text"> </span><span class="id">host</span><span class="text"> </span><span class="kw">in</span><span class="text">
   </span><span class="id">run</span><span class="text"> (
     </span><span class="id">target</span><span class="text"> (</span><span class="id">sprintf</span><span class="text"> </span><span class="string">&quot;NhSs: %S&quot;</span><span class="text"> </span><span class="id">cmd</span><span class="text">)
       </span><span class="kw4">~make</span><span class="text">:(</span><span class="id">daemonize</span><span class="text"> </span><span class="kw4">~using</span><span class="text">:`</span><span class="kw2">Nohup_setsid</span><span class="text">  (</span><span class="kw2">Program</span><span class="text">.</span><span class="id">sh</span><span class="text"> </span><span class="id">cmd</span><span class="text">) </span><span class="kw4">~host</span><span class="text">)
-  )</span></code></pre>
+  )
+</span></pre>
+
 <p>This kind of “daemonized” job should work on any decent Unix system.</p>
 <h3 id="DaemonizeWithThePythonHack">Daemonize With “The Python Hack”</h3>
-<p>This function is like <code>run_command_with_nohup</code> but uses
+<p>This function is like <a href='api/html#VALrun_command_with_nohup' title='run_command_with_nohup'><code>run_command_with_nohup</code></a> but uses
 the “python daemon hack” instead.</p>
-<pre class='ocaml'><code class='ocaml'><span class="kw">let</span><span class="text"> </span><span class="id">run_command_with_python_hack</span><span class="text"> </span><span class="kw4">~host</span><span class="text"> </span><span class="id">cmd</span><span class="text"> =
+
+<pre><span class="text">
+</span><span class="kw">let</span><span class="text"> </span><span class="id">run_command_with_python_hack</span><span class="text"> </span><span class="kw4">~host</span><span class="text"> </span><span class="id">cmd</span><span class="text"> =
   </span><span class="kw">let</span><span class="text"> </span><span class="kw">open</span><span class="text"> </span><span class="kw2">Ketrew</span><span class="text">.</span><span class="kw2">EDSL</span><span class="text"> </span><span class="kw">in</span><span class="text">
   </span><span class="kw">let</span><span class="text"> </span><span class="id">host</span><span class="text"> = </span><span class="kw2">Host</span><span class="text">.</span><span class="id">parse</span><span class="text"> </span><span class="id">host</span><span class="text"> </span><span class="kw">in</span><span class="text">
   </span><span class="id">run</span><span class="text"> (
     </span><span class="id">target</span><span class="text"> (</span><span class="id">sprintf</span><span class="text"> </span><span class="string">&quot;Pyd: %S&quot;</span><span class="text"> </span><span class="id">cmd</span><span class="text">)
       </span><span class="kw4">~make</span><span class="text">:(</span><span class="id">daemonize</span><span class="text"> </span><span class="kw4">~using</span><span class="text">:`</span><span class="kw2">Python_daemon</span><span class="text"> (</span><span class="kw2">Program</span><span class="text">.</span><span class="id">sh</span><span class="text"> </span><span class="id">cmd</span><span class="text">) </span><span class="kw4">~host</span><span class="text">)
-  )</span></code></pre>
+  )
+</span></pre>
+
 <p>The <code>`Python_daemon</code> way of daemonizing was hacked together because
-MacOSX does not support the <code>nohup</code> and <code>setsid</code> commands any more.</p>
+MacOSX does not support the <a href='api/html#VALnohup' title='nohup'><code>nohup</code></a> and <a href='api/html#VALsetsid' title='setsid'><code>setsid</code></a> commands any more.</p>
 <h3 id="AFirstDependencyChain">A First Dependency Chain</h3>
 <p>This function runs a workflow with no less than 2 nodes!</p>
 <ul>
- <li><code>target2</code> depends on <code>target1</code>.</li>
- <li>We call <code>run</code> on <code>target2</code> (the last target, i.e. the root of the dependency
+ <li><a href='api/html#VALtarget2' title='target2'><code>target2</code></a> depends on <a href='api/html#VALtarget1' title='target1'><code>target1</code></a>.</li>
+ <li>We call <code>run</code> on <a href='api/html#VALtarget2' title='target2'><code>target2</code></a> (the last target, i.e. the root of the dependency
  arborescence).</li>
- <li><code>target1</code> will run and if it succeeds <code>target2</code> will run.</li>
+ <li><a href='api/html#VALtarget1' title='target1'><code>target1</code></a> will run and if it succeeds <a href='api/html#VALtarget2' title='target2'><code>target2</code></a> will run.</li>
 </ul>
 
-<pre class='ocaml'><code class='ocaml'><span class="kw">let</span><span class="text"> </span><span class="id">run_2_commands_with_python_hack</span><span class="text"> </span><span class="kw4">~host</span><span class="text"> </span><span class="id">cmd1</span><span class="text"> </span><span class="id">cmd2</span><span class="text"> =
+
+<pre><span class="text">
+</span><span class="kw">let</span><span class="text"> </span><span class="id">run_2_commands_with_python_hack</span><span class="text"> </span><span class="kw4">~host</span><span class="text"> </span><span class="id">cmd1</span><span class="text"> </span><span class="id">cmd2</span><span class="text"> =
   </span><span class="kw">let</span><span class="text"> </span><span class="kw">open</span><span class="text"> </span><span class="kw2">Ketrew</span><span class="text">.</span><span class="kw2">EDSL</span><span class="text"> </span><span class="kw">in</span><span class="text">
   </span><span class="kw">let</span><span class="text"> </span><span class="id">host</span><span class="text"> = </span><span class="kw2">Host</span><span class="text">.</span><span class="id">parse</span><span class="text"> </span><span class="id">host</span><span class="text"> </span><span class="kw">in</span><span class="text">
   </span><span class="kw">let</span><span class="text"> </span><span class="id">target1</span><span class="text"> =
@@ -134,27 +145,30 @@ MacOSX does not support the <code>nohup</code> and <code>setsid</code> commands 
       </span><span class="kw4">~dependencies</span><span class="text">:[ </span><span class="id">target1</span><span class="text"> ]
       </span><span class="kw4">~make</span><span class="text">:(</span><span class="id">daemonize</span><span class="text"> </span><span class="kw4">~using</span><span class="text">:`</span><span class="kw2">Python_daemon</span><span class="text"> (</span><span class="kw2">Program</span><span class="text">.</span><span class="id">sh</span><span class="text"> </span><span class="id">cmd2</span><span class="text">) </span><span class="kw4">~host</span><span class="text">)
   </span><span class="kw">in</span><span class="text">
-  </span><span class="id">run</span><span class="text"> </span><span class="id">target2</span></code></pre>
+  </span><span class="id">run</span><span class="text"> </span><span class="id">target2</span><span class="text">
+</span></pre>
 <p>For example:</p>
 <pre><code>&lt;test-exec&gt; two-py /tmp &quot;du -sh $HOME&quot; &quot;du -sh $HOME/tmp/&quot;</code></pre>
 <p>will run <code>du -sh</code> in <code>$HOME</code> and then in <code>$HOME/tmp</code> in the host <code>&quot;/tmp&quot;</code>
-(which is <code>localhost</code> with <code>/tmp</code> as playground).</p>
+(which is <a href='api/html#VALlocalhost' title='localhost'><code>localhost</code></a> with <code>/tmp</code> as playground).</p>
 <h3 id="WithaCondition">With a Condition</h3>
 <p>This function creates a 2-nodes workflow that fails because of the condition
 if the first target is not ensured by the build-process it runs.</p>
 <ul>
- <li>the function <code>make_target</code> is partial application of <code>EDSL.target</code> with an
+ <li>the function <a href='api/html#VALmake_target' title='make_target'><code>make_target</code></a> is partial application of <a href='api/EDSL.html#VALtarget' title='EDSL.target'><code>EDSL.target</code></a> with an
  additional argument <code>~cmd</code>.</li>
- <li><code>target_with_condition</code> is a target that is supposed to ensure that
-<code>impossible_file</code> exists (which <code>ls /tmp</code> won&#39;t do).  <ul>
-   <li><code>impossible_file</code> is a datastructure representing a file on a given host.</li>
+ <li><a href='api/html#VALtarget_with_condition' title='target_with_condition'><code>target_with_condition</code></a> is a target that is supposed to ensure that
+<a href='api/html#VALimpossible_file' title='impossible_file'><code>impossible_file</code></a> exists (which <code>ls /tmp</code> won&#39;t do).  <ul>
+   <li><a href='api/html#VALimpossible_file' title='impossible_file'><code>impossible_file</code></a> is a datastructure representing a file on a given host.</li>
    <li>The condition is specified with the <code>~done_when</code> argument.</li>
   </ul>
  </li>
- <li><code>target2</code> is just a target that depends on <code>target_with_condition</code>.</li>
+ <li><a href='api/html#VALtarget2' title='target2'><code>target2</code></a> is just a target that depends on <a href='api/html#VALtarget_with_condition' title='target_with_condition'><code>target_with_condition</code></a>.</li>
 </ul>
 
-<pre class='ocaml'><code class='ocaml'><span class="kw">let</span><span class="text"> </span><span class="id">fail_because_of_condition</span><span class="text"> </span><span class="kw4">~host</span><span class="text"> =
+
+<pre><span class="text">
+</span><span class="kw">let</span><span class="text"> </span><span class="id">fail_because_of_condition</span><span class="text"> </span><span class="kw4">~host</span><span class="text"> =
   </span><span class="kw">let</span><span class="text"> </span><span class="kw">open</span><span class="text"> </span><span class="kw2">Ketrew</span><span class="text">.</span><span class="kw2">EDSL</span><span class="text"> </span><span class="kw">in</span><span class="text">
   </span><span class="kw">let</span><span class="text"> </span><span class="id">host</span><span class="text"> = </span><span class="kw2">Host</span><span class="text">.</span><span class="id">parse</span><span class="text"> </span><span class="id">host</span><span class="text"> </span><span class="kw">in</span><span class="text">
   </span><span class="kw">let</span><span class="text"> </span><span class="id">make_target</span><span class="text"> </span><span class="kw4">~cmd</span><span class="text"> =
@@ -171,7 +185,9 @@ if the first target is not ensured by the build-process it runs.</p>
       </span><span class="kw4">~cmd</span><span class="text">:</span><span class="string">&quot;ls /tmp&quot;</span><span class="text">
       </span><span class="kw4">~dependencies</span><span class="text">:[ </span><span class="id">target_with_condition</span><span class="text"> ]
   </span><span class="kw">in</span><span class="text">
-  </span><span class="id">run</span><span class="text"> </span><span class="id">target2</span></code></pre>
+  </span><span class="id">run</span><span class="text"> </span><span class="id">target2</span><span class="text">
+</span></pre>
+
 <p>The Explorer™ will show the failed targets:</p>
 <pre><code>* [1]: Won&#39;t-run because of failed dependency
 ketrew_2014-09-23-21h55m01s460ms-UTC_994326685
@@ -198,7 +214,9 @@ is really used to build Ketrew&#39;s <a href='http://hammerlab.github.io/ketrew/
 
 <p>The workflow can also fail in many ways (e.g. Git commit forbidden because of
 nothing is new) which show ketrew&#39;s handling of errors in dependencies.</p>
-<pre class='ocaml'><code class='ocaml'><span class="kw">let</span><span class="text"> </span><span class="id">deploy_website</span><span class="text"> </span><span class="id">branches</span><span class="text"> =
+
+<pre><span class="text">
+</span><span class="kw">let</span><span class="text"> </span><span class="id">deploy_website</span><span class="text"> </span><span class="id">branches</span><span class="text"> =
   </span><span class="kw">let</span><span class="text"> </span><span class="kw">open</span><span class="text"> </span><span class="kw2">Ketrew</span><span class="text">.</span><span class="kw2">EDSL</span><span class="text"> </span><span class="kw">in</span><span class="text">
   </span><span class="kw">let</span><span class="text"> </span><span class="id">host</span><span class="text"> = (</span><span class="kw2">Host</span><span class="text">.</span><span class="id">parse</span><span class="text"> </span><span class="string">&quot;/tmp&quot;</span><span class="text">) </span><span class="kw">in</span><span class="text">
   </span><span class="kw">let</span><span class="text"> </span><span class="id">local_deamonize</span><span class="text"> = </span><span class="id">daemonize</span><span class="text"> </span><span class="kw4">~host</span><span class="text"> </span><span class="kw4">~using</span><span class="text">:`</span><span class="kw2">Python_daemon</span><span class="text"> </span><span class="kw">in</span><span class="text">
@@ -293,14 +311,17 @@ nothing is new) which show ketrew&#39;s handling of errors in dependencies.</p>
      add all their (transitive) dependencies to the system.  *)</span><span class="text">
   </span><span class="id">run</span><span class="text"> (</span><span class="id">ancestor</span><span class="text"> </span><span class="string">&quot;Success&quot;</span><span class="text"> </span><span class="kw4">~dependencies</span><span class="text">:[</span><span class="id">commit_website</span><span class="text">])
 
-</span></code></pre>
+</span></pre>
+
 <h3 id="ExampleBackupWorkflow">Example “Backup” Workflow</h3>
 <p>This an example of a “backup” workflow.</p>
-<p>Take a directory, make a tar.gz, save its MD5 sum, and if <code>gpg</code> is <code>true</code>,
+<p>Take a directory, make a tar.gz, save its MD5 sum, and if <code>gpg</code> is <a href='api/html#VALtrue' title='true'><code>true</code></a>,
 call <code>gpg -c</code> and delete the tar.gz.</p>
 <p>The passphrase for GPG must be in a file <code>~/.backup_passphrase</code> as</p>
 <pre class='shell'><code class='shell'>export BACKUP_PASSPHRASE=&quot;some passsphraaase&quot;</code></pre>
-<pre class='ocaml'><code class='ocaml'><span class="kw">let</span><span class="text"> </span><span class="id">make_targz_on_host</span><span class="text"> ?(</span><span class="id">gpg</span><span class="text">=</span><span class="constant">true</span><span class="text">) ?</span><span class="id">dest_prefix</span><span class="text"> </span><span class="kw4">~host</span><span class="text"> </span><span class="kw4">~dir</span><span class="text"> () =
+
+<pre><span class="text">
+</span><span class="kw">let</span><span class="text"> </span><span class="id">make_targz_on_host</span><span class="text"> ?(</span><span class="id">gpg</span><span class="text">=</span><span class="constant">true</span><span class="text">) ?</span><span class="id">dest_prefix</span><span class="text"> </span><span class="kw4">~host</span><span class="text"> </span><span class="kw4">~dir</span><span class="text"> () =
   </span><span class="kw">let</span><span class="text"> </span><span class="kw">open</span><span class="text"> </span><span class="kw2">Ketrew</span><span class="text">.</span><span class="kw2">EDSL</span><span class="text"> </span><span class="kw">in</span><span class="text">
   </span><span class="kw">let</span><span class="text"> </span><span class="id">dest_base</span><span class="text"> =
     </span><span class="kw1">match</span><span class="text"> </span><span class="id">dest_prefix</span><span class="text"> </span><span class="kw1">with</span><span class="text">
@@ -352,17 +373,20 @@ call <code>gpg -c</code> and delete the tar.gz.</p>
   </span><span class="comment">(* By running the common-ancestor we pull and activate all the targets to do. *)</span><span class="text">
   </span><span class="id">run</span><span class="text"> </span><span class="id">common_ancestor</span><span class="text">
 
-</span></code></pre>
+</span></pre>
+
 <h3 id="BuildKetrewOnaVagrantVM">Build Ketrew On a Vagrant VM</h3>
 <p>This function builds completely different workflows depedending on the input
 command:</p>
 <ul>
- <li><code>prepare</code> → prepare a vagrant VM, ready to SSH to</li>
+ <li><a href='api/html#VALprepare' title='prepare'><code>prepare</code></a> → prepare a vagrant VM, ready to SSH to</li>
  <li><code>go</code> → build Ketrew on the on vagrant VM</li>
- <li><code>clean</code> → shutdown and delete the VM</li>
+ <li><a href='api/html#VALclean' title='clean'><code>clean</code></a> → shutdown and delete the VM</li>
 </ul>
 
-<pre class='ocaml'><code class='ocaml'><span class="kw">let</span><span class="text"> </span><span class="id">run_ketrew_on_vagrant</span><span class="text"> </span><span class="id">what_to_do</span><span class="text"> =
+
+<pre><span class="text">
+</span><span class="kw">let</span><span class="text"> </span><span class="id">run_ketrew_on_vagrant</span><span class="text"> </span><span class="id">what_to_do</span><span class="text"> =
   </span><span class="kw">let</span><span class="text"> </span><span class="kw">open</span><span class="text"> </span><span class="kw2">Ketrew</span><span class="text">.</span><span class="kw2">EDSL</span><span class="text"> </span><span class="kw">in</span><span class="text">
   </span><span class="kw">let</span><span class="text"> (//) = </span><span class="kw2">Filename</span><span class="text">.</span><span class="id">concat</span><span class="text"> </span><span class="kw">in</span><span class="text">
   </span><span class="kw">let</span><span class="text"> </span><span class="id">tmp_dir</span><span class="text"> =  </span><span class="kw2">Sys</span><span class="text">.</span><span class="id">getenv</span><span class="text"> </span><span class="string">&quot;HOME&quot;</span><span class="text">  // </span><span class="string">&quot;tmp/ketrew_vagrant&quot;</span><span class="text"> </span><span class="kw">in</span><span class="text">
@@ -467,12 +491,15 @@ command:</p>
     </span><span class="kw">in</span><span class="text">
     </span><span class="id">rm_temp</span><span class="text">
 
-</span></code></pre>
+</span></pre>
+
 <h2 id="MainOftheModule">“Main” Of the Module</h2>
 <p>Command line parsing for this multi-workflow script.</p>
 <p>Here it is kept very basic but one may use usual OCaml tools
-(<code>Arg</code> module, or <code>Cmdliner</code> -- which is already linked-in with Ketrew).</p>
-<pre class='ocaml'><code class='ocaml'><span class="kw">let</span><span class="text"> () =
+(<code>Arg</code> module, or <a href='api/Cmdliner.html' title='Cmdliner'><code>Cmdliner</code></a> -- which is already linked-in with Ketrew).</p>
+
+<pre><span class="text">
+</span><span class="kw">let</span><span class="text"> () =
   </span><span class="kw">let</span><span class="text"> </span><span class="id">argl</span><span class="text"> = </span><span class="kw2">Array</span><span class="text">.</span><span class="id">to_list</span><span class="text"> </span><span class="kw2">Sys</span><span class="text">.</span><span class="id">argv</span><span class="text"> </span><span class="kw">in</span><span class="text">
   </span><span class="kw1">match</span><span class="text"> </span><span class="kw2">List</span><span class="text">.</span><span class="id">tl</span><span class="text"> </span><span class="id">argl</span><span class="text"> </span><span class="kw1">with</span><span class="text">
   | </span><span class="string">&quot;website&quot;</span><span class="text"> :: </span><span class="id">more_args</span><span class="text"> -&gt;
@@ -544,5 +571,4 @@ command:</p>
     </span><span class="id">say</span><span class="text"> </span><span class="string">&quot;Don't know what to do with %s&quot;</span><span class="text"> (</span><span class="kw2">String</span><span class="text">.</span><span class="id">concat</span><span class="text"> </span><span class="string">&quot;, &quot;</span><span class="text"> </span><span class="id">args</span><span class="text">);
     </span><span class="id">failwith</span><span class="text"> </span><span class="string">&quot;Wrong command line&quot;</span><span class="text">
 
-</span></code></pre>
-</div></div></div></body><html>
+</span></pre></div></div></div></body><html>
