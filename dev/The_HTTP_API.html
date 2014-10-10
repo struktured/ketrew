@@ -35,7 +35,7 @@
 <pre><code>kdtest website some_branch</code></pre>
 <p>You can always browse with the client working like in standalone mode:</p>
 <pre><code>kdclient interact</code></pre>
-<p>Let&#39;s see the API itself, we use <a href='api/html#VALcurl' title='curl'><code>curl</code></a>, here on the <code>/targets</code> service:</p>
+<p>Let&#39;s see the API itself, we use <code>curl</code>, here on the <code>/targets</code> service:</p>
 <pre><code>curl -k &quot;$ktest_url/targets&quot;</code></pre>
 <p>The option <code>return-error-messages</code> is set to true, so the server is nice and
 says what went wrong:</p>
@@ -104,7 +104,7 @@ curl -k &quot;$ktest_url/targets?token=nekot&amp;format=json&amp;id=$one_of_them
          &quot;dependencies&quot; : [
             &quot;ketrew_2014-08-21-21h49m48s823ms-UTC_332180439&quot;
          ],
-         &quot;persistance&quot; : &quot;Input_data&quot;,
+         &quot;persistence&quot; : &quot;Input_data&quot;,
          &quot;name&quot; : &quot;Commit&quot;,
          &quot;if_fails_activate&quot; : [
             &quot;ketrew_2014-08-21-21h49m48s823ms-UTC_641907500&quot;

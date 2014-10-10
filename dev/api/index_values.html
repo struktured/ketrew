@@ -27,6 +27,7 @@
 <link title="Ketrew_pervasives" rel="Chapter" href="Ketrew_pervasives.html">
 <link title="Ketrew_plugin" rel="Chapter" href="Ketrew_plugin.html">
 <link title="Ketrew_program" rel="Chapter" href="Ketrew_program.html">
+<link title="Ketrew_protocol" rel="Chapter" href="Ketrew_protocol.html">
 <link title="Ketrew_server" rel="Chapter" href="Ketrew_server.html">
 <link title="Ketrew_target" rel="Chapter" href="Ketrew_target.html">
 <link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html"><title>Ketrew API : Index of values</title>
@@ -93,6 +94,8 @@ Add a list of targets to the engine.
 </td></tr>
 <tr><td><a href="Ketrew_server.html#VALadd_targets_service">add_targets_service</a> [<a href="Ketrew_server.html">Ketrew_server</a>]</td>
 <td></td></tr>
+<tr><td><a href="Ketrew_protocol.Down_message.html#VALadded_target">added_target</a> [<a href="Ketrew_protocol.Down_message.html">Ketrew_protocol.Down_message</a>]</td>
+<td></td></tr>
 <tr><td><a href="Ketrew_plugin.html#VALadditional_queries">additional_queries</a> [<a href="Ketrew_plugin.html">Ketrew_plugin</a>]</td>
 <td><div class="info">
 Get the potential additional queries (<code class="code">(key, description)</code> pairs) that can
@@ -108,11 +111,6 @@ List of potential <code class="code">(query, description)</code> pairs that can 
 <tr><td><a href="Ketrew_artifact.Volume.html#VALall_paths">all_paths</a> [<a href="Ketrew_artifact.Volume.html">Ketrew_artifact.Volume</a>]</td>
 <td><div class="info">
 Get all the paths of the given Volume (files and directories).
-</div>
-</td></tr>
-<tr><td><a href="Ketrew_configuration.html#VALapply_globals">apply_globals</a> [<a href="Ketrew_configuration.html">Ketrew_configuration</a>]</td>
-<td><div class="info">
-Apply options that have global impact.
 </div>
 </td></tr>
 <tr><td><a href="Ketrew_client.Http_client.html#VALarchive">archive</a> [<a href="Ketrew_client.Http_client.html">Ketrew_client.Http_client</a>]</td>
@@ -170,6 +168,8 @@ Get a glance at the gravity of the situation:  <code class="code"><span class="k
      actual command is wrong., <code class="code"><span class="keywordsign">`</span><span class="constructor">Execution</span></code>: SSH/<code class="code"><span class="constructor">Unix</span></code> succeeded but the command failed.
 </div>
 </td></tr>
+<tr><td><a href="Ketrew_protocol.Down_message.html#VALclean_up">clean_up</a> [<a href="Ketrew_protocol.Down_message.html">Ketrew_protocol.Down_message</a>]</td>
+<td></td></tr>
 <tr><td><a href="Ketrew_configuration.html#VALclient">client</a> [<a href="Ketrew_configuration.html">Ketrew_configuration</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ketrew_client.Http_client.html#VALclient_error">client_error</a> [<a href="Ketrew_client.Http_client.html">Ketrew_client.Http_client</a>]</td>
@@ -338,7 +338,9 @@ Default (upper bound) of the `?timeout` arguments.
 Deserilize a target from a string.
 </div>
 </td></tr>
-<tr><td><a href="Ketrew_pervasives.Json.Make_serialization.html#VALdeserialize_exn">deserialize_exn</a> [<a href="Ketrew_pervasives.Json.Make_serialization.html">Ketrew_pervasives.Json.Make_serialization</a>]</td>
+<tr><td><a href="Ketrew_protocol.Down_message.html#VALdeserialize_exn">deserialize_exn</a> [<a href="Ketrew_protocol.Down_message.html">Ketrew_protocol.Down_message</a>]</td>
+<td></td></tr>
+<tr><td><a href="Ketrew_pervasives.Json.Make_versioned_serialization.html#VALdeserialize_exn">deserialize_exn</a> [<a href="Ketrew_pervasives.Json.Make_versioned_serialization.html">Ketrew_pervasives.Json.Make_versioned_serialization</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ketrew_long_running.LONG_RUNNING.html#VALdeserialize_exn">deserialize_exn</a> [<a href="Ketrew_long_running.LONG_RUNNING.html">Ketrew_long_running.LONG_RUNNING</a>]</td>
 <td><div class="info">
@@ -446,6 +448,8 @@ Create a path to a file.
 Create a file <a href="Ketrew_edsl.user_artifact-c.html"><code class="code"><span class="constructor">Ketrew_edsl</span>.user_artifact</code></a> and the <a href="Ketrew_edsl.user_target-c.html"><code class="code"><span class="constructor">Ketrew_edsl</span>.user_target</code></a> that produces it.
 </div>
 </td></tr>
+<tr><td><a href="Ketrew_client.Http_client.html#VALfilter_down_message">filter_down_message</a> [<a href="Ketrew_client.Http_client.html">Ketrew_client.Http_client</a>]</td>
+<td></td></tr>
 <tr><td><a href="Ketrew_plugin.html#VALfind_plugin">find_plugin</a> [<a href="Ketrew_plugin.html">Ketrew_plugin</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ketrew_target.Is.html#VALfinished">finished</a> [<a href="Ketrew_target.Is.html">Ketrew_target.Is</a>]</td>
@@ -481,9 +485,11 @@ The call <code class="code">get_configuration file</code> reads and parses the f
     <code class="code">override_configuration</code> is provided.
 </div>
 </td></tr>
-<tr><td><a href="Ketrew_configuration.html#VALget_configuration_non_deferred_exn">get_configuration_non_deferred_exn</a> [<a href="Ketrew_configuration.html">Ketrew_configuration</a>]</td>
+<tr><td><a href="Ketrew_configuration.html#VALget_configuration_for_daemon_exn">get_configuration_for_daemon_exn</a> [<a href="Ketrew_configuration.html">Ketrew_configuration</a>]</td>
 <td><div class="info">
-Do like <a href="Ketrew_configuration.html#VALget_configuration"><code class="code"><span class="constructor">Ketrew_configuration</span>.get_configuration</code></a> but in a dirty Lwt-less way.
+Do like <a href="Ketrew_configuration.html#VALget_configuration"><code class="code"><span class="constructor">Ketrew_configuration</span>.get_configuration</code></a> but in a dirty Lwt-less way and
+    return only partial information: whether to daemonize or not (the <code class="code">string
+    option</code> is the potential log-file path).
 </div>
 </td></tr>
 <tr><td><a href="Ketrew_engine.Target_graph.html#VALget_current">get_current</a> [<a href="Ketrew_engine.Target_graph.html">Ketrew_engine.Target_graph</a>]</td>
@@ -560,6 +566,8 @@ Get a target from its id.
 Debug-logging level used in the module (default: 4).
 </div>
 </td></tr>
+<tr><td><a href="Ketrew_pervasives.html#VALglobal_log_print_string">global_log_print_string</a> [<a href="Ketrew_pervasives.html">Ketrew_pervasives</a>]</td>
+<td></td></tr>
 <tr><td><a href="Ketrew_pervasives.html#VALglobal_with_color">global_with_color</a> [<a href="Ketrew_pervasives.html">Ketrew_pervasives</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ketrew_host.html#VALgrab_file_or_log">grab_file_or_log</a> [<a href="Ketrew_host.html">Ketrew_host</a>]</td>
@@ -658,11 +666,15 @@ Load a handle from the given database parameters.
 <td></td></tr>
 <tr><td><a href="Ketrew_server.Authentication.html#VALload_file">load_file</a> [<a href="Ketrew_server.Authentication.html">Ketrew_server.Authentication</a>]</td>
 <td></td></tr>
+<tr><td><a href="Ketrew_plugin.html#VALload_plugins">load_plugins</a> [<a href="Ketrew_plugin.html">Ketrew_plugin</a>]</td>
+<td></td></tr>
 <tr><td><a href="Ketrew_host.html#VALlocalhost">localhost</a> [<a href="Ketrew_host.html">Ketrew_host</a>]</td>
 <td><div class="info">
 The host <code class="code"><span class="string">"localhost"</span></code> (i.e.
 </div>
 </td></tr>
+<tr><td><a href="Ketrew_protocol.Down_message.html#VALlog">log</a> [<a href="Ketrew_protocol.Down_message.html">Ketrew_protocol.Down_message</a>]</td>
+<td></td></tr>
 <tr><td><a href="Ketrew_pervasives.Time.html#VALlog">log</a> [<a href="Ketrew_pervasives.Time.html">Ketrew_pervasives.Time</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ketrew_pervasives.Json.html#VALlog">log</a> [<a href="Ketrew_pervasives.Json.html">Ketrew_pervasives.Json</a>]</td>
@@ -808,7 +820,9 @@ A build process that does nothing.
 <tr><td><a href="Ketrew_pervasives.Time.html#VALnow">now</a> [<a href="Ketrew_pervasives.Time.html">Ketrew_pervasives.Time</a>]</td>
 <td></td></tr>
 <tr><td align="left"><br>O</td></tr>
-<tr><td><a href="Ketrew_pervasives.Json.Make_serialization.html#VALof_json_exn">of_json_exn</a> [<a href="Ketrew_pervasives.Json.Make_serialization.html">Ketrew_pervasives.Json.Make_serialization</a>]</td>
+<tr><td><a href="Ketrew_protocol.Down_message.html#VALof_json_exn">of_json_exn</a> [<a href="Ketrew_protocol.Down_message.html">Ketrew_protocol.Down_message</a>]</td>
+<td></td></tr>
+<tr><td><a href="Ketrew_pervasives.Json.Make_versioned_serialization.html#VALof_json_exn">of_json_exn</a> [<a href="Ketrew_pervasives.Json.Make_versioned_serialization.html">Ketrew_pervasives.Json.Make_versioned_serialization</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ketrew_host.html#VALof_string">of_string</a> [<a href="Ketrew_host.html">Ketrew_host</a>]</td>
 <td><div class="info">
@@ -970,7 +984,9 @@ Generate an SCP command for the given host with the destination
 Put a sequence of actions into a transaction.
 </div>
 </td></tr>
-<tr><td><a href="Ketrew_pervasives.Json.Make_serialization.html#VALserialize">serialize</a> [<a href="Ketrew_pervasives.Json.Make_serialization.html">Ketrew_pervasives.Json.Make_serialization</a>]</td>
+<tr><td><a href="Ketrew_protocol.Down_message.html#VALserialize">serialize</a> [<a href="Ketrew_protocol.Down_message.html">Ketrew_protocol.Down_message</a>]</td>
+<td></td></tr>
+<tr><td><a href="Ketrew_pervasives.Json.Make_versioned_serialization.html#VALserialize">serialize</a> [<a href="Ketrew_pervasives.Json.Make_versioned_serialization.html">Ketrew_pervasives.Json.Make_versioned_serialization</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ketrew_long_running.LONG_RUNNING.html#VALserialize">serialize</a> [<a href="Ketrew_long_running.LONG_RUNNING.html">Ketrew_long_running.LONG_RUNNING</a>]</td>
 <td><div class="info">
@@ -1111,8 +1127,15 @@ The host <code class="code"><span class="string">"localhost"</span></code>, with
 </td></tr>
 <tr><td><a href="Ketrew_pervasives.Time.html#VALto_filename">to_filename</a> [<a href="Ketrew_pervasives.Time.html">Ketrew_pervasives.Time</a>]</td>
 <td></td></tr>
-<tr><td><a href="Ketrew_pervasives.Json.Make_serialization.html#VALto_json">to_json</a> [<a href="Ketrew_pervasives.Json.Make_serialization.html">Ketrew_pervasives.Json.Make_serialization</a>]</td>
+<tr><td><a href="Ketrew_protocol.Down_message.html#VALto_json">to_json</a> [<a href="Ketrew_protocol.Down_message.html">Ketrew_protocol.Down_message</a>]</td>
 <td></td></tr>
+<tr><td><a href="Ketrew_pervasives.Json.Make_versioned_serialization.html#VALto_json">to_json</a> [<a href="Ketrew_pervasives.Json.Make_versioned_serialization.html">Ketrew_pervasives.Json.Make_versioned_serialization</a>]</td>
+<td></td></tr>
+<tr><td><a href="Ketrew_target.html#VALto_json">to_json</a> [<a href="Ketrew_target.html">Ketrew_target</a>]</td>
+<td><div class="info">
+Serialize a target to <code class="code"><span class="constructor">Json</span>.t</code> intermediate representation.
+</div>
+</td></tr>
 <tr><td><a href="Ketrew_unix_process.Exit_code.html#VALto_log">to_log</a> [<a href="Ketrew_unix_process.Exit_code.html">Ketrew_unix_process.Exit_code</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ketrew_pervasives.Log.html#VALto_long_string">to_long_string</a> [<a href="Ketrew_pervasives.Log.html">Ketrew_pervasives.Log</a>]</td>
@@ -1184,11 +1207,6 @@ Convert a <code class="code"><span class="constructor">Host</span>.t</code> to a
 Get the <code class="code"><span class="string">"token"</span></code> parameter from an URI.
 </div>
 </td></tr>
-<tr><td><a href="Ketrew_engine.Target_graph.html#VALtransitive_predecessors">transitive_predecessors</a> [<a href="Ketrew_engine.Target_graph.html">Ketrew_engine.Target_graph</a>]</td>
-<td><div class="info">
-Get all the predecessors of a given target; i.e.
-</div>
-</td></tr>
 <tr><td align="left"><br>U</td></tr>
 <tr><td><a href="Ketrew_configuration.html#VALui">ui</a> [<a href="Ketrew_configuration.html">Ketrew_configuration</a>]</td>
 <td></td></tr>
@@ -1222,13 +1240,6 @@ Get a new target updated with new run paramters (from a plugin),
 </td></tr>
 <tr><td><a href="Ketrew_pervasives.Log.html#VALuri">uri</a> [<a href="Ketrew_pervasives.Log.html">Ketrew_pervasives.Log</a>]</td>
 <td></td></tr>
-<tr><td align="left"><br>V</td></tr>
-<tr><td><a href="Ketrew_engine.Target_graph.html#VALvertices">vertices</a> [<a href="Ketrew_engine.Target_graph.html">Ketrew_engine.Target_graph</a>]</td>
-<td><div class="info">
-Get all the vertices of the graph (<a href="Ketrew_engine.html#VALcurrent_targets"><code class="code"><span class="constructor">Ketrew_engine</span>.current_targets</code></a> + the transitive
-      closure).
-</div>
-</td></tr>
 <tr><td align="left"><br>W</td></tr>
 <tr><td><a href="Ketrew_engine.html#VALwhat_happened_to_string">what_happened_to_string</a> [<a href="Ketrew_engine.html">Ketrew_engine</a>]</td>
 <td><div class="info">

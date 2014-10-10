@@ -26,6 +26,7 @@
 <link title="Ketrew_pervasives" rel="Chapter" href="Ketrew_pervasives.html">
 <link title="Ketrew_plugin" rel="Chapter" href="Ketrew_plugin.html">
 <link title="Ketrew_program" rel="Chapter" href="Ketrew_program.html">
+<link title="Ketrew_protocol" rel="Chapter" href="Ketrew_protocol.html">
 <link title="Ketrew_server" rel="Chapter" href="Ketrew_server.html">
 <link title="Ketrew_target" rel="Chapter" href="Ketrew_target.html">
 <link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html"><title>Ketrew API : Ketrew_database</title>
@@ -98,15 +99,51 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;→&nbsp;"</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;s&nbsp;msg)<br>
 <br>
-<span class="comment">(*&nbsp;type&nbsp;stupid_db&nbsp;=&nbsp;Ketrew_gen_base_v0_t.stupid_db&nbsp;*)</span><br>
+<span class="keyword">module</span>&nbsp;<span class="constructor">Cache</span>&nbsp;=&nbsp;<span class="keyword">struct</span><br>
+<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;collection&nbsp;=&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;hashtbl:&nbsp;(string,&nbsp;string&nbsp;option)&nbsp;<span class="constructor">Hashtbl</span>.t;<br>
+&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">String_map</span>&nbsp;=&nbsp;<span class="constructor">Map</span>.<span class="constructor">Make</span>(<span class="constructor">String</span>)<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">mutable</span>&nbsp;map:&nbsp;collection&nbsp;<span class="constructor">String_map</span>.t;<br>
+&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;create&nbsp;()&nbsp;=&nbsp;{&nbsp;map&nbsp;=&nbsp;<span class="constructor">String_map</span>.empty;&nbsp;}<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;add_or_replace&nbsp;t&nbsp;?(collection=<span class="string">""</span>)&nbsp;~key&nbsp;v&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;{hashtbl}&nbsp;=&nbsp;<span class="constructor">String_map</span>.find&nbsp;collection&nbsp;t.map&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Hashtbl</span>.replace&nbsp;hashtbl&nbsp;key&nbsp;v<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;hashtbl&nbsp;=&nbsp;<span class="constructor">Hashtbl</span>.create&nbsp;42&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Hashtbl</span>.replace&nbsp;hashtbl&nbsp;key&nbsp;v;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;t.map&nbsp;&lt;-&nbsp;<span class="constructor">String_map</span>.add&nbsp;collection&nbsp;{hashtbl}&nbsp;t.map;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;()<br>
+<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;get&nbsp;t&nbsp;?(collection=<span class="string">""</span>)&nbsp;~key&nbsp;=&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;{hashtbl}&nbsp;=&nbsp;<span class="constructor">String_map</span>.find&nbsp;collection&nbsp;t.map&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">Set</span>&nbsp;(<span class="constructor">Hashtbl</span>.find&nbsp;hashtbl&nbsp;key)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Unset</span><br>
+<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;remove&nbsp;t&nbsp;?(collection=<span class="string">""</span>)&nbsp;~key&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;{hashtbl}&nbsp;=&nbsp;<span class="constructor">String_map</span>.find&nbsp;collection&nbsp;t.map&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Hashtbl</span>.remove&nbsp;hashtbl&nbsp;key<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
+<br>
+<span class="keyword">end</span><br>
+<br>
+<br>
 <span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;{<br>
-&nbsp;&nbsp;<span class="comment">(*&nbsp;mutable&nbsp;db:&nbsp;Dbm.t;&nbsp;*)</span><br>
-&nbsp;&nbsp;<span class="comment">(*&nbsp;mutable&nbsp;history:&nbsp;(action&nbsp;*&nbsp;stupid_db)&nbsp;list;&nbsp;*)</span><br>
 &nbsp;&nbsp;path:&nbsp;string;<br>
 &nbsp;&nbsp;mutex:&nbsp;<span class="constructor">Lwt_mutex</span>.t;<br>
 &nbsp;&nbsp;exec_style:&nbsp;[<span class="keywordsign">`</span><span class="constructor">Shell</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Exec</span>];<br>
+&nbsp;&nbsp;cache:&nbsp;<span class="constructor">Cache</span>.t;<br>
 }<br>
-<span class="keyword">let</span>&nbsp;create&nbsp;path&nbsp;=&nbsp;{exec_style&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">Exec</span>;&nbsp;mutex&nbsp;=&nbsp;<span class="constructor">Lwt_mutex</span>.create&nbsp;();&nbsp;path}&nbsp;<br>
+<span class="keyword">let</span>&nbsp;create&nbsp;path&nbsp;=<br>
+&nbsp;&nbsp;{exec_style&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">Exec</span>;&nbsp;mutex&nbsp;=&nbsp;<span class="constructor">Lwt_mutex</span>.create&nbsp;();&nbsp;<br>
+&nbsp;&nbsp;&nbsp;path;&nbsp;cache&nbsp;=&nbsp;<span class="constructor">Cache</span>.create&nbsp;()}&nbsp;<br>
 <br>
 <span class="keyword">module</span>&nbsp;<span class="constructor">Debug</span>&nbsp;=&nbsp;<span class="keyword">struct</span><br>
 <br>
@@ -250,11 +287,18 @@
 &nbsp;&nbsp;call_git&nbsp;t&nbsp;~loc&nbsp;[<span class="string">"clean"</span>;&nbsp;<span class="string">"-f"</span>]<br>
 <br>
 <span class="keyword">let</span>&nbsp;get&nbsp;?collection&nbsp;t&nbsp;~key&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;key&nbsp;=&nbsp;_key&nbsp;?collection&nbsp;key&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;metakey&nbsp;=&nbsp;_key&nbsp;?collection&nbsp;key&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">Lwt_mutex</span>.with_lock&nbsp;t.mutex&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cleap_up&nbsp;t&nbsp;~loc:(<span class="keywordsign">`</span><span class="constructor">Get</span>&nbsp;key)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get_no_mutex&nbsp;t&nbsp;~key)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Cache</span>.get&nbsp;t.cache&nbsp;?collection&nbsp;~key&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Set</span>&nbsp;v&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;v<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Unset</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cleap_up&nbsp;t&nbsp;~loc:(<span class="keywordsign">`</span><span class="constructor">Get</span>&nbsp;metakey)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get_no_mutex&nbsp;t&nbsp;~key:metakey<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;v&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Cache</span>.add_or_replace&nbsp;t.cache&nbsp;?collection&nbsp;~key&nbsp;v;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;v<br>
+&nbsp;&nbsp;&nbsp;&nbsp;)<br>
 <br>
 <span class="keyword">let</span>&nbsp;get_all&nbsp;t&nbsp;~collection&nbsp;=<br>
 &nbsp;&nbsp;<span class="constructor">Lwt_mutex</span>.with_lock&nbsp;t.mutex&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<br>
@@ -334,6 +378,17 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;(_&nbsp;:&nbsp;unit&nbsp;list)&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;()<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;go_cache&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Set</span>&nbsp;(key,&nbsp;value)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Cache</span>.add_or_replace&nbsp;t.cache<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?collection:key.collection&nbsp;~key:key.key&nbsp;(<span class="constructor">Some</span>&nbsp;value)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Unset</span>&nbsp;key&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Cache</span>.add_or_replace&nbsp;t.cache<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?collection:key.collection&nbsp;~key:key.key&nbsp;<span class="constructor">None</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Check</span>&nbsp;(key,&nbsp;value_opt)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Sequence</span>&nbsp;l&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">List</span>.iter&nbsp;l&nbsp;~f:go_cache<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">begin</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Lwt_mutex</span>.with_lock&nbsp;t.mutex&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Starting&nbsp;transaction&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;branch_name&nbsp;@&nbsp;very_verbose);<br>
@@ -346,6 +401,10 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;call_git&nbsp;[<span class="string">"checkout"</span>;&nbsp;<span class="string">"master"</span>]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;call_git&nbsp;[<span class="string">"merge"</span>;&nbsp;branch_name]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;go_cache&nbsp;action;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;update&nbsp;cache&nbsp;*)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;()<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)&nbsp;<span class="keyword">end</span><br>
 &nbsp;&nbsp;&gt;&gt;&lt;&nbsp;<span class="keyword">function</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ok</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;return&nbsp;<span class="keywordsign">`</span><span class="constructor">Done</span><br>

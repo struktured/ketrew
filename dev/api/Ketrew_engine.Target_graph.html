@@ -30,6 +30,7 @@
 <link title="Ketrew_pervasives" rel="Chapter" href="Ketrew_pervasives.html">
 <link title="Ketrew_plugin" rel="Chapter" href="Ketrew_plugin.html">
 <link title="Ketrew_program" rel="Chapter" href="Ketrew_program.html">
+<link title="Ketrew_protocol" rel="Chapter" href="Ketrew_protocol.html">
 <link title="Ketrew_server" rel="Chapter" href="Ketrew_server.html">
 <link title="Ketrew_target" rel="Chapter" href="Ketrew_target.html">
 <link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html"><title>Ketrew API : Ketrew_engine.Target_graph</title>
@@ -64,16 +65,6 @@ Do like <a href="Ketrew_engine.html#VALcurrent_targets"><code class="code"><span
 
 <pre><span id="VALlog"><span class="keyword">val</span> <a href="code_VALKetrew_engine.Target_graph.log.html">log</a></span> : <code class="type"><a href="Ketrew_engine.Target_graph.html#TYPEt">t</a> -> Ketrew_pervasives.Log.t</code></pre><div class="info ">
 Get a displayable <code class="code"><span class="constructor">Log</span>.t</code> for the graph.<br>
-</div>
-
-<pre><span id="VALvertices"><span class="keyword">val</span> <a href="code_VALKetrew_engine.Target_graph.vertices.html">vertices</a></span> : <code class="type"><a href="Ketrew_engine.Target_graph.html#TYPEt">t</a> -> <a href="Ketrew_target.html#TYPEt">Ketrew_target.t</a> list</code></pre><div class="info ">
-Get all the vertices of the graph (<a href="Ketrew_engine.html#VALcurrent_targets"><code class="code"><span class="constructor">Ketrew_engine</span>.current_targets</code></a> + the transitive
-      closure).<br>
-</div>
-
-<pre><span id="VALtransitive_predecessors"><span class="keyword">val</span> <a href="code_VALKetrew_engine.Target_graph.transitive_predecessors.html">transitive_predecessors</a></span> : <code class="type"><a href="Ketrew_engine.Target_graph.html#TYPEt">t</a> -><br>       target:<a href="Ketrew_target.html#TYPEt">Ketrew_target.t</a> -> <a href="Ketrew_target.html#TYPEt">Ketrew_target.t</a> list</code></pre><div class="info ">
-Get all the predecessors of a given target; i.e. all the target that
-      dependent (on targets that depend) on that target<br>
 </div>
 
 <pre><span id="VALtargets_to_clean_up"><span class="keyword">val</span> <a href="code_VALKetrew_engine.Target_graph.targets_to_clean_up.html">targets_to_clean_up</a></span> : <code class="type"><a href="Ketrew_engine.Target_graph.html#TYPEt">t</a> -><br>       [ `Hard | `Soft ] -><br>       [ `To_kill of <a href="Ketrew_target.html#TYPEid">Ketrew_target.id</a> list ] *<br>       [ `To_archive of <a href="Ketrew_target.html#TYPEid">Ketrew_target.id</a> list ]</code></pre></body></html>

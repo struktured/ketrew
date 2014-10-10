@@ -30,22 +30,22 @@
 <h2 id="Implementation">Implementation</h2>
 <p>The long-running plugins <em>must</em>:</p>
 <ul>
- <li>implement a module satisfying the <a href='api/LONG_RUNNING.html' title='LONG_RUNNING'><code>LONG_RUNNING</code></a> interface defined in
+ <li>implement a module satisfying the <code>LONG_RUNNING</code> interface defined in
 <a href='ketrew_long_running.html'><code>src/lib/ketrew_long_running.ml</code></a>
-(with a <strong>unique</strong> <a href='api/html#VALname' title='name'><code>name</code></a>);</li>
+(with a <strong>unique</strong> <code>name</code>);</li>
  <li>provide a way to create values like
 <code>`Long_running (name, serialized_state)</code>;</li>
  <li>register themselves with the function:
-<a href='api/Ketrew_state.html#VALregister_long_running_plugin' title='Ketrew_state.register_long_running_plugin'><code>Ketrew_state.register_long_running_plugin</code></a>
-(see the interface of <a href='api/Ketrew_state.html'><a href='api/Ketrew_state.html' title='Ketrew_state'><code>Ketrew_state</code></a></a>).</li>
+<code>Ketrew_state.register_long_running_plugin</code>
+(see the interface of <a href='api/Ketrew_state.html'><code>Ketrew_state</code></a>).</li>
 </ul>
 
 <h2 id="Examples">Examples</h2>
 <p>There are (for now) two long-running methods in the library, see
-<a href='api/Ketrew_lsf.html'><a href='api/Ketrew_lsf.html' title='Ketrew_lsf'><code>Ketrew_lsf</code></a></a> and
-<a href='api/Ketrew_daemonize.html'><a href='api/Ketrew_daemonize.html' title='Ketrew_daemonize'><code>Ketrew_daemonize</code></a></a>.</p>
+<a href='api/Ketrew_lsf.html'><code>Ketrew_lsf</code></a> and
+<a href='api/Ketrew_daemonize.html'><code>Ketrew_daemonize</code></a>.</p>
 <p>And the tests contain a “dynamically linked plugin” that uses the
-implementation of <a href='api/Ketrew_daemonize.html' title='Ketrew_daemonize'><code>Ketrew_daemonize</code></a> and adds a (stupid) custom runtime-query:</p>
+implementation of <code>Ketrew_daemonize</code> and adds a (stupid) custom runtime-query:</p>
 <ul>
  <li>Implementation of the plugin:
 <a href='dummy_plugin.html'><code>src/test/dummy_plugin.ml</code></a>.</li>

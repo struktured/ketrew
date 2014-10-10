@@ -31,6 +31,7 @@
 <link title="Ketrew_pervasives" rel="Chapter" href="Ketrew_pervasives.html">
 <link title="Ketrew_plugin" rel="Chapter" href="Ketrew_plugin.html">
 <link title="Ketrew_program" rel="Chapter" href="Ketrew_program.html">
+<link title="Ketrew_protocol" rel="Chapter" href="Ketrew_protocol.html">
 <link title="Ketrew_server" rel="Chapter" href="Ketrew_server.html">
 <link title="Ketrew_target" rel="Chapter" href="Ketrew_target.html">
 <link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html"><title>Ketrew API : Ketrew_configuration</title>
@@ -148,19 +149,20 @@ Should we kill targets on ssh/unix errors.<br>
 <pre><span id="VALparse"><span class="keyword">val</span> <a href="code_VALKetrew_configuration.parse.html">parse</a></span> : <code class="type">string -><br>       (<a href="Ketrew_configuration.html#TYPEt">t</a>, [> `Configuration of [> `Parsing of string ] ])<br>       Ketrew_pervasives.Result.t</code></pre><div class="info ">
 Parse the contents of a configuration file.<br>
 </div>
-
-<pre><span id="VALapply_globals"><span class="keyword">val</span> <a href="code_VALKetrew_configuration.apply_globals.html">apply_globals</a></span> : <code class="type"><a href="Ketrew_configuration.html#TYPEt">t</a> -> unit</code></pre><div class="info ">
+<br>
 Apply options that have global impact.<br>
-</div>
 
-<pre><span id="VALget_configuration"><span class="keyword">val</span> <a href="code_VALKetrew_configuration.get_configuration.html">get_configuration</a></span> : <code class="type">?and_apply:bool -><br>       ?override_configuration:<a href="Ketrew_configuration.html#TYPEt">t</a> -><br>       string -><br>       (<a href="Ketrew_configuration.html#TYPEt">t</a>,<br>        [> `Configuration of [> `Parsing of string ]<br>         | `IO of [> `Read_file_exn of string * exn ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
+<pre><span id="VALget_configuration"><span class="keyword">val</span> <a href="code_VALKetrew_configuration.get_configuration.html">get_configuration</a></span> : <code class="type">?and_apply:bool -><br>       ?override_configuration:<a href="Ketrew_configuration.html#TYPEt">t</a> -><br>       string -><br>       (<a href="Ketrew_configuration.html#TYPEt">t</a>,<br>        [> `Configuration of [> `Parsing of string ]<br>         | `Dyn_plugin of [> `Dynlink_error of Dynlink.error | `Findlib of exn ]<br>         | `Failure of string<br>         | `IO of [> `Read_file_exn of string * exn ] ])<br>       Ketrew_pervasives.Deferred_result.t</code></pre><div class="info ">
 The call <code class="code">get_configuration file</code> reads and parses the file <code class="code">f</code>, unless
     <code class="code">override_configuration</code> is provided.
-    if <code class="code">and_apply</code> is <code class="code"><span class="keyword">true</span></code> (the default), then <a href="Ketrew_configuration.html#VALapply_globals"><code class="code"><span class="constructor">Ketrew_configuration</span>.apply_globals</code></a> is called.<br>
+    if <code class="code">and_apply</code> is <code class="code"><span class="keyword">true</span></code> (the default), then global settings are applied
+    and plugins are loaded.<br>
 </div>
 
-<pre><span id="VALget_configuration_non_deferred_exn"><span class="keyword">val</span> <a href="code_VALKetrew_configuration.get_configuration_non_deferred_exn.html">get_configuration_non_deferred_exn</a></span> : <code class="type">?and_apply:bool -><br>       ?override_configuration:<a href="Ketrew_configuration.html#TYPEt">t</a> -><br>       string -> <a href="Ketrew_configuration.html#TYPEt">t</a></code></pre><div class="info ">
-Do like <a href="Ketrew_configuration.html#VALget_configuration"><code class="code"><span class="constructor">Ketrew_configuration</span>.get_configuration</code></a> but in a dirty Lwt-less way.<br>
+<pre><span id="VALget_configuration_for_daemon_exn"><span class="keyword">val</span> <a href="code_VALKetrew_configuration.get_configuration_for_daemon_exn.html">get_configuration_for_daemon_exn</a></span> : <code class="type">?override_configuration:<a href="Ketrew_configuration.html#TYPEt">t</a> -><br>       string -> [ `Daemonize_with of string option | `Do_not_daemonize ]</code></pre><div class="info ">
+Do like <a href="Ketrew_configuration.html#VALget_configuration"><code class="code"><span class="constructor">Ketrew_configuration</span>.get_configuration</code></a> but in a dirty Lwt-less way and
+    return only partial information: whether to daemonize or not (the <code class="code">string
+    option</code> is the potential log-file path).<br>
 </div>
 
 <pre><span id="VALplugins"><span class="keyword">val</span> <a href="code_VALKetrew_configuration.plugins.html">plugins</a></span> : <code class="type"><a href="Ketrew_configuration.html#TYPEt">t</a> -> <a href="Ketrew_configuration.html#TYPEplugin">plugin</a> list</code></pre><div class="info ">

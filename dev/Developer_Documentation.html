@@ -51,35 +51,35 @@
 <h3 id="GettingJustTheDependencies">Getting Just The Dependencies</h3>
 <p>Ketrew depends on</p>
 <ul>
- <li><a href='api/html#VALnonstd' title='nonstd'><code>nonstd</code></a>: nano-library providing a portable extract of <a href='api/Core_kernel.html' title='Core_kernel'><code>Core_kernel</code></a></li>
- <li><a href='api/html#VALpvem' title='pvem'><code>pvem</code></a>: error monad</li>
- <li><a href='api/html#VALdocout' title='docout'><code>docout</code></a>: logging with <code>smart-print</code></li>
- <li><a href='api/html#VALsosa' title='sosa'><code>sosa</code></a>:  String module/functor</li>
- <li><a href='api/html#VALpvem_lwt_unix' title='pvem_lwt_unix'><code>pvem_lwt_unix</code></a>: <a href='api/Lwt_unix.html' title='Lwt_unix'><code>Lwt_unix</code></a> wrapped in a <a href='api/Pvem.html#TYPEt' title='Pvem.t'><code>Pvem.t</code></a> (error monad) with more
+ <li><code>nonstd</code>: nano-library providing a portable extract of <code>Core_kernel</code></li>
+ <li><code>pvem</code>: error monad</li>
+ <li><code>docout</code>: logging with <code>smart-print</code></li>
+ <li><code>sosa</code>:  String module/functor</li>
+ <li><code>pvem_lwt_unix</code>: <code>Lwt_unix</code> wrapped in a <code>Pvem.t</code> (error monad) with more
 precise error types.</li>
  <li><code>uri</code>:
 parse <a href='http://www.ietf.org/rfc/rfc3986.txt'>RFC-3986</a>-compliant URIs
-(<code>uri</code> itself depends on <a href='api/html#VALcamlp4' title='camlp4'><code>camlp4</code></a>).</li>
- <li><a href='api/html#VALcmdliner' title='cmdliner'><code>cmdliner</code></a>: command line parsing</li>
- <li><a href='api/html#VALyojson' title='yojson'><code>yojson</code></a>: JSON parsing/printing</li>
- <li><a href='api/html#VALatd2cconv' title='atd2cconv'><code>atd2cconv</code></a>: definition of serialization formats (used with <a href='api/Yojson.html' title='Yojson'><code>Yojson</code></a>).</li>
- <li><a href='api/html#VALtoml' title='toml'><code>toml</code></a>: config-file parsing</li>
- <li><a href='api/cohttp.html#VALlwt' title='cohttp.lwt'><code>cohttp.lwt</code></a>, <code>ssl</code>, and <a href='api/html#VALconduit' title='conduit'><code>conduit</code></a>: HTTP server and client</li>
- <li><a href='api/html#VALfindlib' title='findlib'><code>findlib</code></a> + <a href='api/html#VALdynlink' title='dynlink'><code>dynlink</code></a>: dynamic loading of plugins </li>
+(<code>uri</code> itself depends on <code>camlp4</code>).</li>
+ <li><code>cmdliner</code>: command line parsing</li>
+ <li><code>yojson</code>: JSON parsing/printing</li>
+ <li><code>atd2cconv</code>: definition of serialization formats (used with <code>Yojson</code>).</li>
+ <li><code>toml</code>: config-file parsing</li>
+ <li><code>cohttp.lwt</code>, <code>ssl</code>, and <code>conduit</code>: HTTP server and client</li>
+ <li><code>findlib</code> + <code>dynlink</code>: dynamic loading of plugins </li>
 </ul>
 
 <p>and uses the <code>ocp-build</code> build system.</p>
 <p>At runtime, Ketrew will use a reasonably recent <code>git</code> command, and an <code>ssh</code>
 client (tested only with OpenSSH; but SSH calls are quite configurable).</p>
-<p>The <a href='api/please.html#VALsh' title='please.sh'><code>please.sh</code></a> script can call <a href='api/html#VALopam' title='opam'><code>opam</code></a> itself:</p>
+<p>The <code>please.sh</code> script can call <code>opam</code> itself:</p>
 <pre><code>./please.sh get-dependencies</code></pre>
 <h3 id="Build_1">Build</h3>
 <p>Then you may setup and build everything:</p>
 <pre><code>./please.sh build</code></pre>
-<p>(for incremental compilation while developping please use: <code>ocp-build &lt;target&gt;</code>
+<p>(for incremental compilation while developing please use: <code>ocp-build &lt;target&gt;</code>
 directly)</p>
 <h3 id="Install">Install</h3>
-<p>For now, <a href='api/html#VALketrew' title='ketrew'><code>ketrew</code></a> uses a custom install/uninstall procedure:</p>
+<p>For now, <code>ketrew</code> uses a custom install/uninstall procedure:</p>
 <pre><code>./please.sh install &lt;prefix&gt;</code></pre>
 <p>and uninstall with:</p>
 <pre><code>./please.sh uninstall &lt;prefix&gt;</code></pre>
@@ -89,17 +89,17 @@ opam pin add -k path ketrew .</code></pre>
 <h3 id="BuildTheDocumentation">Build The Documentation</h3>
 <p>The documentation depends on <a href='https://github.com/smondet/oredoc'>oredoc</a>:</p>
 <pre><code>please.sh doc</code></pre>
-<p>and check-out <code>_doc/&lt;branch&gt;/index.html</code> (unless branch is <a href='api/html#VALmaster' title='master'><code>master</code></a>, then
+<p>and check-out <code>_doc/&lt;branch&gt;/index.html</code> (unless branch is <code>master</code>, then
 <code>_doc/index.html</code>).</p>
 <h3 id="RunaToplevel">Run a Toplevel</h3>
-<p>One can start an ocaml-toplevel (<a href='api/html#VALocaml' title='ocaml'><code>ocaml</code></a> or <a href='api/html#VALutop' title='utop'><code>utop</code></a>) with Ketrew loaded-in:</p>
+<p>One can start an ocaml-toplevel (<code>ocaml</code> or <code>utop</code>) with Ketrew loaded-in:</p>
 <pre><code>./please.sh top</code></pre>
 <h2 id="Tests">Tests</h2>
 <h3 id="AutomatedTests">Automated Tests</h3>
 <p>Run the tests like this:</p>
 <pre class='bash'><code class='bash'>    ketrew_test_ssh=&lt;Host&gt; _obuild/ketrew-test/ketrew-test.asm [-no-color] ALL</code></pre>
 <p>where <code>&lt;Host&gt;</code> is often an entry in your <code>.ssh/config</code> file.</p>
-<p>The test will indeed look for the environment variable <a href='api/html#VALketrew_test_ssh' title='ketrew_test_ssh'><code>ketrew_test_ssh</code></a>; if
+<p>The test will indeed look for the environment variable <code>ketrew_test_ssh</code>; if
 not defined it will use <code>&quot;localhost&quot;</code>. But for the test to succeed it should be
 an SSH host for which the user running the test does not need password.
 The test will run some commands on that host and create files and directories
@@ -119,5 +119,5 @@ Creating _obuild/test-config-file.toml
 Creating _obuild/test-authorized-tokens
 Creating _obuild/test.env</code></pre>
 <p>then sourcing <code>_obuild/test.env</code> will give a few aliases to run the tests (like
-<a href='api/html#VALkdtest' title='kdtest'><code>kdtest</code></a>, <a href='api/html#VALkdclient' title='kdclient'><code>kdclient</code></a>, etc. see inside the file).</p>
+<code>kdtest</code>, <code>kdclient</code>, etc. see inside the file).</p>
 </div></div></div></body><html>

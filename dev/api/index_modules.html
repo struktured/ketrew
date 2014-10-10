@@ -27,6 +27,7 @@
 <link title="Ketrew_pervasives" rel="Chapter" href="Ketrew_pervasives.html">
 <link title="Ketrew_plugin" rel="Chapter" href="Ketrew_plugin.html">
 <link title="Ketrew_program" rel="Chapter" href="Ketrew_program.html">
+<link title="Ketrew_protocol" rel="Chapter" href="Ketrew_protocol.html">
 <link title="Ketrew_server" rel="Chapter" href="Ketrew_server.html">
 <link title="Ketrew_target" rel="Chapter" href="Ketrew_target.html">
 <link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html"><title>Ketrew API : Index of modules</title>
@@ -76,6 +77,8 @@ This module should be used only by the tests; with <a href="Ketrew_database.Debu
     at a precise given point (see <a href="Ketrew_database.Debug.html#TYPEt"><code class="code"><span class="constructor">Ketrew_database</span>.<span class="constructor">Debug</span>.t</code></a>).
 </div>
 </td></tr>
+<tr><td><a href="Ketrew_protocol.Down_message.html">Down_message</a> [<a href="Ketrew_protocol.html">Ketrew_protocol</a>]</td>
+<td></td></tr>
 <tr><td align="left"><br>E</td></tr>
 <tr><td><a href="Ketrew.EDSL.html">EDSL</a> [<a href="Ketrew.html">Ketrew</a>]</td>
 <td></td></tr>
@@ -199,6 +202,8 @@ The “long-running” plugins loaded by default.
 The “things” to run on a given host.
 </div>
 </td></tr>
+<tr><td><a href="Ketrew_protocol.html">Ketrew_protocol</a> </td>
+<td></td></tr>
 <tr><td><a href="Ketrew_server.html">Ketrew_server</a> </td>
 <td><div class="info">
 To use SSL we need to apply the server Cohhtp functor ourselves.
@@ -222,7 +227,7 @@ Application of the functor <code class="code"><span class="constructor">Docout</
 </div>
 </td></tr>
 <tr><td align="left"><br>M</td></tr>
-<tr><td><a href="Ketrew_pervasives.Json.Make_serialization.html">Make_serialization</a> [<a href="Ketrew_pervasives.Json.html">Ketrew_pervasives.Json</a>]</td>
+<tr><td><a href="Ketrew_pervasives.Json.Make_versioned_serialization.html">Make_versioned_serialization</a> [<a href="Ketrew_pervasives.Json.html">Ketrew_pervasives.Json</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ketrew_engine.Measure.html">Measure</a> [<a href="Ketrew_engine.html">Ketrew_engine</a>]</td>
 <td></td></tr>
@@ -242,8 +247,6 @@ Build “things to run”, i.e.
 <tr><td><a href="Ketrew_pervasives.Result.html">Result</a> [<a href="Ketrew_pervasives.html">Ketrew_pervasives</a>]</td>
 <td></td></tr>
 <tr><td align="left"><br>S</td></tr>
-<tr><td><a href="Ketrew_pervasives.Serialize_happenings.html">Serialize_happenings</a> [<a href="Ketrew_pervasives.html">Ketrew_pervasives</a>]</td>
-<td></td></tr>
 <tr><td><a href="Ketrew_server.Server_state.html">Server_state</a> [<a href="Ketrew_server.html">Ketrew_server</a>]</td>
 <td><div class="info">
 The state maintained by the HTTP server.

@@ -5,7 +5,7 @@
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
 <link rel="Start" href="index.html">
 <link rel="previous" href="Ketrew_pervasives.Log.html">
-<link rel="next" href="Ketrew_pervasives.Serialize_happenings.html">
+<link rel="next" href="Ketrew_pervasives.Time.html">
 <link rel="Up" href="Ketrew_pervasives.html">
 <link title="Index of types" rel=Appendix href="index_types.html">
 <link title="Index of values" rel=Appendix href="index_values.html">
@@ -31,6 +31,7 @@
 <link title="Ketrew_pervasives" rel="Chapter" href="Ketrew_pervasives.html">
 <link title="Ketrew_plugin" rel="Chapter" href="Ketrew_plugin.html">
 <link title="Ketrew_program" rel="Chapter" href="Ketrew_program.html">
+<link title="Ketrew_protocol" rel="Chapter" href="Ketrew_protocol.html">
 <link title="Ketrew_server" rel="Chapter" href="Ketrew_server.html">
 <link title="Ketrew_target" rel="Chapter" href="Ketrew_target.html">
 <link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html"><title>Ketrew API : Ketrew_pervasives.Json</title>
@@ -38,7 +39,7 @@
 <body>
 <div class="navbar"><a class="pre" href="Ketrew_pervasives.Log.html" title="Ketrew_pervasives.Log">Previous</a>
 &nbsp;<a class="up" href="Ketrew_pervasives.html" title="Ketrew_pervasives">Up</a>
-&nbsp;<a class="post" href="Ketrew_pervasives.Serialize_happenings.html" title="Ketrew_pervasives.Serialize_happenings">Next</a>
+&nbsp;<a class="post" href="Ketrew_pervasives.Time.html" title="Ketrew_pervasives.Time">Next</a>
 </div>
 <h1>Module <a href="type_Ketrew_pervasives.Json.html">Ketrew_pervasives.Json</a> (<a href="code_Ketrew_pervasives.Json.html">.ml</a>)</h1>
 
@@ -49,9 +50,12 @@
 
 <pre><span id="VALto_string"><span class="keyword">val</span> <a href="code_VALKetrew_pervasives.Json.to_string.html">to_string</a></span> : <code class="type">Yojson.Basic.json -> string</code></pre>
 <pre><span id="VALlog"><span class="keyword">val</span> <a href="code_VALKetrew_pervasives.Json.log.html">log</a></span> : <code class="type">Yojson.Basic.json -> Ketrew_pervasives.Log.t</code></pre>
-<pre><span class="keyword">module</span> <a href="Ketrew_pervasives.Json.Make_serialization.html">Make_serialization</a>: <div class="sig_block"><code class="code"><span class="keyword">functor</span> (</code><code class="code"><span class="constructor">T</span></code><code class="code"> : </code><code class="code"><span class="keyword">sig</span></code><div class="sig_block">
+<pre><span class="keyword">module</span> <a href="Ketrew_pervasives.Json.Make_versioned_serialization.html">Make_versioned_serialization</a>: <div class="sig_block"><code class="code"><span class="keyword">functor</span> (</code><code class="code"><span class="constructor">T</span></code><code class="code"> : </code><code class="code"><span class="keyword">sig</span></code><div class="sig_block">
 <pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> </pre>
+
+</div><code class="code"><span class="keyword">end</span></code><code class="code">) <span class="keywordsign">-&gt;</span> </code><div class="sig_block"><code class="code"><span class="keyword">functor</span> (</code><code class="code"><span class="constructor">T_VERSIONED</span></code><code class="code"> : </code><code class="code"><span class="keyword">sig</span></code><div class="sig_block">
+<pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = <code class="type">[ `V0 of T.t ]</code> </pre>
 
 
 <pre><span id="VALsource"><span class="keyword">val</span> source</span> : <code class="type">unit -> <a href="Ketrew_pervasives.Json.html#TYPEt">t</a> CConv.Source.t</code></pre>
-<pre><span id="VALsink"><span class="keyword">val</span> sink</span> : <code class="type">unit -> <a href="Ketrew_pervasives.Json.html#TYPEt">t</a> CConv.Sink.t</code></pre></div><code class="code"><span class="keyword">end</span></code><code class="code">) <span class="keywordsign">-&gt;</span> </code><code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_pervasives.Json.Make_serialization.html">..</a> <code class="code"><span class="keyword">end</span></code></div></pre></body></html>
+<pre><span id="VALsink"><span class="keyword">val</span> sink</span> : <code class="type">unit -> <a href="Ketrew_pervasives.Json.html#TYPEt">t</a> CConv.Sink.t</code></pre></div><code class="code"><span class="keyword">end</span></code><code class="code">) <span class="keywordsign">-&gt;</span> </code><code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_pervasives.Json.Make_versioned_serialization.html">..</a> <code class="code"><span class="keyword">end</span></code></div></div></pre></body></html>

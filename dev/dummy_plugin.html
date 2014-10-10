@@ -27,8 +27,8 @@
 </div><div class="col-md-9">
 
 <h1 id="DummyPlugin">Dummy Plugin</h1>
-<p>This plugin “inherits” from the implementation of <a href='api/Ketrew_daemonize.html' title='Ketrew_daemonize'><code>Ketrew_daemonize</code></a> and adds a
-new “query” (that just retrives the result of the <a href='api/html#VALdate' title='date'><code>date</code></a> command; pretty
+<p>This plugin “inherits” from the implementation of <code>Ketrew_daemonize</code> and adds a
+new “query” (that just retrives the result of the <code>date</code> command; pretty
 useless).</p>
 
 <pre><span class="text">
@@ -36,8 +36,8 @@ useless).</p>
 
 </span></pre>
 
-<p>The name has to be “unique”; the <a href='api/html#VALcreate' title='create'><code>create</code></a> function calls
-<a href='api/Ketrew_daemonize.html#VALcreate' title='Ketrew_daemonize.create'><code>Ketrew_daemonize.create</code></a> and changes the <a href='api/html#VALname' title='name'><code>name</code></a>:</p>
+<p>The name has to be “unique”; the <code>create</code> function calls
+<code>Ketrew_daemonize.create</code> and changes the <code>name</code>:</p>
 
 <pre><span class="text">
 </span><span class="kw">let</span><span class="text"> </span><span class="id">name</span><span class="text"> = </span><span class="string">&quot;dummy&quot;</span><span class="text">
@@ -49,9 +49,9 @@ useless).</p>
 
 </span></pre>
 <h2 id="Implementation">Implementation</h2>
-<p>The module <a href='api/Another_long_running.html' title='Another_long_running'><code>Another_long_running</code></a> is the actual implementation of the plugin.</p>
-<p>The functions <a href='api/html#VALadditional_queries' title='additional_queries'><code>additional_queries</code></a> and <a href='api/html#VALquery' title='query'><code>query</code></a> deal with the <code>&quot;date&quot;</code> query,
-or pass the baby to the <a href='api/Ketrew_daemonize.html' title='Ketrew_daemonize'><code>Ketrew_daemonize</code></a> module.</p>
+<p>The module <code>Another_long_running</code> is the actual implementation of the plugin.</p>
+<p>The functions <code>additional_queries</code> and <code>query</code> deal with the <code>&quot;date&quot;</code> query,
+or pass the baby to the <code>Ketrew_daemonize</code> module.</p>
 
 <pre><span class="text">
 

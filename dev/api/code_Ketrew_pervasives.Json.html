@@ -26,6 +26,7 @@
 <link title="Ketrew_pervasives" rel="Chapter" href="Ketrew_pervasives.html">
 <link title="Ketrew_plugin" rel="Chapter" href="Ketrew_plugin.html">
 <link title="Ketrew_program" rel="Chapter" href="Ketrew_program.html">
+<link title="Ketrew_protocol" rel="Chapter" href="Ketrew_protocol.html">
 <link title="Ketrew_server" rel="Chapter" href="Ketrew_server.html">
 <link title="Ketrew_target" rel="Chapter" href="Ketrew_target.html">
 <link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html"><title>Ketrew API : Ketrew_pervasives.Json</title>
@@ -38,18 +39,31 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;str&nbsp;=&nbsp;to_string&nbsp;t&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(indent&nbsp;(s&nbsp;str))<br>
 <br>
-&nbsp;&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">Make_serialization</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">T</span>&nbsp;:&nbsp;<span class="keyword">sig</span>&nbsp;<br>
+&nbsp;&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">Make_versioned_serialization</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">T</span>&nbsp;:&nbsp;<span class="keyword">sig</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span>)&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">T_VERSIONED</span>&nbsp;:&nbsp;<span class="keyword">sig</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;[<span class="keywordsign">`</span><span class="constructor">V0</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">T</span>.t]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;source:&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t&nbsp;<span class="constructor">CConv</span>.<span class="constructor">Source</span>.t<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sink:&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t&nbsp;<span class="constructor">CConv</span>.<span class="constructor">Sink</span>.t<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span>)&nbsp;=&nbsp;<span class="keyword">struct</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span>)&nbsp;<br>
+&nbsp;&nbsp;=&nbsp;<span class="keyword">struct</span><br>
+<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;to_json&nbsp;(t&nbsp;:&nbsp;<span class="constructor">T</span>.t)&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">CConv</span>.into&nbsp;(<span class="constructor">T</span>.source&nbsp;())&nbsp;<span class="constructor">CConvYojson</span>.sink&nbsp;t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;versioned&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">V0</span>&nbsp;t&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">CConv</span>.into&nbsp;(<span class="constructor">T_VERSIONED</span>.source&nbsp;())&nbsp;<span class="constructor">CConvYojson</span>.sink&nbsp;versioned<br>
+<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;of_json_exn&nbsp;(json&nbsp;:&nbsp;t)&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">CConv</span>.from&nbsp;<span class="constructor">CConvYojson</span>.source&nbsp;(<span class="constructor">T</span>.sink&nbsp;())&nbsp;json<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;serialize&nbsp;t&nbsp;=&nbsp;<span class="constructor">Yojson</span>.<span class="constructor">Basic</span>.pretty_to_string&nbsp;~std:<span class="keyword">true</span>&nbsp;(to_json&nbsp;t)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">CConv</span>.from&nbsp;<span class="constructor">CConvYojson</span>.source&nbsp;(<span class="constructor">T_VERSIONED</span>.sink&nbsp;())&nbsp;json&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">V0</span>&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;serialize&nbsp;t&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Yojson</span>.<span class="constructor">Basic</span>.pretty_to_string&nbsp;~std:<span class="keyword">true</span>&nbsp;(to_json&nbsp;t)<br>
+<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;deserialize_exn&nbsp;s&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Yojson</span>.<span class="constructor">Basic</span>.from_string&nbsp;s&nbsp;|&gt;&nbsp;of_json_exn<br>
+<br>
 &nbsp;&nbsp;<span class="keyword">end</span><br>
+<br>
 <span class="keyword">end</span></code></body></html>

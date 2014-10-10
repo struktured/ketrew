@@ -13,20 +13,8 @@
    </li>
    <li><a href='#DaemonizeWithThePythonHack'>Daemonize With “The Python Hack”</a>
    </li>
-   <li><a href='#AFirstDependencyChain'>A First Dependency Chain</a>
-   </li>
-   <li><a href='#WithaCondition'>With a Condition</a>
-   </li>
-   <li><a href='#WebsiteBuildingWorkfow'>Website Building Workfow</a>
-   </li>
-   <li><a href='#ExampleBackupWorkflow'>Example “Backup” Workflow</a>
-   </li>
-   <li><a href='#BuildKetrewOnaVagrantVM'>Build Ketrew On a Vagrant VM</a>
-   </li>
   </ul>
 
- </li>
- <li><a href='#MainOftheModule'>“Main” Of the Module</a>
  </li>
 </ul>
 <h2>Menu</h2><ul>
@@ -76,7 +64,7 @@ permissions and limitations under the License.</code></pre>
 <h2 id="Workflows">Workflows</h2>
 <h3 id="ExampleFromTheREADME">Example From The README</h3>
 <p>This function is a more “parametrized” version of the example in the
-<a href='api/README.html#VALmd' title='README.md'><code>README.md</code></a> file (<a href='api/html#VALhost' title='host'><code>host</code></a> and <a href='api/html#VALqueue' title='queue'><code>queue</code></a> come from the command line).
+<code>README.md</code> file (<code>host</code> and <code>queue</code> come from the command line).
 It actually calls <code>run</code> directly itself.</p>
 
 <pre><span class="text">
@@ -92,8 +80,8 @@ It actually calls <code>run</code> directly itself.</p>
 </span></pre>
 
 <h3 id="DaemonizeWithNohupSetsid">Daemonize With Nohup/Setsid</h3>
-<p>This function is like <a href='api/html#VALrun_command_with_lsf' title='run_command_with_lsf'><code>run_command_with_lsf</code></a> but uses
-<a href='api/html#VALdaemonize' title='daemonize'><code>daemonize</code></a> with the “nohup-setsid hack” instead of the batch scheduler.</p>
+<p>This function is like <code>run_command_with_lsf</code> but uses
+<code>daemonize</code> with the “nohup-setsid hack” instead of the batch scheduler.</p>
 
 <pre><span class="text">
 </span><span class="kw">let</span><span class="text"> </span><span class="id">run_command_with_nohup</span><span class="text"> </span><span class="kw4">~host</span><span class="text"> </span><span class="id">cmd</span><span class="text"> =
@@ -107,7 +95,7 @@ It actually calls <code>run</code> directly itself.</p>
 
 <p>This kind of “daemonized” job should work on any decent Unix system.</p>
 <h3 id="DaemonizeWithThePythonHack">Daemonize With “The Python Hack”</h3>
-<p>This function is like <a href='api/html#VALrun_command_with_nohup' title='run_command_with_nohup'><code>run_command_with_nohup</code></a> but uses
+<p>This function is like <code>run_command_with_nohup</code> but uses
 the “python daemon hack” instead.</p>
 
 <pre><span class="text">
@@ -120,17 +108,19 @@ the “python daemon hack” instead.</p>
   )
 </span></pre>
 
-<p>The <code>`Python_daemon</code> way of daemonizing was hacked together because
-MacOSX does not support the <a href='api/html#VALnohup' title='nohup'><code>nohup</code></a> and <a href='api/html#VALsetsid' title='setsid'><code>setsid</code></a> commands any more.</p>
-<h3 id="AFirstDependencyChain">A First Dependency Chain</h3>
-<p>This function runs a workflow with no less than 2 nodes!</p>
-<ul>
- <li><a href='api/html#VALtarget2' title='target2'><code>target2</code></a> depends on <a href='api/html#VALtarget1' title='target1'><code>target1</code></a>.</li>
- <li>We call <code>run</code> on <a href='api/html#VALtarget2' title='target2'><code>target2</code></a> (the last target, i.e. the root of the dependency
- arborescence).</li>
- <li><a href='api/html#VALtarget1' title='target1'><code>target1</code></a> will run and if it succeeds <a href='api/html#VALtarget2' title='target2'><code>target2</code></a> will run.</li>
-</ul>
+<p>The &lt;code&gt;<code>Python_daemon&lt;/code&gt; way of daemonizing was hacked together because
+MacOSX does not support the </code>nohup<code>and</code>setsid<code>commands any more.
 
+
+
+### A First Dependency Chain
+
+This function runs a workflow with no less than 2 nodes!
+
+-</code>target2<code>depends on</code>target1<code>.
+- We call </code>run<code>on</code>target2<code>(the last target, i.e. the root of the dependency
+  arborescence).
+-</code>target1<code>will run and if it succeeds</code>target2` will run.</p>
 
 <pre><span class="text">
 </span><span class="kw">let</span><span class="text"> </span><span class="id">run_2_commands_with_python_hack</span><span class="text"> </span><span class="kw4">~host</span><span class="text"> </span><span class="id">cmd1</span><span class="text"> </span><span class="id">cmd2</span><span class="text"> =
@@ -150,22 +140,21 @@ MacOSX does not support the <a href='api/html#VALnohup' title='nohup'><code>nohu
 <p>For example:</p>
 <pre><code>&lt;test-exec&gt; two-py /tmp &quot;du -sh $HOME&quot; &quot;du -sh $HOME/tmp/&quot;</code></pre>
 <p>will run <code>du -sh</code> in <code>$HOME</code> and then in <code>$HOME/tmp</code> in the host <code>&quot;/tmp&quot;</code>
-(which is <a href='api/html#VALlocalhost' title='localhost'><code>localhost</code></a> with <code>/tmp</code> as playground).</p>
+(which is <code>localhost</code> with <code>/tmp</code> as playground).</p>
 <h3 id="WithaCondition">With a Condition</h3>
 <p>This function creates a 2-nodes workflow that fails because of the condition
 if the first target is not ensured by the build-process it runs.</p>
 <ul>
- <li>the function <a href='api/html#VALmake_target' title='make_target'><code>make_target</code></a> is partial application of <a href='api/EDSL.html#VALtarget' title='EDSL.target'><code>EDSL.target</code></a> with an
+ <li>the function <code>make_target</code> is partial application of <code>EDSL.target</code> with an
  additional argument <code>~cmd</code>.</li>
- <li><a href='api/html#VALtarget_with_condition' title='target_with_condition'><code>target_with_condition</code></a> is a target that is supposed to ensure that
-<a href='api/html#VALimpossible_file' title='impossible_file'><code>impossible_file</code></a> exists (which <code>ls /tmp</code> won&#39;t do).  <ul>
-   <li><a href='api/html#VALimpossible_file' title='impossible_file'><code>impossible_file</code></a> is a datastructure representing a file on a given host.</li>
+ <li><code>target_with_condition</code> is a target that is supposed to ensure that
+<code>impossible_file</code> exists (which <code>ls /tmp</code> won&#39;t do).  <ul>
+   <li><code>impossible_file</code> is a datastructure representing a file on a given host.</li>
    <li>The condition is specified with the <code>~done_when</code> argument.</li>
   </ul>
  </li>
- <li><a href='api/html#VALtarget2' title='target2'><code>target2</code></a> is just a target that depends on <a href='api/html#VALtarget_with_condition' title='target_with_condition'><code>target_with_condition</code></a>.</li>
+ <li><code>target2</code> is just a target that depends on <code>target_with_condition</code>.</li>
 </ul>
-
 
 <pre><span class="text">
 </span><span class="kw">let</span><span class="text"> </span><span class="id">fail_because_of_condition</span><span class="text"> </span><span class="kw4">~host</span><span class="text"> =
@@ -315,7 +304,7 @@ nothing is new) which show ketrew&#39;s handling of errors in dependencies.</p>
 
 <h3 id="ExampleBackupWorkflow">Example “Backup” Workflow</h3>
 <p>This an example of a “backup” workflow.</p>
-<p>Take a directory, make a tar.gz, save its MD5 sum, and if <code>gpg</code> is <a href='api/html#VALtrue' title='true'><code>true</code></a>,
+<p>Take a directory, make a tar.gz, save its MD5 sum, and if <code>gpg</code> is <code>true</code>,
 call <code>gpg -c</code> and delete the tar.gz.</p>
 <p>The passphrase for GPG must be in a file <code>~/.backup_passphrase</code> as</p>
 <pre class='shell'><code class='shell'>export BACKUP_PASSPHRASE=&quot;some passsphraaase&quot;</code></pre>
@@ -379,11 +368,10 @@ call <code>gpg -c</code> and delete the tar.gz.</p>
 <p>This function builds completely different workflows depedending on the input
 command:</p>
 <ul>
- <li><a href='api/html#VALprepare' title='prepare'><code>prepare</code></a> → prepare a vagrant VM, ready to SSH to</li>
+ <li><code>prepare</code> → prepare a vagrant VM, ready to SSH to</li>
  <li><code>go</code> → build Ketrew on the on vagrant VM</li>
- <li><a href='api/html#VALclean' title='clean'><code>clean</code></a> → shutdown and delete the VM</li>
+ <li><code>clean</code> → shutdown and delete the VM</li>
 </ul>
-
 
 <pre><span class="text">
 </span><span class="kw">let</span><span class="text"> </span><span class="id">run_ketrew_on_vagrant</span><span class="text"> </span><span class="id">what_to_do</span><span class="text"> =
@@ -496,7 +484,7 @@ command:</p>
 <h2 id="MainOftheModule">“Main” Of the Module</h2>
 <p>Command line parsing for this multi-workflow script.</p>
 <p>Here it is kept very basic but one may use usual OCaml tools
-(<code>Arg</code> module, or <a href='api/Cmdliner.html' title='Cmdliner'><code>Cmdliner</code></a> -- which is already linked-in with Ketrew).</p>
+(<code>Arg</code> module, or <code>Cmdliner</code> -- which is already linked-in with Ketrew).</p>
 
 <pre><span class="text">
 </span><span class="kw">let</span><span class="text"> () =

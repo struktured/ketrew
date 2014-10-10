@@ -31,6 +31,7 @@
 <link title="Ketrew_pervasives" rel="Chapter" href="Ketrew_pervasives.html">
 <link title="Ketrew_plugin" rel="Chapter" href="Ketrew_plugin.html">
 <link title="Ketrew_program" rel="Chapter" href="Ketrew_program.html">
+<link title="Ketrew_protocol" rel="Chapter" href="Ketrew_protocol.html">
 <link title="Ketrew_server" rel="Chapter" href="Ketrew_server.html">
 <link title="Ketrew_target" rel="Chapter" href="Ketrew_target.html">
 <link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html"><title>Ketrew API : Ketrew_pervasives</title>
@@ -73,13 +74,13 @@ Global reference.<br>
 <pre><span id="VALglobal_with_color"><span class="keyword">val</span> <a href="code_VALKetrew_pervasives.global_with_color.html">global_with_color</a></span> : <code class="type">bool Pervasives.ref</code></pre><br>
 Global reference.<br>
 
+<pre><span id="VALglobal_log_print_string"><span class="keyword">val</span> <a href="code_VALKetrew_pervasives.global_log_print_string.html">global_log_print_string</a></span> : <code class="type">(string -> unit) Pervasives.ref</code></pre>
 <pre><span class="keyword">module</span> <a href="Ketrew_pervasives.Log.html">Log</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_pervasives.Log.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info">
 Application of the functor <code class="code"><span class="constructor">Docout</span>.<span class="constructor">Make_logger</span></code> to write to <code class="code">stderr</code>
     without buffering.
 </div>
 
 <pre><span class="keyword">module</span> <a href="Ketrew_pervasives.Json.html">Json</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_pervasives.Json.html">..</a> <code class="code"><span class="keyword">end</span></code></pre>
-<pre><span class="keyword">module</span> <a href="Ketrew_pervasives.Serialize_happenings.html">Serialize_happenings</a>: <code class="type"><a href="Ketrew_pervasives.Json.Make_serialization.html">Json.Make_serialization</a></code><code class="code">(</code><code class="type">Ketrew_gen_base_v0.Happening_list</code><code class="code">)</code></pre>
 <pre><span id="VALinvalid_argument_exn"><span class="keyword">val</span> <a href="code_VALKetrew_pervasives.invalid_argument_exn.html">invalid_argument_exn</a></span> : <code class="type">?where:string -> string -> 'a</code></pre><div class="info ">
 Function that have a documented, easy to check contract, can raise
     <code class="code"><span class="constructor">Invalid_argument</span> _</code> (their name should end in <code class="code">_exn</code>).<br>

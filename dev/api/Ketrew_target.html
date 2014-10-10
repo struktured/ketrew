@@ -31,6 +31,7 @@
 <link title="Ketrew_pervasives" rel="Chapter" href="Ketrew_pervasives.html">
 <link title="Ketrew_plugin" rel="Chapter" href="Ketrew_plugin.html">
 <link title="Ketrew_program" rel="Chapter" href="Ketrew_program.html">
+<link title="Ketrew_protocol" rel="Chapter" href="Ketrew_protocol.html">
 <link title="Ketrew_server" rel="Chapter" href="Ketrew_server.html">
 <link title="Ketrew_target" rel="Chapter" href="Ketrew_target.html">
 <link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html"><title>Ketrew API : Ketrew_target</title>
@@ -58,7 +59,7 @@ Definition of command-lines to run on a given <a href="Ketrew_host.html#TYPEt"><
 <pre><span id="TYPEactivated_state"><span class="keyword">type</span> <code class="type"></code>activated_state</span> = <code class="type">[ `Activated of<br>           Ketrew_pervasives.Time.t * <a href="Ketrew_target.html#TYPEsubmitted_state">submitted_state</a> *<br>           [ `Dependency | `Fallback | `Success_trigger | `User ] ]</code> </pre>
 
 
-<pre><code><span id="TYPErun_bookkeeping"><span class="keyword">type</span> <code class="type"></code>run_bookkeeping</span> = {</code></pre><table class="typetable">
+<pre><span id="TYPErun_bookkeeping"><span class="keyword">type</span> <code class="type"></code>run_bookkeeping</span> = <code class="type">Ketrew_gen_target_v0.Run_bookkeeping.t</code> = {</pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
@@ -120,7 +121,7 @@ The identifiers of targets.<br>
 
 <pre><span class="keyword">module</span> <a href="Ketrew_target.Condition.html">Condition</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_target.Condition.html">..</a> <code class="code"><span class="keyword">end</span></code></pre>
 <pre><span class="keyword">module</span> <a href="Ketrew_target.Equivalence.html">Equivalence</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Ketrew_target.Equivalence.html">..</a> <code class="code"><span class="keyword">end</span></code></pre>
-<pre><code><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = {</code></pre><table class="typetable">
+<pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = <code class="type">Ketrew_gen_target_v0.Target.t</code> = {</pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
@@ -139,7 +140,7 @@ The identifiers of targets.<br>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTt.persistance">persistance</span>&nbsp;: <code class="type">[ `Input_data | `Recomputable of float | `Result ]</code>;</code></td>
+<code><span id="TYPEELTt.persistence">persistence</span>&nbsp;: <code class="type">[ `Input_data | `Recomputable of float | `Result ]</code>;</code></td>
 
 </tr>
 <tr>
@@ -219,7 +220,7 @@ The fat record holding targets.<br>
 </div>
 
 
-<pre><span id="VALcreate"><span class="keyword">val</span> <a href="code_VALKetrew_target.create.html">create</a></span> : <code class="type">?id:<a href="Ketrew_target.html#TYPEid">id</a> -><br>       ?name:string -><br>       ?persistance:[ `Input_data | `Recomputable of float | `Result ] -><br>       ?metadata:<a href="Ketrew_artifact.Value.html#TYPEt">Ketrew_artifact.Value.t</a> -><br>       ?dependencies:<a href="Ketrew_target.html#TYPEid">id</a> list -><br>       ?if_fails_activate:<a href="Ketrew_target.html#TYPEid">id</a> list -><br>       ?success_triggers:<a href="Ketrew_target.html#TYPEid">id</a> list -><br>       ?make:<a href="Ketrew_target.Build_process.html#TYPEt">Build_process.t</a> -><br>       ?condition:<a href="Ketrew_target.Condition.html#TYPEt">Condition.t</a> -><br>       ?equivalence:<a href="Ketrew_target.Equivalence.html#TYPEt">Equivalence.t</a> -><br>       ?tags:string list -> unit -> <a href="Ketrew_target.html#TYPEt">t</a></code></pre><div class="info ">
+<pre><span id="VALcreate"><span class="keyword">val</span> <a href="code_VALKetrew_target.create.html">create</a></span> : <code class="type">?id:<a href="Ketrew_target.html#TYPEid">id</a> -><br>       ?name:string -><br>       ?persistence:[ `Input_data | `Recomputable of float | `Result ] -><br>       ?metadata:<a href="Ketrew_artifact.Value.html#TYPEt">Ketrew_artifact.Value.t</a> -><br>       ?dependencies:<a href="Ketrew_target.html#TYPEid">id</a> list -><br>       ?if_fails_activate:<a href="Ketrew_target.html#TYPEid">id</a> list -><br>       ?success_triggers:<a href="Ketrew_target.html#TYPEid">id</a> list -><br>       ?make:<a href="Ketrew_target.Build_process.html#TYPEt">Build_process.t</a> -><br>       ?condition:<a href="Ketrew_target.Condition.html#TYPEt">Condition.t</a> -><br>       ?equivalence:<a href="Ketrew_target.Equivalence.html#TYPEt">Equivalence.t</a> -><br>       ?tags:string list -> unit -> <a href="Ketrew_target.html#TYPEt">t</a></code></pre><div class="info ">
 Create a target value (not stored in the DB yet).<br>
 </div>
 
@@ -253,7 +254,7 @@ Get a new target updated with new run paramters (from a plugin),
     raises <code class="code"><span class="constructor">Invalid_argument</span> _</code> if the target is in a wrong state.<br>
 </div>
 
-<pre><span id="VALactive"><span class="keyword">val</span> <a href="code_VALKetrew_target.active.html">active</a></span> : <code class="type">?id:<a href="Ketrew_target.html#TYPEid">id</a> -><br>       ?name:string -><br>       ?persistance:[ `Input_data | `Recomputable of float | `Result ] -><br>       ?metadata:<a href="Ketrew_artifact.Value.html#TYPEt">Ketrew_artifact.Value.t</a> -><br>       ?dependencies:<a href="Ketrew_target.html#TYPEid">id</a> list -><br>       ?if_fails_activate:<a href="Ketrew_target.html#TYPEid">id</a> list -><br>       ?success_triggers:<a href="Ketrew_target.html#TYPEid">id</a> list -><br>       ?make:<a href="Ketrew_target.Build_process.html#TYPEt">Build_process.t</a> -><br>       ?condition:<a href="Ketrew_target.Condition.html#TYPEt">Condition.t</a> -><br>       ?equivalence:<a href="Ketrew_target.Equivalence.html#TYPEt">Equivalence.t</a> -><br>       ?tags:string list -> unit -> <a href="Ketrew_target.html#TYPEt">t</a></code></pre><div class="info ">
+<pre><span id="VALactive"><span class="keyword">val</span> <a href="code_VALKetrew_target.active.html">active</a></span> : <code class="type">?id:<a href="Ketrew_target.html#TYPEid">id</a> -><br>       ?name:string -><br>       ?persistence:[ `Input_data | `Recomputable of float | `Result ] -><br>       ?metadata:<a href="Ketrew_artifact.Value.html#TYPEt">Ketrew_artifact.Value.t</a> -><br>       ?dependencies:<a href="Ketrew_target.html#TYPEid">id</a> list -><br>       ?if_fails_activate:<a href="Ketrew_target.html#TYPEid">id</a> list -><br>       ?success_triggers:<a href="Ketrew_target.html#TYPEid">id</a> list -><br>       ?make:<a href="Ketrew_target.Build_process.html#TYPEt">Build_process.t</a> -><br>       ?condition:<a href="Ketrew_target.Condition.html#TYPEt">Condition.t</a> -><br>       ?equivalence:<a href="Ketrew_target.Equivalence.html#TYPEt">Equivalence.t</a> -><br>       ?tags:string list -> unit -> <a href="Ketrew_target.html#TYPEt">t</a></code></pre><div class="info ">
 Like <a href="Ketrew_target.html#VALcreate"><code class="code"><span class="constructor">Ketrew_target</span>.create</code></a> but set as already activated.<br>
 </div>
 
@@ -275,7 +276,11 @@ Get a target's id.<br>
 Get a target's user-defined name.<br>
 </div>
 
-<pre><span id="VALserialize"><span class="keyword">val</span> <a href="code_VALKetrew_target.serialize.html">serialize</a></span> : <code class="type"><a href="Ketrew_target.html#TYPEt">t</a> -> string</code></pre><div class="info ">
+<pre><span id="VALto_json"><span class="keyword">val</span> to_json</span> : <code class="type"><a href="Ketrew_target.html#TYPEt">t</a> -> <a href="Ketrew_pervasives.Json.html#TYPEt">Ketrew_pervasives.Json.t</a></code></pre><div class="info ">
+Serialize a target to <code class="code"><span class="constructor">Json</span>.t</code> intermediate representation.<br>
+</div>
+
+<pre><span id="VALserialize"><span class="keyword">val</span> serialize</span> : <code class="type"><a href="Ketrew_target.html#TYPEt">t</a> -> string</code></pre><div class="info ">
 Serialize a target (for the database).<br>
 </div>
 
