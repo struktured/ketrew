@@ -10,11 +10,13 @@
 <link title="Index of module types" rel=Appendix href="index_module_types.html">
 <link title="Ketrew" rel="Chapter" href="Ketrew.html">
 <link title="Ketrew_artifact" rel="Chapter" href="Ketrew_artifact.html">
+<link title="Ketrew_client" rel="Chapter" href="Ketrew_client.html">
 <link title="Ketrew_command_line" rel="Chapter" href="Ketrew_command_line.html">
 <link title="Ketrew_configuration" rel="Chapter" href="Ketrew_configuration.html">
 <link title="Ketrew_daemonize" rel="Chapter" href="Ketrew_daemonize.html">
 <link title="Ketrew_database" rel="Chapter" href="Ketrew_database.html">
 <link title="Ketrew_edsl" rel="Chapter" href="Ketrew_edsl.html">
+<link title="Ketrew_engine" rel="Chapter" href="Ketrew_engine.html">
 <link title="Ketrew_error" rel="Chapter" href="Ketrew_error.html">
 <link title="Ketrew_host" rel="Chapter" href="Ketrew_host.html">
 <link title="Ketrew_long_running" rel="Chapter" href="Ketrew_long_running.html">
@@ -22,12 +24,12 @@
 <link title="Ketrew_monitored_script" rel="Chapter" href="Ketrew_monitored_script.html">
 <link title="Ketrew_path" rel="Chapter" href="Ketrew_path.html">
 <link title="Ketrew_pervasives" rel="Chapter" href="Ketrew_pervasives.html">
+<link title="Ketrew_plugin" rel="Chapter" href="Ketrew_plugin.html">
 <link title="Ketrew_program" rel="Chapter" href="Ketrew_program.html">
+<link title="Ketrew_protocol" rel="Chapter" href="Ketrew_protocol.html">
 <link title="Ketrew_server" rel="Chapter" href="Ketrew_server.html">
-<link title="Ketrew_state" rel="Chapter" href="Ketrew_state.html">
 <link title="Ketrew_target" rel="Chapter" href="Ketrew_target.html">
-<link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html">
-<link title="Ketrew_user_command" rel="Chapter" href="Ketrew_user_command.html"><title>Ketrew API : Ketrew_configuration</title>
+<link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html"><title>Ketrew API : Ketrew_configuration</title>
 </head>
 <body>
 <code class="code"></code><table><tr><td></td><td><span class="comment">(**************************************************************************)</span></td></tr></table><code class="code"><br>
@@ -48,6 +50,17 @@
 <br>
 <span class="keyword">open</span>&nbsp;<span class="constructor">Ketrew_pervasives</span><br>
 <br>
+<span class="keyword">type</span>&nbsp;plugin&nbsp;=&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Compiled</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">OCamlfind</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;]<br>
+<br>
+<span class="keyword">type</span>&nbsp;engine&nbsp;=&nbsp;{<br>
+&nbsp;&nbsp;database_parameters:&nbsp;string;<br>
+&nbsp;&nbsp;persistent_state_key:&nbsp;string;<br>
+&nbsp;&nbsp;turn_unix_ssh_failure_into_target_failure:&nbsp;bool;<br>
+&nbsp;&nbsp;host_timeout_upper_bound:&nbsp;float&nbsp;option;<br>
+}<br>
+<span class="keyword">type</span>&nbsp;ui&nbsp;=&nbsp;{<br>
+&nbsp;&nbsp;with_color:&nbsp;bool;<br>
+}<br>
 <span class="keyword">type</span>&nbsp;server&nbsp;=&nbsp;{<br>
 &nbsp;&nbsp;authorized_tokens_path:&nbsp;string&nbsp;option;&nbsp;<br>
 &nbsp;&nbsp;listen_to:&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Tls</span>&nbsp;<span class="keyword">of</span>&nbsp;(string&nbsp;*&nbsp;string&nbsp;*&nbsp;int)&nbsp;];<br>
@@ -55,60 +68,89 @@
 &nbsp;&nbsp;command_pipe:&nbsp;string&nbsp;option;<br>
 &nbsp;&nbsp;daemon:&nbsp;bool;<br>
 &nbsp;&nbsp;log_path:&nbsp;string&nbsp;option;<br>
+&nbsp;&nbsp;server_engine:&nbsp;engine;<br>
+&nbsp;&nbsp;server_ui:&nbsp;ui;<br>
 }<br>
-<span class="keyword">type</span>&nbsp;plugin&nbsp;=&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Compiled</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">OCamlfind</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;]<br>
+<span class="keyword">type</span>&nbsp;client&nbsp;=&nbsp;{<br>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;client_engine:&nbsp;engine;&nbsp;*)</span><br>
+&nbsp;&nbsp;connection:&nbsp;string;<br>
+&nbsp;&nbsp;token:&nbsp;string;<br>
+&nbsp;&nbsp;client_ui:&nbsp;ui;<br>
+}<br>
+<span class="keyword">type</span>&nbsp;standalone&nbsp;=&nbsp;{<br>
+&nbsp;&nbsp;standalone_engine:&nbsp;engine;<br>
+&nbsp;&nbsp;standalone_ui:&nbsp;ui;<br>
+}<br>
+<span class="keyword">type</span>&nbsp;mode&nbsp;=&nbsp;[<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Standalone</span>&nbsp;<span class="keyword">of</span>&nbsp;standalone<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Client</span>&nbsp;<span class="keyword">of</span>&nbsp;client<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Server</span>&nbsp;<span class="keyword">of</span>&nbsp;server<br>
+]<br>
+<br>
 <span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;{<br>
-&nbsp;&nbsp;database_parameters:&nbsp;string;<br>
-&nbsp;&nbsp;persistent_state_key:&nbsp;string;<br>
-&nbsp;&nbsp;turn_unix_ssh_failure_into_target_failure:&nbsp;bool;<br>
 &nbsp;&nbsp;debug_level:&nbsp;int;<br>
-&nbsp;&nbsp;with_color:&nbsp;bool;<br>
-&nbsp;&nbsp;host_timeout_upper_bound:&nbsp;float;<br>
-&nbsp;&nbsp;server:&nbsp;server&nbsp;option;<br>
 &nbsp;&nbsp;plugins:&nbsp;plugin&nbsp;list;<br>
+&nbsp;&nbsp;mode:&nbsp;mode;<br>
 }<br>
 <br>
 <span class="keyword">let</span>&nbsp;log&nbsp;t&nbsp;=<br>
-&nbsp;&nbsp;<span class="constructor">Log</span>.([<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;<span class="string">"Database:&nbsp;"</span>&nbsp;%&nbsp;sf&nbsp;<span class="string">"%S"</span>&nbsp;t.database_parameters;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;<span class="string">"State-key:&nbsp;"</span>&nbsp;%&nbsp;sf&nbsp;<span class="string">"%S"</span>&nbsp;t.persistent_state_key;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;<span class="string">"Unix-failure&nbsp;"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;(<span class="keyword">if</span>&nbsp;t.turn_unix_ssh_failure_into_target_failure<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">then</span>&nbsp;s&nbsp;<span class="string">"turns"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span>&nbsp;s&nbsp;<span class="string">"does&nbsp;not&nbsp;turn"</span>)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;into&nbsp;target&nbsp;failure"</span>;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;<span class="string">"Debug-level:&nbsp;"</span>&nbsp;%&nbsp;i&nbsp;t.debug_level;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;<span class="string">"Client&nbsp;"</span>&nbsp;%&nbsp;s&nbsp;(<span class="keyword">if</span>&nbsp;t.with_color&nbsp;<span class="keyword">then</span>&nbsp;<span class="string">"with"</span>&nbsp;<span class="keyword">else</span>&nbsp;<span class="string">"without"</span>)&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;colors"</span>;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;<span class="string">"Timeout-upper-bound:&nbsp;"</span>&nbsp;%&nbsp;f&nbsp;t.host_timeout_upper_bound&nbsp;%&nbsp;s&nbsp;<span class="string">" seconds"</span>;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;<span class="string">"Plugins:&nbsp;"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">match</span>&nbsp;t.plugins&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"None"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;more&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;n&nbsp;%&nbsp;indent&nbsp;(separate&nbsp;n&nbsp;(<span class="constructor">List</span>.map&nbsp;more&nbsp;~f:(<span class="keyword">function</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Compiled</span>&nbsp;path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"*&nbsp;Compiled:&nbsp;"</span>&nbsp;%&nbsp;quote&nbsp;path<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">OCamlfind</span>&nbsp;pack&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"*&nbsp;OCamlfind&nbsp;package:&nbsp;"</span>&nbsp;%&nbsp;quote&nbsp;pack<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)))&nbsp;%&nbsp;n<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;s&nbsp;<span class="string">"Server:&nbsp;"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;(<span class="keyword">match</span>&nbsp;t.server&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"Not&nbsp;configured"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;srv&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;n&nbsp;%&nbsp;indent&nbsp;(<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;<span class="string">"Authorized&nbsp;tokens:&nbsp;"</span>&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;<span class="constructor">OCaml</span>.(option&nbsp;string)&nbsp;srv.authorized_tokens_path&nbsp;%&nbsp;n<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;s&nbsp;&nbsp;<span class="string">"Listen:&nbsp;"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;(<span class="keyword">match</span>&nbsp;srv.listen_to&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Tls</span>&nbsp;(cert,&nbsp;key,&nbsp;port)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;<span class="string">"TLS:"</span>&nbsp;%&nbsp;i&nbsp;port&nbsp;%&nbsp;sp<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;parens&nbsp;(indent&nbsp;(s&nbsp;<span class="string">"Certificate:&nbsp;"</span>&nbsp;%&nbsp;quote&nbsp;cert&nbsp;%&nbsp;s&nbsp;<span class="string">",&nbsp;"</span>&nbsp;%&nbsp;n<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;s&nbsp;<span class="string">"Key:&nbsp;"</span>&nbsp;%&nbsp;quote&nbsp;key))<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)&nbsp;%&nbsp;n<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;s&nbsp;<span class="string">"Return-error-messages:&nbsp;"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;<span class="constructor">OCaml</span>.bool&nbsp;srv.return_error_messages&nbsp;%n))<br>
-&nbsp;&nbsp;&nbsp;&nbsp;])<br>
-<br>
-<br>
-<span class="keyword">let</span>&nbsp;database_parameters&nbsp;t&nbsp;=&nbsp;t.database_parameters<br>
-<span class="keyword">let</span>&nbsp;persistent_state_key&nbsp;t&nbsp;=&nbsp;t.persistent_state_key<br>
-<span class="keyword">let</span>&nbsp;is_unix_ssh_failure_fatal&nbsp;t&nbsp;=&nbsp;t.turn_unix_ssh_failure_into_target_failure<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">open</span>&nbsp;<span class="constructor">Log</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;item&nbsp;name&nbsp;l&nbsp;=&nbsp;s&nbsp;name&nbsp;%&nbsp;s&nbsp;<span class="string">":&nbsp;"</span>&nbsp;%&nbsp;l&nbsp;%&nbsp;n&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;sublist&nbsp;l&nbsp;=&nbsp;n&nbsp;%&nbsp;indent&nbsp;(separate&nbsp;empty&nbsp;l)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;common&nbsp;=&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sublist&nbsp;[<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;item&nbsp;<span class="string">"Debug-level"</span>&nbsp;(i&nbsp;t.debug_level);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;item&nbsp;<span class="string">"Plugins"</span>&nbsp;(<span class="keyword">match</span>&nbsp;t.plugins&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s&nbsp;<span class="string">"None"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;more&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;sublist&nbsp;(<span class="constructor">List</span>.map&nbsp;more&nbsp;~f:(<span class="keyword">function</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Compiled</span>&nbsp;path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;item&nbsp;<span class="string">"Compiled"</span>&nbsp;&nbsp;(quote&nbsp;path)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">OCamlfind</span>&nbsp;pack&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;item&nbsp;<span class="string">"OCamlfind&nbsp;package"</span>&nbsp;(quote&nbsp;pack))))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;]&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ui&nbsp;t&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;item&nbsp;<span class="string">"Colors"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(s&nbsp;(<span class="keyword">if</span>&nbsp;t.with_color&nbsp;<span class="keyword">then</span>&nbsp;<span class="string">"with"</span>&nbsp;<span class="keyword">else</span>&nbsp;<span class="string">"without"</span>)&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;colors"</span>)<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;engine&nbsp;t&nbsp;=&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sublist&nbsp;[<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;item&nbsp;<span class="string">"Database"</span>&nbsp;(quote&nbsp;t.database_parameters);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;item&nbsp;<span class="string">"State-key"</span>&nbsp;(quote&nbsp;t.persistent_state_key);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;item&nbsp;<span class="string">"Unix-failure"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((<span class="keyword">if</span>&nbsp;t.turn_unix_ssh_failure_into_target_failure<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">then</span>&nbsp;s&nbsp;<span class="string">"turns"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span>&nbsp;s&nbsp;<span class="string">"does&nbsp;not&nbsp;turn"</span>)&nbsp;%&nbsp;s&nbsp;<span class="string">"&nbsp;into&nbsp;target&nbsp;failure"</span>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;]&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;t.mode&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Standalone</span>&nbsp;{standalone_engine;&nbsp;standalone_ui}&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;item&nbsp;<span class="string">"Mode"</span>&nbsp;(s&nbsp;<span class="string">"Standalone"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;item&nbsp;<span class="string">"Engine"</span>&nbsp;(engine&nbsp;standalone_engine)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;item&nbsp;<span class="string">"UI"</span>&nbsp;(ui&nbsp;standalone_ui)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;item&nbsp;<span class="string">"Misc"</span>&nbsp;common<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Client</span>&nbsp;client&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;item&nbsp;<span class="string">"Mode"</span>&nbsp;(s&nbsp;<span class="string">"Client"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;item&nbsp;<span class="string">"Connection"</span>&nbsp;(quote&nbsp;client.connection)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;item&nbsp;<span class="string">"Auth-token"</span>&nbsp;(quote&nbsp;client.token)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;item&nbsp;<span class="string">"UI"</span>&nbsp;(ui&nbsp;client.client_ui)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;item&nbsp;<span class="string">"Misc"</span>&nbsp;common<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Server</span>&nbsp;srv&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;item&nbsp;<span class="string">"Mode"</span>&nbsp;(s&nbsp;<span class="string">"Server"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;item&nbsp;<span class="string">"Engine"</span>&nbsp;(engine&nbsp;srv.server_engine)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;item&nbsp;<span class="string">"UI"</span>&nbsp;(ui&nbsp;srv.server_ui)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;item&nbsp;<span class="string">"HTTP-server"</span>&nbsp;(sublist&nbsp;[<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;item&nbsp;<span class="string">"Authorized&nbsp;tokens"</span>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">OCaml</span>.(option&nbsp;string&nbsp;srv.authorized_tokens_path);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;item&nbsp;<span class="string">"Daemonize"</span>&nbsp;(<span class="constructor">OCaml</span>.bool&nbsp;srv.daemon);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;item&nbsp;<span class="string">"Command&nbsp;Pipe"</span>&nbsp;(<span class="constructor">OCaml</span>.option&nbsp;quote&nbsp;srv.command_pipe);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;item&nbsp;<span class="string">"Log-path"</span>&nbsp;(<span class="constructor">OCaml</span>.option&nbsp;quote&nbsp;srv.log_path);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;item&nbsp;<span class="string">"Return-error-messages"</span>&nbsp;(<span class="constructor">OCaml</span>.bool&nbsp;srv.return_error_messages);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;item&nbsp;<span class="string">"Listen"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">let</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Tls</span>&nbsp;(cert,&nbsp;key,&nbsp;port)&nbsp;=&nbsp;srv.listen_to&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sublist&nbsp;[<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;item&nbsp;<span class="string">"Port"</span>&nbsp;(i&nbsp;port);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;item&nbsp;<span class="string">"Certificate"</span>&nbsp;(quote&nbsp;cert);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;item&nbsp;<span class="string">"Key"</span>&nbsp;(quote&nbsp;key);&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;item&nbsp;<span class="string">"Misc"</span>&nbsp;common<br>
 <br>
 <span class="keyword">let</span>&nbsp;default_persistent_state_key&nbsp;=&nbsp;<span class="string">"ketrew_persistent_state"</span><br>
 <br>
@@ -116,31 +158,44 @@
 &nbsp;&nbsp;<span class="constructor">Sys</span>.getenv&nbsp;<span class="string">"HOME"</span>&nbsp;^&nbsp;<span class="string">"/.ketrew/configuration.toml"</span><br>
 <br>
 <span class="keyword">let</span>&nbsp;default_database_path&nbsp;=&nbsp;<br>
-&nbsp;&nbsp;<span class="constructor">Sys</span>.getenv&nbsp;<span class="string">"HOME"</span>&nbsp;^&nbsp;<span class="string">"/.ketrew/database_dbm"</span><br>
+&nbsp;&nbsp;<span class="constructor">Sys</span>.getenv&nbsp;<span class="string">"HOME"</span>&nbsp;^&nbsp;<span class="string">"/.ketrew/database"</span><br>
 <br>
-<span class="keyword">let</span>&nbsp;host_timeout_upper_bound&nbsp;t&nbsp;=&nbsp;t.host_timeout_upper_bound<br>
+<span class="keyword">let</span>&nbsp;create&nbsp;?(debug_level=0)&nbsp;?(plugins=[])&nbsp;mode&nbsp;=<br>
+&nbsp;&nbsp;{debug_level;&nbsp;plugins;&nbsp;mode;}<br>
 <br>
-<span class="keyword">let</span>&nbsp;create_server<br>
-&nbsp;&nbsp;&nbsp;&nbsp;?authorized_tokens_path&nbsp;?(return_error_messages=<span class="keyword">false</span>)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;?command_pipe&nbsp;?(daemon=<span class="keyword">false</span>)&nbsp;?log_path<br>
-&nbsp;&nbsp;&nbsp;&nbsp;listen_to&nbsp;=<br>
-&nbsp;&nbsp;{authorized_tokens_path;&nbsp;listen_to;&nbsp;return_error_messages;<br>
-&nbsp;&nbsp;&nbsp;command_pipe;&nbsp;daemon;&nbsp;log_path;&nbsp;}<br>
 <br>
-<span class="keyword">let</span>&nbsp;create&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;?(debug_level=2)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;?(with_color=<span class="keyword">true</span>)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;?(turn_unix_ssh_failure_into_target_failure=<span class="keyword">false</span>)<br>
+<span class="keyword">let</span>&nbsp;ui&nbsp;?(with_color=<span class="keyword">true</span>)&nbsp;()&nbsp;=&nbsp;{with_color}<br>
+<span class="keyword">let</span>&nbsp;default_ui&nbsp;=&nbsp;ui&nbsp;()<br>
+<br>
+<span class="keyword">let</span>&nbsp;engine&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?(database_parameters=default_database_path)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;?(persistent_state_key=default_persistent_state_key)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;?(host_timeout_upper_bound=60.)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;?(plugins=[])<br>
-&nbsp;&nbsp;&nbsp;&nbsp;?server<br>
-&nbsp;&nbsp;&nbsp;&nbsp;~database_parameters&nbsp;()&nbsp;=<br>
-&nbsp;&nbsp;{<br>
-&nbsp;&nbsp;&nbsp;&nbsp;database_parameters;&nbsp;persistent_state_key;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;turn_unix_ssh_failure_into_target_failure;&nbsp;plugins;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;debug_level;&nbsp;with_color;&nbsp;host_timeout_upper_bound;&nbsp;server;<br>
-&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?(turn_unix_ssh_failure_into_target_failure=<span class="keyword">false</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?host_timeout_upper_bound&nbsp;()&nbsp;=&nbsp;{<br>
+&nbsp;&nbsp;database_parameters;<br>
+&nbsp;&nbsp;persistent_state_key;<br>
+&nbsp;&nbsp;turn_unix_ssh_failure_into_target_failure;<br>
+&nbsp;&nbsp;host_timeout_upper_bound;<br>
+}<br>
+<span class="keyword">let</span>&nbsp;default_engine&nbsp;=&nbsp;engine&nbsp;()<br>
+<br>
+<span class="keyword">let</span>&nbsp;standalone&nbsp;?(ui=default_ui)&nbsp;?engine&nbsp;()&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;standalone_engine&nbsp;=&nbsp;<span class="constructor">Option</span>.value&nbsp;engine&nbsp;~default:default_engine&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;(<span class="keywordsign">`</span><span class="constructor">Standalone</span>&nbsp;{standalone_engine;&nbsp;standalone_ui&nbsp;=&nbsp;ui})&nbsp;<br>
+<br>
+<span class="keyword">let</span>&nbsp;client&nbsp;?(ui=default_ui)&nbsp;~token&nbsp;connection&nbsp;=<br>
+&nbsp;&nbsp;(<span class="keywordsign">`</span><span class="constructor">Client</span>&nbsp;{client_ui&nbsp;=&nbsp;ui;&nbsp;connection;&nbsp;token})<br>
+<br>
+<span class="keyword">let</span>&nbsp;server<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?ui&nbsp;?engine<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?authorized_tokens_path&nbsp;?(return_error_messages=<span class="keyword">false</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?command_pipe&nbsp;?(daemon=<span class="keyword">false</span>)&nbsp;?log_path&nbsp;listen_to&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;server_engine&nbsp;=&nbsp;<span class="constructor">Option</span>.value&nbsp;engine&nbsp;~default:default_engine&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;server_ui&nbsp;=&nbsp;<span class="constructor">Option</span>.value&nbsp;ui&nbsp;~default:default_ui&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;(<span class="keywordsign">`</span><span class="constructor">Server</span>&nbsp;{server_engine;&nbsp;authorized_tokens_path;&nbsp;listen_to;&nbsp;server_ui;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return_error_messages;&nbsp;command_pipe;&nbsp;daemon;&nbsp;log_path;&nbsp;})<br>
+<br>
+<br>
 <br>
 <span class="keyword">let</span>&nbsp;parse_exn&nbsp;str&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;toml&nbsp;=&nbsp;<span class="constructor">Toml</span>.from_string&nbsp;str&nbsp;<span class="keyword">in</span><br>
@@ -149,20 +204,7 @@
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;toml_mandatory&nbsp;?(table=toml)&nbsp;get&nbsp;name&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;get&nbsp;table&nbsp;name<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(fmt&nbsp;<span class="string">"Mandatory&nbsp;field&nbsp;%S&nbsp;missing"</span>&nbsp;name)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;turn_unix_ssh_failure_into_target_failure&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;toml_option&nbsp;<span class="constructor">Toml</span>.get_bool&nbsp;<span class="string">"turn-unix-ssh-failure-into-target-failure"</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;debug_level&nbsp;=&nbsp;toml_option&nbsp;<span class="constructor">Toml</span>.get_int&nbsp;<span class="string">"debug-level"</span>&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;host_timeout_upper_bound&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;toml_option&nbsp;<span class="constructor">Toml</span>.get_float&nbsp;<span class="string">"host-timeout-upper-bound"</span>&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;with_color&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Option</span>.(<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;toml_option&nbsp;<span class="constructor">Toml</span>.get_table&nbsp;<span class="string">"client"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;table&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;toml_option&nbsp;~table&nbsp;<span class="constructor">Toml</span>.get_bool&nbsp;<span class="string">"color"</span>)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;database_parameters,&nbsp;persistent_state_key&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;table&nbsp;=&nbsp;toml_mandatory&nbsp;<span class="constructor">Toml</span>.get_table&nbsp;<span class="string">"database"</span>&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;toml_mandatory&nbsp;~table&nbsp;<span class="constructor">Toml</span>.get_string&nbsp;&nbsp;<span class="string">"path"</span>,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;toml_option&nbsp;~table&nbsp;<span class="constructor">Toml</span>.get_string&nbsp;<span class="string">"state-key"</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;plugins&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;toml_option&nbsp;<span class="constructor">Toml</span>.get_table&nbsp;<span class="string">"plugins"</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;|&gt;&nbsp;<span class="constructor">Option</span>.value_map&nbsp;~default:[]&nbsp;~f:<span class="constructor">Toml</span>.toml_to_list<br>
@@ -172,14 +214,37 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;(<span class="string">"compiled"</span>,&nbsp;<span class="constructor">TomlType</span>.<span class="constructor">TString</span>&nbsp;path)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[<span class="keywordsign">`</span><span class="constructor">Compiled</span>&nbsp;path]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;(<span class="string">"ocamlfind"</span>,&nbsp;<span class="constructor">TomlType</span>.<span class="constructor">TString</span>&nbsp;pack)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[<span class="keywordsign">`</span><span class="constructor">OCamlfind</span>&nbsp;pack]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;(<span class="string">"compiled"</span>,&nbsp;<span class="constructor">TomlType</span>.<span class="constructor">TArray</span>&nbsp;(<span class="constructor">TomlType</span>.<span class="constructor">NodeString</span>&nbsp;paths))&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.map&nbsp;paths&nbsp;~f:(<span class="keyword">fun</span>&nbsp;p&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Compiled</span>&nbsp;p)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.map&nbsp;paths&nbsp;~f:(<span class="keyword">fun</span>&nbsp;p&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Compiled</span>&nbsp;p)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;(<span class="string">"ocamlfind"</span>,&nbsp;<span class="constructor">TomlType</span>.<span class="constructor">TArray</span>&nbsp;(<span class="constructor">TomlType</span>.<span class="constructor">NodeString</span>&nbsp;packs))&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.map&nbsp;packs&nbsp;~f:(<span class="keyword">fun</span>&nbsp;p&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">OCamlfind</span>&nbsp;p)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.map&nbsp;packs&nbsp;~f:(<span class="keyword">fun</span>&nbsp;p&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">OCamlfind</span>&nbsp;p)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;(other,&nbsp;_)&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;(fmt&nbsp;<span class="string">"Expecting&nbsp;“compiled”&nbsp;plugins&nbsp;only"</span>)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;|&gt;&nbsp;<span class="constructor">List</span>.concat<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;engine&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Option</span>.(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;toml_option&nbsp;<span class="constructor">Toml</span>.get_table&nbsp;<span class="string">"engine"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;table&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;database_parameters&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;toml_option&nbsp;~table&nbsp;<span class="constructor">Toml</span>.get_string&nbsp;<span class="string">"database-path"</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;persistent_state_key&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;toml_option&nbsp;~table&nbsp;<span class="constructor">Toml</span>.get_string&nbsp;<span class="string">"state-key"</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;turn_unix_ssh_failure_into_target_failure&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;toml_option&nbsp;~table&nbsp;<span class="constructor">Toml</span>.get_bool&nbsp;<span class="string">"turn-unix-ssh-failure-into-target-failure"</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;host_timeout_upper_bound&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;toml_option&nbsp;~table&nbsp;<span class="constructor">Toml</span>.get_float&nbsp;<span class="string">"host-timeout-upper-bound"</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;(engine&nbsp;?database_parameters&nbsp;?persistent_state_key<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?turn_unix_ssh_failure_into_target_failure<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?host_timeout_upper_bound&nbsp;()))<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ui&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Option</span>.(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;toml_option&nbsp;<span class="constructor">Toml</span>.get_table&nbsp;<span class="string">"ui"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;table&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;with_color&nbsp;=&nbsp;toml_option&nbsp;~table&nbsp;<span class="constructor">Toml</span>.get_bool&nbsp;<span class="string">"color"</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;(ui&nbsp;?with_color&nbsp;())<br>
+&nbsp;&nbsp;&nbsp;&nbsp;)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;server&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">open</span>&nbsp;<span class="constructor">Option</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;toml_option&nbsp;<span class="constructor">Toml</span>.get_table&nbsp;<span class="string">"server"</span><br>
@@ -199,18 +264,25 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;key&nbsp;=&nbsp;toml_mandatory&nbsp;~table&nbsp;<span class="constructor">Toml</span>.get_string&nbsp;<span class="string">"private-key"</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;port&nbsp;=&nbsp;toml_mandatory&nbsp;~table&nbsp;<span class="constructor">Toml</span>.get_int&nbsp;<span class="string">"port"</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">Tls</span>&nbsp;(cert,&nbsp;key,&nbsp;port)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;(create_server&nbsp;?return_error_messages&nbsp;?command_pipe<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?daemon&nbsp;?log_path&nbsp;?authorized_tokens_path&nbsp;listen_to)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;(server&nbsp;?return_error_messages&nbsp;?command_pipe&nbsp;?engine&nbsp;?daemon<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?ui&nbsp;?log_path&nbsp;?authorized_tokens_path&nbsp;listen_to)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;create&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;?turn_unix_ssh_failure_into_target_failure&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;?debug_level&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;?with_color<br>
-&nbsp;&nbsp;&nbsp;&nbsp;?persistent_state_key&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;?host_timeout_upper_bound<br>
-&nbsp;&nbsp;&nbsp;&nbsp;~plugins<br>
-&nbsp;&nbsp;&nbsp;&nbsp;?server<br>
-&nbsp;&nbsp;&nbsp;&nbsp;~database_parameters&nbsp;()<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;client&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Option</span>.(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;toml_option&nbsp;<span class="constructor">Toml</span>.get_table&nbsp;<span class="string">"client"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;table&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;connection&nbsp;=&nbsp;toml_mandatory&nbsp;~table&nbsp;<span class="constructor">Toml</span>.get_string&nbsp;<span class="string">"connection"</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;token&nbsp;=&nbsp;toml_mandatory&nbsp;~table&nbsp;<span class="constructor">Toml</span>.get_string&nbsp;<span class="string">"token"</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;(client&nbsp;?ui&nbsp;~token&nbsp;connection)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;mode&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;client,&nbsp;server&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;s,&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>,&nbsp;<span class="constructor">Some</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>,&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;&nbsp;standalone&nbsp;?engine&nbsp;?ui&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_,&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;<span class="string">"Cannot&nbsp;handle&nbsp;multiple&nbsp;configurations&nbsp;in&nbsp;the&nbsp;same&nbsp;file"</span><br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;create&nbsp;?debug_level&nbsp;~plugins&nbsp;mode<br>
+<br>
 <br>
 <span class="keyword">let</span>&nbsp;parse&nbsp;s&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">open</span>&nbsp;<span class="constructor">Result</span>&nbsp;<span class="keyword">in</span><br>
@@ -219,9 +291,25 @@
 <br>
 <span class="keyword">let</span>&nbsp;apply_globals&nbsp;t&nbsp;=<br>
 &nbsp;&nbsp;global_debug_level&nbsp;:=&nbsp;t.debug_level;<br>
-&nbsp;&nbsp;global_with_color&nbsp;:=&nbsp;t.with_color;<br>
-&nbsp;&nbsp;<span class="constructor">Ketrew_host</span>.default_timeout_upper_bound&nbsp;:=&nbsp;t.host_timeout_upper_bound;<br>
-&nbsp;&nbsp;()<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;color,&nbsp;host_timeout&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;t.mode&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Client</span>&nbsp;{client_ui;&nbsp;connection}&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(client_ui.with_color,&nbsp;<span class="constructor">None</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Standalone</span>&nbsp;{standalone_ui;&nbsp;standalone_engine}&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(standalone_ui.with_color,&nbsp;standalone_engine.host_timeout_upper_bound)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Server</span>&nbsp;{server_engine;&nbsp;server_ui;&nbsp;_}&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(server_ui.with_color,&nbsp;server_engine.host_timeout_upper_bound)<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;global_with_color&nbsp;:=&nbsp;color;<br>
+&nbsp;&nbsp;<span class="constructor">Log</span>.(s&nbsp;<span class="string">"Configuration:&nbsp;setting&nbsp;globals:&nbsp;"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;indent&nbsp;(n<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;s&nbsp;<span class="string">"debug_level:&nbsp;"</span>&nbsp;%&nbsp;i&nbsp;!global_debug_level&nbsp;%&nbsp;n<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;s&nbsp;<span class="string">"with_color:&nbsp;"</span>&nbsp;%&nbsp;<span class="constructor">OCaml</span>.bool&nbsp;!global_with_color&nbsp;%&nbsp;n<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;s&nbsp;<span class="string">"timeout&nbsp;upper&nbsp;bound:&nbsp;"</span>&nbsp;%&nbsp;<span class="constructor">OCaml</span>.(option&nbsp;float&nbsp;host_timeout)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)&nbsp;@&nbsp;very_verbose);<br>
+&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">match</span>&nbsp;host_timeout&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;ht&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ketrew_host</span>.default_timeout_upper_bound&nbsp;:=&nbsp;ht<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
 <br>
 <span class="keyword">let</span>&nbsp;get_configuration&nbsp;?(and_apply=<span class="keyword">true</span>)&nbsp;?override_configuration&nbsp;path&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">match</span>&nbsp;override_configuration&nbsp;<span class="keyword">with</span><br>
@@ -233,17 +321,68 @@
 &nbsp;&nbsp;&nbsp;&nbsp;of_result&nbsp;(parse&nbsp;content)<br>
 &nbsp;&nbsp;<span class="keyword">end</span><br>
 &nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;conf&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;and_apply&nbsp;<span class="keyword">then</span>&nbsp;apply_globals&nbsp;conf;<br>
+&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">if</span>&nbsp;and_apply&nbsp;<span class="keyword">then</span>&nbsp;(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;apply_globals&nbsp;conf;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_plugin</span>.load_plugins&nbsp;conf.plugins<br>
+&nbsp;&nbsp;)&nbsp;<span class="keyword">else</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;()<br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;return&nbsp;conf<br>
 <br>
 <span class="keyword">let</span>&nbsp;plugins&nbsp;t&nbsp;=&nbsp;t.plugins<br>
 <br>
-<span class="keyword">let</span>&nbsp;server_configuration&nbsp;t&nbsp;=&nbsp;t.server<br>
-<br>
+<span class="keyword">let</span>&nbsp;server_configuration&nbsp;t&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;t.mode&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Server</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Some</span>&nbsp;s<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;other&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
 <span class="keyword">let</span>&nbsp;listen_to&nbsp;s&nbsp;=&nbsp;s.listen_to<br>
 <span class="keyword">let</span>&nbsp;return_error_messages&nbsp;s&nbsp;=&nbsp;s.return_error_messages<br>
 <span class="keyword">let</span>&nbsp;authorized_tokens_path&nbsp;s&nbsp;=&nbsp;s.authorized_tokens_path<br>
 <span class="keyword">let</span>&nbsp;command_pipe&nbsp;s&nbsp;=&nbsp;s.command_pipe<br>
 <span class="keyword">let</span>&nbsp;daemon&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;=&nbsp;s.daemon<br>
 <span class="keyword">let</span>&nbsp;log_path&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;=&nbsp;s.log_path<br>
+<span class="keyword">let</span>&nbsp;database_parameters&nbsp;e&nbsp;=&nbsp;e.database_parameters<br>
+<span class="keyword">let</span>&nbsp;persistent_state_key&nbsp;e&nbsp;=&nbsp;e.persistent_state_key<br>
+<span class="keyword">let</span>&nbsp;is_unix_ssh_failure_fatal&nbsp;e&nbsp;=&nbsp;e.turn_unix_ssh_failure_into_target_failure<br>
+<span class="keyword">let</span>&nbsp;mode&nbsp;t&nbsp;=&nbsp;t.mode<br>
+<span class="keyword">let</span>&nbsp;standalone_engine&nbsp;st&nbsp;=&nbsp;st.standalone_engine<br>
+<span class="keyword">let</span>&nbsp;server_engine&nbsp;s&nbsp;=&nbsp;s.server_engine<br>
+<span class="keyword">let</span>&nbsp;connection&nbsp;c&nbsp;=&nbsp;c.connection<br>
+<span class="keyword">let</span>&nbsp;token&nbsp;c&nbsp;=&nbsp;c.token<br>
+<br>
+<span class="keyword">let</span>&nbsp;standalone_of_server&nbsp;s&nbsp;=&nbsp;<br>
+&nbsp;&nbsp;{standalone_ui&nbsp;=&nbsp;s.server_ui;<br>
+&nbsp;&nbsp;&nbsp;standalone_engine&nbsp;=&nbsp;s.server_engine;}<br>
+<br>
+<span class="keyword">let</span>&nbsp;get_configuration_for_daemon_exn<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?override_configuration&nbsp;path&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;conf&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">match</span>&nbsp;override_configuration&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;c&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;c<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;i&nbsp;=&nbsp;open_in&nbsp;path&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;content&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;buf&nbsp;=&nbsp;<span class="constructor">Buffer</span>.create&nbsp;1023&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;get_all&nbsp;()&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">try</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;line&nbsp;=&nbsp;input_line&nbsp;i&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Buffer</span>.add_string&nbsp;buf&nbsp;(line&nbsp;^&nbsp;<span class="string">"\n"</span>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get_all&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get_all&nbsp;();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Buffer</span>.contents&nbsp;buf&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;close_in&nbsp;i;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;conf&nbsp;=&nbsp;parse_exn&nbsp;content&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;conf<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;server_configuration&nbsp;conf&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;server_config&nbsp;<span class="keyword">when</span>&nbsp;daemon&nbsp;server_config&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">Daemonize_with</span>&nbsp;(log_path&nbsp;server_config)<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Do_not_daemonize</span><br>
 </code></body></html>

@@ -11,11 +11,13 @@
 <link title="Index of module types" rel=Appendix href="index_module_types.html">
 <link title="Ketrew" rel="Chapter" href="Ketrew.html">
 <link title="Ketrew_artifact" rel="Chapter" href="Ketrew_artifact.html">
+<link title="Ketrew_client" rel="Chapter" href="Ketrew_client.html">
 <link title="Ketrew_command_line" rel="Chapter" href="Ketrew_command_line.html">
 <link title="Ketrew_configuration" rel="Chapter" href="Ketrew_configuration.html">
 <link title="Ketrew_daemonize" rel="Chapter" href="Ketrew_daemonize.html">
 <link title="Ketrew_database" rel="Chapter" href="Ketrew_database.html">
 <link title="Ketrew_edsl" rel="Chapter" href="Ketrew_edsl.html">
+<link title="Ketrew_engine" rel="Chapter" href="Ketrew_engine.html">
 <link title="Ketrew_error" rel="Chapter" href="Ketrew_error.html">
 <link title="Ketrew_host" rel="Chapter" href="Ketrew_host.html">
 <link title="Ketrew_long_running" rel="Chapter" href="Ketrew_long_running.html">
@@ -23,12 +25,12 @@
 <link title="Ketrew_monitored_script" rel="Chapter" href="Ketrew_monitored_script.html">
 <link title="Ketrew_path" rel="Chapter" href="Ketrew_path.html">
 <link title="Ketrew_pervasives" rel="Chapter" href="Ketrew_pervasives.html">
+<link title="Ketrew_plugin" rel="Chapter" href="Ketrew_plugin.html">
 <link title="Ketrew_program" rel="Chapter" href="Ketrew_program.html">
+<link title="Ketrew_protocol" rel="Chapter" href="Ketrew_protocol.html">
 <link title="Ketrew_server" rel="Chapter" href="Ketrew_server.html">
-<link title="Ketrew_state" rel="Chapter" href="Ketrew_state.html">
 <link title="Ketrew_target" rel="Chapter" href="Ketrew_target.html">
-<link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html">
-<link title="Ketrew_user_command" rel="Chapter" href="Ketrew_user_command.html"><title>Ketrew API : Index of modules</title>
+<link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html"><title>Ketrew API : Index of modules</title>
 </head>
 <body>
 <div class="navbar">&nbsp;<a class="up" href="index.html" title="Index">Up</a>
@@ -39,16 +41,27 @@
 <tr><td><a href="Ketrew.Artifact.html">Artifact</a> [<a href="Ketrew.html">Ketrew</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ketrew_server.Authentication.html">Authentication</a> [<a href="Ketrew_server.html">Ketrew_server</a>]</td>
+<td><div class="info">
+Module dealing with access tokens and access rights.
+</div>
+</td></tr>
+<tr><td align="left"><br>B</td></tr>
+<tr><td><a href="Ketrew_target.Build_process.html">Build_process</a> [<a href="Ketrew_target.html">Ketrew_target</a>]</td>
 <td></td></tr>
 <tr><td align="left"><br>C</td></tr>
 <tr><td><a href="Ketrew_server.Cohttp_server_core.html">Cohttp_server_core</a> [<a href="Ketrew_server.html">Ketrew_server</a>]</td>
-<td></td></tr>
+<td><div class="info">
+To use SSL we need to apply the server Cohhtp functor ourselves.
+</div>
+</td></tr>
 <tr><td><a href="Ketrew_target.Command.html">Command</a> [<a href="Ketrew_target.html">Ketrew_target</a>]</td>
 <td><div class="info">
 Definition of command-lines to run on a given <a href="Ketrew_host.html#TYPEt"><code class="code"><span class="constructor">Ketrew_host</span>.t</code></a>.
 </div>
 </td></tr>
 <tr><td><a href="Ketrew.Command_line.html">Command_line</a> [<a href="Ketrew.html">Ketrew</a>]</td>
+<td></td></tr>
+<tr><td><a href="Ketrew_edsl.Condition.html">Condition</a> [<a href="Ketrew_edsl.html">Ketrew_edsl</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ketrew_target.Condition.html">Condition</a> [<a href="Ketrew_target.html">Ketrew_target</a>]</td>
 <td></td></tr>
@@ -57,8 +70,19 @@ Definition of command-lines to run on a given <a href="Ketrew_host.html#TYPEt"><
 <tr><td align="left"><br>D</td></tr>
 <tr><td><a href="Ketrew.Daemonize.html">Daemonize</a> [<a href="Ketrew.html">Ketrew</a>]</td>
 <td></td></tr>
+<tr><td><a href="Ketrew_database.Debug.html">Debug</a> [<a href="Ketrew_database.html">Ketrew_database</a>]</td>
+<td><div class="info">
+This module should be used only by the tests; with <a href="Ketrew_database.Debug.html#VALglobal_debug"><code class="code"><span class="constructor">Ketrew_database</span>.<span class="constructor">Debug</span>.global_debug</code></a>
+    one can inject a <i>harder</i> failure (exception thrown)
+    at a precise given point (see <a href="Ketrew_database.Debug.html#TYPEt"><code class="code"><span class="constructor">Ketrew_database</span>.<span class="constructor">Debug</span>.t</code></a>).
+</div>
+</td></tr>
+<tr><td><a href="Ketrew_protocol.Down_message.html">Down_message</a> [<a href="Ketrew_protocol.html">Ketrew_protocol</a>]</td>
+<td></td></tr>
 <tr><td align="left"><br>E</td></tr>
 <tr><td><a href="Ketrew.EDSL.html">EDSL</a> [<a href="Ketrew.html">Ketrew</a>]</td>
+<td></td></tr>
+<tr><td><a href="Ketrew.Engine.html">Engine</a> [<a href="Ketrew.html">Ketrew</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ketrew_target.Equivalence.html">Equivalence</a> [<a href="Ketrew_target.html">Ketrew_target</a>]</td>
 <td></td></tr>
@@ -72,7 +96,11 @@ Higher-level representation of Unix exit codes.
 </div>
 </td></tr>
 <tr><td align="left"><br>H</td></tr>
+<tr><td><a href="Ketrew_edsl.Host.html">Host</a> [<a href="Ketrew_edsl.html">Ketrew_edsl</a>]</td>
+<td></td></tr>
 <tr><td><a href="Ketrew.Host.html">Host</a> [<a href="Ketrew.html">Ketrew</a>]</td>
+<td></td></tr>
+<tr><td><a href="Ketrew_client.Http_client.html">Http_client</a> [<a href="Ketrew_client.html">Ketrew_client</a>]</td>
 <td></td></tr>
 <tr><td align="left"><br>I</td></tr>
 <tr><td><a href="Ketrew_target.Is.html">Is</a> [<a href="Ketrew_target.html">Ketrew_target</a>]</td>
@@ -80,6 +108,9 @@ Higher-level representation of Unix exit codes.
 Basic boolean queries on targets.
 </div>
 </td></tr>
+<tr><td align="left"><br>J</td></tr>
+<tr><td><a href="Ketrew_pervasives.Json.html">Json</a> [<a href="Ketrew_pervasives.html">Ketrew_pervasives</a>]</td>
+<td></td></tr>
 <tr><td align="left"><br>K</td></tr>
 <tr><td><a href="Ketrew.html">Ketrew</a> </td>
 <td><div class="info">
@@ -91,6 +122,8 @@ Top-level module exporting the API (pack).
 Artifacts are input values or files, or results of computations.
 </div>
 </td></tr>
+<tr><td><a href="Ketrew_client.html">Ketrew_client</a> </td>
+<td></td></tr>
 <tr><td><a href="Ketrew_command_line.html">Ketrew_command_line</a> </td>
 <td><div class="info">
 Command line interface to the engine.
@@ -116,6 +149,11 @@ A key-value database API with basic transactions.
 <tr><td><a href="Ketrew_edsl.html">Ketrew_edsl</a> </td>
 <td><div class="info">
 Easy interface to the library <b>for end users</b>.
+</div>
+</td></tr>
+<tr><td><a href="Ketrew_engine.html">Ketrew_engine</a> </td>
+<td><div class="info">
+The engine of the actual Workflow Engine.
 </div>
 </td></tr>
 <tr><td><a href="Ketrew_error.html">Ketrew_error</a> </td>
@@ -154,16 +192,21 @@ File-path handling
 <code class="code"><span class="constructor">Pervasives</span></code> module for the library.
 </div>
 </td></tr>
+<tr><td><a href="Ketrew_plugin.html">Ketrew_plugin</a> </td>
+<td><div class="info">
+The “long-running” plugins loaded by default.
+</div>
+</td></tr>
 <tr><td><a href="Ketrew_program.html">Ketrew_program</a> </td>
 <td><div class="info">
 The “things” to run on a given host.
 </div>
 </td></tr>
-<tr><td><a href="Ketrew_server.html">Ketrew_server</a> </td>
+<tr><td><a href="Ketrew_protocol.html">Ketrew_protocol</a> </td>
 <td></td></tr>
-<tr><td><a href="Ketrew_state.html">Ketrew_state</a> </td>
+<tr><td><a href="Ketrew_server.html">Ketrew_server</a> </td>
 <td><div class="info">
-The “application” state; the Engine.
+To use SSL we need to apply the server Cohhtp functor ourselves.
 </div>
 </td></tr>
 <tr><td><a href="Ketrew_target.html">Ketrew_target</a> </td>
@@ -176,11 +219,6 @@ Definition of the basic building bloc of a workflow.
 Manage calls to Unix processes
 </div>
 </td></tr>
-<tr><td><a href="Ketrew_user_command.html">Ketrew_user_command</a> </td>
-<td><div class="info">
-Commands that can be fed to the engine by end-users.
-</div>
-</td></tr>
 <tr><td align="left"><br>L</td></tr>
 <tr><td><a href="Ketrew_pervasives.Log.html">Log</a> [<a href="Ketrew_pervasives.html">Ketrew_pervasives</a>]</td>
 <td><div class="info">
@@ -188,12 +226,21 @@ Application of the functor <code class="code"><span class="constructor">Docout</
     without buffering.
 </div>
 </td></tr>
+<tr><td align="left"><br>M</td></tr>
+<tr><td><a href="Ketrew_pervasives.Json.Make_versioned_serialization.html">Make_versioned_serialization</a> [<a href="Ketrew_pervasives.Json.html">Ketrew_pervasives.Json</a>]</td>
+<td></td></tr>
+<tr><td><a href="Ketrew_engine.Measure.html">Measure</a> [<a href="Ketrew_engine.html">Ketrew_engine</a>]</td>
+<td></td></tr>
+<tr><td><a href="Ketrew_engine.Measurements.html">Measurements</a> [<a href="Ketrew_engine.html">Ketrew_engine</a>]</td>
+<td></td></tr>
 <tr><td align="left"><br>P</td></tr>
 <tr><td><a href="Ketrew.Path.html">Path</a> [<a href="Ketrew.html">Ketrew</a>]</td>
 <td></td></tr>
+<tr><td><a href="Ketrew_protocol.Post_message.html">Post_message</a> [<a href="Ketrew_protocol.html">Ketrew_protocol</a>]</td>
+<td></td></tr>
 <tr><td><a href="Ketrew_edsl.Program.html">Program</a> [<a href="Ketrew_edsl.html">Ketrew_edsl</a>]</td>
 <td><div class="info">
-Build “things to run”.
+Build “things to run”, i.e.
 </div>
 </td></tr>
 <tr><td><a href="Ketrew.Program.html">Program</a> [<a href="Ketrew.html">Ketrew</a>]</td>
@@ -203,20 +250,23 @@ Build “things to run”.
 <td></td></tr>
 <tr><td align="left"><br>S</td></tr>
 <tr><td><a href="Ketrew_server.Server_state.html">Server_state</a> [<a href="Ketrew_server.html">Ketrew_server</a>]</td>
-<td></td></tr>
+<td><div class="info">
+The state maintained by the HTTP server.
+</div>
+</td></tr>
 <tr><td><a href="Ketrew_host.Ssh.html">Ssh</a> [<a href="Ketrew_host.html">Ketrew_host</a>]</td>
 <td><div class="info">
 Definitions specific to “SSH” hosts (see <code class="code">connection</code>).
 </div>
 </td></tr>
-<tr><td><a href="Ketrew.State.html">State</a> [<a href="Ketrew.html">Ketrew</a>]</td>
+<tr><td><a href="Ketrew_client.Standalone.html">Standalone</a> [<a href="Ketrew_client.html">Ketrew_client</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ketrew_pervasives.String.html">String</a> [<a href="Ketrew_pervasives.html">Ketrew_pervasives</a>]</td>
 <td></td></tr>
 <tr><td align="left"><br>T</td></tr>
 <tr><td><a href="Ketrew.Target.html">Target</a> [<a href="Ketrew.html">Ketrew</a>]</td>
 <td></td></tr>
-<tr><td><a href="Ketrew_state.Target_graph.html">Target_graph</a> [<a href="Ketrew_state.html">Ketrew_state</a>]</td>
+<tr><td><a href="Ketrew_engine.Target_graph.html">Target_graph</a> [<a href="Ketrew_engine.html">Ketrew_engine</a>]</td>
 <td><div class="info">
 A module to manipulate the graph of dependencies.
 </div>

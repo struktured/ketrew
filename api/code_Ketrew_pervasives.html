@@ -10,11 +10,13 @@
 <link title="Index of module types" rel=Appendix href="index_module_types.html">
 <link title="Ketrew" rel="Chapter" href="Ketrew.html">
 <link title="Ketrew_artifact" rel="Chapter" href="Ketrew_artifact.html">
+<link title="Ketrew_client" rel="Chapter" href="Ketrew_client.html">
 <link title="Ketrew_command_line" rel="Chapter" href="Ketrew_command_line.html">
 <link title="Ketrew_configuration" rel="Chapter" href="Ketrew_configuration.html">
 <link title="Ketrew_daemonize" rel="Chapter" href="Ketrew_daemonize.html">
 <link title="Ketrew_database" rel="Chapter" href="Ketrew_database.html">
 <link title="Ketrew_edsl" rel="Chapter" href="Ketrew_edsl.html">
+<link title="Ketrew_engine" rel="Chapter" href="Ketrew_engine.html">
 <link title="Ketrew_error" rel="Chapter" href="Ketrew_error.html">
 <link title="Ketrew_host" rel="Chapter" href="Ketrew_host.html">
 <link title="Ketrew_long_running" rel="Chapter" href="Ketrew_long_running.html">
@@ -22,12 +24,12 @@
 <link title="Ketrew_monitored_script" rel="Chapter" href="Ketrew_monitored_script.html">
 <link title="Ketrew_path" rel="Chapter" href="Ketrew_path.html">
 <link title="Ketrew_pervasives" rel="Chapter" href="Ketrew_pervasives.html">
+<link title="Ketrew_plugin" rel="Chapter" href="Ketrew_plugin.html">
 <link title="Ketrew_program" rel="Chapter" href="Ketrew_program.html">
+<link title="Ketrew_protocol" rel="Chapter" href="Ketrew_protocol.html">
 <link title="Ketrew_server" rel="Chapter" href="Ketrew_server.html">
-<link title="Ketrew_state" rel="Chapter" href="Ketrew_state.html">
 <link title="Ketrew_target" rel="Chapter" href="Ketrew_target.html">
-<link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html">
-<link title="Ketrew_user_command" rel="Chapter" href="Ketrew_user_command.html"><title>Ketrew API : Ketrew_pervasives</title>
+<link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html"><title>Ketrew API : Ketrew_pervasives</title>
 </head>
 <body>
 <code class="code"></code><table><tr><td></td><td><span class="comment">(**************************************************************************)</span></td></tr></table><code class="code"><br>
@@ -56,6 +58,9 @@
 &nbsp;&nbsp;<span class="keyword">include</span>&nbsp;<span class="constructor">Sosa</span>.<span class="constructor">Native_string</span><br>
 <span class="keyword">end</span><br>
 <br>
+<span class="keyword">let</span>&nbsp;(//)&nbsp;=&nbsp;<span class="constructor">Filename</span>.concat<br>
+</code><table><tr><td></td><td><span class="comment">(** A very standard operator. *)</span></td></tr></table><code class="code"><br>
+<br>
 <span class="keyword">let</span>&nbsp;printf&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">No</span><br>
 </code><table><tr><td></td><td><span class="comment">(** We disable <code class="code">printf</code>. *)</span></td></tr></table><code class="code"><br>
 <br>
@@ -71,6 +76,8 @@
 <span class="keyword">let</span>&nbsp;global_with_color&nbsp;=&nbsp;ref&nbsp;<span class="keyword">true</span><br>
 </code><table><tr><td></td><td><span class="comment">(** Global reference. *)</span></td></tr></table><code class="code"><br>
 <br>
+<span class="keyword">let</span>&nbsp;global_log_print_string&nbsp;=&nbsp;ref&nbsp;(<span class="constructor">Printf</span>.printf&nbsp;<span class="string">"%s%!"</span>)<br>
+<br>
 </code><table><tr><td></td><td><span class="comment">(** Application of the functor <code class="code"><span class="constructor">Docout</span>.<span class="constructor">Make_logger</span></code> to write to <code class="code">stderr</code>
     without buffering. *)</span></td></tr></table><code class="code"><br>
 <span class="keyword">module</span>&nbsp;<span class="constructor">Log</span>&nbsp;=&nbsp;&nbsp;<span class="keyword">struct</span><br>
@@ -80,7 +87,8 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;with_color&nbsp;()&nbsp;=&nbsp;!global_with_color<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;line_width&nbsp;=&nbsp;72<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;indent&nbsp;=&nbsp;4<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;print_string&nbsp;=&nbsp;<span class="constructor">Printf</span>.eprintf&nbsp;<span class="string">"%s%!"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;print_string&nbsp;s&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;!global_log_print_string&nbsp;s&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;do_nothing&nbsp;()&nbsp;=&nbsp;()<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;<span class="string">"ketrew"</span><br>
 &nbsp;&nbsp;<span class="keyword">end</span>)<br>
@@ -92,6 +100,43 @@
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;sexp&nbsp;sexp_of_t&nbsp;t&nbsp;=&nbsp;s&nbsp;(sexp_of_t&nbsp;t&nbsp;|&gt;&nbsp;<span class="constructor">Sexplib</span>.<span class="constructor">Sexp</span>.to_string)<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;theuri&nbsp;=&nbsp;s&nbsp;(<span class="constructor">Uri</span>.to_string&nbsp;theuri)<br>
 <span class="keyword">end</span><br>
+<br>
+<span class="keyword">module</span>&nbsp;<span class="constructor">Json</span>&nbsp;=&nbsp;<span class="keyword">struct</span><br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;<span class="constructor">Yojson</span>.<span class="constructor">Basic</span>.json<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;to_string&nbsp;t&nbsp;=&nbsp;<span class="constructor">Yojson</span>.<span class="constructor">Basic</span>.pretty_to_string&nbsp;~std:<span class="keyword">true</span>&nbsp;t<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;log&nbsp;t&nbsp;=&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;str&nbsp;=&nbsp;to_string&nbsp;t&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Log</span>.(indent&nbsp;(s&nbsp;str))<br>
+<br>
+&nbsp;&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">Make_versioned_serialization</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">T</span>&nbsp;:&nbsp;<span class="keyword">sig</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span>)&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">T_VERSIONED</span>&nbsp;:&nbsp;<span class="keyword">sig</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;[<span class="keywordsign">`</span><span class="constructor">V0</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">T</span>.t]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;source:&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t&nbsp;<span class="constructor">CConv</span>.<span class="constructor">Source</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sink:&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t&nbsp;<span class="constructor">CConv</span>.<span class="constructor">Sink</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span>)&nbsp;<br>
+&nbsp;&nbsp;=&nbsp;<span class="keyword">struct</span><br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;to_json&nbsp;(t&nbsp;:&nbsp;<span class="constructor">T</span>.t)&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;versioned&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">V0</span>&nbsp;t&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">CConv</span>.into&nbsp;(<span class="constructor">T_VERSIONED</span>.source&nbsp;())&nbsp;<span class="constructor">CConvYojson</span>.sink&nbsp;versioned<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;of_json_exn&nbsp;(json&nbsp;:&nbsp;t)&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">CConv</span>.from&nbsp;<span class="constructor">CConvYojson</span>.source&nbsp;(<span class="constructor">T_VERSIONED</span>.sink&nbsp;())&nbsp;json&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">V0</span>&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;serialize&nbsp;t&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Yojson</span>.<span class="constructor">Basic</span>.pretty_to_string&nbsp;~std:<span class="keyword">true</span>&nbsp;(to_json&nbsp;t)<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;deserialize_exn&nbsp;s&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Yojson</span>.<span class="constructor">Basic</span>.from_string&nbsp;s&nbsp;|&gt;&nbsp;of_json_exn<br>
+<br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+<br>
+<span class="keyword">end</span><br>
+<br>
 </code><table><tr><td></td><td><span class="comment">(** Function that have a documented, easy to check contract, can raise
     <code class="code"><span class="constructor">Invalid_argument</span> _</code> (their name should end in <code class="code">_exn</code>). *)</span></td></tr></table><code class="code"><br>
 <span class="keyword">let</span>&nbsp;invalid_argument_exn&nbsp;?(where=<span class="string">"pervasives"</span>)&nbsp;what&nbsp;=<br>
@@ -99,8 +144,7 @@
 <br>
 </code><table><tr><td></td><td><span class="comment">(** Handle timestamps. *)</span></td></tr></table><code class="code"><br>
 <span class="keyword">module</span>&nbsp;<span class="constructor">Time</span>&nbsp;=&nbsp;<span class="keyword">struct</span><br>
-&nbsp;&nbsp;<span class="keyword">include</span>&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span><br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;time<br>
+&nbsp;&nbsp;<span class="keyword">include</span>&nbsp;<span class="constructor">Ketrew_gen_base_v0</span>.<span class="constructor">Time</span><br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;now&nbsp;()&nbsp;:&nbsp;t&nbsp;=&nbsp;<span class="constructor">Unix</span>.gettimeofday&nbsp;()<br>
 <br>
@@ -123,9 +167,7 @@
 </code><table><tr><td></td><td><span class="comment">(** Provide pseudo-unique identifiers. *)</span></td></tr></table><code class="code"><br>
 <span class="keyword">module</span>&nbsp;<span class="constructor">Unique_id</span>&nbsp;=&nbsp;<span class="keyword">struct</span><br>
 <br>
-&nbsp;&nbsp;<span class="keyword">include</span>&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span><br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;unique_id<br>
-&nbsp;&nbsp;</code><table><tr><td>&nbsp;&nbsp;</td><td><span class="comment">(** <code class="code">string</code> seems to be the best-suited primitive *)</span></td></tr></table><code class="code"><br>
+&nbsp;&nbsp;<span class="keyword">include</span>&nbsp;<span class="constructor">Ketrew_gen_base_v0</span>.<span class="constructor">Unique_id</span><br>
 <br>
 &nbsp;&nbsp;</code><table><tr><td>&nbsp;&nbsp;</td><td><span class="comment">(** Create a fresh filename-compliant identifier. *)</span></td></tr></table><code class="code"><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;create&nbsp;()&nbsp;=<br>
@@ -137,4 +179,14 @@
 &nbsp;&nbsp;wrap_deferred&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Lwt_preemptive</span>.detach&nbsp;f&nbsp;())<br>
 &nbsp;&nbsp;&nbsp;&nbsp;~on_exn<br>
+<br>
+<span class="keyword">let</span>&nbsp;lwt_stream_to_string&nbsp;lwt_stream&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;buf&nbsp;=&nbsp;<span class="constructor">Buffer</span>.create&nbsp;42&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;wrap_deferred&nbsp;~on_exn:(<span class="keyword">fun</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Failure</span>&nbsp;(<span class="constructor">Printexc</span>.to_string&nbsp;e))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Lwt</span>.(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Lwt_stream</span>.iter_s&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Buffer</span>.add_string&nbsp;buf&nbsp;s;&nbsp;return&nbsp;())&nbsp;lwt_stream)<br>
+&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;return&nbsp;(<span class="constructor">Buffer</span>.contents&nbsp;buf)<br>
+<br>
 </code></body></html>

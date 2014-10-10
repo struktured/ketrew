@@ -10,11 +10,13 @@
 <link title="Index of module types" rel=Appendix href="index_module_types.html">
 <link title="Ketrew" rel="Chapter" href="Ketrew.html">
 <link title="Ketrew_artifact" rel="Chapter" href="Ketrew_artifact.html">
+<link title="Ketrew_client" rel="Chapter" href="Ketrew_client.html">
 <link title="Ketrew_command_line" rel="Chapter" href="Ketrew_command_line.html">
 <link title="Ketrew_configuration" rel="Chapter" href="Ketrew_configuration.html">
 <link title="Ketrew_daemonize" rel="Chapter" href="Ketrew_daemonize.html">
 <link title="Ketrew_database" rel="Chapter" href="Ketrew_database.html">
 <link title="Ketrew_edsl" rel="Chapter" href="Ketrew_edsl.html">
+<link title="Ketrew_engine" rel="Chapter" href="Ketrew_engine.html">
 <link title="Ketrew_error" rel="Chapter" href="Ketrew_error.html">
 <link title="Ketrew_host" rel="Chapter" href="Ketrew_host.html">
 <link title="Ketrew_long_running" rel="Chapter" href="Ketrew_long_running.html">
@@ -22,12 +24,12 @@
 <link title="Ketrew_monitored_script" rel="Chapter" href="Ketrew_monitored_script.html">
 <link title="Ketrew_path" rel="Chapter" href="Ketrew_path.html">
 <link title="Ketrew_pervasives" rel="Chapter" href="Ketrew_pervasives.html">
+<link title="Ketrew_plugin" rel="Chapter" href="Ketrew_plugin.html">
 <link title="Ketrew_program" rel="Chapter" href="Ketrew_program.html">
+<link title="Ketrew_protocol" rel="Chapter" href="Ketrew_protocol.html">
 <link title="Ketrew_server" rel="Chapter" href="Ketrew_server.html">
-<link title="Ketrew_state" rel="Chapter" href="Ketrew_state.html">
 <link title="Ketrew_target" rel="Chapter" href="Ketrew_target.html">
-<link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html">
-<link title="Ketrew_user_command" rel="Chapter" href="Ketrew_user_command.html"><title>Ketrew API : Ketrew_edsl</title>
+<link title="Ketrew_unix_process" rel="Chapter" href="Ketrew_unix_process.html"><title>Ketrew API : Ketrew_edsl</title>
 </head>
 <body>
 <code class="code"></code><table><tr><td></td><td><span class="comment">(**************************************************************************)</span></td></tr></table><code class="code"><br>
@@ -49,13 +51,41 @@
 <span class="keyword">open</span>&nbsp;<span class="constructor">Ketrew_pervasives</span><br>
 <br>
 <br>
-<span class="keyword">module</span>&nbsp;<span class="constructor">Host</span>&nbsp;=&nbsp;<span class="constructor">Ketrew_host</span><br>
 <span class="keyword">module</span>&nbsp;<span class="constructor">Path</span>&nbsp;=&nbsp;<span class="constructor">Ketrew_path</span><br>
 <span class="keyword">module</span>&nbsp;<span class="constructor">Target</span>&nbsp;=&nbsp;<span class="constructor">Ketrew_target</span><br>
 <span class="keyword">module</span>&nbsp;<span class="constructor">Artifact</span>&nbsp;=&nbsp;<span class="constructor">Ketrew_artifact</span><br>
 <br>
 &nbsp;<br>
-<span class="keyword">type</span>&nbsp;host&nbsp;=&nbsp;<span class="constructor">Ketrew_host</span>.t<br>
+<span class="keyword">module</span>&nbsp;<span class="constructor">Host</span>&nbsp;=&nbsp;<span class="keyword">struct</span><br>
+&nbsp;&nbsp;<span class="keyword">include</span>&nbsp;<span class="constructor">Ketrew_host</span><br>
+<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ssh<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?add_ssh_options<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?playground<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?port&nbsp;?user&nbsp;?name&nbsp;str&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;playground&nbsp;=&nbsp;<span class="constructor">Option</span>.map&nbsp;~f:<span class="constructor">Path</span>.absolute_directory_exn&nbsp;playground&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;ssh&nbsp;?default_shell:<span class="constructor">None</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?execution_timeout:<span class="constructor">None</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?add_ssh_options<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?playground<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?port&nbsp;?user&nbsp;?name&nbsp;str<br>
+<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;parse&nbsp;=&nbsp;of_string<br>
+<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;cmdliner_term&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?(doc=<span class="string">"URI&nbsp;of&nbsp;the&nbsp;host&nbsp;(e.g.&nbsp;ssh://user@example.com:42/tmp/ketrewplayground)."</span>)&nbsp;how&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">open</span>&nbsp;<span class="constructor">Cmdliner</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Term</span>.(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pure&nbsp;(<span class="keyword">fun</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;parse&nbsp;s)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">match</span>&nbsp;how&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Flag</span>&nbsp;(flags)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Arg</span>.(value&nbsp;<span class="keywordsign">&amp;</span>&nbsp;opt&nbsp;string&nbsp;<span class="string">"/tmp/"</span>&nbsp;<span class="keywordsign">&amp;</span>&nbsp;info&nbsp;flags&nbsp;~doc&nbsp;~docv:<span class="string">"URI"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Required</span>&nbsp;p&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Arg</span>.(required&nbsp;<span class="keywordsign">&amp;</span>&nbsp;pos&nbsp;p&nbsp;(some&nbsp;string)&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">&amp;</span>&nbsp;info&nbsp;[]&nbsp;~doc&nbsp;~docv:<span class="string">"URI"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;)<br>
+<br>
+<span class="keyword">end</span><br>
 <br>
 <span class="keyword">class</span>&nbsp;<span class="keyword">type</span>&nbsp;user_artifact&nbsp;=&nbsp;<span class="keyword">object</span><br>
 <br>
@@ -94,6 +124,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;render:&nbsp;<span class="constructor">Ketrew_target</span>.t<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;dependencies:&nbsp;user_target&nbsp;list<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;if_fails_activate:&nbsp;user_target&nbsp;list<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;success_triggers:&nbsp;user_target&nbsp;list<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;metadata:&nbsp;<span class="constructor">Ketrew_artifact</span>.<span class="constructor">Value</span>.t<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;product:&nbsp;user_artifact<br>
 &nbsp;&nbsp;<span class="keyword">end</span><br>
@@ -103,12 +134,14 @@
 &nbsp;&nbsp;?(active&nbsp;=&nbsp;<span class="keyword">false</span>)<br>
 &nbsp;&nbsp;?(dependencies&nbsp;=&nbsp;[])<br>
 &nbsp;&nbsp;?(if_fails_activate&nbsp;=&nbsp;[])<br>
+&nbsp;&nbsp;?(success_triggers&nbsp;=&nbsp;[])<br>
 &nbsp;&nbsp;?(name:&nbsp;string&nbsp;option)<br>
-&nbsp;&nbsp;?(make:&nbsp;<span class="constructor">Target</span>.build_process&nbsp;=&nbsp;<span class="constructor">Target</span>.nop)<br>
-&nbsp;&nbsp;?ready_when<br>
+&nbsp;&nbsp;?(make:&nbsp;<span class="constructor">Target</span>.<span class="constructor">Build_process</span>.t&nbsp;=&nbsp;<span class="constructor">Target</span>.<span class="constructor">Build_process</span>.nop)<br>
+&nbsp;&nbsp;?done_when<br>
 &nbsp;&nbsp;?(metadata&nbsp;=&nbsp;<span class="constructor">Artifact</span>.<span class="constructor">Value</span>.unit)<br>
 &nbsp;&nbsp;?product<br>
 &nbsp;&nbsp;?equivalence<br>
+&nbsp;&nbsp;?tags<br>
 &nbsp;&nbsp;()<br>
 &nbsp;&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;id&nbsp;=&nbsp;<span class="constructor">Unique_id</span>.create&nbsp;()&nbsp;<span class="keyword">in</span><br>
@@ -121,6 +154,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;id&nbsp;=&nbsp;id<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;dependencies&nbsp;=&nbsp;dependencies<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;if_fails_activate&nbsp;=&nbsp;if_fails_activate<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;success_triggers&nbsp;=&nbsp;success_triggers<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;activate&nbsp;=&nbsp;active&nbsp;&lt;-&nbsp;<span class="keyword">true</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;is_active&nbsp;=&nbsp;active<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;metadata&nbsp;=&nbsp;metadata<br>
@@ -130,8 +164,9 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~id:self<span class="keywordsign">#</span>id<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~dependencies:(<span class="constructor">List</span>.map&nbsp;dependencies&nbsp;~f:(<span class="keyword">fun</span>&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t<span class="keywordsign">#</span>id))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~if_fails_activate:(<span class="constructor">List</span>.map&nbsp;if_fails_activate&nbsp;~f:(<span class="keyword">fun</span>&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t<span class="keywordsign">#</span>id))<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~name:self<span class="keywordsign">#</span>name&nbsp;?condition:ready_when<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?equivalence<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~success_triggers:(<span class="constructor">List</span>.map&nbsp;success_triggers&nbsp;~f:(<span class="keyword">fun</span>&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t<span class="keywordsign">#</span>id))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~name:self<span class="keywordsign">#</span>name&nbsp;?condition:done_when<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?equivalence&nbsp;?tags<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~make&nbsp;()<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;product&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Option</span>.value_exn&nbsp;product&nbsp;<br>
@@ -139,25 +174,25 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
 &nbsp;&nbsp;<span class="keyword">end</span><br>
 <br>
-<span class="keyword">let</span>&nbsp;target&nbsp;?active&nbsp;?dependencies&nbsp;?make&nbsp;?ready_when&nbsp;?metadata&nbsp;?product<br>
-&nbsp;&nbsp;&nbsp;&nbsp;?equivalence&nbsp;?if_fails_activate&nbsp;name&nbsp;=<br>
+<span class="keyword">let</span>&nbsp;target&nbsp;?active&nbsp;?dependencies&nbsp;?make&nbsp;?done_when&nbsp;?metadata&nbsp;?product<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?equivalence&nbsp;?if_fails_activate&nbsp;?success_triggers&nbsp;?tags&nbsp;name&nbsp;=<br>
 &nbsp;&nbsp;user_target_internal<br>
-&nbsp;&nbsp;&nbsp;&nbsp;?equivalence&nbsp;?if_fails_activate<br>
-&nbsp;&nbsp;&nbsp;&nbsp;?active&nbsp;?dependencies&nbsp;~name&nbsp;?make&nbsp;?metadata&nbsp;?ready_when&nbsp;?product&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?equivalence&nbsp;?if_fails_activate&nbsp;?tags&nbsp;?success_triggers<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?active&nbsp;?dependencies&nbsp;~name&nbsp;?make&nbsp;?metadata&nbsp;?done_when&nbsp;?product&nbsp;()<br>
 <br>
 <span class="keyword">let</span>&nbsp;file_target&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;?dependencies&nbsp;?make&nbsp;?metadata&nbsp;?name&nbsp;?host&nbsp;?equivalence&nbsp;?if_fails_activate<br>
-&nbsp;&nbsp;&nbsp;&nbsp;path&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?success_triggers&nbsp;?tags&nbsp;path&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;product&nbsp;=&nbsp;file&nbsp;?host&nbsp;path&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;<span class="constructor">Option</span>.value&nbsp;name&nbsp;~default:(<span class="string">"Make:"</span>&nbsp;^&nbsp;path)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;target&nbsp;~product&nbsp;?equivalence&nbsp;?if_fails_activate<br>
-&nbsp;&nbsp;&nbsp;&nbsp;~ready_when:product<span class="keywordsign">#</span>exists&nbsp;?dependencies&nbsp;?make&nbsp;?metadata&nbsp;name<br>
+&nbsp;&nbsp;target&nbsp;~product&nbsp;?equivalence&nbsp;?if_fails_activate&nbsp;?tags&nbsp;?success_triggers<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~done_when:product<span class="keywordsign">#</span>exists&nbsp;?dependencies&nbsp;?make&nbsp;?metadata&nbsp;name<br>
 <br>
 <span class="comment">(*<br>
 &nbsp;&nbsp;Run&nbsp;a&nbsp;workflow:<br>
 <br>
 &nbsp;&nbsp;&nbsp;-&nbsp;make&nbsp;sure&nbsp;the&nbsp;run&nbsp;target&nbsp;is&nbsp;active,<br>
-&nbsp;&nbsp;&nbsp;-&nbsp;render&nbsp;all&nbsp;the&nbsp;depdendencies/fallbacks,<br>
+&nbsp;&nbsp;&nbsp;-&nbsp;render&nbsp;all&nbsp;the&nbsp;depdendencies/fallbacks/success-triggers,<br>
 *)</span><br>
 <span class="keyword">let</span>&nbsp;user_command_list&nbsp;t&nbsp;=<br>
 &nbsp;&nbsp;t<span class="keywordsign">#</span>activate;<br>
@@ -165,18 +200,18 @@
 &nbsp;&nbsp;&nbsp;&nbsp;t<span class="keywordsign">#</span>render&nbsp;::&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.concat_map&nbsp;t<span class="keywordsign">#</span>dependencies&nbsp;~f:go_through_deps<br>
 &nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;<span class="constructor">List</span>.concat_map&nbsp;t<span class="keywordsign">#</span>if_fails_activate&nbsp;~f:go_through_deps<br>
+&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;<span class="constructor">List</span>.concat_map&nbsp;t<span class="keywordsign">#</span>success_triggers&nbsp;~f:go_through_deps<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;targets&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;(go_through_deps&nbsp;t)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;|&gt;&nbsp;<span class="constructor">List</span>.dedup&nbsp;~compare:<span class="constructor">Target</span>.(<span class="keyword">fun</span>&nbsp;ta&nbsp;tb&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;compare&nbsp;ta.id&nbsp;tb.id)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;targets&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;first&nbsp;::&nbsp;more&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[<span class="keywordsign">`</span><span class="constructor">Make</span>&nbsp;(first,&nbsp;more)]<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;first&nbsp;::&nbsp;more&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(first,&nbsp;more)<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">assert</span>&nbsp;<span class="keyword">false</span>&nbsp;<span class="comment">(*&nbsp;there&nbsp;is&nbsp;at&nbsp;least&nbsp;the&nbsp;argument&nbsp;one&nbsp;*)</span><br>
 <br>
-<br>
 <span class="keyword">let</span>&nbsp;run&nbsp;?override_configuration&nbsp;t&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;todo_list&nbsp;=&nbsp;user_command_list&nbsp;t&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;active,&nbsp;dependencies&nbsp;=&nbsp;user_command_list&nbsp;t&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;config_path&nbsp;=&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">try</span>&nbsp;<span class="constructor">Sys</span>.getenv&nbsp;<span class="string">"KETREW_CONFIGURATION"</span>&nbsp;<span class="keyword">with</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">try</span>&nbsp;<span class="constructor">Sys</span>.getenv&nbsp;<span class="string">"KETREW_CONFIG"</span>&nbsp;<span class="keyword">with</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
@@ -185,8 +220,8 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_configuration</span>.(<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get_configuration&nbsp;?override_configuration&nbsp;config_path)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;configuration&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_state</span>.with_state&nbsp;~configuration&nbsp;(<span class="keyword">fun</span>&nbsp;~state&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_user_command</span>.run_list&nbsp;~state&nbsp;todo_list)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_client</span>.as_client&nbsp;~configuration&nbsp;~f:(<span class="keyword">fun</span>&nbsp;~client&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ketrew_client</span>.add_targets&nbsp;client&nbsp;(active&nbsp;::&nbsp;dependencies))<br>
 &nbsp;&nbsp;)&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Ok</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Error</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span><br>
@@ -204,7 +239,7 @@
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;copy_files&nbsp;~source:(s_host,&nbsp;src)&nbsp;~destination:(d_host,&nbsp;dest)&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~(f&nbsp;:&nbsp;?host:<span class="constructor">Host</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">open</span>&nbsp;<span class="constructor">Ketrew_gen_base_v0_t</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">open</span>&nbsp;<span class="constructor">Ketrew_gen_base_v0</span>.<span class="constructor">Host</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;s_host.connection,&nbsp;d_host.connection&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Localhost</span>,&nbsp;<span class="keywordsign">`</span><span class="constructor">Localhost</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;f&nbsp;?host:<span class="constructor">None</span>&nbsp;(exec&nbsp;(<span class="string">"cp"</span>&nbsp;::&nbsp;src&nbsp;@&nbsp;[dest]))&nbsp;<br>
@@ -217,20 +252,17 @@
 <br>
 <span class="keyword">end</span><br>
 <br>
-<span class="keyword">let</span>&nbsp;parse_host:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Host</span>.t&nbsp;=&nbsp;<span class="constructor">Host</span>.of_string<br>
+<span class="keyword">module</span>&nbsp;<span class="constructor">Condition</span>&nbsp;=&nbsp;<span class="keyword">struct</span><br>
 <br>
-<span class="keyword">let</span>&nbsp;host_cmdliner_term&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;?(doc=<span class="string">"URI&nbsp;of&nbsp;the&nbsp;host&nbsp;(e.g.&nbsp;ssh://user@example.com:42/tmp/ketrewplayground)."</span>)&nbsp;how&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">open</span>&nbsp;<span class="constructor">Cmdliner</span>&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">Term</span>.(<br>
-&nbsp;&nbsp;&nbsp;&nbsp;pure&nbsp;(<span class="keyword">fun</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;parse_host&nbsp;s)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;$&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">match</span>&nbsp;how&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Flag</span>&nbsp;(flags)&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Arg</span>.(value&nbsp;<span class="keywordsign">&amp;</span>&nbsp;opt&nbsp;string&nbsp;<span class="string">"/tmp/"</span>&nbsp;<span class="keywordsign">&amp;</span>&nbsp;info&nbsp;flags&nbsp;~doc&nbsp;~docv:<span class="string">"URI"</span>)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Required</span>&nbsp;p&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Arg</span>.(required&nbsp;<span class="keywordsign">&amp;</span>&nbsp;pos&nbsp;p&nbsp;(some&nbsp;string)&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">&amp;</span>&nbsp;info&nbsp;[]&nbsp;~doc&nbsp;~docv:<span class="string">"URI"</span>)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
-&nbsp;&nbsp;)<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;<span class="constructor">Ketrew_target</span>.<span class="constructor">Condition</span>.t<br>
+<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(<span class="keywordsign">&amp;&amp;</span>)&nbsp;a&nbsp;b&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">And</span>&nbsp;[a;&nbsp;b]<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;chain_and&nbsp;l&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">And</span>&nbsp;l<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;never&nbsp;=&nbsp;<span class="keywordsign">`</span><span class="constructor">False</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;program&nbsp;?(returns=0)&nbsp;?host&nbsp;p&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">Command_returns</span>&nbsp;(<span class="constructor">Ketrew_target</span>.<span class="constructor">Command</span>.program&nbsp;?host&nbsp;p,&nbsp;returns)<br>
+<br>
+<span class="keyword">end</span><br>
 <br>
 <span class="keyword">let</span>&nbsp;daemonize&nbsp;&nbsp;=&nbsp;<span class="constructor">Ketrew_daemonize</span>.create<br>
 <br>
