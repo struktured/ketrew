@@ -1,8 +1,8 @@
 #use "topfind"
 #thread
-#require "ketrew"
 
-open Ketrew_pervasives ;;
+open Ketrew_pervasives
+module KEDSL = Ketrew.EDSL
 
 let path = Printf.sprintf "/tmp/fib%d"
 
@@ -15,18 +15,20 @@ let fibonacci_program ?(debug = false) n =
       KEDSL.Program.shf "%s"
   in
   match n with
-  | 0 -> p (Printf.sprintf "echo 0 > %s" 0 (path 0))
-  | 1 -> p (Printf.sprintf "echo 1 > %s" 1 (path 1))
-  | n -> p (Printf.sprintf "echo $((`cat %s` + `cat %s`)) > %s"
-                        (path (n - 2)) (path (n - 1)) (path (n - 1)))
+  | 0 -> p (Printf.sprintf "echo 0 > %s" (path 0))
+  | 1 -> p (Printf.sprintf "echo 1 > %s" (path 1))
+  | n -> p (Printf.sprintf "echo $((`cat %s` + `cat %s`)) > %s" (path (n - 2)) (path (n - 1)) (path n))
 
-module KEDSL = Ketrew.EDSL
 
-let rec compute_fib n =
-  let process = KEDSL.direct_execution (fibonacci_program n) in
-  let name    = Printf.printf "fibonacci (%d)" n in
+let rec fib_depencencies = function
+  | 0 -> []
+  | 1 -> []
+  | n -> [compute_fib (n - 1); compute_fib (n - 2)]
+and compute_fib n =
+  let process = KEDSL.daemonize ~starting_timeout:30.0 ~using:`Python_daemon (fibonacci_program n) in
+  let name    = Printf.sprintf "fibonacci (%d)" n in
   KEDSL.file_target
-    ~dependencies: [compute_fib (n - 1); compute_fib (n - 2);]
+    ~dependencies: (fib_depencencies n)
     (* Ketrew doesn't have a way of knowing that there will be multiple
        (n-2) cases (one from n and one from n-1)*)
     ~equivalence:`Same_active_condition
@@ -44,4 +46,3 @@ let submit n =
   (* Create the workflow with the first argument of the command line: *)
   let workflow = compute_fib n in
   Ketrew_client.submit workflow
-  |> unwrap
