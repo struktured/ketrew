@@ -79,8 +79,8 @@ type id = Unique_id.t
 
 module Condition : sig
   type t = [
-    | `True
-    | `False
+    | `TTrue
+    | `FFalse
     | `Volume_exists of Ketrew_artifact.Volume.t
     | `Volume_size_bigger_than of Ketrew_artifact.Volume.t * int
     | `Command_returns of Command.t * int
@@ -88,7 +88,7 @@ module Condition : sig
   ]
   (** A execution anti-condition, the condition defines when a target is
     (already) ready: {ul
-    {li with [`False] the target always runs (because never “ready”),}
+    {li with [`FFalse] the target always runs (because never “ready”),}
     {li with [`True] the target never runs (a bit useless),}
     {li with [`Volume_exists v] the target runs if the volume does not exist
     ([make]-like behavior).}

@@ -16,6 +16,10 @@ Flag test
   Description: Build the Tests
   Default$: flag(all)
 
+Flag coverage
+  Description: Use Bisect to generate coverage data.
+  Default:     false
+
 Library ketrew_data
   Path: gen/
   BuildDepends: cconv
@@ -65,7 +69,7 @@ Library ketrew
 
 Executable ketrew_test
   Path: src/test/
-  CompiledObject: best
+  CompiledObject: byte
   BuildDepends: ketrew
   Build$: flag(all) || flag(test)
   Install: false
@@ -73,7 +77,7 @@ Executable ketrew_test
 
 Executable ketrew_cli_test
   Path: src/test/
-  CompiledObject: best
+  CompiledObject: byte
   BuildDepends: ketrew
   Build$: flag(all) || flag(test)
   Install: false
@@ -81,7 +85,7 @@ Executable ketrew_cli_test
 
 Executable ketrew_integration_test
   Path: src/test/
-  CompiledObject: best
+  CompiledObject: byte
   BuildDepends: ketrew
   Build$: flag(all) || flag(test)
   Install: false
@@ -89,7 +93,7 @@ Executable ketrew_integration_test
 
 Library ketrew_dummy_plugin_test_lib
   Path: src/test/
-  CompiledObject: best
+  CompiledObject: byte
   BuildDepends: ketrew
   Build$: flag(all) || flag(test)
   Install: false
@@ -97,7 +101,7 @@ Library ketrew_dummy_plugin_test_lib
 
 Executable ketrew_dummy_plugin_user_test
   Path: src/test/
-  CompiledObject: best
+  CompiledObject: byte
   BuildDepends: ketrew, ketrew_dummy_plugin_test_lib
   Build$: flag(all) || flag(test)
   Install: false
@@ -105,7 +109,7 @@ Executable ketrew_dummy_plugin_user_test
 
 Executable ketrew
   Path: src/app/
-  CompiledObject: best
+  CompiledObject: byte
   BuildDepends: ketrew
   Install: true
   MainIs:  main.ml

@@ -23,7 +23,6 @@ OWN_BINARIES= ketrew-test ketrew ketrew-pure ketrew-workflow-examples-test ketre
 
 build: gen
 	ocaml setup.ml -build && \
-	    rm -f $(OCAMLBUILD_ANNOYING_LINKS) && \
 	    cp _build/src/app/main.native ketrew && \
 	    cp _build/src/test/main.native ketrew-test && \
 	    cp _build/src/test/Workflow_Examples.native ketrew-workflow-examples-test && \
